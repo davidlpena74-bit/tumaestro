@@ -184,6 +184,18 @@ export default function Home() {
             </div>
           </div>
 
+
+          {/* FOOTER */}
+          <footer className="w-full mt-24 py-8 border-t border-white/10 text-center relative z-10">
+            <p className="text-white/60 text-sm mb-2">
+              © 2026 TuMaestro.es. Todos los derechos reservados.
+            </p>
+            <div className="flex justify-center gap-6 text-sm font-medium">
+              <a href="/terminos" className="text-white/40 hover:text-white transition">Términos y Condiciones</a>
+              <a href="/privacidad" className="text-white/40 hover:text-white transition">Política de Privacidad</a>
+            </div>
+          </footer>
+
         </div>
       </div>
 
