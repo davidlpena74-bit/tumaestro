@@ -131,62 +131,112 @@ export default function Home() {
           </div>
 
           {/* SECCIÓN MATERIAL DIDÁCTICO (NUEVA) */}
-          <div id="material" className="scroll-mt-32">
-            <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4">
-              <div>
-                <h2 className="text-3xl font-bold text-white drop-shadow-md">Biblioteca de Recursos</h2>
-                <p className="text-gray-100 mt-1 font-medium drop-shadow-sm">Material de estudio subido por profesores</p>
-              </div>
-              <button className="text-white font-bold hover:underline drop-shadow-sm">Ver biblioteca →</button>
-            </div>
+          {/* RECURSOS SECTION (PREMIUM) */}
+          <section className="w-full max-w-6xl mx-auto mt-24 relative z-10 px-4 scroll-mt-32" id="material">
+            <div className="absolute inset-0 bg-gradient-to-l from-blue-500/10 to-orange-500/10 rounded-3xl blur-3xl -z-10" />
 
-            {/* Grid de Materiales (Iconos Visuales) */}
-            <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-              {[
-                {
-                  title: "Historia",
-                  icon: <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-                  color: "text-white/30"
-                },
-                {
-                  title: "Lengua",
-                  icon: <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>,
-                  color: "text-white/30"
-                },
-                {
-                  title: "Inglés",
-                  icon: <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>,
-                  color: "text-white/30"
-                },
-                {
-                  title: "Matemáticas",
-                  icon: <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>,
-                  color: "text-white/30"
-                },
-                {
-                  title: "Física",
-                  icon: <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
-                  color: "text-white/30"
-                },
-                {
-                  title: "Geografía",
-                  icon: <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-                  color: "text-white/30"
-                }
-              ].map((item, i) => (
-                <a
-                  key={i}
-                  href={item.title === "Geografía" ? "/geografia" : "#"}
-                  className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-white/40 hover:bg-white/20 transition cursor-pointer flex flex-col items-center text-center gap-4 group hover:-translate-y-1 duration-300 block"
-                >
-                  <div className={`w-20 h-20 flex items-center justify-center transition duration-500 group-hover:scale-110 ${item.color}`}>
-                    {item.icon}
+            <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 md:p-12 overflow-hidden relative">
+              <div className="flex flex-col md:flex-row-reverse items-center justify-between gap-8">
+                <div className="text-left md:text-right max-w-xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4 border border-blue-500/30 w-full md:w-auto md:justify-end">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    ACTUALIZADO
                   </div>
-                  <h4 className="font-bold text-white text-sm drop-shadow-md group-hover:text-teal-200 transition">{item.title}</h4>
-                </a>
-              ))}
+                  <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+                    Biblioteca de Recursos
+                  </h2>
+                  <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                    Accede a una colección curada de apuntes, exámenes resueltos y guías de estudio. Todo organizado por materia y nivel educativo para maximizar tu rendimiento.
+                  </p>
+                  <a
+                    href="/recursos"
+                    className="inline-flex items-center px-8 py-4 bg-gradient-to-l from-blue-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all group"
+                  >
+                    <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                    Explorar Biblioteca
+                  </a>
+                </div>
+
+                {/* Visual Decoration */}
+                <div className="relative w-full max-w-xs md:max-w-sm aspect-square">
+                  <div className="absolute inset-0 bg-gradient-to-bl from-blue-400 to-orange-500 rounded-full dark:opacity-20 opacity-30 blur-3xl animate-pulse" />
+                  <div className="relative z-10 grid grid-cols-2 gap-4 -rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
+                      <svg className="w-10 h-10 text-orange-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                      <span className="text-xs font-bold text-white">Lengua</span>
+                    </div>
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl mt-8">
+                      <svg className="w-10 h-10 text-blue-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                      <span className="text-xs font-bold text-white">Mates</span>
+                    </div>
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl -mt-8">
+                      <span className="text-2xl">📚</span>
+                    </div>
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
+                      <span className="text-2xl">🎓</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          </section>
+
+
+          {/* JUEGOS SECTION */}
+          <section className="w-full max-w-6xl mx-auto mt-32 relative z-10 px-4">
+            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-purple-500/10 rounded-3xl blur-3xl -z-10" />
+
+            <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 md:p-12 overflow-hidden relative">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="text-left max-w-xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold mb-4 border border-teal-500/30">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                    </span>
+                    NUEVO
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+                    Aprende Jugando
+                  </h2>
+                  <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                    Descubre nuestra nueva zona de juegos interactivos. Pon a prueba tus conocimientos de geografía y cultura general con retos diseñados para aprender divirtiéndote.
+                  </p>
+                  <a
+                    href="/juegos"
+                    className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 hover:-translate-y-1 transition-all group"
+                  >
+                    Explorar Juegos
+                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                  </a>
+                </div>
+
+                {/* Visual Decoration */}
+                <div className="relative w-full max-w-xs md:max-w-sm aspect-square">
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-purple-500 rounded-full dark:opacity-20 opacity-30 blur-3xl animate-pulse" />
+                  <div className="relative z-10 grid grid-cols-2 gap-4 rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
+                      <svg className="w-10 h-10 text-teal-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <span className="text-xs font-bold text-white">Mapa</span>
+                    </div>
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl mt-8">
+                      <svg className="w-10 h-10 text-purple-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                      <span className="text-xs font-bold text-white">Quiz</span>
+                    </div>
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl -mt-8">
+                      <span className="text-2xl">🏆</span>
+                    </div>
+                    <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
+                      <span className="text-2xl">⚡</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
 
           {/* FOOTER */}
