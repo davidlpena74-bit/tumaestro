@@ -40,11 +40,10 @@ export default function GeographyPage() {
             <div className="relative w-full max-w-4xl aspect-[4/3] bg-white/5 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl overflow-hidden group">
 
                 {/* MAP BACKGROUND IMAGE */}
-                {/* Usamos un mapa mudo de España de Wikimedia */}
                 <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Mapa_CCAA_España.svg/1200px-Mapa_CCAA_España.svg.png"
-                    alt="Mapa de España"
-                    className="absolute inset-0 w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                    src="/maps/spain.svg"
+                    alt="Mapa de España y Comunidades Autónomas"
+                    className="absolute inset-0 w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-500 p-8"
                 />
 
                 {/* INTERACTIVE POINTS */}
