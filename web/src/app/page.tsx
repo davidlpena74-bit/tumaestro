@@ -192,11 +192,9 @@ export default function Home() {
                   color: "bg-yellow-100 text-yellow-600"
                 }
               ].map((item, i) => (
-                <div key={i} className="bg-white/40 backdrop-blur-md p-6 rounded-xl border border-white/30 hover:border-orange-300 hover:bg-white/60 hover:shadow-lg transition cursor-pointer flex flex-col items-center text-center gap-4 group">
-                  {/* Icono Grande Sin Fondo */}
-                  <div className={`w-12 h-12 flex items-center justify-center transition duration-300 group-hover:scale-110 ${item.color.replace('bg-', 'text-').split(' ')[1]}`}>
-                    {/* Necesitamos cambiar el tamaño del SVG interno a w-full h-full */}
-                    <div className="w-full h-full">
+                <div key={i} className="bg-white/40 backdrop-blur-md p-6 rounded-xl border border-white/30 hover:border-orange-300 hover:bg-white/60 hover:shadow-lg transition cursor-pointer flex flex-col items-center text-center gap-3 group">
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-sm ${item.color} group-hover:scale-110 transition duration-300`}>
+                    <div className="w-6 h-6">
                       {item.icon}
                     </div>
                   </div>
