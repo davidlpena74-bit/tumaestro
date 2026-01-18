@@ -15,9 +15,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "TuMaestro.es | Encuentra tu Profesor Ideal",
   description: "Plataforma líder en clases particulares y material didáctico. Encuentra profesores verificados de Matemáticas, Inglés, Física y más.",
-  icons: {
-    icon: '/icon',
-  },
 };
 
 import CookieConsent from "@/components/CookieConsent";
