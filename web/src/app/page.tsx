@@ -37,15 +37,20 @@ export default function Home() {
       </div>
 
       {/* 2. HEADER */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4">
-        <div className="text-white font-bold text-2xl tracking-tight flex items-center gap-2">
-          TuMaestro
+      <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-50">
+        <div className="relative flex items-center cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          {/* LOGO TEXT with Hat */}
+          <div className="relative text-white font-bold text-3xl tracking-tighter drop-shadow-2xl flex items-center group">
+            {/* Hat Icon */}
+            <div className="absolute -top-5 -left-4 text-teal-400 transform -rotate-12 group-hover:rotate-0 transition-transform duration-300">
+              <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L1 8l11 6 9-4.91V17h2V9L12 2zm0 2.18l7.27 3.96L12 12.13 4.73 8.16 12 4.18zM3.82 10.36l1.45.8v4.91c0 1.99 3.03 3.6 6.73 3.6s6.73-1.61 6.73-3.6v-4.91l1.45-.8V16c0 2.87-3.9 5-8.18 5s-8.18-2.13-8.18-5v-5.64z" /></svg>
+            </div>
+            TuMaestro<span className="text-teal-400">.es</span>
+          </div>
         </div>
-        <div className="flex gap-4">
-          <button className="bg-white/10 backdrop-blur-md border border-white/30 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black transition font-semibold text-sm">
-            Acceso Usuarios
-          </button>
-        </div>
+        <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-2 rounded-full font-bold hover:bg-white hover:text-teal-900 transition shadow-lg">
+          Acceso Usuarios
+        </button>
       </header>
 
       {/* 3. HERO: SPLIT GATEWAY */}
