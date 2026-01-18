@@ -174,12 +174,16 @@ export default function Home() {
                   color: "text-white/30"
                 }
               ].map((item, i) => (
-                <div key={i} className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-white/40 hover:bg-white/20 transition cursor-pointer flex flex-col items-center text-center gap-4 group hover:-translate-y-1 duration-300">
+                <a
+                  key={i}
+                  href={item.title === "Geografía" ? "/geografia" : "#"}
+                  className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-white/40 hover:bg-white/20 transition cursor-pointer flex flex-col items-center text-center gap-4 group hover:-translate-y-1 duration-300 block"
+                >
                   <div className={`w-20 h-20 flex items-center justify-center transition duration-500 group-hover:scale-110 ${item.color}`}>
                     {item.icon}
                   </div>
                   <h4 className="font-bold text-white text-sm drop-shadow-md group-hover:text-teal-200 transition">{item.title}</h4>
-                </div>
+                </a>
               ))}
             </div>
           </div>
