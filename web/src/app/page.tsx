@@ -42,7 +42,7 @@ export default function Home() {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[100vh] px-4">
 
         <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 text-center drop-shadow-lg">
-          Tu futuro empieza aquí <span className="text-lg block font-mono font-normal opacity-70 mt-2 text-teal-300">(v0.4.1 Test)</span>
+          Tu futuro empieza aquí
         </h1>
         <p className="text-xl text-gray-100 mb-12 text-center max-w-2xl font-light drop-shadow-md">
           Elige cómo quieres aprender hoy
