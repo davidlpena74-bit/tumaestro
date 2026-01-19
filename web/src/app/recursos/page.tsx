@@ -54,7 +54,7 @@ const subjects = [
 
 export default function ResourcesHubPage() {
     return (
-        <main className="min-h-screen bg-slate-950 text-white p-4 md:p-12 relative overflow-hidden">
+        <main className="min-h-screen bg-slate-950 text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
             {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
@@ -75,7 +75,7 @@ export default function ResourcesHubPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500"
+                        className="text-5xl md:text-7xl font-black mb-8 leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500 pb-2"
                     >
                         Recursos por Materia
                     </motion.h1>
@@ -83,7 +83,7 @@ export default function ResourcesHubPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-gray-400 max-w-2xl mx-auto"
+                        className="text-xl text-gray-400 max-w-2xl mx-auto mt-2"
                     >
                         Accede a miles de apuntes, ejercicios resueltos y guías de estudio organizadas por nuestros mejores profesores.
                     </motion.p>
