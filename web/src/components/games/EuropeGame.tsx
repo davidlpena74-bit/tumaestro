@@ -314,7 +314,6 @@ export default function EuropeGame() {
                                         }}
                                         style={{ transformOrigin: 'center', transformBox: 'fill-box' }} // Essential for correct scaling center
                                     >
-                                        <title>{spanishName || engName}</title>
                                     </motion.path>
                                 );
                             })}
