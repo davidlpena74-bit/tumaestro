@@ -1,10 +1,9 @@
 'use client';
 
-import { GoogleAnalytics as NextGoogleAnalytics } from '@next/third-parties/google';
 import { usePathname, useSearchParams } from 'next/navigation';
+import Script from 'next/script';
 import { useEffect, useState } from 'react';
 
-// Define the GA ID
 const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-D9YEL7YQ1W';
 
 export default function GoogleAnalytics() {
@@ -35,16 +34,42 @@ export default function GoogleAnalytics() {
     }, []);
 
     useEffect(() => {
-        // Manually trigger pageview if needed, but @next/third-parties handles basic tracking.
-        // However, we want to ensure config is sent upon PageView in Next.js App Router.
-        // The GoogleAnalytics component from @next/third-parties AUTOMATICALLY handles pathname changes.
-        // We just need to render it.
-    }, [pathname, searchParams]);
+        // Si hay consentimiento, trackeamos la navegación
+        if (consentGiven && typeof window !== 'undefined' && (window as any).gtag) {
+            const url = pathname + searchParams.toString();
+            (window as any).gtag('config', GA_ID, {
+                page_path: url,
+            });
+        }
+    }, [pathname, searchParams, consentGiven]);
 
-    // Render nothing if consent is not given.
+    // Si no hay consentimiento, no renderizamos NADA (GDPR Compliance)
     if (!consentGiven) {
         return null;
     }
 
-    return <NextGoogleAnalytics gaId={GA_ID} />;
+    return (
+        <>
+            <Script
+                strategy="afterInteractive"
+                src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            />
+            <Script
+                id="google-analytics-init"
+                strategy="afterInteractive"
+                dangerouslySetInnerHTML={{
+                    __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', '${GA_ID}', {
+              page_path: window.location.pathname,
+              // debug_mode: true, // Descomentar para debug en producción si fuera necesario
+            });
+          `,
+                }}
+            />
+        </>
+    );
 }

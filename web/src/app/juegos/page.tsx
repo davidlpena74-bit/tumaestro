@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap } from 'lucide-react';
+import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap, Landmark } from 'lucide-react';
 
 type Game = {
     id: string;
@@ -47,6 +47,22 @@ const categories: Category[] = [
                 href: '/juegos/mapa-europa',
                 icon: Globe,
                 color: 'from-blue-500 to-indigo-500',
+            },
+            {
+                id: 'capitals-eu',
+                title: 'Capitales de la UE',
+                description: '¿Sabes cuáles son las 27 capitales de la Unión Europea?',
+                href: '/juegos/capitales-ue',
+                icon: Landmark,
+                color: 'from-blue-600 to-blue-400',
+            },
+            {
+                id: 'capitals-europe',
+                title: 'Capitales de Europa',
+                description: 'Reto maestro: Las 50 capitales del continente.',
+                href: '/juegos/capitales-europa',
+                icon: Landmark,
+                color: 'from-indigo-500 to-violet-500',
             },
             {
                 id: 'rios',
