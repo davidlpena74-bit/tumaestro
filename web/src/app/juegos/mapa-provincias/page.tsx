@@ -12,10 +12,10 @@ export default function MapaProvinciasPage() {
                     <Link href="/juegos" className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors mb-4">
                         <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                     </Link>
-                    <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 mb-2">
+                    <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 mb-6">
                         Reto Geográfico
                     </h1>
-                    <p className="text-gray-400 text-lg max-w-2xl">
+                    <p className="text-white text-lg max-w-2xl">
                         Demuestra tu conocimiento del mapa de España. Localiza todas las provincias antes de que se agote el tiempo.
                     </p>
                 </div>
