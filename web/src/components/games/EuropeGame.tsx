@@ -70,6 +70,8 @@ export default function EuropeGame() {
     const [message, setMessage] = useState('');
 
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
+    const [attempts, setAttempts] = useState(0);
+    const [failedCountries, setFailedCountries] = useState<string[]>([]);
 
     // Zoom state
     const [zoom, setZoom] = useState(1);
@@ -127,6 +129,7 @@ export default function EuropeGame() {
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);
         const next = currentRemaining[randomIndex];
         setTargetCountry(next);
+        setAttempts(0);
         // setMessage(`Encuentra: ${next}`); // Removed initial message box
     };
 
@@ -148,15 +151,33 @@ export default function EuropeGame() {
             nextTurn(newRemaining);
         } else {
             // Incorrect
+            const newAttempts = attempts + 1;
+            setAttempts(newAttempts);
             setErrors(e => e + 1);
             setScore(s => Math.max(0, s - 5));
-            setMessage(`¡No! Eso es ${spanishName} ❌`);
+
+            if (newAttempts >= 3) {
+                setMessage(`¡Fallaste 3/3! ${targetCountry} marcada en rojo. ❌`);
+                setFailedCountries(prev => [...prev, targetCountry]);
+
+                // Move to next
+                const newRemaining = remainingCountries.filter(c => c !== targetCountry);
+                setRemainingCountries(newRemaining);
+
+                // Small delay to read message before switching target? 
+                // Using existing flow:
+                setTimeout(() => nextTurn(newRemaining), 1500); // Give a bit more time to see the failure
+            } else {
+                setMessage(`¡No! Eso es ${spanishName} (${newAttempts}/3) ❌`);
+            }
         }
     };
 
     const resetGame = () => {
         setScore(0);
         setErrors(0);
+        setAttempts(0);
+        setFailedCountries([]);
         const available = Object.keys(EUROPE_PATHS)
             .map(engName => COUNTRY_MAPPING[engName])
             .filter(Boolean);
@@ -324,7 +345,9 @@ export default function EuropeGame() {
                                         initial={false}
                                         animate={{
                                             fill: isCompleted
-                                                ? '#10b981' // Green (Done)
+                                                ? failedCountries.includes(spanishName)
+                                                    ? '#ef4444' // Red (Failed)
+                                                    : '#10b981' // Green (Correct)
                                                 : isPlayable
                                                     ? '#ffffff' // White (Pending)
                                                     : '#1e293b', // Dark background-like
@@ -380,6 +403,6 @@ export default function EuropeGame() {
             <p className="text-center text-slate-500 mt-6 text-sm">
                 Datos cartográficos optimizados por Map Agent. Fuente: Natural Earth.
             </p>
-        </div>
+        </div >
     );
 }
