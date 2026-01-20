@@ -27,19 +27,26 @@ try {
         .filter(f => EUROPEAN_COUNTRIES.includes(f.properties.name))
         .setProjection((collection, d3) => {
             // Mercator projection centered on Europe
-            // We fit the extent to 'Core Europe' to ensure good initial zoom
-            // Excluding massive eastern countries (Russia, Kazakhstan) and far periphery to focus the view
-            // The features for these countries will still be generated, but they might extend off-canvas initially
-            const FIT_EXCLUSIONS = ['Russia', 'Kazakhstan', 'Turkey', 'Georgia', 'Armenia', 'Azerbaijan', 'Cyprus'];
+            // We fit the extent to a specific bounding box to match user request:
+            // "North of Norway close to upper limit" (approx 71.2 N)
+            // "Canary Islands close to lower limit" (approx 27.6 N)
 
-            const fitCollection = {
-                type: "FeatureCollection",
-                features: collection.features.filter(f => !FIT_EXCLUSIONS.includes(f.properties.name))
+            const boundingBox = {
+                type: "Feature",
+                geometry: {
+                    type: "LineString",
+                    coordinates: [
+                        [-18, 27.5], // South-West (Canaries latitude)
+                        [35, 27.5],  // South-East
+                        [35, 71.5],  // North-East (North Cape latitude)
+                        [-18, 71.5], // North-West
+                        [-24, 64]    // Iceland (ensure it's included in width)
+                    ]
+                }
             };
 
             return d3.geoMercator()
-                .center([10, 54])
-                .fitExtent([[20, 20], [780, 580]], fitCollection);
+                .fitExtent([[5, 5], [795, 595]], boundingBox);
         });
 
     const paths = factory.generateSVGPaths('name');
