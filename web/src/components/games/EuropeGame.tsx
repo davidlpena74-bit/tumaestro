@@ -283,8 +283,8 @@ export default function EuropeGame() {
                                         className={`
                                             stroke-[0.5px] pointer-events-auto
                                             ${isPlayable
-                                                ? 'cursor-pointer stroke-slate-500 hover:stroke-white hover:stroke-[1.5px]'
-                                                : 'fill-slate-800/50 stroke-slate-800'
+                                                ? 'cursor-pointer stroke-slate-900/30 hover:stroke-slate-900 hover:stroke-[1px]'
+                                                : 'fill-slate-800/30 stroke-slate-800/50'
                                             }
                                         `}
                                         initial={false}
@@ -292,12 +292,12 @@ export default function EuropeGame() {
                                             fill: isCompleted
                                                 ? '#10b981' // Green (Done)
                                                 : isPlayable
-                                                    ? '#334155' // Slate (Pending)
+                                                    ? '#ffffff' // White (Pending)
                                                     : '#1e293b', // Dark background-like
                                             opacity: 1
                                         }}
                                         whileHover={isPlayable && !isCompleted ? {
-                                            fill: '#3b82f6', // Blue Hover
+                                            fill: '#bae6fd', // Light Blue Hover (sky-200)
                                             scale: 1.01,
                                             transition: { duration: 0.1 }
                                         } : {}}
