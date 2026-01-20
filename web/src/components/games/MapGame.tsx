@@ -316,7 +316,7 @@ export default function MapGame() {
                             let strokeClass = "stroke-slate-900/50 stroke-[0.5]";
 
                             if (gameState === 'playing') {
-                                fillClass = "fill-white hover:fill-teal-200 cursor-pointer transition-colors duration-150";
+                                fillClass = "fill-white hover:fill-teal-200 cursor-pointer transition-all duration-150 hover:drop-shadow-[4px_6px_6px_rgba(0,0,0,0.5)] hover:scale-[1.02] vector-effect-non-scaling-stroke"; // 3D diagonal effect
 
                                 if (isClicked) {
                                     strokeClass = "stroke-slate-900 stroke-1";

@@ -298,7 +298,9 @@ export default function EuropeGame() {
                                         }}
                                         whileHover={isPlayable && !isCompleted ? {
                                             fill: '#bae6fd', // Light Blue Hover (sky-200)
-                                            scale: 1.01,
+                                            scale: 1.02,
+                                            filter: "drop-shadow(4px 6px 6px rgba(0,0,0,0.5))", // diagonal 3D shadow
+                                            zIndex: 10, // Attempt to bring to front (SVG z-index is order based, but filter helps visual pop)
                                             transition: { duration: 0.1 }
                                         } : {}}
                                         onMouseDown={(e: any) => e.stopPropagation()} // Stop pan drag starting on country? No, allow picking
