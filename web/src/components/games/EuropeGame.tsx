@@ -239,7 +239,7 @@ export default function EuropeGame() {
 
                 {/* Fullscreen HUD Overlay */}
                 {isFullscreen && (
-                    <div className="absolute top-0 left-0 right-0 z-20 bg-slate-900/90 backdrop-blur-md border-b border-white/10 p-4 flex justify-between items-center shadow-2xl animate-in slide-in-from-top duration-300">
+                    <div className="absolute top-6 left-0 right-0 mx-auto w-[95%] max-w-6xl z-20 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-white/20 p-4 flex flex-col md:flex-row justify-between items-center shadow-2xl gap-4 animate-in slide-in-from-top duration-300">
                         <div className="flex items-center gap-4">
                             <div className="bg-blue-500/20 p-2 rounded-lg">
                                 <Globe className="text-blue-400 w-6 h-6" />
@@ -250,7 +250,7 @@ export default function EuropeGame() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center flex-1">
                             <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Encuentra</span>
                             <span className="text-3xl font-black text-yellow-400 drop-shadow-sm animate-pulse">
                                 {targetCountry}
@@ -267,7 +267,8 @@ export default function EuropeGame() {
                 )}
 
                 {/* Controls: Zoom & Fullscreen */}
-                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                {/* Push controls down further to clear the floating HUD */}
+                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
                     <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
                     <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
                     <div className="h-2" />
