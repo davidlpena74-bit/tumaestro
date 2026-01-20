@@ -46,6 +46,14 @@ export default function MapGame() {
         return () => document.removeEventListener('fullscreenchange', handleFsChange);
     }, []);
 
+    // Auto-clear message after 1s
+    useEffect(() => {
+        if (message.text) {
+            const timer = setTimeout(() => setMessage({ text: '', type: 'neutral' }), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [message.text]);
+
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
             gameContainerRef.current?.requestFullscreen();
@@ -181,7 +189,7 @@ export default function MapGame() {
             </div>
 
             {/* FEEDBACK BAR */}
-            <div className="h-10 mb-2 w-full flex justify-center z-20 pointer-events-none">
+            <div className={`h-10 mb-2 w-full flex justify-center z-20 pointer-events-none transition-all duration-300 ${isFullscreen ? 'absolute top-36 md:top-32' : ''}`}>
                 <AnimatePresence>
                     {message.text && (
                         <motion.div

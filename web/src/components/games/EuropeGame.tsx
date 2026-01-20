@@ -108,11 +108,15 @@ export default function EuropeGame() {
         }
     };
 
+    // Auto-clear message after 1 second
     useEffect(() => {
-        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
-        document.addEventListener('fullscreenchange', handleFsChange);
-        return () => document.removeEventListener('fullscreenchange', handleFsChange);
-    }, []);
+        if (message) {
+            const timer = setTimeout(() => setMessage(''), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
+
+
 
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
@@ -352,7 +356,7 @@ export default function EuropeGame() {
                 )}
 
                 {/* Feedback Toast */}
-                <div className="absolute top-6 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+                <div className={`absolute left-1/2 -translate-x-1/2 pointer-events-none z-20 transition-all duration-300 ${isFullscreen ? 'top-36 md:top-32' : 'top-6'}`}>
                     <AnimatePresence>
                         {message && (
                             <motion.div
