@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from 'next/script';
+import { Suspense } from "react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,6 +31,7 @@ export const metadata: Metadata = {
 };
 
 import CookieConsent from "@/components/CookieConsent";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Header from "@/components/Header";
 
 export default function RootLayout({
@@ -37,13 +39,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-D9YEL7YQ1W';
-
-  // Debug GA
-  if (typeof window !== 'undefined') {
-    console.log('TuMaestro GA ID:', GA_ID);
-  }
-
   return (
     <html lang="en">
       <body
@@ -52,21 +47,9 @@ export default function RootLayout({
         <Header />
         {children}
         <CookieConsent />
-
-        {/* Google Analytics Manual Implementation */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', '${GA_ID}');
-          `}
-        </Script>
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
       </body>
     </html>
   );

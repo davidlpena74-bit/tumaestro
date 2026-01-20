@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, RotateCcw, Loader2, ZoomIn, ZoomOut } from 'lucide-react';
+import { Trophy, Globe, RotateCcw, Loader2, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import * as d3 from 'd3-geo';
 import * as topojson from 'topojson-client';
@@ -45,21 +45,56 @@ export default function EuropeGame() {
     const [errors, setErrors] = useState(0);
     const [gameState, setGameState] = useState<'playing' | 'won' | 'finished'>('playing');
     const [message, setMessage] = useState('');
+
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
     const [zoom, setZoom] = useState(1);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const gameContainerRef = useRef<HTMLDivElement>(null);
 
-    // Initialize Map Data
+    // Initial Map Scale based on container width would be ideal, but fixed is fine for now
+    // D3 Projection
+    const projection = useMemo(() => {
+        // Adjust center/scale to fit Europe nicely
+        return d3.geoMercator()
+            .center([10, 50]) // Adjusted center slightly
+            .scale(550 * zoom)
+            .translate([400, 300]); // SVG dimensions / 2
+    }, [zoom]);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            gameContainerRef.current?.requestFullscreen();
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    };
+
     useEffect(() => {
-        fetch('https://raw.githubusercontent.com/deldersveld/topojson/master/continent/europe.json')
+        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', handleFsChange);
+        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+    }, []);
+    useEffect(() => {
+        fetch('/maps/world-countries-50m.json')
             .then(res => res.json())
             .then(data => {
                 // Parse TopoJSON to GeoJSON features
-                const features = topojson.feature(data, data.objects.continent_Europe_subunits).features;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const allFeatures = (topojson.feature(data, data.objects.countries) as any).features;
+
+                // Filter only European countries present in our mapping
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const features = allFeatures.filter((f: any) => COUNTRY_MAPPING[f.properties.name]);
+
                 setGeography(features);
 
                 // Initialize game with available mapped countries
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const available = features
-                    .map((f: any) => f.properties.geounit)
+                    .map((f: any) => f.properties.name)
                     .filter((name: string) => COUNTRY_MAPPING[name])
                     .map((name: string) => COUNTRY_MAPPING[name]);
 
@@ -79,13 +114,7 @@ export default function EuropeGame() {
         }
     }, [loading, remainingCountries]);
 
-    // D3 Projection
-    const projection = useMemo(() => {
-        return d3.geoMercator()
-            .center([15, 54]) // Center of Europe
-            .scale(600 * zoom)
-            .translate([400, 300]); // SVG dimensions / 2
-    }, [zoom]);
+
 
     const pathGenerator = useMemo(() => {
         return d3.geoPath().projection(projection);
@@ -131,7 +160,7 @@ export default function EuropeGame() {
         setErrors(0);
 
         const available = geography
-            .map((f: any) => f.properties.geounit)
+            .map((f: any) => f.properties.name)
             .filter((name: string) => COUNTRY_MAPPING[name])
             .map((name: string) => COUNTRY_MAPPING[name]);
 
@@ -188,12 +217,19 @@ export default function EuropeGame() {
             </div>
 
             {/* Map Interaction Layer */}
-            <div className="relative bg-[#1a2333] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group">
+            <div
+                ref={gameContainerRef}
+                className="relative bg-[#1a2333] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group"
+            >
 
-                {/* Zoom Controls */}
+                {/* Controls: Zoom & Fullscreen */}
                 <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 3))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700"><ZoomIn className="w-5 h-5" /></button>
-                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700"><ZoomOut className="w-5 h-5" /></button>
+                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 3))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors"><ZoomIn className="w-5 h-5" /></button>
+                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors"><ZoomOut className="w-5 h-5" /></button>
+                    <div className="h-2" />
+                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors">
+                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+                    </button>
                 </div>
 
                 {loading ? (
@@ -220,7 +256,7 @@ export default function EuropeGame() {
 
                         <g>
                             {geography.map((geo, i) => {
-                                const geoName = geo.properties.geounit;
+                                const geoName = geo.properties.name;
                                 const spanishName = COUNTRY_MAPPING[geoName];
                                 const isTarget = spanishName === targetCountry;
                                 const isCompleted = spanishName && !remainingCountries.includes(spanishName);
@@ -261,19 +297,19 @@ export default function EuropeGame() {
                     </svg>
                 )}
 
-                {/* Feedback Toast */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none">
+                {/* Feedback Toast - Moved to Top Center to avoid overlap */}
+                <div className="absolute top-6 left-1/2 -translate-x-1/2 pointer-events-none z-20">
                     <AnimatePresence>
                         {message && (
                             <motion.div
-                                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                                initial={{ opacity: 0, y: -20, scale: 0.9 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                                className={`px-8 py-4 rounded-2xl border shadow-2xl font-bold text-lg backdrop-blur-md ${message.includes('Correcto')
-                                        ? 'bg-green-500/90 border-green-400 text-white'
-                                        : message.includes('No')
-                                            ? 'bg-red-500/90 border-red-400 text-white'
-                                            : 'bg-slate-800/90 border-slate-600 text-blue-200'
+                                className={`px-8 py-3 rounded-2xl border shadow-2xl font-bold text-lg backdrop-blur-md flex items-center gap-3 ${message.includes('Correcto')
+                                    ? 'bg-green-500/90 border-green-400 text-white'
+                                    : message.includes('No')
+                                        ? 'bg-red-500/90 border-red-400 text-white'
+                                        : 'bg-slate-800/80 border-slate-600 text-blue-100'
                                     }`}
                             >
                                 {message}

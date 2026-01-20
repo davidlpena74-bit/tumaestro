@@ -16,7 +16,8 @@ export default function CookieConsent() {
     const acceptCookies = () => {
         localStorage.setItem('cookie-consent', 'accepted');
         setShowConsent(false);
-        // Here you would normally initialize analytics, pixels, etc.
+        // Dispatch event for other components
+        window.dispatchEvent(new Event('cookie-consent-updated'));
     };
 
     const rejectCookies = () => {
