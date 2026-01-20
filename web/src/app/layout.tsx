@@ -37,6 +37,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Debug GA
+  if (typeof window !== 'undefined') {
+    console.log('TuMaestro GA ID:', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-DMBKGQVTEE');
+  }
+
   return (
     <html lang="en">
       <body
