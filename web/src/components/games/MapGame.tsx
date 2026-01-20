@@ -59,7 +59,7 @@ export default function MapGame() {
         setScore(0);
         setTimeLeft(90);
         pickNewTarget();
-        setMessage({ text: '¡Busca la Provincia!', type: 'neutral' });
+        setMessage({ text: '', type: 'neutral' });
         // Reset view on start? optional.
         // setZoom(1); setPan({x:0, y:0}); 
     };
