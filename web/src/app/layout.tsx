@@ -45,7 +45,7 @@ export default function RootLayout({
         <Header />
         {children}
         <CookieConsent />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || ''} />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-DMBKGQVTEE'} />
       </body>
     </html>
   );
