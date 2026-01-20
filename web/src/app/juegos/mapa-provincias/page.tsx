@@ -12,7 +12,7 @@ export default function MapaProvinciasPage() {
                     <Link href="/juegos" className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors mb-4">
                         <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                     </Link>
-                    <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 mb-6">
+                    <h1 className="text-4xl md:text-5xl font-black text-teal-400 mb-6 drop-shadow-md">
                         Reto Geográfico
                     </h1>
                     <p className="text-white text-lg max-w-2xl">
