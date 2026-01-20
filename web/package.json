@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.0.1-turbo-test",
+  "version": "1.0.21",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@splinetool/react-spline": "^4.1.0",
+    "@splinetool/runtime": "^1.12.37",
     "@supabase/supabase-js": "^2.90.1",
     "clsx": "^2.1.1",
     "d3-composite-projections": "^2.0.0",

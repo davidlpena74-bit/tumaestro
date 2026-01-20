@@ -57,8 +57,19 @@ export default function Home() {
             className="group bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl cursor-pointer hover:bg-white/20 hover:scale-[1.02] transition-all duration-300 text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
           >
             {/* Icono Watermark Background */}
-            <div className="text-white/60 mb-6 transition duration-500 group-hover:scale-110 group-hover:text-teal-200">
-              <svg className="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 14l9-5-9-5-9 5 9 5z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
+            <div className="text-white/80 mb-6 transition duration-500 group-hover:scale-110 group-hover:text-teal-200 drop-shadow-2xl">
+              <svg width="128" height="128" viewBox="0 0 100 100" fill="none">
+                {/* Sombra suave */}
+                <ellipse cx="50" cy="80" rx="30" ry="5" fill="black" opacity="0.3" filter="blur(3px)" />
+                {/* Base */}
+                <path d="M25 55 L25 65 C25 75, 75 75, 75 65 L75 55" fill="currentColor" opacity="0.8" />
+                {/* Tapa */}
+                <path d="M10 45 L50 25 L90 45 L50 65 Z" fill="currentColor" stroke="currentColor" strokeWidth="1" />
+                {/* Borla (Color fijo dorado para destacar) */}
+                <path d="M50 45 Q 85 55, 85 65" stroke="#fbbf24" strokeWidth="3" fill="none" strokeLinecap="round" />
+                <circle cx="85" cy="65" r="3" fill="#fbbf24" />
+                <path d="M85 65 L 82 85 L 88 85 Z" fill="#fbbf24" />
+              </svg>
             </div>
 
             <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-md z-10">Busco Profesor</h2>
@@ -76,8 +87,17 @@ export default function Home() {
             className="group bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl cursor-pointer hover:bg-white/20 hover:scale-[1.02] transition-all duration-300 text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
           >
             {/* Icono Watermark Background */}
-            <div className="text-white/60 mb-6 transition duration-500 group-hover:scale-110 group-hover:text-orange-200">
-              <svg className="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            <div className="text-white/80 mb-6 transition duration-500 group-hover:scale-110 group-hover:text-orange-200 drop-shadow-2xl">
+              <svg width="128" height="128" viewBox="0 0 100 100" fill="none">
+                {/* Sombra base */}
+                <ellipse cx="55" cy="90" rx="25" ry="4" fill="black" opacity="0.3" filter="blur(3px)" />
+                {/* Páginas (Bloque) */}
+                <path d="M30 20 L70 20 L80 30 L40 30 Z" fill="white" opacity="0.9" />
+                {/* Tapa Frontal */}
+                <path d="M30 30 L80 30 L80 85 L30 85 Z" fill="currentColor" />
+                {/* Lomo */}
+                <path d="M20 20 L30 30 L30 85 L20 75 Z" fill="currentColor" opacity="0.7" />
+              </svg>
             </div>
 
             <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-md z-10">Material Didáctico</h2>
@@ -89,6 +109,13 @@ export default function Home() {
             </button>
           </div>
 
+        </div>
+
+        {/* Enlace a Demo 3D */}
+        <div className="mt-8 z-10">
+          <a href="/demo-3d" className="text-white/70 hover:text-white underline text-sm">
+            Probar Demo Gráficos 3D (Spline)
+          </a>
         </div>
 
         {/* Flecha */}
