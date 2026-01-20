@@ -110,6 +110,12 @@ export default function EuropeGame() {
         }
     };
 
+    useEffect(() => {
+        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', handleFsChange);
+        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+    }, []);
+
     // Auto-clear message after 1 second
     useEffect(() => {
         if (message) {
