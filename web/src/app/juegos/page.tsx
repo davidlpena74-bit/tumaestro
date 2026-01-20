@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Map, BrainCircuit, ArrowRight, Sparkles, Trophy, MapPin } from 'lucide-react';
+import { Map, BrainCircuit, ArrowRight, Sparkles, Trophy, MapPin, Calculator } from 'lucide-react';
 
 const games = [
     {
@@ -31,6 +31,15 @@ const games = [
         icon: BrainCircuit,
         color: 'from-indigo-500 to-purple-500',
         bg: 'bg-indigo-950/30'
+    },
+    {
+        id: 'division',
+        title: 'Aprende a Dividir',
+        description: 'Reparte pizzas entre amigos. Juego visual de matemáticas.',
+        href: '/juegos/divisiones',
+        icon: Calculator,
+        color: 'from-orange-500 to-yellow-500',
+        bg: 'bg-orange-950/30'
     }
 ];
 
