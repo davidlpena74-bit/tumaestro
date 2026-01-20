@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Timer, MapPin, RefreshCw, XCircle, CheckCircle, HelpCircle } from 'lucide-react';
+import { Trophy, Timer, MapPin, RefreshCw, XCircle, CheckCircle, HelpCircle, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { SPANISH_PROVINCES_PATHS, PROVINCE_NAMES } from './spanish-provinces';
+import confetti from 'canvas-confetti';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -15,9 +16,19 @@ export default function MapGame() {
     const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
     const [targetId, setTargetId] = useState<string | null>(null);
     const [score, setScore] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(90); // 90 seconds for provinces (harder)
+    const [timeLeft, setTimeLeft] = useState(90); // 90 seconds for provinces
     const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'neutral' }>({ text: '', type: 'neutral' });
     const [clickedId, setClickedId] = useState<string | null>(null);
+
+    // Zoom & Pan State
+    const [zoom, setZoom] = useState(1);
+    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const dragStart = useRef({ x: 0, y: 0 });
+
+    // Fullscreen
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const gameContainerRef = useRef<HTMLDivElement>(null);
 
     // Game Loop
     useEffect(() => {
@@ -29,12 +40,28 @@ export default function MapGame() {
         }
     }, [gameState, timeLeft]);
 
+    useEffect(() => {
+        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', handleFsChange);
+        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            gameContainerRef.current?.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    };
+
     const startGame = () => {
         setGameState('playing');
         setScore(0);
         setTimeLeft(90);
         pickNewTarget();
         setMessage({ text: '¡Busca la Provincia!', type: 'neutral' });
+        // Reset view on start? optional.
+        // setZoom(1); setPan({x:0, y:0}); 
     };
 
     const pickNewTarget = () => {
@@ -47,13 +74,30 @@ export default function MapGame() {
     const handleRegionClick = (id: string) => {
         if (gameState !== 'playing' || !targetId) return;
 
+        // Prevent click if we were dragging
+        // We handle this check in the mouseUp/onClick wrapper usually, 
+        // but here let's rely on the fact that if dragging, we probably moved significantly.
+        // Simple check: if isDragging was true recently? 
+        // Better: check distance in MouseUp, but here we are in onClick.
+        // We'll rely on the parent wrapper to stop propagation if it was a drag, 
+        // or just add a small check if we had `onClick` on parent too. 
+        // Since we put onClick on the `<g>`, it fires.
+
+        // The dragging logic is on the container. The paths capture clicks.
+        // We can check if `pan` changed significantly since `mouseDown`? 
+        // But `pan` updates on `mouseMove`. 
+        // Let's us a ref 'wasDragging' set on mouseMove.
+
         setClickedId(id);
 
         if (id === targetId) {
             // Correct
-            setScore((prev) => prev + 150); // More points for provinces
+            setScore((prev) => prev + 150);
             setMessage({ text: `¡Bien! Es ${PROVINCE_NAMES[id]}`, type: 'success' });
             setTimeout(pickNewTarget, 600);
+
+            // Celebration if score is high?
+            if (score > 1000 && score % 1000 < 150) confetti({ particleCount: 50 });
         } else {
             // Incorrect
             setScore((prev) => Math.max(0, prev - 30));
@@ -61,14 +105,36 @@ export default function MapGame() {
         }
     };
 
+    // Pan Handlers
+    const handleMouseDown = (e: React.MouseEvent) => {
+        setIsDragging(true);
+        dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        setPan({
+            x: e.clientX - dragStart.current.x,
+            y: e.clientY - dragStart.current.y
+        });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    // Helper to check if it was a click or drag
+    const isClick = useRef(true);
+
     return (
-        <div className="w-full max-w-5xl mx-auto p-4 flex flex-col items-center">
+        <div className="w-full max-w-7xl mx-auto p-4 flex flex-col items-center select-none">
 
             {/* GAME HUD */}
-            <div className="w-full grid grid-cols-3 gap-4 mb-6 bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-xl items-center">
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-xl items-center">
 
                 {/* Score */}
-                <div className="flex items-center gap-3 text-yellow-400">
+                <div className="flex items-center justify-center md:justify-start gap-3 text-yellow-400 order-2 md:order-1">
                     <div className="p-2 bg-yellow-500/10 rounded-lg">
                         <Trophy className="w-6 h-6" />
                     </div>
@@ -79,7 +145,7 @@ export default function MapGame() {
                 </div>
 
                 {/* Target Display (Center) */}
-                <div className="flex justify-center">
+                <div className="flex justify-center order-1 md:order-2">
                     <AnimatePresence mode="wait">
                         {targetId && gameState === 'playing' ? (
                             <motion.div
@@ -103,7 +169,7 @@ export default function MapGame() {
                 </div>
 
                 {/* Timer (Right) */}
-                <div className="flex justify-end">
+                <div className="flex justify-center md:justify-end order-3">
                     <div className={cn(
                         "flex items-center gap-2 px-4 py-2 rounded-xl transition-colors font-mono font-bold text-xl border",
                         timeLeft < 15 ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse" : "bg-slate-800 border-white/5 text-teal-400"
@@ -115,7 +181,7 @@ export default function MapGame() {
             </div>
 
             {/* FEEDBACK BAR */}
-            <div className="h-10 mb-2 w-full flex justify-center">
+            <div className="h-10 mb-2 w-full flex justify-center z-20 pointer-events-none">
                 <AnimatePresence>
                     {message.text && (
                         <motion.div
@@ -124,7 +190,7 @@ export default function MapGame() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0 }}
                             className={cn(
-                                "flex items-center gap-2 px-6 py-1.5 rounded-full text-sm font-bold shadow-lg border border-white/10",
+                                "flex items-center gap-2 px-6 py-1.5 rounded-full text-sm font-bold shadow-lg border border-white/10 backdrop-blur-md pointer-events-auto",
                                 message.type === 'success' ? "bg-green-500/90 text-white" :
                                     message.type === 'error' ? "bg-red-500/90 text-white" : "bg-slate-800 text-gray-300"
                             )}
@@ -138,7 +204,37 @@ export default function MapGame() {
             </div>
 
             {/* MAP CONTAINER */}
-            <div className="relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-2 md:p-6 overflow-hidden border border-white/5 shadow-2xl">
+            <div
+                ref={gameContainerRef}
+                className="relative w-full aspect-square md:aspect-[1.4] bg-[#1a2333] rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl group cursor-move"
+                onMouseDown={(e) => {
+                    isClick.current = true;
+                    handleMouseDown(e);
+                }}
+                onMouseMove={(e) => {
+                    if (isDragging) isClick.current = false;
+                    handleMouseMove(e);
+                }}
+                onMouseUp={() => {
+                    handleMouseUp();
+                    // Reset isClick shortly after if needed, but the click event handler fires immediately after mouseup
+                    setTimeout(() => isClick.current = true, 50);
+                }}
+                onMouseLeave={handleMouseUp}
+            >
+
+                {/* CONTROLS (Zoom/Full) */}
+                <div className="absolute top-4 right-4 flex flex-col gap-2 z-20" onMouseDown={e => e.stopPropagation()}>
+                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.8))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
+                    <div className="h-2" />
+                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
+                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+                    </button>
+                    <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10" title="Reset View">
+                        <RefreshCw className="w-5 h-5" />
+                    </button>
+                </div>
 
                 {/* START OVERLAY */}
                 {gameState === 'start' && (
@@ -146,7 +242,7 @@ export default function MapGame() {
                         <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                             <MapPin className="w-12 h-12 text-teal-400" />
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Provincias de España</h2>
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Desafío Provincial</h2>
                         <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                             Demuestra que conoces cada rincón del país. Tienes 90 segundos para ubicar todas las provincias posibles.
                         </p>
@@ -177,8 +273,11 @@ export default function MapGame() {
                 )}
 
                 {/* SVG MAP */}
-                <svg viewBox="0 0 700 700" className="w-full h-full drop-shadow-2xl">
-                    {/* Glow Filter */}
+                <svg
+                    viewBox="0 0 700 700"
+                    className="w-full h-full drop-shadow-2xl"
+                    style={{ background: '#1e293b' }}
+                >
                     <defs>
                         <filter id="glow-hover" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur stdDeviation="2" result="coloredBlur" />
@@ -189,67 +288,73 @@ export default function MapGame() {
                         </filter>
                     </defs>
 
-                    {/* AFRICA COASTLINE (DECORATIVE CONTEXT) */}
-                    {/* Simplified path passing near Ceuta (185,538) and Melilla (321,580) */}
-                    <path
-                        d="M0,580 L80,565 L140,550 L165,542 L180,540 L195,545 L220,555 L280,565 L315,575 L325,582 L340,585 L400,580 L700,550 V700 H0 Z"
-                        className="fill-white/5 stroke-white/10 stroke-1 pointer-events-none"
-                    />
+                    {/* Transform Group */}
+                    <g
+                        transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
+                        style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
+                    >
 
-                    {/* CANARY ISLANDS INSET (Dashed Box) */}
-                    <rect
-                        x="465" y="440" width="205" height="75"
-                        className="fill-none stroke-white/20 stroke-1 pointer-events-none"
-                        rx="2"
-                        strokeDasharray="3 3"
-                    />
+                        {/* AFRICA COASTLINE (DECORATIVE CONTEXT) */}
+                        <path
+                            d="M0,580 L80,565 L140,550 L165,542 L180,540 L195,545 L220,555 L280,565 L315,575 L325,582 L340,585 L400,580 L700,550 V700 H0 Z"
+                            className="fill-white/5 stroke-white/10 stroke-1 pointer-events-none"
+                        />
 
-                    {/* Render Provinces */}
-                    {Object.entries(SPANISH_PROVINCES_PATHS).map(([id, paths]) => {
-                        const isTarget = targetId === id;
-                        const isClicked = clickedId === id;
+                        {/* CANARY ISLANDS INSET FRAME */}
+                        <rect
+                            x="465" y="440" width="205" height="75"
+                            className="fill-none stroke-white/10 stroke-1 pointer-events-none stroke-dasharray-2 2"
+                            rx="4"
+                        />
 
-                        // Dynamic class logic
-                        let fillClass = "fill-slate-700/80";
-                        let strokeClass = "stroke-slate-800 stroke-[0.5]";
-                        let zIndex = 0;
+                        {/* Render Provinces */}
+                        {Object.entries(SPANISH_PROVINCES_PATHS).map(([id, paths]) => {
+                            const isTarget = targetId === id;
+                            const isClicked = clickedId === id;
 
-                        if (gameState === 'playing') {
-                            fillClass = "fill-slate-700 hover:fill-teal-500/50 cursor-pointer transition-colors duration-150";
+                            let fillClass = "fill-slate-700/80";
+                            let strokeClass = "stroke-slate-800 stroke-[0.5]";
 
-                            if (isClicked) {
-                                zIndex = 10;
-                                strokeClass = "stroke-white stroke-1";
-                                if (isTarget) fillClass = "fill-green-500 animate-pulse"; // Correct
-                                else fillClass = "fill-red-500"; // Incorrect
+                            if (gameState === 'playing') {
+                                fillClass = "fill-slate-700 hover:fill-teal-500/50 cursor-pointer transition-colors duration-150";
+
+                                if (isClicked) {
+                                    strokeClass = "stroke-white stroke-1";
+                                    if (isTarget) fillClass = "fill-green-500 animate-pulse";
+                                    else fillClass = "fill-red-500";
+                                }
                             }
-                        }
 
-                        // We wrap in a group to handle events on the whole province
-                        return (
-                            <g
-                                key={id}
-                                onClick={() => handleRegionClick(id)}
-                                style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
-                            >
-                                {paths.map((d, i) => (
-                                    <motion.path
-                                        key={i}
-                                        d={d}
-                                        className={cn(strokeClass, fillClass)}
-                                        initial={false}
-                                        animate={
-                                            (isClicked && isTarget) ? { scale: 1.02 } : {}
-                                        }
-                                        style={{ transformOrigin: 'center' }}
-                                    />
-                                ))}
-                            </g>
-                        );
-                    })}
+                            return (
+                                <g
+                                    key={id}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        // Only trigger if we weren't just dragging
+                                        if (isClick.current) handleRegionClick(id);
+                                    }}
+                                    className="pointer-events-auto"
+                                >
+                                    {paths.map((d, i) => (
+                                        <path
+                                            key={i}
+                                            d={d}
+                                            className={cn(strokeClass, fillClass)}
+                                            style={{ transformOrigin: 'center' }}
+                                        />
+                                    ))}
+                                </g>
+                            );
+                        })}
+                    </g>
                 </svg>
 
             </div>
+
+            <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
+                <HelpCircle className="w-3 h-3" />
+                <span>Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.</span>
+            </p>
         </div>
     );
 }
