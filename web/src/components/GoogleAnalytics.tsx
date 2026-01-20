@@ -1,7 +1,7 @@
 'use client';
 
+import { GoogleAnalytics as NextGoogleAnalytics } from '@next/third-parties/google';
 import { usePathname, useSearchParams } from 'next/navigation';
-import Script from 'next/script';
 import { useEffect, useState } from 'react';
 
 // Define the GA ID
@@ -14,75 +14,37 @@ export default function GoogleAnalytics() {
 
     useEffect(() => {
         // Check local storage for consent
-        const consent = localStorage.getItem('cookie-consent');
-        if (consent === 'accepted') {
-            setConsentGiven(true);
-        }
-
-        // Listen for storage events in case consent is updated in another component
-        const handleStorageChange = () => {
-            if (localStorage.getItem('cookie-consent') === 'accepted') {
+        const checkConsent = () => {
+            const consent = localStorage.getItem('cookie-consent');
+            if (consent === 'accepted') {
                 setConsentGiven(true);
             }
         };
 
-        window.addEventListener('storage', handleStorageChange);
+        checkConsent();
+
+        // Listen for storage events in case consent is updated in another component
+        window.addEventListener('storage', checkConsent);
         // Custom event for same-window updates
-        window.addEventListener('cookie-consent-updated', handleStorageChange);
+        window.addEventListener('cookie-consent-updated', checkConsent);
 
         return () => {
-            window.removeEventListener('storage', handleStorageChange);
-            window.removeEventListener('cookie-consent-updated', handleStorageChange);
+            window.removeEventListener('storage', checkConsent);
+            window.removeEventListener('cookie-consent-updated', checkConsent);
         };
     }, []);
 
     useEffect(() => {
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-            // Send page view on route change
-            const url = pathname + searchParams.toString();
-            (window as any).gtag('config', GA_ID, {
-                page_path: url,
-            });
-        }
+        // Manually trigger pageview if needed, but @next/third-parties handles basic tracking.
+        // However, we want to ensure config is sent upon PageView in Next.js App Router.
+        // The GoogleAnalytics component from @next/third-parties AUTOMATICALLY handles pathname changes.
+        // We just need to render it.
     }, [pathname, searchParams]);
 
-    // If we want to strictly block loading until consent, we can condition the script.
-    // However, Consent Mode v2 prefers loading the script with "denied" consent by default.
-    // For simplicity and strict GDPR compliance without complex setup, we will just 
-    // load the script ONLY when consent is given OR if we assume implicit consent isn't allowed.
-    // Given the user wants it to "work", we'll implement the standard approach:
-    // Load script, but you can wrap it in consent check if desired. 
-    //
-    // BUT usually "Not working" means "Not navigating". 
-    // The previous implementation WAS loading the script, so simple tracking should have worked.
-    // The missing piece for Next.js is the pageview trigger on navigation.
-
-    // Only load GA if consent is strictly given
+    // Render nothing if consent is not given.
     if (!consentGiven) {
         return null;
     }
 
-    return (
-        <>
-            <Script
-                src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-                strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-                {`
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag('js', new Date());
-
-                    gtag('consent', 'default', {
-                        'analytics_storage': 'granted'
-                    });
-
-                    gtag('config', '${GA_ID}', {
-                        page_path: window.location.pathname,
-                    });
-                `}
-            </Script>
-        </>
-    );
+    return <NextGoogleAnalytics gaId={GA_ID} />;
 }
