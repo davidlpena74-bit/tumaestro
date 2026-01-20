@@ -57,6 +57,8 @@ export default function RootLayout({
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
+          onLoad={() => console.log('GA Script Loaded Successfully')}
+          onError={(e) => console.error('GA Script Failed to Load', e)}
         />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
