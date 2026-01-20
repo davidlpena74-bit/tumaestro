@@ -294,13 +294,14 @@ export default function EuropeGame() {
                                                 : isPlayable
                                                     ? '#ffffff' // White (Pending)
                                                     : '#1e293b', // Dark background-like
-                                            opacity: 1
+                                            opacity: 1,
+                                            scale: 1,
+                                            filter: "none"
                                         }}
                                         whileHover={isPlayable && !isCompleted ? {
                                             fill: '#bae6fd', // Light Blue Hover (sky-200)
                                             scale: 1.02,
-                                            filter: "drop-shadow(4px 6px 6px rgba(0,0,0,0.5))", // diagonal 3D shadow
-                                            zIndex: 10, // Attempt to bring to front (SVG z-index is order based, but filter helps visual pop)
+                                            filter: "drop-shadow(3px 5px 4px rgba(0,0,0,0.4))", // A bit softer shadow to avoid harsh artifacts
                                             transition: { duration: 0.1 }
                                         } : {}}
                                         onMouseDown={(e: any) => e.stopPropagation()} // Stop pan drag starting on country? No, allow picking
@@ -310,7 +311,7 @@ export default function EuropeGame() {
                                             e.stopPropagation(); // prevent map pan click triggers if any
                                             handleCountryClick(engName)
                                         }}
-                                        style={{ transformOrigin: 'center' }}
+                                        style={{ transformOrigin: 'center', transformBox: 'fill-box' }} // Essential for correct scaling center
                                     >
                                         <title>{spanishName || engName}</title>
                                     </motion.path>
