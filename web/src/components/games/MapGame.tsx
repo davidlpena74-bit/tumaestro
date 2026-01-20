@@ -223,8 +223,40 @@ export default function MapGame() {
                 onMouseLeave={handleMouseUp}
             >
 
+                {/* Fullscreen HUD Overlay */}
+                {isFullscreen && (
+                    <div className="absolute top-0 left-0 right-0 z-20 bg-slate-900/90 backdrop-blur-md border-b border-white/10 p-4 flex justify-between items-center shadow-2xl animate-in slide-in-from-top duration-300">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-teal-500/20 p-2 rounded-lg">
+                                <Trophy className="text-teal-400 w-6 h-6" />
+                            </div>
+                            <div>
+                                <span className="text-xs text-teal-300 font-bold uppercase block">Puntos</span>
+                                <span className="text-2xl font-black text-white">{score}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-center">
+                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Encuentra</span>
+                            <span className="text-3xl font-black text-yellow-400 drop-shadow-sm animate-pulse truncate max-w-[400px]">
+                                {PROVINCE_NAMES[targetId!] || '...'}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-4 text-right">
+                            <div className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-xl transition-colors font-mono font-bold text-xl border",
+                                timeLeft < 15 ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse" : "bg-slate-800 border-white/5 text-teal-400"
+                            )}>
+                                <Timer className="w-5 h-5" />
+                                {timeLeft}s
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* CONTROLS (Zoom/Full) */}
-                <div className="absolute top-4 right-4 flex flex-col gap-2 z-20" onMouseDown={e => e.stopPropagation()}>
+                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
                     <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
                     <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.8))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
                     <div className="h-2" />

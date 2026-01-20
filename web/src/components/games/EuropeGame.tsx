@@ -237,12 +237,41 @@ export default function EuropeGame() {
                 onMouseLeave={handleMouseUp}
             >
 
+                {/* Fullscreen HUD Overlay */}
+                {isFullscreen && (
+                    <div className="absolute top-0 left-0 right-0 z-20 bg-slate-900/90 backdrop-blur-md border-b border-white/10 p-4 flex justify-between items-center shadow-2xl animate-in slide-in-from-top duration-300">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-blue-500/20 p-2 rounded-lg">
+                                <Globe className="text-blue-400 w-6 h-6" />
+                            </div>
+                            <div>
+                                <span className="text-xs text-blue-300 font-bold uppercase block">Puntos</span>
+                                <span className="text-2xl font-black text-white">{score}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-center">
+                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Encuentra</span>
+                            <span className="text-3xl font-black text-yellow-400 drop-shadow-sm animate-pulse">
+                                {targetCountry}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-4 text-right">
+                            <div>
+                                <span className="text-xs text-red-300 font-bold uppercase block">Fallos</span>
+                                <span className="text-2xl font-black text-red-400">{errors}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Controls: Zoom & Fullscreen */}
-                <div className="absolute top-4 right-4 flex flex-col gap-2 z-10" onMouseDown={e => e.stopPropagation()}>
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors"><ZoomIn className="w-5 h-5" /></button>
-                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors"><ZoomOut className="w-5 h-5" /></button>
+                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
                     <div className="h-2" />
-                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors">
+                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
                         {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                     </button>
                 </div>
