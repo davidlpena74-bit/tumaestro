@@ -57,6 +57,11 @@ export default function GoogleAnalytics() {
     // The previous implementation WAS loading the script, so simple tracking should have worked.
     // The missing piece for Next.js is the pageview trigger on navigation.
 
+    // Only load GA if consent is strictly given
+    if (!consentGiven) {
+        return null;
+    }
+
     return (
         <>
             <Script
@@ -69,10 +74,9 @@ export default function GoogleAnalytics() {
                     function gtag(){dataLayer.push(arguments);}
                     gtag('js', new Date());
 
-                    // Default consent to denied if not already accepted
-                    // gtag('consent', 'default', {
-                    //     'analytics_storage': 'denied'
-                    // });
+                    gtag('consent', 'default', {
+                        'analytics_storage': 'granted'
+                    });
 
                     gtag('config', '${GA_ID}', {
                         page_path: window.location.pathname,
