@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   // Debug GA
   if (typeof window !== 'undefined') {
-    console.log('TuMaestro GA ID:', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-DMBKGQVTEE');
+    console.log('TuMaestro GA ID:', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-D9YEL7YQ1W');
   }
 
   return (
@@ -50,7 +50,7 @@ export default function RootLayout({
         <Header />
         {children}
         <CookieConsent />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-DMBKGQVTEE'} />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-D9YEL7YQ1W'} />
       </body>
     </html>
   );
