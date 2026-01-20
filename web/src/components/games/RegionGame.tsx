@@ -57,7 +57,7 @@ export default function RegionGame() {
         setScore(0);
         setTimeLeft(60);
         pickNewTarget();
-        setMessage({ text: '¡Busca la Comunidad!', type: 'neutral' });
+        setMessage({ text: '', type: 'neutral' });
     };
 
     const pickNewTarget = () => {

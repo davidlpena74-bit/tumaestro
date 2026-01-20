@@ -123,7 +123,7 @@ export default function EuropeGame() {
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);
         const next = currentRemaining[randomIndex];
         setTargetCountry(next);
-        setMessage(`Encuentra: ${next}`);
+        // setMessage(`Encuentra: ${next}`); // Removed initial message box
     };
 
     const handleCountryClick = (engName: string) => {
