@@ -130,7 +130,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
 
           {/* SECCIÓN PROFESORES */}
-          <div id="profesores" className="scroll-mt-32 mb-24">
+          <div id="profesores" className="scroll-mt-32 mb-24 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
             <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4">
               <div>
                 <h2 className="text-3xl font-bold text-white drop-shadow-md">Profesores Destacados</h2>
