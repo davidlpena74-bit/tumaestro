@@ -296,13 +296,14 @@ export default function EuropeGame() {
                                                     : '#1e293b', // Dark background-like
                                             opacity: 1,
                                             scale: 1,
-                                            filter: "none"
+                                            // Animate to transparent shadow instead of 'none' to allow smooth transition/clearing
+                                            filter: "drop-shadow(0px 0px 0px rgba(0,0,0,0))"
                                         }}
                                         whileHover={isPlayable && !isCompleted ? {
                                             fill: '#bae6fd', // Light Blue Hover (sky-200)
                                             scale: 1.02,
-                                            filter: "drop-shadow(3px 5px 4px rgba(0,0,0,0.4))", // A bit softer shadow to avoid harsh artifacts
-                                            transition: { duration: 0.1 }
+                                            filter: "drop-shadow(3px 5px 4px rgba(0,0,0,0.5))",
+                                            transition: { duration: 0.2 }
                                         } : {}}
                                         onMouseDown={(e: any) => e.stopPropagation()} // Stop pan drag starting on country? No, allow picking
                                         // We handle click in parent context or here?
