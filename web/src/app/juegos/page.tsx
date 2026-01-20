@@ -47,6 +47,14 @@ const categories: Category[] = [
                 href: '/juegos/mapa-europa',
                 icon: Globe,
                 color: 'from-blue-500 to-indigo-500',
+            },
+            {
+                id: 'rios',
+                title: 'Ríos de España',
+                description: 'Identifica los principales ríos de la península.',
+                href: '/juegos/mapa-rios',
+                icon: Map, // Or another icon like Wine/Waves but Map is fine or we can import Waves from lucide
+                color: 'from-cyan-500 to-blue-600',
             }
         ]
     },
