@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Map, BrainCircuit, ArrowRight, Sparkles, Trophy, MapPin, Calculator } from 'lucide-react';
+import { Map, BrainCircuit, ArrowRight, Sparkles, Trophy, MapPin, Calculator, Globe } from 'lucide-react';
 
 const games = [
     {
@@ -40,6 +40,15 @@ const games = [
         icon: Calculator,
         color: 'from-orange-500 to-yellow-500',
         bg: 'bg-orange-950/30'
+    },
+    {
+        id: 'europe',
+        title: 'Mapa de Europa',
+        description: 'Localiza los principales países del continente europeo.',
+        href: '/juegos/mapa-europa',
+        icon: Globe,
+        color: 'from-blue-500 to-indigo-500',
+        bg: 'bg-blue-950/30'
     }
 ];
 
