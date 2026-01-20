@@ -1,0 +1,32 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad_cap" x1="128" y1="20" x2="128" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#334155" />
+      <stop offset="1" stop-color="#0F172A" />
+    </linearGradient>
+    <filter id="shadow_cap" x="-20" y="-20" width="300" height="300" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  
+  <g filter="url(#shadow_cap)">
+    <!-- Cap Board (Diamond) -->
+    <path d="M128 40 L220 90 L128 140 L36 90 Z" fill="url(#grad_cap)"/>
+    <path d="M128 40 L220 90 L128 140 L36 90 Z" fill="white" fill-opacity="0.1"/> <!-- Highlight -->
+    
+    <!-- Cap Skullcap -->
+    <path d="M190 106 V 160 C 190 180, 66 180, 66 160 V 106" fill="#1E293B"/>
+    
+    <!-- Tassel String -->
+    <circle cx="128" cy="90" r="6" fill="#FBBF24"/>
+    <line x1="128" y1="90" x2="200" y2="150" stroke="#FBBF24" stroke-width="4"/>
+    
+    <!-- Tassel Fringes -->
+    <circle cx="200" cy="150" r="6" fill="#FBBF24"/>
+    <path d="M200 150 L190 190 L210 190 Z" fill="#F59E0B"/>
+    <line x1="200" y1="150" x2="190" y2="190" stroke="#FBBF24" stroke-width="2"/>
+    <line x1="200" y1="150" x2="196" y2="190" stroke="#FBBF24" stroke-width="2"/>
+    <line x1="200" y1="150" x2="204" y2="190" stroke="#FBBF24" stroke-width="2"/>
+    <line x1="200" y1="150" x2="210" y2="190" stroke="#FBBF24" stroke-width="2"/>
+  </g>
+</svg>

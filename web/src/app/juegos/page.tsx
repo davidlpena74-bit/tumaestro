@@ -36,7 +36,17 @@ const games = [
 
 export default function GamesHubPage() {
     return (
-        <main className="min-h-screen bg-slate-950 text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
+        <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
+            {/* Background Image with Blur & Overlay */}
+            <div className="fixed inset-0 w-full h-full z-0">
+                <div className="absolute inset-0 bg-black/50 z-10" />
+                <img
+                    src="/fondo.jpg"
+                    className="w-full h-full object-cover blur-sm scale-105"
+                    alt="Fondo"
+                />
+            </div>
+
             {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[100px]" />
@@ -45,19 +55,11 @@ export default function GamesHubPage() {
 
             <div className="max-w-7xl mx-auto relative z-10">
                 <header className="mb-16 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6"
-                    >
-                        <Sparkles className="w-4 h-4 text-yellow-400" />
-                        <span className="text-sm font-medium text-gray-300">Zona de Juegos Interactivos</span>
-                    </motion.div>
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-8 leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500 pb-2"
+                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-white pb-2"
                     >
                         Aprende Jugando
                     </motion.h1>

@@ -3,8 +3,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import CarouselAutoScroll from '@/components/CarouselAutoScroll';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [courses, setCourses] = useState<any[]>([]);
 
   useEffect(() => {
@@ -53,23 +56,12 @@ export default function Home() {
 
           {/* OPCIÓN A: PROFESORES */}
           <div
-            onClick={() => scrollTo('profesores')}
-            className="group bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl cursor-pointer hover:bg-white/20 hover:scale-[1.02] transition-all duration-300 text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+            onClick={() => window.location.href = '/profesores'}
+            className="group bg-white/30 backdrop-blur-md border border-white/40 p-8 rounded-2xl cursor-pointer hover:bg-white/40 hover:scale-[1.02] transition-all duration-300 text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
           >
             {/* Icono Watermark Background */}
-            <div className="text-white/80 mb-6 transition duration-500 group-hover:scale-110 group-hover:text-teal-200 drop-shadow-2xl">
-              <svg width="128" height="128" viewBox="0 0 100 100" fill="none">
-                {/* Sombra suave */}
-                <ellipse cx="50" cy="80" rx="30" ry="5" fill="black" opacity="0.3" filter="blur(3px)" />
-                {/* Base */}
-                <path d="M25 55 L25 65 C25 75, 75 75, 75 65 L75 55" fill="currentColor" opacity="0.8" />
-                {/* Tapa */}
-                <path d="M10 45 L50 25 L90 45 L50 65 Z" fill="currentColor" stroke="currentColor" strokeWidth="1" />
-                {/* Borla (Color fijo dorado para destacar) */}
-                <path d="M50 45 Q 85 55, 85 65" stroke="#fbbf24" strokeWidth="3" fill="none" strokeLinecap="round" />
-                <circle cx="85" cy="65" r="3" fill="#fbbf24" />
-                <path d="M85 65 L 82 85 L 88 85 Z" fill="#fbbf24" />
-              </svg>
+            <div className="mb-6 transition duration-500 group-hover:scale-110 drop-shadow-2xl">
+              <img src="/icons/mortarboard.svg" className="w-32 h-32 object-contain" alt="Profesores" />
             </div>
 
             <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-md z-10">Busco Profesor</h2>
@@ -83,21 +75,12 @@ export default function Home() {
 
           {/* OPCIÓN B: MATERIAL DIDÁCTICO */}
           <div
-            onClick={() => scrollTo('material')}
-            className="group bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl cursor-pointer hover:bg-white/20 hover:scale-[1.02] transition-all duration-300 text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+            onClick={() => router.push('/recursos')}
+            className="group bg-white/30 backdrop-blur-md border border-white/40 p-8 rounded-2xl cursor-pointer hover:bg-white/40 hover:scale-[1.02] transition-all duration-300 text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
           >
             {/* Icono Watermark Background */}
-            <div className="text-white/80 mb-6 transition duration-500 group-hover:scale-110 group-hover:text-orange-200 drop-shadow-2xl">
-              <svg width="128" height="128" viewBox="0 0 100 100" fill="none">
-                {/* Sombra base */}
-                <ellipse cx="55" cy="90" rx="25" ry="4" fill="black" opacity="0.3" filter="blur(3px)" />
-                {/* Páginas (Bloque) */}
-                <path d="M30 20 L70 20 L80 30 L40 30 Z" fill="white" opacity="0.9" />
-                {/* Tapa Frontal */}
-                <path d="M30 30 L80 30 L80 85 L30 85 Z" fill="currentColor" />
-                {/* Lomo */}
-                <path d="M20 20 L30 30 L30 85 L20 75 Z" fill="currentColor" opacity="0.7" />
-              </svg>
+            <div className="mb-6 transition duration-500 group-hover:scale-110 drop-shadow-2xl">
+              <img src="/icons/library.svg" className="w-32 h-32 object-contain" alt="Recursos" />
             </div>
 
             <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-md z-10">Material Didáctico</h2>
@@ -111,12 +94,7 @@ export default function Home() {
 
         </div>
 
-        {/* Enlace a Demo 3D */}
-        <div className="mt-8 z-10">
-          <a href="/demo-3d" className="text-white/70 hover:text-white underline text-sm">
-            Probar Demo Gráficos 3D (Spline)
-          </a>
-        </div>
+
 
         {/* Flecha */}
         <div className="absolute bottom-8 animate-bounce text-white/50 cursor-pointer" onClick={() => scrollTo('profesores')}>
@@ -125,22 +103,27 @@ export default function Home() {
       </div>
 
       {/* 4. CONTENIDO (Ultra Glassmorphism) */}
-      <div className="relative z-20 bg-white/20 backdrop-blur-3xl min-h-screen rounded-t-[3rem] px-6 py-20 -mt-10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.5)] border-t border-white/20">
+      <div className="relative z-20 min-h-screen px-6 py-20">
 
         <div className="max-w-7xl mx-auto">
 
           {/* SECCIÓN PROFESORES */}
-          <div id="profesores" className="scroll-mt-32 mb-24 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
-            <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4">
-              <div>
-                <h2 className="text-3xl font-bold text-white drop-shadow-md">Profesores Destacados</h2>
-                <p className="text-gray-100 mt-1 font-medium drop-shadow-sm">Clases particulares a tu medida</p>
+          <section className="w-full max-w-6xl mx-auto px-4 mb-24">
+            <div id="profesores" className="scroll-mt-32 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
+              <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4">
+                <div>
+                  <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-4">Profesores Destacados</h2>
+                  <p className="text-gray-300 text-lg leading-relaxed">Clases particulares a tu medida</p>
+                </div>
+                <a href="/profesores" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 hover:-translate-y-1 transition-all group">
+                  Ver todos
+                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                </a>
               </div>
-              <button className="text-white font-bold hover:underline drop-shadow-sm">Ver todos →</button>
-            </div>
 
-            <CarouselAutoScroll />
-          </div>
+              <CarouselAutoScroll />
+            </div>
+          </section>
 
           {/* SECCIÓN MATERIAL DIDÁCTICO (NUEVA) */}
           {/* RECURSOS SECTION (PREMIUM) */}
@@ -177,18 +160,20 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-bl from-blue-400 to-orange-500 rounded-full dark:opacity-20 opacity-30 blur-3xl animate-pulse" />
                   <div className="relative z-10 grid grid-cols-2 gap-4 -rotate-3 hover:rotate-0 transition-transform duration-500">
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                      <svg className="w-10 h-10 text-orange-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                      <img src="/icons/language.svg" className="w-16 h-16 mb-2" alt="Lengua" />
                       <span className="text-xs font-bold text-white">Lengua</span>
                     </div>
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl mt-8">
-                      <svg className="w-10 h-10 text-blue-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                      <img src="/icons/math.svg" className="w-16 h-16 mb-2" alt="Mates" />
                       <span className="text-xs font-bold text-white">Mates</span>
                     </div>
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl -mt-8">
-                      <span className="text-2xl">📚</span>
+                      <img src="/icons/english.svg" className="w-16 h-16 mb-2" alt="Inglés" />
+                      <span className="text-xs font-bold text-white">Inglés</span>
                     </div>
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                      <span className="text-2xl">🎓</span>
+                      <img src="/icons/geography.svg" className="w-16 h-16 mb-2" alt="Geografía" />
+                      <span className="text-xs font-bold text-white">Geografía</span>
                     </div>
                   </div>
                 </div>
@@ -231,18 +216,20 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-purple-500 rounded-full dark:opacity-20 opacity-30 blur-3xl animate-pulse" />
                   <div className="relative z-10 grid grid-cols-2 gap-4 rotate-3 hover:rotate-0 transition-transform duration-500">
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                      <svg className="w-10 h-10 text-teal-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <img src="/icons/game-map.svg" className="w-16 h-16 mb-2" alt="Mapa" />
                       <span className="text-xs font-bold text-white">Mapa</span>
                     </div>
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl mt-8">
-                      <svg className="w-10 h-10 text-purple-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                      <img src="/icons/game-quiz.svg" className="w-16 h-16 mb-2" alt="Quiz" />
                       <span className="text-xs font-bold text-white">Quiz</span>
                     </div>
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl -mt-8">
-                      <span className="text-2xl">🏆</span>
+                      <img src="/icons/game-trophy.svg" className="w-16 h-16 mb-2" alt="Ranking" />
+                      <span className="text-xs font-bold text-white">Ranking</span>
                     </div>
                     <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                      <span className="text-2xl">⚡</span>
+                      <img src="/icons/game-controller.svg" className="w-16 h-16 mb-2" alt="Jugar" />
+                      <span className="text-xs font-bold text-white">Jugar</span>
                     </div>
                   </div>
                 </div>

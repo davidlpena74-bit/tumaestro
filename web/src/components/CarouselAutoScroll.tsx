@@ -70,33 +70,33 @@ export default function CarouselAutoScroll() {
             onMouseLeave={() => setIsPaused(false)}
         >
             {displayCourses.map((course, index) => (
-                <div key={`${course.id}-${index}`} className="min-w-[280px] w-[280px] inline-block bg-white/40 backdrop-blur-md rounded-xl shadow-lg hover:shadow-xl transition group overflow-hidden border border-white/30 hover:bg-white/60 whitespace-normal text-left">
-                    <div className="h-48 bg-white/30 flex items-center justify-center relative group-hover:bg-teal-900/10 transition duration-500">
+                <div key={`${course.id}-${index}`} className="min-w-[240px] w-[240px] inline-block bg-white/30 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-xl transition group overflow-hidden border border-white/40 hover:bg-white/40 whitespace-normal text-left">
+                    <div className="h-24 bg-white/30 flex items-center justify-center relative group-hover:bg-teal-900/10 transition duration-500">
                         {/* Avatar por Iniciales */}
-                        <div className="w-24 h-24 rounded-full bg-teal-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg transform group-hover:scale-110 transition duration-500 border-4 border-white/30">
+                        <div className="w-14 h-14 rounded-full bg-teal-600 flex items-center justify-center text-white text-xl font-bold shadow-lg transform group-hover:scale-110 transition duration-500 border-2 border-white/30">
                             {course.teacher?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'TM'}
                         </div>
 
-                        <div className="absolute top-3 left-3 bg-black/40 px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm border border-white/20 backdrop-blur-sm">
+                        <div className="absolute top-2 left-2 bg-black/40 px-2 py-0.5 rounded-full text-[10px] font-bold text-white shadow-sm border border-white/20 backdrop-blur-sm">
                             {course.subject?.name}
                         </div>
 
                         {/* Icono de Materia Transparente */}
-                        <div className="absolute top-3 right-3 text-white/20 transform scale-150 rotate-12">
-                            {getSubjectIcon(course.subject?.name)}
+                        <div className="absolute top-2 right-2 text-white/20 transform scale-110 rotate-12">
+                            {<div className="scale-75 origin-top-right">{getSubjectIcon(course.subject?.name)}</div>}
                         </div>
                     </div>
-                    <div className="p-5">
-                        <h3 className="font-bold text-lg text-gray-900 mb-0.5 drop-shadow-sm truncate">{course.teacher?.full_name}</h3>
+                    <div className="p-3">
+                        <h3 className="font-bold text-md text-gray-900 mb-0.5 drop-shadow-sm truncate">{course.teacher?.full_name}</h3>
                         {/* Estrellas Mock */}
-                        <div className="flex items-center gap-1 mb-3">
-                            <span className="text-yellow-400 text-sm drop-shadow-sm">★★★★★</span>
-                            <span className="text-gray-800 text-xs font-bold">(NUEVO)</span>
+                        <div className="flex items-center gap-1 mb-2">
+                            <span className="text-yellow-400 text-xs drop-shadow-sm">★★★★★</span>
+                            <span className="text-gray-800 text-[10px] font-bold">(NUEVO)</span>
                         </div>
-                        <p className="text-gray-800 text-sm line-clamp-2 mb-4 font-medium h-10 leading-tight">{course.title}</p>
-                        <div className="flex justify-between items-center pt-4 border-t border-gray-900/10">
-                            <span className="font-bold text-xl text-gray-900">{course.price_per_hour}€</span>
-                            <button className="text-teal-900 font-bold text-sm bg-white/50 px-3 py-1.5 rounded-lg hover:bg-white/80 transition border border-white/40 shadow-sm">Perfil</button>
+                        <p className="text-gray-800 text-xs line-clamp-2 mb-2 font-medium leading-tight h-8">{course.title}</p>
+                        <div className="flex justify-between items-center pt-2 border-t border-gray-900/10">
+                            <span className="font-bold text-lg text-gray-900">{course.price_per_hour}€</span>
+                            <button className="text-teal-900 font-bold text-xs bg-white/50 px-2.5 py-1 rounded-lg hover:bg-white/80 transition border border-white/40 shadow-sm">Perfil</button>
                         </div>
                     </div>
                 </div>
