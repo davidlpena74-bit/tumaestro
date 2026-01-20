@@ -2,43 +2,66 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, RotateCcw, Loader2, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
+import { Trophy, Globe, RotateCcw, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import * as d3 from 'd3-geo';
-import * as topojson from 'topojson-client';
+import { EUROPE_PATHS } from './data/europe-paths';
 
-// Mapping from GeoJSON English names to Game Spanish IDs/Names
+// Expanded Mapping for all 50 generated countries
 const COUNTRY_MAPPING: Record<string, string> = {
-    'Spain': 'España',
-    'Portugal': 'Portugal',
-    'France': 'Francia',
-    'Italy': 'Italia',
-    'Germany': 'Alemania',
-    'United Kingdom': 'Reino Unido',
-    'Ireland': 'Irlanda',
-    'Poland': 'Polonia',
-    'Ukraine': 'Ucrania',
-    'Romania': 'Rumanía',
-    'Greece': 'Grecia',
-    'Sweden': 'Suecia',
-    'Norway': 'Noruega',
-    'Finland': 'Finlandia',
-    'Switzerland': 'Suiza',
+    'Albania': 'Albania',
+    'Andorra': 'Andorra',
+    'Armenia': 'Armenia',
     'Austria': 'Austria',
-    'Netherlands': 'Países Bajos',
+    'Azerbaijan': 'Azerbaiyán',
+    'Belarus': 'Bielorrusia',
     'Belgium': 'Bélgica',
+    'Bosnia and Herz.': 'Bosnia y Herzegovina',
+    'Bulgaria': 'Bulgaria',
+    'Croatia': 'Croacia',
+    'Cyprus': 'Chipre',
+    'Czechia': 'República Checa',
     'Denmark': 'Dinamarca',
-    'Czech Rep.': 'República Checa',
-    'Hungary': 'Hungría'
+    'Estonia': 'Estonia',
+    'Finland': 'Finlandia',
+    'France': 'Francia',
+    'Georgia': 'Georgia',
+    'Germany': 'Alemania',
+    'Greece': 'Grecia',
+    'Hungary': 'Hungría',
+    'Iceland': 'Islandia',
+    'Ireland': 'Irlanda',
+    'Italy': 'Italia',
+    'Kazakhstan': 'Kazajistán',
+    'Kosovo': 'Kosovo',
+    'Latvia': 'Letonia',
+    'Liechtenstein': 'Liechtenstein',
+    'Lithuania': 'Lituania',
+    'Luxembourg': 'Luxemburgo',
+    'Malta': 'Malta',
+    'Moldova': 'Moldavia',
+    'Monaco': 'Mónaco',
+    'Montenegro': 'Montenegro',
+    'Netherlands': 'Países Bajos',
+    'North Macedonia': 'Macedonia del Norte',
+    'Norway': 'Noruega',
+    'Poland': 'Polonia',
+    'Portugal': 'Portugal',
+    'Romania': 'Rumanía',
+    'Russia': 'Rusia',
+    'San Marino': 'San Marino',
+    'Serbia': 'Serbia',
+    'Slovakia': 'Eslovaquia',
+    'Slovenia': 'Eslovenia',
+    'Spain': 'España',
+    'Sweden': 'Suecia',
+    'Switzerland': 'Suiza',
+    'Turkey': 'Turquía',
+    'Ukraine': 'Ucrania',
+    'United Kingdom': 'Reino Unido',
+    'Vatican': 'Vaticano'
 };
 
-const REVERSE_MAPPING = Object.entries(COUNTRY_MAPPING).reduce((acc, [eng, esp]) => {
-    acc[esp] = eng;
-    return acc;
-}, {} as Record<string, string>);
-
 export default function EuropeGame() {
-    const [geography, setGeography] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [targetCountry, setTargetCountry] = useState('');
     const [score, setScore] = useState(0);
@@ -47,20 +70,33 @@ export default function EuropeGame() {
     const [message, setMessage] = useState('');
 
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
+
+    // Zoom state
     const [zoom, setZoom] = useState(1);
+    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const dragStart = useRef({ x: 0, y: 0 });
+
     const [isFullscreen, setIsFullscreen] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
-    // Initial Map Scale based on container width would be ideal, but fixed is fine for now
-    // D3 Projection
-    const projection = useMemo(() => {
-        // Adjust center/scale to fit Europe nicely
-        return d3.geoMercator()
-            .center([10, 50]) // Adjusted center slightly
-            .scale(550 * zoom)
-            .translate([400, 300]); // SVG dimensions / 2
-    }, [zoom]);
+    // Initialize Game Data
+    useEffect(() => {
+        // Prepare list of playable countries
+        const available = Object.keys(EUROPE_PATHS)
+            .map(engName => COUNTRY_MAPPING[engName])
+            .filter(Boolean); // Remove specific countries if mapping triggers undefined (e.g. invalid keys)
+
+        setRemainingCountries(available);
+        setLoading(false);
+    }, []);
+
+    // Start Selection
+    useEffect(() => {
+        if (!loading && remainingCountries.length > 0 && !targetCountry) {
+            nextTurn(remainingCountries);
+        }
+    }, [loading, remainingCountries, targetCountry]);
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
@@ -77,48 +113,6 @@ export default function EuropeGame() {
         document.addEventListener('fullscreenchange', handleFsChange);
         return () => document.removeEventListener('fullscreenchange', handleFsChange);
     }, []);
-    useEffect(() => {
-        fetch('/maps/world-countries-50m.json')
-            .then(res => res.json())
-            .then(data => {
-                // Parse TopoJSON to GeoJSON features
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const allFeatures = (topojson.feature(data, data.objects.countries) as any).features;
-
-                // Filter only European countries present in our mapping
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const features = allFeatures.filter((f: any) => COUNTRY_MAPPING[f.properties.name]);
-
-                setGeography(features);
-
-                // Initialize game with available mapped countries
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const available = features
-                    .map((f: any) => f.properties.name)
-                    .filter((name: string) => COUNTRY_MAPPING[name])
-                    .map((name: string) => COUNTRY_MAPPING[name]);
-
-                setRemainingCountries(available);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error("Error loading map:", err);
-                setMessage("Error al cargar el mapa. Revisa tu conexión.");
-            });
-    }, []);
-
-    // Set first target when data is ready
-    useEffect(() => {
-        if (!loading && remainingCountries.length > 0 && !targetCountry) {
-            nextTurn(remainingCountries);
-        }
-    }, [loading, remainingCountries]);
-
-
-
-    const pathGenerator = useMemo(() => {
-        return d3.geoPath().projection(projection);
-    }, [projection]);
 
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
@@ -132,11 +126,13 @@ export default function EuropeGame() {
         setMessage(`Encuentra: ${next}`);
     };
 
-    const handleCountryClick = (geoName: string) => {
+    const handleCountryClick = (engName: string) => {
         if (gameState !== 'playing') return;
+        // If dragging, ignore click
+        if (Math.abs(pan.x - dragStart.current.x) > 5 || Math.abs(pan.y - dragStart.current.y) > 5) return;
 
-        const spanishName = COUNTRY_MAPPING[geoName];
-        if (!spanishName) return; // Ignore non-game countries like "Luxembourg" if not in list
+        const spanishName = COUNTRY_MAPPING[engName];
+        if (!spanishName) return;
 
         if (spanishName === targetCountry) {
             // Correct
@@ -155,22 +151,37 @@ export default function EuropeGame() {
     };
 
     const resetGame = () => {
-        if (geography.length === 0) return;
         setScore(0);
         setErrors(0);
-
-        const available = geography
-            .map((f: any) => f.properties.name)
-            .filter((name: string) => COUNTRY_MAPPING[name])
-            .map((name: string) => COUNTRY_MAPPING[name]);
-
+        const available = Object.keys(EUROPE_PATHS)
+            .map(engName => COUNTRY_MAPPING[engName])
+            .filter(Boolean);
         setRemainingCountries(available);
         setGameState('playing');
-        setTargetCountry(''); // Will trigger useEffect to pick new
+        setTargetCountry('');
+    };
+
+    // Mouse event handlers for panning
+    const handleMouseDown = (e: React.MouseEvent) => {
+        setIsDragging(true);
+        // Store initial click + current pan
+        dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging) return;
+        setPan({
+            x: e.clientX - dragStart.current.x,
+            y: e.clientY - dragStart.current.y
+        });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
     };
 
     return (
-        <div className="w-full max-w-5xl mx-auto p-4">
+        <div className="w-full max-w-6xl mx-auto p-4 select-none">
 
             {/* HUD */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-xl gap-4">
@@ -219,12 +230,16 @@ export default function EuropeGame() {
             {/* Map Interaction Layer */}
             <div
                 ref={gameContainerRef}
-                className="relative bg-[#1a2333] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group"
+                className="relative bg-[#1a2333] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
             >
 
                 {/* Controls: Zoom & Fullscreen */}
-                <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 3))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors"><ZoomIn className="w-5 h-5" /></button>
+                <div className="absolute top-4 right-4 flex flex-col gap-2 z-10" onMouseDown={e => e.stopPropagation()}>
+                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors"><ZoomIn className="w-5 h-5" /></button>
                     <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors"><ZoomOut className="w-5 h-5" /></button>
                     <div className="h-2" />
                     <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors">
@@ -232,13 +247,8 @@ export default function EuropeGame() {
                     </button>
                 </div>
 
-                {loading ? (
-                    <div className="flex flex-col items-center gap-4 text-blue-300">
-                        <Loader2 className="w-12 h-12 animate-spin" />
-                        <p className="font-bold">Cargando cartografía...</p>
-                    </div>
-                ) : gameState === 'finished' ? (
-                    <div className="text-center p-8 z-10">
+                {gameState === 'finished' ? (
+                    <div className="text-center p-8 z-10" onMouseDown={e => e.stopPropagation()}>
                         <Trophy className="w-32 h-32 text-yellow-400 mx-auto mb-6 animate-bounce drop-shadow-[0_0_50px_rgba(250,204,21,0.5)]" />
                         <h3 className="text-5xl font-black text-white mb-6">¡Mapa Completado!</h3>
                         <p className="text-2xl text-blue-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
@@ -250,27 +260,31 @@ export default function EuropeGame() {
                         </button>
                     </div>
                 ) : (
-                    <svg viewBox="0 0 800 600" className="w-full h-full">
-                        {/* Ocean background */}
-                        <motion.rect width="800" height="600" fill="#1e293b" />
-
-                        <g>
-                            {geography.map((geo, i) => {
-                                const geoName = geo.properties.name;
-                                const spanishName = COUNTRY_MAPPING[geoName];
+                    <svg
+                        viewBox="0 0 800 600"
+                        className="w-full h-full pointer-events-none" // Events handled by paths
+                        style={{ background: '#1e293b' }}
+                    >
+                        {/* 
+                            Zoom/Pan Group 
+                            Transform origin center is tricky with pan, so we just use plain transform 
+                        */}
+                        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                            {Object.entries(EUROPE_PATHS).map(([engName, pathD]) => {
+                                const spanishName = COUNTRY_MAPPING[engName];
                                 const isTarget = spanishName === targetCountry;
                                 const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                 const isPlayable = !!spanishName;
 
                                 return (
                                     <motion.path
-                                        key={i}
-                                        d={pathGenerator(geo) || undefined}
+                                        key={engName}
+                                        d={pathD}
                                         className={`
-                                            transition-all duration-200 stroke-[0.5px]
+                                            stroke-[0.5px] pointer-events-auto
                                             ${isPlayable
-                                                ? 'cursor-pointer stroke-slate-600 hover:stroke-white hover:stroke-[1.5px]'
-                                                : 'fill-slate-800/50 stroke-slate-800 pointer-events-none'
+                                                ? 'cursor-pointer stroke-slate-500 hover:stroke-white hover:stroke-[1.5px]'
+                                                : 'fill-slate-800/50 stroke-slate-800'
                                             }
                                         `}
                                         initial={false}
@@ -279,7 +293,7 @@ export default function EuropeGame() {
                                                 ? '#10b981' // Green (Done)
                                                 : isPlayable
                                                     ? '#334155' // Slate (Pending)
-                                                    : '#1e293b', // Dark (Not playable)
+                                                    : '#1e293b', // Dark background-like
                                             opacity: 1
                                         }}
                                         whileHover={isPlayable && !isCompleted ? {
@@ -287,9 +301,16 @@ export default function EuropeGame() {
                                             scale: 1.01,
                                             transition: { duration: 0.1 }
                                         } : {}}
-                                        onClick={() => handleCountryClick(geoName)}
+                                        onMouseDown={(e: any) => e.stopPropagation()} // Stop pan drag starting on country? No, allow picking
+                                        // We handle click in parent context or here?
+                                        // Actually better to handle click here but verify "not dragging"
+                                        onClick={(e: any) => {
+                                            e.stopPropagation(); // prevent map pan click triggers if any
+                                            handleCountryClick(engName)
+                                        }}
+                                        style={{ transformOrigin: 'center' }}
                                     >
-                                        <title>{spanishName || geoName}</title>
+                                        <title>{spanishName || engName}</title>
                                     </motion.path>
                                 );
                             })}
@@ -297,7 +318,7 @@ export default function EuropeGame() {
                     </svg>
                 )}
 
-                {/* Feedback Toast - Moved to Top Center to avoid overlap */}
+                {/* Feedback Toast */}
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 pointer-events-none z-20">
                     <AnimatePresence>
                         {message && (
@@ -320,7 +341,7 @@ export default function EuropeGame() {
             </div>
 
             <p className="text-center text-slate-500 mt-6 text-sm">
-                Datos cartográficos reales provistos por Natural Earth.
+                Datos cartográficos optimizados por Map Agent. Fuente: Natural Earth.
             </p>
         </div>
     );
