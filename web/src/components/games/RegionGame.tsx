@@ -225,15 +225,15 @@ export default function RegionGame() {
                         const isClicked = clickedId === id;
 
                         // Dynamic class logic
-                        let fillClass = "fill-slate-700/80";
+                        let fillClass = "fill-white/90";
                         // Note: Using thicker stroke for regions vs provinces
-                        let strokeClass = "stroke-slate-800 stroke-[1.5]";
+                        let strokeClass = "stroke-slate-900 stroke-[1.5]";
 
                         if (gameState === 'playing') {
-                            fillClass = "fill-slate-700 hover:fill-teal-500/50 cursor-pointer transition-colors duration-150";
+                            fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
 
                             if (isClicked) {
-                                strokeClass = "stroke-white stroke-[2]";
+                                strokeClass = "stroke-slate-900 stroke-[2]";
                                 if (isTarget) fillClass = "fill-green-500 animate-pulse";
                                 else fillClass = "fill-red-500";
                             }

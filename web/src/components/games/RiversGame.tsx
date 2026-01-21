@@ -245,13 +245,13 @@ export default function RiversGame() {
                     >
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                             {/* BACKGROUND: SPAIN MAP */}
-                            <g className="opacity-20 pointer-events-none">
+                            <g className="opacity-10 pointer-events-none">
                                 {Object.values(SPANISH_COMMUNITIES_PATHS).flat().map((d: any, i) => (
                                     <path
                                         key={i}
                                         d={d}
-                                        fill="#334155"
-                                        stroke="#475569"
+                                        fill="#ffffff"
+                                        stroke="#cbd5e1"
                                         strokeWidth="1"
                                     />
                                 ))}
