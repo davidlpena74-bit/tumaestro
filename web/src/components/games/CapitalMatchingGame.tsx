@@ -40,8 +40,9 @@ export default function CapitalMatchingGame() {
         const sortedCountries = [...pairs].sort((a, b) => a.country.localeCompare(b.country));
         setCountries(sortedCountries);
 
-        // 3. Set Capitals (Shuffled)
-        setCapitals(shuffle([...pairs]));
+        // 3. Set Capitals (Alphabetical order requested)
+        const sortedCapitals = [...pairs].sort((a, b) => a.capital.localeCompare(b.capital));
+        setCapitals(sortedCapitals);
 
         setMatches({});
         setCompleted(false);
@@ -135,7 +136,7 @@ export default function CapitalMatchingGame() {
                     </button>
                 </motion.div>
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
                     {/* Left Column: Countries (Drop Targets) - Spans 2 cols, internal 2-col grid */}
                     <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
@@ -175,7 +176,7 @@ export default function CapitalMatchingGame() {
                     </div>
 
                     {/* Right Column: Capitals (Draggables) */}
-                    <div>
+                    <div className="lg:col-span-2">
                         <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center sticky top-4 bg-[#0f172a] z-10 py-2">
                             Capitales Dispersas
                         </h3>
