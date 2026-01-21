@@ -135,11 +135,11 @@ export default function CapitalMatchingGame() {
                     </button>
                 </motion.div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    {/* Left Column: Countries (Drop Targets) */}
-                    <div className="space-y-3">
-                        <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center">Países</h3>
+                    {/* Left Column: Countries (Drop Targets) - Spans 2 cols, internal 2-col grid */}
+                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
+                        <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">Países</h3>
                         {countries.map((item) => {
                             const isMatched = !!matches[item.id];
                             return (
