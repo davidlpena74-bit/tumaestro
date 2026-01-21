@@ -327,3 +327,7 @@ export default function RiversGame() {
                         </g>
                     </svg>
                 )}
+            </div>
+        </div>
+    );
+}
