@@ -34,6 +34,7 @@ import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Header from "@/components/Header";
 import { LanguageProvider } from "@/context/LanguageContext";
+import PageBackground from "@/components/PageBackground";
 
 export default function RootLayout({
   children,
@@ -46,6 +47,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LanguageProvider>
+          <PageBackground />
           <Header />
           {children}
           <CookieConsent />

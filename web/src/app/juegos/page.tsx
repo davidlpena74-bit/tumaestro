@@ -134,21 +134,8 @@ export default function GamesHubPage() {
 
     return (
         <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
-            {/* Background Image */}
-            <div className="fixed inset-0 w-full h-full z-0">
-                <div className="absolute inset-0 bg-black/50 z-10" />
-                <img
-                    src="/fondo.jpg"
-                    className="w-full h-full object-cover blur-sm scale-105"
-                    alt="Fondo"
-                />
-            </div>
+            {/* Background handled globally by PageBackground */}
 
-            {/* Background Gradients */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[100px]" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-teal-600/20 rounded-full blur-[100px]" />
-            </div>
 
             <div className="max-w-7xl mx-auto relative z-10">
                 <header className="mb-12 text-center">
