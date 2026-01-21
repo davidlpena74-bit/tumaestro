@@ -260,6 +260,13 @@ export default function CapitalMatchingGame() {
                     <div className="text-4xl font-black text-teal-400">
                         {Object.keys(matches).length} <span className="text-xl text-slate-500">/ {countries.length}</span>
                     </div>
+                    <div className="text-sm font-bold text-teal-300/70 mt-1">
+                        {(() => {
+                            const totalAttempts = Object.keys(matches).length + errors;
+                            const accuracy = totalAttempts > 0 ? Math.round((Object.keys(matches).length / totalAttempts) * 100) : 100;
+                            return `${accuracy}% ${language === 'es' ? 'Precisión' : 'Accuracy'}`;
+                        })()}
+                    </div>
                 </div>
             </div>
 

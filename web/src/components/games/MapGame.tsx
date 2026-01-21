@@ -20,6 +20,9 @@ export default function MapGame() {
     const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'neutral' }>({ text: '', type: 'neutral' });
     const [clickedId, setClickedId] = useState<string | null>(null);
 
+    const [attempts, setAttempts] = useState(0);
+    const [correctCount, setCorrectCount] = useState(0);
+
     // Zoom & Pan State
     const [zoom, setZoom] = useState(1);
     const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -65,6 +68,8 @@ export default function MapGame() {
     const startGame = () => {
         setGameState('playing');
         setScore(0);
+        setAttempts(0);
+        setCorrectCount(0);
         setTimeLeft(90);
         pickNewTarget();
         setMessage({ text: '', type: 'neutral' });
@@ -97,10 +102,12 @@ export default function MapGame() {
         // Let's us a ref 'wasDragging' set on mouseMove.
 
         setClickedId(id);
+        setAttempts(prev => prev + 1);
 
         if (id === targetId) {
             // Correct
-            setScore((prev) => prev + 150);
+            setScore(s => s + 10);
+            setCorrectCount(prev => prev + 1);
             setMessage({ text: `¡Bien! Es ${PROVINCE_NAMES[id]}`, type: 'success' });
             setTimeout(pickNewTarget, 600);
 
@@ -149,6 +156,9 @@ export default function MapGame() {
                     <div>
                         <div className="text-xs text-yellow-500/70 font-bold uppercase tracking-wider">Puntos</div>
                         <span className="text-2xl font-bold font-mono leading-none">{score}</span>
+                        <div className="text-[10px] text-yellow-600/60 mt-1 font-bold">
+                            {attempts > 0 ? Math.round((correctCount / attempts) * 100) : 100}% Acierto
+                        </div>
                     </div>
                 </div>
 

@@ -156,6 +156,12 @@ export default function RiversGame() {
                     </div>
                     <div>
                         <h2 className="text-3xl font-black text-white">{score} <span className="text-sm font-normal text-blue-200">pts</span></h2>
+                        <div className="text-xs font-bold text-blue-300/70 mt-0">
+                            {(() => {
+                                const attempts = score + errors;
+                                return attempts > 0 ? Math.round((score / attempts) * 100) : 100;
+                            })()}% Acierto
+                        </div>
                         <div className="flex gap-2 text-xs font-bold uppercase tracking-wider text-blue-300">
                             <span>Restantes: {remainingRivers.length}</span>
                         </div>

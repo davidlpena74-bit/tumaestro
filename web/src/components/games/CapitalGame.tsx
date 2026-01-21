@@ -182,6 +182,12 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
                     </div>
                     <div>
                         <h2 className="text-3xl font-black text-white">{score} <span className="text-sm font-normal text-purple-200">pts</span></h2>
+                        <div className="text-xs font-bold text-purple-300/70 mt-0">
+                            {(() => {
+                                const attempts = score + errors;
+                                return attempts > 0 ? Math.round((score / attempts) * 100) : 100;
+                            })()}% Acierto
+                        </div>
                         <div className="flex gap-2 text-xs font-bold uppercase tracking-wider text-purple-300">
                             <span>Restantes: {remainingCountries.length}</span>
                         </div>

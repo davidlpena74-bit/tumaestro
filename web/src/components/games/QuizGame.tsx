@@ -131,7 +131,7 @@ export default function QuizGame() {
                             {/* Progress Bar */}
                             <div className="flex justify-between text-sm text-gray-400 mb-2">
                                 <span>Pregunta {currentQuestionIdx + 1} de {QUESTIONS.length}</span>
-                                <span>Puntos: {score}</span>
+                                <span>Puntos: {score} {currentQuestionIdx > 0 && <span className="text-teal-400/80 ml-2 text-xs">({Math.round((score / currentQuestionIdx) * 100)}%)</span>}</span>
                             </div>
                             <div className="h-2 w-full bg-white/10 rounded-full mb-8 overflow-hidden">
                                 <motion.div
