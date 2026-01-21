@@ -4,48 +4,55 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 
-const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-D9YEL7YQ1W';
+const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-DMBKGQVTEE';
 
 export default function GoogleAnalytics() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const [debugStatus, setDebugStatus] = useState<string>('Iniciando GA...');
+    const [consentGiven, setConsentGiven] = useState(false);
 
     useEffect(() => {
-        // FORCE LOAD: Ignoramos el consentimiento para debug
-        // FORCE EVENT: Enviamos evento de página
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-            setDebugStatus(`Enviando PageView: ${pathname}`);
+        // Check local storage for consent
+        const checkConsent = () => {
+            const consent = localStorage.getItem('cookie-consent');
+            if (consent === 'accepted') {
+                setConsentGiven(true);
+            }
+        };
+
+        checkConsent();
+
+        // Listen for storage events in case consent is updated in another component
+        window.addEventListener('storage', checkConsent);
+        // Custom event for same-window updates
+        window.addEventListener('cookie-consent-updated', checkConsent);
+
+        return () => {
+            window.removeEventListener('storage', checkConsent);
+            window.removeEventListener('cookie-consent-updated', checkConsent);
+        };
+    }, []);
+
+    useEffect(() => {
+        // Si hay consentimiento, trackeamos la navegación
+        if (consentGiven && typeof window !== 'undefined' && (window as any).gtag) {
+            const url = pathname + searchParams.toString();
             (window as any).gtag('config', GA_ID, {
-                page_path: pathname + searchParams.toString(),
-                debug_mode: true, // FORZADO SIEMPRE
+                page_path: url,
             });
         }
-    }, [pathname, searchParams]);
+    }, [pathname, searchParams, consentGiven]);
+
+    // Si no hay consentimiento, no renderizamos NADA (GDPR Compliance)
+    if (!consentGiven) {
+        return null;
+    }
 
     return (
         <>
-            {/* Indicador visual de Debug para el móvil */}
-            <div style={{
-                position: 'fixed',
-                bottom: '10px',
-                left: '10px',
-                zIndex: 9999,
-                background: 'rgba(0,0,0,0.8)',
-                color: '#0f0',
-                padding: '4px 8px',
-                fontSize: '10px',
-                pointerEvents: 'none',
-                borderRadius: '4px'
-            }}>
-                GA: {debugStatus}
-            </div>
-
             <Script
                 strategy="afterInteractive"
                 src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-                onLoad={() => setDebugStatus('Script Cargado OK')}
-                onError={(e) => setDebugStatus('ERROR DE CARGA (Bloqueado)')}
             />
             <Script
                 id="google-analytics-init"
@@ -56,12 +63,9 @@ export default function GoogleAnalytics() {
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             
-            // Configuración inicial FORZADA
             gtag('config', '${GA_ID}', {
               page_path: window.location.pathname,
-              debug_mode: true, 
             });
-            console.log('GA Force Initialized');
           `,
                 }}
             />
