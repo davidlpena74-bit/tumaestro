@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap, Landmark, Puzzle } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Game = {
     id: string;
@@ -19,116 +20,118 @@ type Category = {
     games: Game[];
 };
 
-const categories: Category[] = [
-    {
-        id: 'geography',
-        title: 'Geografía',
-        games: [
-            {
-                id: 'region',
-                title: 'Comunidades Autónomas',
-                description: 'Nivel básico. Ubica las 17 comunidades en el mapa.',
-                href: '/juegos/mapa-comunidades',
-                icon: Map,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'mapa',
-                title: 'Provincias de España',
-                description: 'Nivel difícil. ¿Puedes encontrar las 52 provincias?',
-                href: '/juegos/mapa-provincias',
-                icon: Map,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'europe',
-                title: 'Mapa de Europa',
-                description: 'Localiza los principales países del continente europeo.',
-                href: '/juegos/mapa-europa',
-                icon: Map,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'capitals-ue',
-                title: 'Capitales de la UE',
-                description: '¿Sabes cuáles son las 27 capitales de la Unión Europea?',
-                href: '/juegos/capitales-ue',
-                icon: Map,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'capitals-europe',
-                title: 'Capitales de Europa',
-                description: 'Reto maestro: Las 50 capitales del continente.',
-                href: '/juegos/capitales-europa',
-                icon: Map,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'rios',
-                title: 'Ríos de España',
-                description: 'Identifica los principales ríos de la península.',
-                href: '/juegos/mapa-rios',
-                icon: Map,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'rios-europa',
-                title: 'Ríos de Europa',
-                description: 'Encuentra los ríos más importantes del continente.',
-                href: '/juegos/rios-europa',
-                icon: Map,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'capitals-ue-match',
-                title: 'Puzzle: Capitales UE',
-                description: 'Juego de arrastrar. Empareja países y capitales de la Unión Europea.',
-                href: '/juegos/capitales-ue-match',
-                icon: Puzzle,
-                color: 'from-emerald-500 to-teal-600',
-            },
-            {
-                id: 'capitals-europe-match',
-                title: 'Puzzle: Toda Europa',
-                description: 'Reto final de arrastrar. Las 50 capitales del continente.',
-                href: '/juegos/capitales-europa-match',
-                icon: Puzzle,
-                color: 'from-emerald-500 to-teal-600',
-            }
-        ]
-    },
-    {
-        id: 'math',
-        title: 'Matemáticas',
-        games: [
-            {
-                id: 'division',
-                title: 'Aprende a Dividir',
-                description: 'Reparte pizzas entre amigos. Juego visual de matemáticas.',
-                href: '/juegos/divisiones',
-                icon: Calculator,
-                color: 'from-orange-500 to-amber-600',
-            }
-        ]
-    },
-    {
-        id: 'culture',
-        title: 'Cultura General',
-        games: [
-            {
-                id: 'quiz',
-                title: 'Quiz de Cultura',
-                description: 'Preguntas de historia, ciencia y arte. Pon a prueba tu mente.',
-                href: '/juegos/quiz-cultura',
-                icon: BrainCircuit,
-                color: 'from-violet-500 to-indigo-600',
-            }
-        ]
-    }
-];
-
 export default function GamesHubPage() {
+    const { t } = useLanguage();
+
+    const categories: Category[] = [
+        {
+            id: 'geography',
+            title: t.gamesPage.categories.geography, // 'Geografía'
+            games: [
+                {
+                    id: 'region',
+                    title: t.gamesPage.gameTitles.region,
+                    description: t.gamesPage.gameTitles.regionDesc,
+                    href: '/juegos/mapa-comunidades',
+                    icon: Map,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'mapa',
+                    title: t.gamesPage.gameTitles.provinces,
+                    description: t.gamesPage.gameTitles.provincesDesc,
+                    href: '/juegos/mapa-provincias',
+                    icon: Map,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'europe',
+                    title: t.gamesPage.gameTitles.europeMap,
+                    description: t.gamesPage.gameTitles.europeMapDesc,
+                    href: '/juegos/mapa-europa',
+                    icon: Map,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'capitals-ue',
+                    title: t.gamesPage.gameTitles.euCapitalsMap,
+                    description: t.gamesPage.gameTitles.euCapitalsMapDesc,
+                    href: '/juegos/capitales-ue',
+                    icon: Map,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'capitals-europe',
+                    title: t.gamesPage.gameTitles.europeCapitalsMap,
+                    description: t.gamesPage.gameTitles.europeCapitalsMapDesc,
+                    href: '/juegos/capitales-europa',
+                    icon: Map,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'rios',
+                    title: t.gamesPage.gameTitles.riversSpain,
+                    description: t.gamesPage.gameTitles.riversSpainDesc,
+                    href: '/juegos/mapa-rios',
+                    icon: Map,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'rios-europa',
+                    title: t.gamesPage.gameTitles.riversEurope,
+                    description: t.gamesPage.gameTitles.riversEuropeDesc,
+                    href: '/juegos/rios-europa',
+                    icon: Map,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'capitals-ue-match',
+                    title: t.gamesPage.gameTitles.euCapitalsPuzzle,
+                    description: t.gamesPage.gameTitles.euCapitalsPuzzleDesc,
+                    href: '/juegos/capitales-ue-match',
+                    icon: Puzzle,
+                    color: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    id: 'capitals-europe-match',
+                    title: t.gamesPage.gameTitles.europeCapitalsPuzzle,
+                    description: t.gamesPage.gameTitles.europeCapitalsPuzzleDesc,
+                    href: '/juegos/capitales-europa-match',
+                    icon: Puzzle,
+                    color: 'from-emerald-500 to-teal-600',
+                }
+            ]
+        },
+        {
+            id: 'math',
+            title: t.gamesPage.categories.math, // 'Matemáticas'
+            games: [
+                {
+                    id: 'division',
+                    title: t.gamesPage.gameTitles.division,
+                    description: t.gamesPage.gameTitles.divisionDesc,
+                    href: '/juegos/divisiones',
+                    icon: Calculator,
+                    color: 'from-orange-500 to-amber-600',
+                }
+            ]
+        },
+        {
+            id: 'culture',
+            title: t.gamesPage.categories.culture, // 'Cultura General'
+            games: [
+                {
+                    id: 'quiz',
+                    title: t.gamesPage.gameTitles.quiz,
+                    description: t.gamesPage.gameTitles.quizDesc,
+                    href: '/juegos/quiz-cultura',
+                    icon: BrainCircuit,
+                    color: 'from-violet-500 to-indigo-600',
+                }
+            ]
+        }
+    ];
+
     return (
         <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
             {/* Background Image */}
@@ -155,7 +158,7 @@ export default function GamesHubPage() {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-black mb-8 leading-tight text-white pb-2"
                     >
-                        Aprende Jugando
+                        {t.gamesPage.title}
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -163,7 +166,7 @@ export default function GamesHubPage() {
                         transition={{ delay: 0.2 }}
                         className="text-xl text-gray-400 max-w-2xl mx-auto mt-2"
                     >
-                        Selecciona un desafío de nuestra colección educativa.
+                        {t.gamesPage.subtitle}
                     </motion.p>
                 </header>
 
@@ -207,7 +210,7 @@ export default function GamesHubPage() {
                                                 </p>
 
                                                 <div className="flex items-center text-sm font-bold text-white/50 group-hover:text-white transition-colors">
-                                                    JUGAR AHORA <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                                    {t.gamesPage.playBtn} <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                                 </div>
                                             </div>
                                         </Link>
@@ -227,7 +230,7 @@ export default function GamesHubPage() {
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm">
                         <GraduationCap className="w-4 h-4" />
-                        <span>Pronto añadiremos más asignaturas como Historia y Lengua</span>
+                        <span>{t.gamesPage.comingSoon}</span>
                     </div>
                 </motion.div>
 

@@ -33,6 +33,7 @@ export const metadata: Metadata = {
 import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Header from "@/components/Header";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 export default function RootLayout({
   children,
@@ -40,13 +41,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        {children}
-        <CookieConsent />
+        <LanguageProvider>
+          <Header />
+          {children}
+          <CookieConsent />
+        </LanguageProvider>
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>

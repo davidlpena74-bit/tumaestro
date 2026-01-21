@@ -2,16 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { User } from 'lucide-react';
+import { User, Globe } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);
+    const { t, language, setLanguage } = useLanguage();
+    const [langMenuOpen, setLangMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const toggleLanguage = () => {
+        setLanguage(language === 'es' ? 'en' : 'es');
+    };
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10 py-3' : 'bg-transparent py-5'}`}>
@@ -31,14 +38,24 @@ export default function Header() {
                 {/* ACTIONS */}
                 <div className="flex items-center gap-4">
                     <Link href="/juegos" className="hidden md:block text-white/80 hover:text-teal-400 font-medium transition-colors text-sm">
-                        Juegos
+                        {t.header.games}
                     </Link>
                     <Link href="/recursos" className="hidden md:block text-white/80 hover:text-teal-400 font-medium transition-colors text-sm">
-                        Recursos
+                        {t.header.resources}
                     </Link>
+
+                    {/* Language Selector */}
+                    <button
+                        onClick={toggleLanguage}
+                        className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg text-sm font-bold text-white transition-all"
+                    >
+                        <Globe className="w-4 h-4 text-teal-400" />
+                        <span>{language === 'es' ? 'ES' : 'EN'}</span>
+                    </button>
+
                     <button className="flex items-center gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full font-bold text-sm hover:from-white hover:to-white hover:text-teal-900 transition-all shadow-lg group">
                         <User className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        <span>Acceso Usuarios</span>
+                        <span>{t.header.login}</span>
                     </button>
                 </div>
             </div>
