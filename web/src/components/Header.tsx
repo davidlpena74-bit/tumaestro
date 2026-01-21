@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { User, Globe } from 'lucide-react';
+import { User, Globe, ChevronDown, Check } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);
@@ -16,11 +17,7 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const toggleLanguage = () => {
-        setLanguage(language === 'es' ? 'en' : 'es');
-    };
-
-    console.log('Header Loaded (v2), Lang:', language);
+    // Close menu on click outside could be added here, but simple toggle is enough for now.
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10 py-3' : 'bg-transparent py-5'}`}>
@@ -46,14 +43,48 @@ export default function Header() {
                         {t.header.resources}
                     </Link>
 
-                    {/* Language Selector */}
-                    <button
-                        onClick={toggleLanguage}
-                        className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg text-sm font-bold text-white transition-all"
-                    >
-                        <Globe className="w-4 h-4 text-teal-400" />
-                        <span>{language === 'es' ? 'ES' : 'EN'}</span>
-                    </button>
+                    {/* Language Selector Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setLangMenuOpen(!langMenuOpen)}
+                            className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-full text-sm font-bold text-white transition-all min-w-[90px] justify-between"
+                        >
+                            <span className="flex items-center gap-2">
+                                <span className="text-lg">{language === 'es' ? '🇪🇸' : '🇺🇸'}</span>
+                                <span>{language === 'es' ? 'ES' : 'EN'}</span>
+                            </span>
+                            <ChevronDown className={`w-3 h-3 text-white/50 transition-transform ${langMenuOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        <AnimatePresence>
+                            {langMenuOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="absolute top-full right-0 mt-2 w-40 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50"
+                                >
+                                    <div className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                        {language === 'es' ? 'Idioma' : 'Language'}
+                                    </div>
+                                    <button
+                                        onClick={() => { setLanguage('es'); setLangMenuOpen(false); }}
+                                        className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === 'es' ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
+                                    >
+                                        <span className="flex items-center gap-3"><span className="text-lg">🇪🇸</span> Español</span>
+                                        {language === 'es' && <Check className="w-4 h-4" />}
+                                    </button>
+                                    <button
+                                        onClick={() => { setLanguage('en'); setLangMenuOpen(false); }}
+                                        className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === 'en' ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
+                                    >
+                                        <span className="flex items-center gap-3"><span className="text-lg">🇺🇸</span> English</span>
+                                        {language === 'en' && <Check className="w-4 h-4" />}
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
 
                     <button className="flex items-center gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full font-bold text-sm hover:from-white hover:to-white hover:text-teal-900 transition-all shadow-lg group">
                         <User className="w-4 h-4 group-hover:scale-110 transition-transform" />
