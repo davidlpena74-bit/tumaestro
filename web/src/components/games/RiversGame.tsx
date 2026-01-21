@@ -33,7 +33,6 @@ export default function RiversGame() {
     useEffect(() => {
         const rivers = Object.keys(RIVERS_PATHS);
         setRemainingRivers(rivers);
-        // Don't start automatically
 
         const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
         document.addEventListener('fullscreenchange', handleFsChange);
@@ -75,7 +74,8 @@ export default function RiversGame() {
     const handleRiverClick = (name: string, e: React.MouseEvent) => {
         e.stopPropagation(); // Stop pan
         if (gameState !== 'playing') return;
-        if (Math.abs(pan.x - dragStart.current.x) > 5 || Math.abs(pan.y - dragStart.current.y) > 5) return;
+        // Increased tolerance to 10px
+        if (Math.abs(pan.x - dragStart.current.x) > 10 || Math.abs(pan.y - dragStart.current.y) > 10) return;
 
         if (name === targetRiver) {
             // Correct
@@ -270,7 +270,7 @@ export default function RiversGame() {
                     <svg
                         viewBox="0 0 800 600"
                         className="w-full h-full pointer-events-none"
-                        style={{ background: '#0f172a' }} // Very dark blue/slate
+                        style={{ background: '#0f172a' }} // Dark background
                     >
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                             {/* BACKGROUND: SPAIN MAP */}
@@ -292,36 +292,34 @@ export default function RiversGame() {
                                 const isCompleted = completedRivers.includes(name);
                                 const isFailed = failedRivers.includes(name);
 
-                                // If completed/failed, we show status color.
-                                // If playable (not completed), we show blueish default.
-
+                                // Stroke colors
                                 let strokeColor = '#38bdf8'; // sky-400 default
                                 if (isCompleted) strokeColor = '#22c55e'; // green-500
                                 if (isFailed) strokeColor = '#ef4444'; // red-500
 
                                 return (
-                                    <g key={name} onClick={(e) => handleRiverClick(name, e)} className="cursor-pointer group pointer-events-auto">
+                                    <g key={name} className="cursor-pointer group pointer-events-auto">
                                         {/* Invisible thick path for easier clicking */}
                                         <path
+                                            onClick={(e) => handleRiverClick(name, e)}
                                             d={d}
-                                            stroke="transparent"
-                                            strokeWidth="25"
+                                            stroke="white"
+                                            strokeWidth="30" // Generous hit area
                                             fill="none"
+                                            opacity="0" // Visible for hits but invisible to eye
                                             className="transition-all"
                                         />
 
                                         {/* Visible River path */}
                                         <path
+                                            onClick={(e) => handleRiverClick(name, e)}
                                             d={d}
                                             stroke={strokeColor}
                                             strokeWidth={isTarget || isCompleted ? 4 : 3}
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             fill="none"
-                                            className={`transition-all duration-300 drop-shadow-lg
-                                                ${!isCompleted && 'group-hover:stroke-white group-hover:stroke-[6px]'}
-                                                ${isTarget && !isCompleted ? 'animate-pulse' : ''} 
-                                            `}
+                                            className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-purple-400 group-hover:stroke-[4px]' : ''} drop-shadow-md`}
                                         />
                                     </g>
                                 );
@@ -329,32 +327,3 @@ export default function RiversGame() {
                         </g>
                     </svg>
                 )}
-
-                {/* Feedback Toast */}
-                <div className={`absolute left-1/2 -translate-x-1/2 pointer-events-none z-20 transition-all duration-300 ${isFullscreen ? 'top-36 md:top-32' : 'top-6'}`}>
-                    <AnimatePresence>
-                        {message && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                                className={`px-8 py-3 rounded-2xl border shadow-2xl font-bold text-lg backdrop-blur-md flex items-center gap-3 ${message.includes('Correcto')
-                                    ? 'bg-green-500/90 border-green-400 text-white'
-                                    : message.includes('No')
-                                        ? 'bg-red-500/90 border-red-400 text-white'
-                                        : 'bg-slate-800/80 border-slate-600 text-blue-100'
-                                    }`}
-                            >
-                                {message}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            </div>
-
-            <p className="text-center text-slate-500 mt-6 text-sm">
-                Ríos principales simplificados para estudio.
-            </p>
-        </div>
-    );
-}

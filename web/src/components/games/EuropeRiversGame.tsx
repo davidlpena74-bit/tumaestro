@@ -74,7 +74,8 @@ export default function EuropeRiversGame() {
     const handleRiverClick = (name: string, e: React.MouseEvent) => {
         e.stopPropagation(); // Stop pan
         if (gameState !== 'playing') return;
-        if (Math.abs(pan.x - dragStart.current.x) > 5 || Math.abs(pan.y - dragStart.current.y) > 5) return;
+        // Increased tolerance to 10px
+        if (Math.abs(pan.x - dragStart.current.x) > 10 || Math.abs(pan.y - dragStart.current.y) > 10) return;
 
         if (name === targetRiver) {
             // Correct
@@ -269,7 +270,7 @@ export default function EuropeRiversGame() {
                     <svg
                         viewBox="0 0 800 600"
                         className="w-full h-full pointer-events-none"
-                        style={{ background: '#0f172a' }} // Dark background for contrast
+                        style={{ background: '#0f172a' }} // Dark background
                     >
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                             {/* BACKGROUND: EUROPE MAP */}
@@ -295,21 +296,27 @@ export default function EuropeRiversGame() {
                                 let strokeColor = '#38bdf8'; // sky-400 (Default)
                                 if (isCompleted) strokeColor = '#22c55e'; // green-500
                                 if (isFailed) strokeColor = '#ef4444'; // red-500
-                                // If hovering logic was added, purple would be good.
 
                                 return (
-                                    <g key={name} onClick={(e) => handleRiverClick(name, e)} className="cursor-pointer group pointer-events-auto">
-                                        {/* Invisible thick path for click area */}
+                                    <g key={name} className="cursor-pointer group pointer-events-auto">
+                                        {/* Invisible thick path for click area
+                                            Using stroke="white" opacity="0" to ensure consistent hit testing
+                                        */}
                                         <path
+                                            onClick={(e) => handleRiverClick(name, e)}
                                             d={d}
-                                            stroke="transparent"
-                                            strokeWidth="20"
+                                            stroke="white"
+                                            strokeWidth="30" // Generous hit area
                                             fill="none"
+                                            opacity="0"
                                             className="transition-all"
                                         />
 
-                                        {/* Visible River path */}
+                                        {/* Visible River path 
+                                            Also clickable just in case
+                                        */}
                                         <path
+                                            onClick={(e) => handleRiverClick(name, e)}
                                             d={d}
                                             stroke={strokeColor}
                                             strokeWidth={isTarget || isCompleted ? 4 : 2}

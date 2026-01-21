@@ -17,6 +17,11 @@ export default function EuropeCapitalsGame() {
     const [matches, setMatches] = useState<Record<string, string>>({}); // countryId -> capitalId
     const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
 
+    // Stats
+    const [errors, setErrors] = useState(0);
+    const [startTime, setStartTime] = useState<number | null>(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
+
     // Custom Drag State
     const [draggedItem, setDraggedItem] = useState<MatchItem | null>(null);
     const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
@@ -26,6 +31,17 @@ export default function EuropeCapitalsGame() {
     useEffect(() => {
         setupGame(false);
     }, []);
+
+    // Timer Logic
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (gameState === 'playing' && startTime) {
+            interval = setInterval(() => {
+                setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [gameState, startTime]);
 
     // Global drag listener to update cursor position
     useEffect(() => {
@@ -69,15 +85,20 @@ export default function EuropeCapitalsGame() {
         setCapitals(sortedCapitals);
 
         setMatches({});
+        setErrors(0);
+        setElapsedTime(0);
+        setStartTime(autoStart ? Date.now() : null);
         setGameState(autoStart ? 'playing' : 'start');
     };
 
-    const startGame = () => setGameState('playing');
+    const startGame = () => {
+        setStartTime(Date.now());
+        setGameState('playing');
+    };
 
-    // Standard HTML5 Drag Start (still needed for drop targets to recognize connection)
+    // Standard HTML5 Drag Start
     const handleDragStart = (e: React.DragEvent, item: MatchItem) => {
         if (gameState !== 'playing') return;
-        // Create an invisible drag image to hide browser default ghost
         const emptyImg = new Image();
         emptyImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         e.dataTransfer.setDragImage(emptyImg, 0, 0);
@@ -85,7 +106,6 @@ export default function EuropeCapitalsGame() {
         e.dataTransfer.setData('capitalId', item.id);
         e.dataTransfer.effectAllowed = 'move';
 
-        // Activate our custom drag layer
         setDraggedItem(item);
         setIsDragging(true);
         setCursorPos({ x: e.clientX, y: e.clientY });
@@ -98,7 +118,6 @@ export default function EuropeCapitalsGame() {
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
-        // Update position even during dragover to be smooth
         setCursorPos({ x: e.clientX, y: e.clientY });
     };
 
@@ -124,6 +143,8 @@ export default function EuropeCapitalsGame() {
             if (Object.keys(newMatches).length === EUROPE_LIST.length) {
                 setGameState('won');
             }
+        } else {
+            setErrors(e => e + 1);
         }
     };
 
@@ -135,6 +156,12 @@ export default function EuropeCapitalsGame() {
     });
 
     const progress = (Object.keys(matches).length / EUROPE_LIST.length) * 100;
+
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
 
     return (
         <div className="w-full max-w-6xl mx-auto p-4 md:p-8 relative">
@@ -158,14 +185,14 @@ export default function EuropeCapitalsGame() {
                 </div>
             )}
 
-            {/* Custom Drag Layer (The "Cajita") */}
+            {/* Custom Drag Layer */}
             {isDragging && draggedItem && (
                 <div
                     className="fixed pointer-events-none z-[9999] px-6 py-3 bg-purple-600 text-white rounded-xl font-bold shadow-2xl border-2 border-purple-400 rotate-3"
                     style={{
                         left: cursorPos.x,
                         top: cursorPos.y,
-                        transform: 'translate(-50%, -50%)' // Center on cursor
+                        transform: 'translate(-50%, -50%)'
                     }}
                 >
                     {draggedItem.capital}
@@ -173,10 +200,20 @@ export default function EuropeCapitalsGame() {
             )}
 
             {/* Header / Stats */}
-            <div className="flex justify-between items-end mb-8 border-b border-white/10 pb-4">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-white/10 pb-4 gap-4">
                 <div>
                     <h2 className="text-3xl font-bold text-white mb-2">Europa Completa: Países y Capitales</h2>
-                    <p className="text-slate-400">Encuentra la capital de cada país europeo.</p>
+                    <div className="flex gap-6 text-slate-400">
+                        <div className="flex items-center gap-2">
+                            <Timer className="w-5 h-5 text-purple-400" />
+                            <span className="font-mono font-bold text-xl text-white">{formatTime(elapsedTime)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <X className="w-5 h-5 text-red-400" />
+                            <span className="font-bold text-xl text-white">{errors}</span>
+                            <span className="text-sm">Fallos</span>
+                        </div>
+                    </div>
                 </div>
                 <div className="text-right">
                     <div className="text-4xl font-black text-purple-400">
@@ -205,6 +242,18 @@ export default function EuropeCapitalsGame() {
                     </div>
                     <h3 className="text-4xl font-bold text-white mb-4">¡Impresionante!</h3>
                     <p className="text-xl text-slate-300 mb-8">Has completado el mapa político de toda Europa.</p>
+
+                    <div className="flex justify-center gap-8 mb-8">
+                        <div className="flex flex-col items-center">
+                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">Tiempo</span>
+                            <span className="text-3xl font-black text-white">{formatTime(elapsedTime)}</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">Fallos</span>
+                            <span className="text-3xl font-black text-red-400">{errors}</span>
+                        </div>
+                    </div>
+
                     <button
                         onClick={() => setupGame(true)}
                         className="px-8 py-3 bg-white text-purple-900 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
@@ -215,7 +264,6 @@ export default function EuropeCapitalsGame() {
                 </motion.div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
                     {/* Left Column: Countries (Drop Targets) */}
                     <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
                         <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">Países</h3>
@@ -286,7 +334,6 @@ export default function EuropeCapitalsGame() {
                             )}
                         </div>
                     </div>
-
                 </div>
             )}
         </div>
