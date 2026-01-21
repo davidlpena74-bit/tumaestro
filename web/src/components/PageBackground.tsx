@@ -11,10 +11,10 @@ export default function PageBackground() {
     return (
         <div className="fixed inset-0 w-full h-full z-[-1] pointer-events-none">
             {/* Background Image */}
-            <div className="absolute inset-0 bg-slate-900/80 z-0" /> {/* Darker overlay for readability */}
+            <div className="absolute inset-0 bg-black/40 z-0" />
             <img
                 src="/fondo.jpg"
-                className="w-full h-full object-cover blur-sm scale-105 opacity-40"
+                className="w-full h-full object-cover scale-105"
                 alt=""
                 onError={(e) => {
                     // Fallback if image doesn't load
