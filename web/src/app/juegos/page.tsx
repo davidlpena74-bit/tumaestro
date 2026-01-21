@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap, Landmark } from 'lucide-react';
+import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap, Landmark, Puzzle } from 'lucide-react';
 
 type Game = {
     id: string;
@@ -69,8 +69,24 @@ const categories: Category[] = [
                 title: 'Ríos de España',
                 description: 'Identifica los principales ríos de la península.',
                 href: '/juegos/mapa-rios',
-                icon: Map, // Or another icon like Wine/Waves but Map is fine or we can import Waves from lucide
+                icon: Map,
                 color: 'from-cyan-500 to-blue-600',
+            },
+            {
+                id: 'capitals-ue-match',
+                title: 'Puzzle: Capitales UE',
+                description: 'Juego de arrastrar. Empareja países y capitales de la Unión Europea.',
+                href: '/juegos/capitales-ue-match',
+                icon: Puzzle,
+                color: 'from-pink-500 to-rose-500',
+            },
+            {
+                id: 'capitals-europe-match',
+                title: 'Puzzle: Toda Europa',
+                description: 'Reto final de arrastrar. Las 50 capitales del continente.',
+                href: '/juegos/capitales-europa-match',
+                icon: Puzzle,
+                color: 'from-fuchsia-600 to-purple-600',
             }
         ]
     },

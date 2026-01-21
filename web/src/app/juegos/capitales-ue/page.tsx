@@ -1,18 +1,33 @@
 'use client';
 
-import CapitalMatchingGame from '@/components/games/CapitalMatchingGame';
+import CapitalGame from '@/components/games/CapitalGame';
+import { EUROPE_PATHS } from '@/components/games/data/europe-paths';
+import { EU_MEMBERS_LIST } from '@/components/games/data/capitals-data';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
-export default function EUCapitalsPage() {
+export default function EUCapitalsMapPage() {
     return (
-        <main className="min-h-screen bg-[#0f172a] pt-24 pb-12 relative overflow-hidden">
-            {/* Background Gradients */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px]" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[100px]" />
-            </div>
+        <main className="min-h-screen bg-[#0f172a] pt-24 pb-12">
+            <div className="max-w-7xl mx-auto px-4">
+                <div className="flex items-center gap-4 mb-8">
+                    <Link
+                        href="/juegos"
+                        className="p-2 hover:bg-white/10 rounded-xl transition-colors text-white"
+                    >
+                        <ArrowLeft className="w-6 h-6" />
+                    </Link>
+                    <div>
+                        <h1 className="text-4xl font-black text-white mb-2">Capitales de la UE</h1>
+                        <p className="text-slate-400">Ubica en el mapa el país correspondiente a la capital (Mapa Interactivo).</p>
+                    </div>
+                </div>
 
-            <div className="relative z-10">
-                <CapitalMatchingGame />
+                <CapitalGame
+                    paths={EUROPE_PATHS}
+                    targetList={EU_MEMBERS_LIST}
+                    title="Capitales de la UE"
+                />
             </div>
         </main>
     );
