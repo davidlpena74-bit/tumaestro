@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, RefreshCw, Timer, MapPin } from 'lucide-react';
 import { EUROPE_LIST, EUROPE_CAPITALS, EUROPE_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
@@ -223,7 +224,7 @@ export default function EuropeCapitalsGame() {
             )}
 
             {/* Custom Drag Layer */}
-            {isDragging && draggedItem && (
+            {isDragging && draggedItem && createPortal(
                 <div
                     className="fixed pointer-events-none z-[9999] px-6 py-3 bg-purple-600 text-white rounded-xl font-bold shadow-2xl border-2 border-purple-400 rotate-3"
                     style={{
@@ -233,7 +234,8 @@ export default function EuropeCapitalsGame() {
                     }}
                 >
                     {draggedItem.capital}
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Header / Stats */}

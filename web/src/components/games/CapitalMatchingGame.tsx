@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, RefreshCw, Timer, MapPin } from 'lucide-react';
 import { EU_MEMBERS_LIST, EUROPE_CAPITALS, EU_MEMBERS_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
@@ -225,7 +226,7 @@ export default function CapitalMatchingGame() {
             )}
 
             {/* Custom Drag Layer (The "Cajita") */}
-            {isDragging && draggedItem && (
+            {isDragging && draggedItem && createPortal(
                 <div
                     className="fixed pointer-events-none z-[9999] px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-2xl border-2 border-indigo-400 rotate-3"
                     style={{
@@ -235,7 +236,8 @@ export default function CapitalMatchingGame() {
                     }}
                 >
                     {draggedItem.capital}
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Header / Stats */}
