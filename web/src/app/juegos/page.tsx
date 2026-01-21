@@ -73,6 +73,14 @@ const categories: Category[] = [
                 color: 'from-emerald-500 to-teal-600',
             },
             {
+                id: 'rios-europa',
+                title: 'Ríos de Europa',
+                description: 'Encuentra los ríos más importantes del continente.',
+                href: '/juegos/rios-europa',
+                icon: Map,
+                color: 'from-emerald-500 to-teal-600',
+            },
+            {
                 id: 'capitals-ue-match',
                 title: 'Puzzle: Capitales UE',
                 description: 'Juego de arrastrar. Empareja países y capitales de la Unión Europea.',
