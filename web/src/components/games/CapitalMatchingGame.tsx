@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, RefreshCw } from 'lucide-react';
-import { EU_MEMBERS_LIST, EUROPE_CAPITALS } from './data/capitals-data'; // Adjust path as needed
+import { EU_MEMBERS_LIST, EUROPE_CAPITALS } from './data/capitals-data';
 
 type MatchItem = {
     country: string;
@@ -11,36 +11,59 @@ type MatchItem = {
     id: string;
 };
 
-// Shuffle helper
-const shuffle = <T,>(array: T[]): T[] => {
-    return [...array].sort(() => Math.random() - 0.5);
-};
-
 export default function CapitalMatchingGame() {
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
     const [matches, setMatches] = useState<Record<string, string>>({}); // countryId -> capitalId
     const [completed, setCompleted] = useState(false);
-    const [draggedId, setDraggedId] = useState<string | null>(null);
+
+    // Custom Drag State
+    const [draggedItem, setDraggedItem] = useState<MatchItem | null>(null);
+    const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
 
     // Initialize Game
     useEffect(() => {
         setupGame();
     }, []);
 
+    // Global drag listener to update cursor position
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (isDragging) {
+                setCursorPos({ x: e.clientX, y: e.clientY });
+            }
+        };
+
+        const handleMouseUp = () => {
+            if (isDragging) {
+                setIsDragging(false);
+                setDraggedItem(null);
+            }
+        };
+
+        if (isDragging) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
+        }
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isDragging]);
+
+
     const setupGame = () => {
-        // 1. Get EU pairs
         const pairs: MatchItem[] = EU_MEMBERS_LIST.map((country, idx) => ({
             country,
             capital: EUROPE_CAPITALS[country] || 'Unknown',
             id: `pair-${idx}`
         }));
 
-        // 2. Set Countries (Alphabetical usually best for finding)
         const sortedCountries = [...pairs].sort((a, b) => a.country.localeCompare(b.country));
         setCountries(sortedCountries);
 
-        // 3. Set Capitals (Alphabetical order requested)
         const sortedCapitals = [...pairs].sort((a, b) => a.capital.localeCompare(b.capital));
         setCapitals(sortedCapitals);
 
@@ -48,52 +71,78 @@ export default function CapitalMatchingGame() {
         setCompleted(false);
     };
 
-    const handleDragStart = (e: React.DragEvent, capitalId: string) => {
-        e.dataTransfer.setData('capitalId', capitalId);
-        setDraggedId(capitalId);
+    // Standard HTML5 Drag Start (still needed for drop targets to recognize connection)
+    const handleDragStart = (e: React.DragEvent, item: MatchItem) => {
+        // Create an invisible drag image to hide browser default ghost
+        const emptyImg = new Image();
+        emptyImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        e.dataTransfer.setDragImage(emptyImg, 0, 0);
+
+        e.dataTransfer.setData('capitalId', item.id);
+        e.dataTransfer.effectAllowed = 'move';
+
+        // Activate our custom drag layer
+        setDraggedItem(item);
+        setIsDragging(true);
+        setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleDragEnd = () => {
+        setIsDragging(false);
+        setDraggedItem(null);
     };
 
     const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault(); // Essential to allow dropping
+        e.preventDefault();
+        // Update position even during dragover to be smooth
+        setCursorPos({ x: e.clientX, y: e.clientY });
     };
 
     const handleDrop = (e: React.DragEvent, targetCountryId: string) => {
         e.preventDefault();
         const capitalId = e.dataTransfer.getData('capitalId');
-        setDraggedId(null);
+
+        setIsDragging(false);
+        setDraggedItem(null);
 
         if (!capitalId) return;
 
-        // Check if match is correct
-        // Find the objects
         const countryObj = countries.find(c => c.id === targetCountryId);
         const capitalObj = capitals.find(c => c.id === capitalId);
 
         if (!countryObj || !capitalObj) return;
 
-        // Correct Match? (They share the same ID in our logic because pair.id is unique per country-capital pair)
         if (countryObj.id === capitalObj.id) {
-            // Success!
             const newMatches = { ...matches, [targetCountryId]: capitalId };
             setMatches(newMatches);
 
-            // Check completion
             if (Object.keys(newMatches).length === EU_MEMBERS_LIST.length) {
                 setCompleted(true);
             }
         } else {
-            // Optional: Error feedback shake
-            // For now, simpler: just bounce back (default behavior if not dropped)
-            // Or visual indicator
-            alert('¡Incorrecto! Esa no es la capital.');
+            // Visual feedback could be added here
         }
     };
 
-    // Calculate progress
     const progress = (Object.keys(matches).length / EU_MEMBERS_LIST.length) * 100;
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-4 md:p-8">
+        <div className="w-full max-w-6xl mx-auto p-4 md:p-8 relative">
+
+            {/* Custom Drag Layer (The "Cajita") */}
+            {isDragging && draggedItem && (
+                <div
+                    className="fixed pointer-events-none z-[9999] px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-2xl border-2 border-indigo-400 rotate-3"
+                    style={{
+                        left: cursorPos.x,
+                        top: cursorPos.y,
+                        transform: 'translate(-50%, -50%)' // Center on cursor
+                    }}
+                >
+                    {draggedItem.capital}
+                </div>
+            )}
+
             {/* Header / Stats */}
             <div className="flex justify-between items-end mb-8 border-b border-white/10 pb-4">
                 <div>
@@ -138,7 +187,7 @@ export default function CapitalMatchingGame() {
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
-                    {/* Left Column: Countries (Drop Targets) - Spans 2 cols, internal 2-col grid */}
+                    {/* Left Column: Countries (Drop Targets) */}
                     <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
                         <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">Países</h3>
                         {countries.map((item) => {
@@ -160,7 +209,6 @@ export default function CapitalMatchingGame() {
                                         {item.country}
                                     </span>
 
-                                    {/* Drop Zone Indicator / Matched Content */}
                                     <div className={`
                                         h-10 px-4 rounded-lg flex items-center justify-center min-w-[120px] text-sm
                                         ${isMatched
@@ -190,12 +238,12 @@ export default function CapitalMatchingGame() {
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.5 }}
                                         draggable="true"
-                                        onDragStart={(e) => {
-                                            // React.DragEvent is a generic wrapper, we need to cast or use native properties
-                                            // e.dataTransfer is available on React.DragEvent
-                                            handleDragStart(e as any, item.id);
-                                        }}
-                                        className="cursor-move p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-semibold text-center border-b-4 border-indigo-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all select-none"
+                                        onDragStart={(e) => handleDragStart(e as any, item)}
+                                        onDragEnd={handleDragEnd}
+                                        className={`
+                                            cursor-move p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-semibold text-center border-b-4 border-indigo-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all select-none
+                                            ${isDragging && draggedItem?.id === item.id ? 'opacity-0' : 'opacity-100'} 
+                                        `}
                                     >
                                         {item.capital}
                                     </motion.div>
