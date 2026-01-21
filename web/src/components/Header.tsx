@@ -51,7 +51,7 @@ export default function Header() {
                         >
                             <span className="flex items-center gap-2">
                                 <span className="text-lg">{language === 'es' ? '🇪🇸' : '🇺🇸'}</span>
-                                <span>{language === 'es' ? 'ES' : 'EN'}</span>
+                                <span>{language === 'es' ? 'Español' : 'English'}</span>
                             </span>
                             <ChevronDown className={`w-3 h-3 text-white/50 transition-transform ${langMenuOpen ? 'rotate-180' : ''}`} />
                         </button>

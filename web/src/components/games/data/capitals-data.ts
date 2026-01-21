@@ -1,3 +1,7 @@
+// ------------------------------------------------------------------
+// SPANISH DATA
+// ------------------------------------------------------------------
+
 // Mapping from Natural Earth / generic English names (keys in paths JSON) to Spanish display names
 export const PATH_TO_SPANISH_NAME: Record<string, string> = {
     'Albania': 'Albania',
@@ -108,10 +112,89 @@ export const EUROPE_CAPITALS: Record<string, string> = {
 };
 
 export const EU_MEMBERS_LIST = [
-    'Austria', 'Bélgica', 'Bulgaria', 'Croacia', 'Chipre', 'República Checa', 'Dinamarca',
-    'Estonia', 'Finlandia', 'Francia', 'Alemania', 'Grecia', 'Hungría', 'Irlanda',
-    'Italia', 'Letonia', 'Lituania', 'Luxemburgo', 'Malta', 'Países Bajos', 'Polonia',
-    'Portugal', 'Rumanía', 'Eslovaquia', 'Eslovenia', 'España', 'Suecia'
+    'Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Chipre', 'Croacia', 'Dinamarca',
+    'Eslovaquia', 'Eslovenia', 'España', 'Estonia', 'Finlandia', 'Francia', 'Grecia',
+    'Hungría', 'Irlanda', 'Italia', 'Letonia', 'Lituania', 'Luxemburgo', 'Malta',
+    'Países Bajos', 'Polonia', 'Portugal', 'República Checa', 'Rumanía', 'Suecia'
 ];
 
-export const EUROPE_LIST = Object.keys(EUROPE_CAPITALS).sort();
+export const EUROPE_LIST = Object.keys(EUROPE_CAPITALS);
+
+
+// ------------------------------------------------------------------
+// ENGLISH DATA
+// ------------------------------------------------------------------
+
+export const PATH_TO_ENGLISH_NAME: Record<string, string> = {
+    // Identity mapping (mostly) but explicit for safety
+    ...Object.fromEntries(Object.keys(PATH_TO_SPANISH_NAME).map(k => [k, k])),
+    // Manual adjustments if keys in topojson differ from common English names, 
+    // but usually they match Natural Earth English names.
+    'Czechia': 'Czech Republic', // Sometimes preferred
+    'Bosnia and Herz.': 'Bosnia and Herzegovina',
+    'North Macedonia': 'North Macedonia'
+};
+
+export const EUROPE_CAPITALS_EN: Record<string, string> = {
+    'Albania': 'Tirana',
+    'Andorra': 'Andorra la Vella',
+    'Armenia': 'Yerevan',
+    'Austria': 'Vienna',
+    'Azerbaijan': 'Baku',
+    'Belarus': 'Minsk',
+    'Belgium': 'Brussels',
+    'Bosnia and Herzegovina': 'Sarajevo',
+    'Bulgaria': 'Sofia',
+    'Croatia': 'Zagreb',
+    'Cyprus': 'Nicosia',
+    'Czech Republic': 'Prague',
+    'Czechia': 'Prague', // Alternate
+    'Denmark': 'Copenhagen',
+    'Estonia': 'Tallinn',
+    'Finland': 'Helsinki',
+    'France': 'Paris',
+    'Georgia': 'Tbilisi',
+    'Germany': 'Berlin',
+    'Greece': 'Athens',
+    'Hungary': 'Budapest',
+    'Iceland': 'Reykjavik',
+    'Ireland': 'Dublin',
+    'Italy': 'Rome',
+    'Kazakhstan': 'Astana',
+    'Kosovo': 'Pristina',
+    'Latvia': 'Riga',
+    'Liechtenstein': 'Vaduz',
+    'Lithuania': 'Vilnius',
+    'Luxembourg': 'Luxembourg',
+    'Malta': 'Valletta',
+    'Moldova': 'Chisinau',
+    'Monaco': 'Monaco',
+    'Montenegro': 'Podgorica',
+    'Netherlands': 'Amsterdam',
+    'North Macedonia': 'Skopje',
+    'Norway': 'Oslo',
+    'Poland': 'Warsaw',
+    'Portugal': 'Lisbon',
+    'Romania': 'Bucharest',
+    'Russia': 'Moscow',
+    'San Marino': 'San Marino',
+    'Serbia': 'Belgrade',
+    'Slovakia': 'Bratislava',
+    'Slovenia': 'Ljubljana',
+    'Spain': 'Madrid',
+    'Sweden': 'Stockholm',
+    'Switzerland': 'Bern',
+    'Turkey': 'Ankara',
+    'Ukraine': 'Kyiv',
+    'United Kingdom': 'London',
+    'Vatican': 'Vatican City'
+};
+
+export const EU_MEMBERS_LIST_EN = [
+    'Germany', 'Austria', 'Belgium', 'Bulgaria', 'Cyprus', 'Croatia', 'Denmark',
+    'Slovakia', 'Slovenia', 'Spain', 'Estonia', 'Finland', 'France', 'Greece',
+    'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta',
+    'Netherlands', 'Poland', 'Portugal', 'Czech Republic', 'Romania', 'Sweden'
+];
+
+export const EUROPE_LIST_EN = Object.keys(EUROPE_CAPITALS_EN);

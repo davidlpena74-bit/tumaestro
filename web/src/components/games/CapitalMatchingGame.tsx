@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, RefreshCw, Timer, MapPin } from 'lucide-react';
-import { EU_MEMBERS_LIST, EUROPE_CAPITALS } from './data/capitals-data';
+import { EU_MEMBERS_LIST, EUROPE_CAPITALS, EU_MEMBERS_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
+import { useLanguage } from '@/context/LanguageContext';
 
 type MatchItem = {
     country: string;
@@ -12,10 +13,43 @@ type MatchItem = {
 };
 
 export default function CapitalMatchingGame() {
+    const { language, t } = useLanguage();
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
     const [matches, setMatches] = useState<Record<string, string>>({}); // countryId -> capitalId
     const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
+
+    // Localized Texts
+    const TEXTS = {
+        es: {
+            title: 'Capitales de la UE',
+            desc: 'Arrastra cada capital a su país correspondiente. ¿Podrás completarlo?',
+            subHeader: 'Unión Europea: Países y Capitales',
+            instruction: 'Arrastra la capital correcta a su país.',
+            dragHere: 'Arrastra aquí',
+            startBtn: 'EMPEZAR RETO',
+            allAssigned: '¡Todas las capitales asignadas!',
+            playAgain: 'Jugar de nuevo',
+            congrats: '¡Impresionante!',
+            winMsg: 'Has completado el mapa de la Unión Europea.',
+            loading: 'Cargando...'
+        },
+        en: {
+            title: 'EU Capitals',
+            desc: 'Drag each capital to its corresponding country. Can you complete it?',
+            subHeader: 'European Union: Countries & Capitals',
+            instruction: 'Drag the correct capital to its country.',
+            dragHere: 'Drop here',
+            startBtn: 'START CHALLENGE',
+            allAssigned: 'All capitals assigned!',
+            playAgain: 'Play Again',
+            congrats: 'Awesome!',
+            winMsg: 'You have completed the European Union map.',
+            loading: 'Loading...'
+        }
+    };
+    const content = TEXTS[language];
+
 
     // Stats
     const [errors, setErrors] = useState(0);
@@ -30,7 +64,7 @@ export default function CapitalMatchingGame() {
     // Initialize Game
     useEffect(() => {
         setupGame(false);
-    }, []);
+    }, [language]);
 
     // Timer Logic
     useEffect(() => {
@@ -71,9 +105,12 @@ export default function CapitalMatchingGame() {
 
 
     const setupGame = (autoStart = false) => {
-        const pairs: MatchItem[] = EU_MEMBERS_LIST.map((country, idx) => ({
+        const list = language === 'es' ? EU_MEMBERS_LIST : EU_MEMBERS_LIST_EN;
+        const capitalsData = language === 'es' ? EUROPE_CAPITALS : EUROPE_CAPITALS_EN;
+
+        const pairs: MatchItem[] = list.map((country, idx) => ({
             country,
-            capital: EUROPE_CAPITALS[country] || 'Unknown',
+            capital: capitalsData[country] || 'Unknown',
             id: `pair-${idx}`
         }));
 
@@ -142,7 +179,7 @@ export default function CapitalMatchingGame() {
             const newMatches = { ...matches, [targetCountryId]: capitalId };
             setMatches(newMatches);
 
-            if (Object.keys(newMatches).length === EU_MEMBERS_LIST.length) {
+            if (Object.keys(newMatches).length === countries.length) {
                 setGameState('won');
             }
         } else {
@@ -157,7 +194,7 @@ export default function CapitalMatchingGame() {
         return isAMatched ? 1 : -1;
     });
 
-    const progress = (Object.keys(matches).length / EU_MEMBERS_LIST.length) * 100;
+    const progress = (Object.keys(matches).length / countries.length) * 100;
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -174,15 +211,15 @@ export default function CapitalMatchingGame() {
                     <div className="bg-indigo-500/10 p-4 rounded-full mb-6 ring-1 ring-indigo-500/30">
                         <MapPin className="w-12 h-12 text-indigo-400" />
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Capitales Europeas</h2>
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">{content.title}</h2>
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                        Arrastra cada capital a su país correspondiente. ¿Podrás completarlo?
+                        {content.desc}
                     </p>
                     <button
                         onClick={startGame}
                         className="group relative px-8 py-4 bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] hover:shadow-[0_0_60px_-10px_rgba(99,102,241,0.6)] hover:-translate-y-1"
                     >
-                        <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                        <span className="relative z-10 flex items-center gap-2">{content.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
                     </button>
                 </div>
             )}
@@ -204,7 +241,7 @@ export default function CapitalMatchingGame() {
             {/* Header / Stats */}
             <div className="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-white/10 pb-4 gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-white mb-2">Unión Europea: Países y Capitales</h2>
+                    <h2 className="text-3xl font-bold text-white mb-2">{content.subHeader}</h2>
                     <div className="flex gap-6 text-slate-400">
                         <div className="flex items-center gap-2">
                             <Timer className="w-5 h-5 text-indigo-400" />
@@ -213,13 +250,13 @@ export default function CapitalMatchingGame() {
                         <div className="flex items-center gap-2">
                             <X className="w-5 h-5 text-red-400" />
                             <span className="font-bold text-xl text-white">{errors}</span>
-                            <span className="text-sm">Fallos</span>
+                            <span className="text-sm">{t.common.errors}</span>
                         </div>
                     </div>
                 </div>
                 <div className="text-right">
                     <div className="text-4xl font-black text-teal-400">
-                        {Object.keys(matches).length} <span className="text-xl text-slate-500">/ {EU_MEMBERS_LIST.length}</span>
+                        {Object.keys(matches).length} <span className="text-xl text-slate-500">/ {countries.length}</span>
                     </div>
                 </div>
             </div>
@@ -229,7 +266,7 @@ export default function CapitalMatchingGame() {
                 <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
-                    className="h-full bg-gradient-to-r from-teal-500 to-emerald-400"
+                    className="h-full bg-gradient-to-r from-teal-500 to-indigo-500"
                 />
             </div>
 
@@ -237,19 +274,31 @@ export default function CapitalMatchingGame() {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-gradient-to-br from-teal-900/50 to-emerald-900/50 border border-teal-500/30 rounded-3xl p-12 text-center"
+                    className="bg-indigo-900/50 border border-indigo-500/30 rounded-3xl p-12 text-center"
                 >
-                    <div className="inline-flex p-4 rounded-full bg-teal-500/20 text-teal-300 mb-6">
+                    <div className="inline-flex p-4 rounded-full bg-indigo-500/20 text-indigo-300 mb-6">
                         <Check className="w-12 h-12" />
                     </div>
-                    <h3 className="text-4xl font-bold text-white mb-4">¡Excelente!</h3>
-                    <p className="text-xl text-slate-300 mb-8">Has completado el mapa político de la Unión Europea.</p>
+                    <h3 className="text-4xl font-bold text-white mb-4">{content.congrats}</h3>
+                    <p className="text-xl text-slate-300 mb-8">{content.winMsg}</p>
+
+                    <div className="flex justify-center gap-8 mb-8">
+                        <div className="flex flex-col items-center">
+                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.time}</span>
+                            <span className="text-3xl font-black text-white">{formatTime(elapsedTime)}</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.errors}</span>
+                            <span className="text-3xl font-black text-red-400">{errors}</span>
+                        </div>
+                    </div>
+
                     <button
                         onClick={() => setupGame(true)}
-                        className="px-8 py-3 bg-white text-teal-900 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
+                        className="px-8 py-3 bg-white text-indigo-900 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
                     >
                         <RefreshCw className="w-5 h-5" />
-                        Jugar de nuevo
+                        {content.playAgain}
                     </button>
                 </motion.div>
             ) : (
@@ -257,7 +306,6 @@ export default function CapitalMatchingGame() {
 
                     {/* Left Column: Countries (Drop Targets) */}
                     <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
-                        <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">Países</h3>
                         {sortedCountries.map((item) => {
                             const isMatched = !!matches[item.id];
                             return (
@@ -269,23 +317,23 @@ export default function CapitalMatchingGame() {
                                     className={`
                                         relative flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300
                                         ${isMatched
-                                            ? 'bg-emerald-500/10 border-emerald-500/50'
+                                            ? 'bg-indigo-500/10 border-indigo-500/50 order-last opacity-60'
                                             : 'bg-white/5 border-dashed border-white/10 hover:border-white/30'
                                         }
                                     `}
                                 >
-                                    <span className={`font-bold text-lg ${isMatched ? 'text-emerald-300' : 'text-white'}`}>
+                                    <span className={`font-bold text-lg ${isMatched ? 'text-indigo-300' : 'text-white'}`}>
                                         {item.country}
                                     </span>
 
                                     <div className={`
-                                        h-10 px-4 rounded-lg flex items-center justify-center min-w-[120px] text-sm
+                                        h-10 px-4 rounded-lg flex items-center justify-center min-w-[120px] text-sm transition-all duration-300
                                         ${isMatched
-                                            ? 'bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-500/20'
+                                            ? 'bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-500/20'
                                             : 'bg-black/20 text-white/20'
                                         }
                                     `}>
-                                        {isMatched ? item.capital : 'Arrastra aquí'}
+                                        {isMatched ? item.capital : content.dragHere}
                                     </div>
                                 </motion.div>
                             );
@@ -294,10 +342,7 @@ export default function CapitalMatchingGame() {
 
                     {/* Right Column: Capitals (Draggables) */}
                     <div className="lg:col-span-2">
-                        <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center sticky top-4 bg-[#0f172a] z-10 py-2">
-                            Capitales Dispersas
-                        </h3>
-                        <div className="grid grid-cols-2 gap-3 sticky top-16">
+                        <div className="grid grid-cols-2 gap-3 sticky top-4">
                             <AnimatePresence>
                                 {capitals.filter(c => !Object.values(matches).includes(c.id)).map((item) => (
                                     <motion.div
@@ -320,7 +365,7 @@ export default function CapitalMatchingGame() {
                             </AnimatePresence>
                             {capitals.filter(c => !Object.values(matches).includes(c.id)).length === 0 && (
                                 <div className="col-span-2 text-center text-slate-500 py-12">
-                                    ¡Todas las capitales asignadas!
+                                    {content.allAssigned}
                                 </div>
                             )}
                         </div>

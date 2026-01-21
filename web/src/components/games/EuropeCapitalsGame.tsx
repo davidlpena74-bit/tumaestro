@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, RefreshCw, Timer, MapPin } from 'lucide-react';
-import { EUROPE_LIST, EUROPE_CAPITALS } from './data/capitals-data';
+import { EUROPE_LIST, EUROPE_CAPITALS, EUROPE_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
+import { useLanguage } from '@/context/LanguageContext';
 
 type MatchItem = {
     country: string;
@@ -12,10 +13,44 @@ type MatchItem = {
 };
 
 export default function EuropeCapitalsGame() {
+    const { language, t } = useLanguage();
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
     const [matches, setMatches] = useState<Record<string, string>>({}); // countryId -> capitalId
     const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
+
+    // Localized Texts
+    const TEXTS = {
+        es: {
+            title: 'Todas las Capitales',
+            desc: 'Desafío total: Arrastra las capitales de TODOS los países de Europa.',
+            subHeader: 'Europa Completa: Países y Capitales',
+            instruction: 'Encuentra la capital de cada país europeo.',
+            dragHere: 'Arrastra aquí',
+            startBtn: 'EMPEZAR RETO',
+            allAssigned: '¡Todas las capitales asignadas!',
+            playAgain: 'Jugar de nuevo',
+            congrats: '¡Impresionante!',
+            winMsg: 'Has completado el mapa político de toda Europa.',
+            countriesTitle: 'Países',
+            capitalsTitle: 'Capitales Dispersas'
+        },
+        en: {
+            title: 'All Capitals',
+            desc: 'Total Challenge: Drag the capitals of ALL European countries.',
+            subHeader: 'Full Europe: Countries & Capitals',
+            instruction: 'Find the capital of each European country.',
+            dragHere: 'Drop here',
+            startBtn: 'START CHALLENGE',
+            allAssigned: 'All capitals assigned!',
+            playAgain: 'Play Again',
+            congrats: 'Awesome!',
+            winMsg: 'You have completed the political map of Europe.',
+            countriesTitle: 'Countries',
+            capitalsTitle: 'Scattered Capitals'
+        }
+    };
+    const content = TEXTS[language];
 
     // Stats
     const [errors, setErrors] = useState(0);
@@ -30,7 +65,7 @@ export default function EuropeCapitalsGame() {
     // Initialize Game
     useEffect(() => {
         setupGame(false);
-    }, []);
+    }, [language]);
 
     // Timer Logic
     useEffect(() => {
@@ -71,10 +106,12 @@ export default function EuropeCapitalsGame() {
 
 
     const setupGame = (autoStart = false) => {
-        // Use EUROPE_LIST which contains ALL European countries
-        const pairs: MatchItem[] = EUROPE_LIST.map((country, idx) => ({
+        const list = language === 'es' ? EUROPE_LIST : EUROPE_LIST_EN;
+        const capitalsData = language === 'es' ? EUROPE_CAPITALS : EUROPE_CAPITALS_EN;
+
+        const pairs: MatchItem[] = list.map((country, idx) => ({
             country,
-            capital: EUROPE_CAPITALS[country] || 'Unknown',
+            capital: capitalsData[country] || 'Unknown',
             id: `pair-${idx}`
         }));
 
@@ -140,7 +177,7 @@ export default function EuropeCapitalsGame() {
             const newMatches = { ...matches, [targetCountryId]: capitalId };
             setMatches(newMatches);
 
-            if (Object.keys(newMatches).length === EUROPE_LIST.length) {
+            if (Object.keys(newMatches).length === countries.length) {
                 setGameState('won');
             }
         } else {
@@ -155,7 +192,7 @@ export default function EuropeCapitalsGame() {
         return isAMatched ? 1 : -1;
     });
 
-    const progress = (Object.keys(matches).length / EUROPE_LIST.length) * 100;
+    const progress = (Object.keys(matches).length / countries.length) * 100;
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -172,15 +209,15 @@ export default function EuropeCapitalsGame() {
                     <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
                         <MapPin className="w-12 h-12 text-purple-400" />
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Todas las Capitales</h2>
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">{content.title}</h2>
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                        Desafío total: Arrastra las capitales de TODOS los países de Europa.
+                        {content.desc}
                     </p>
                     <button
                         onClick={startGame}
                         className="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(168,85,247,0.5)] hover:shadow-[0_0_60px_-10px_rgba(168,85,247,0.6)] hover:-translate-y-1"
                     >
-                        <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                        <span className="relative z-10 flex items-center gap-2">{content.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
                     </button>
                 </div>
             )}
@@ -202,7 +239,7 @@ export default function EuropeCapitalsGame() {
             {/* Header / Stats */}
             <div className="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-white/10 pb-4 gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-white mb-2">Europa Completa: Países y Capitales</h2>
+                    <h2 className="text-3xl font-bold text-white mb-2">{content.subHeader}</h2>
                     <div className="flex gap-6 text-slate-400">
                         <div className="flex items-center gap-2">
                             <Timer className="w-5 h-5 text-purple-400" />
@@ -211,13 +248,13 @@ export default function EuropeCapitalsGame() {
                         <div className="flex items-center gap-2">
                             <X className="w-5 h-5 text-red-400" />
                             <span className="font-bold text-xl text-white">{errors}</span>
-                            <span className="text-sm">Fallos</span>
+                            <span className="text-sm">{t.common.errors}</span>
                         </div>
                     </div>
                 </div>
                 <div className="text-right">
                     <div className="text-4xl font-black text-purple-400">
-                        {Object.keys(matches).length} <span className="text-xl text-slate-500">/ {EUROPE_LIST.length}</span>
+                        {Object.keys(matches).length} <span className="text-xl text-slate-500">/ {countries.length}</span>
                     </div>
                 </div>
             </div>
@@ -240,16 +277,16 @@ export default function EuropeCapitalsGame() {
                     <div className="inline-flex p-4 rounded-full bg-purple-500/20 text-purple-300 mb-6">
                         <Check className="w-12 h-12" />
                     </div>
-                    <h3 className="text-4xl font-bold text-white mb-4">¡Impresionante!</h3>
-                    <p className="text-xl text-slate-300 mb-8">Has completado el mapa político de toda Europa.</p>
+                    <h3 className="text-4xl font-bold text-white mb-4">{content.congrats}</h3>
+                    <p className="text-xl text-slate-300 mb-8">{content.winMsg}</p>
 
                     <div className="flex justify-center gap-8 mb-8">
                         <div className="flex flex-col items-center">
-                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">Tiempo</span>
+                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.time}</span>
                             <span className="text-3xl font-black text-white">{formatTime(elapsedTime)}</span>
                         </div>
                         <div className="flex flex-col items-center">
-                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">Fallos</span>
+                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.errors}</span>
                             <span className="text-3xl font-black text-red-400">{errors}</span>
                         </div>
                     </div>
@@ -259,14 +296,14 @@ export default function EuropeCapitalsGame() {
                         className="px-8 py-3 bg-white text-purple-900 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
                     >
                         <RefreshCw className="w-5 h-5" />
-                        Jugar de nuevo
+                        {content.playAgain}
                     </button>
                 </motion.div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Left Column: Countries (Drop Targets) */}
                     <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
-                        <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">Países</h3>
+                        <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">{content.countriesTitle}</h3>
                         {sortedCountries.map((item) => {
                             const isMatched = !!matches[item.id];
                             return (
@@ -294,7 +331,7 @@ export default function EuropeCapitalsGame() {
                                             : 'bg-black/20 text-white/20'
                                         }
                                     `}>
-                                        {isMatched ? item.capital : 'Arrastra aquí'}
+                                        {isMatched ? item.capital : content.dragHere}
                                     </div>
                                 </motion.div>
                             );
@@ -304,7 +341,7 @@ export default function EuropeCapitalsGame() {
                     {/* Right Column: Capitals (Draggables) */}
                     <div className="lg:col-span-2">
                         <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center sticky top-4 bg-[#0f172a] z-10 py-2">
-                            Capitales Dispersas
+                            {content.capitalsTitle}
                         </h3>
                         <div className="grid grid-cols-2 gap-3 sticky top-16">
                             <AnimatePresence>
@@ -329,7 +366,7 @@ export default function EuropeCapitalsGame() {
                             </AnimatePresence>
                             {capitals.filter(c => !Object.values(matches).includes(c.id)).length === 0 && (
                                 <div className="col-span-2 text-center text-slate-500 py-12">
-                                    ¡Todas las capitales asignadas!
+                                    {content.allAssigned}
                                 </div>
                             )}
                         </div>
