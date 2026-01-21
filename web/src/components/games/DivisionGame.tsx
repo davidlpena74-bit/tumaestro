@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Trophy } from 'lucide-react';
+import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Trophy, Timer } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-type GameState = 'playing' | 'feedback' | 'finished';
+type GameState = 'start' | 'playing' | 'feedback' | 'finished';
 
 interface DivisionProblem {
     dividend: number; // Total items
@@ -17,7 +17,7 @@ interface DivisionProblem {
 export default function DivisionGame() {
     const [level, setLevel] = useState(1);
     const [points, setPoints] = useState(0);
-    const [gameState, setGameState] = useState<GameState>('playing');
+    const [gameState, setGameState] = useState<GameState>('start');
     const [problem, setProblem] = useState<DivisionProblem>({ dividend: 6, divisor: 2, quotient: 3, remainder: 0 });
     const [distributedCounts, setDistributedCounts] = useState<number[]>([]); // Items per person currently
     const [itemsLeft, setItemsLeft] = useState(0);
@@ -26,7 +26,7 @@ export default function DivisionGame() {
     const [streak, setStreak] = useState(0);
 
     // Generate new problem
-    const generateProblem = () => {
+    const generateProblem = (targetState: GameState = 'playing') => {
         let maxDividend = 12;
         let maxDivisor = 3;
 
@@ -55,14 +55,16 @@ export default function DivisionGame() {
         setProblem({ dividend, divisor, quotient, remainder });
         setItemsLeft(dividend);
         setDistributedCounts(new Array(divisor).fill(0));
-        setGameState('playing');
+        setGameState(targetState);
         setUserAnswer('');
         setUserRemainder('');
     };
 
     useEffect(() => {
-        generateProblem();
+        generateProblem('start');
     }, []);
+
+    const startGame = () => setGameState('playing');
 
     // Distribute one item to all (animation helper)
     const distributeOneRound = () => {
@@ -110,7 +112,26 @@ export default function DivisionGame() {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-4">
+        <div className="w-full max-w-4xl mx-auto p-4 relative">
+
+            {/* START OVERLAY */}
+            {gameState === 'start' && (
+                <div className="absolute inset-0 z-50 bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
+                    <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30">
+                        <Pizza className="w-16 h-16 text-orange-500" />
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">División de Pizzas</h2>
+                    <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                        ¡Ayuda a repartir las pizzas entre los amigos! Aprende a dividir de forma visual y divertida.
+                    </p>
+                    <button
+                        onClick={startGame}
+                        className="group relative px-8 py-4 bg-orange-500 hover:bg-orange-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1"
+                    >
+                        <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                    </button>
+                </div>
+            )}
 
             {/* HUD */}
             <div className="flex justify-between items-center mb-8 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">

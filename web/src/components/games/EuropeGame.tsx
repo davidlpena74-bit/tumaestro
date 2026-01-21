@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, RotateCcw, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
+import { Trophy, Globe, RotateCcw, ZoomIn, ZoomOut, Maximize, Minimize, Timer } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { EUROPE_PATHS } from './data/europe-paths';
 
@@ -66,7 +66,7 @@ export default function EuropeGame() {
     const [targetCountry, setTargetCountry] = useState('');
     const [score, setScore] = useState(0);
     const [errors, setErrors] = useState(0);
-    const [gameState, setGameState] = useState<'playing' | 'won' | 'finished'>('playing');
+    const [gameState, setGameState] = useState<'start' | 'playing' | 'won' | 'finished'>('start');
     const [message, setMessage] = useState('');
 
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
@@ -93,12 +93,23 @@ export default function EuropeGame() {
         setLoading(false);
     }, []);
 
-    // Start Selection
+    // Start Selection - ONLY if playing
     useEffect(() => {
-        if (!loading && remainingCountries.length > 0 && !targetCountry) {
+        if (gameState === 'playing' && !loading && remainingCountries.length > 0 && !targetCountry) {
             nextTurn(remainingCountries);
         }
-    }, [loading, remainingCountries, targetCountry]);
+    }, [loading, remainingCountries, targetCountry, gameState]);
+
+    const startGame = () => {
+        setGameState('playing');
+        setScore(0);
+        setErrors(0);
+        setAttempts(0);
+        setFailedCountries([]);
+        setTargetCountry('');
+        // Ensure countries are reset if needed, usually they are set in mount
+        // logic above will catch gameState change and trigger nextTurn
+    };
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
@@ -267,6 +278,25 @@ export default function EuropeGame() {
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
             >
+
+                {/* START OVERLAY */}
+                {gameState === 'start' && (
+                    <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                        <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
+                            <Globe className="w-12 h-12 text-blue-400" />
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Mapa de Europa</h2>
+                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                            Pon a prueba tu geografía. ¿Puedes ubicar todos los países del continente?
+                        </p>
+                        <button
+                            onClick={startGame}
+                            className="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.6)] hover:-translate-y-1"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                        </button>
+                    </div>
+                )}
 
                 {/* Fullscreen HUD Overlay */}
                 {isFullscreen && (

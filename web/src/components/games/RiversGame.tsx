@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, RotateCcw, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
+import { Trophy, Globe, RotateCcw, ZoomIn, ZoomOut, Maximize, Minimize, Timer } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { RIVERS_PATHS } from './data/rivers-paths';
 import { SPANISH_COMMUNITIES_PATHS } from './spanish-communities-paths'; // For Background
@@ -11,7 +11,7 @@ export default function RiversGame() {
     const [targetRiver, setTargetRiver] = useState('');
     const [score, setScore] = useState(0);
     const [errors, setErrors] = useState(0);
-    const [gameState, setGameState] = useState<'playing' | 'won' | 'finished'>('playing');
+    const [gameState, setGameState] = useState<'start' | 'playing' | 'won' | 'finished'>('start');
     const [message, setMessage] = useState('');
     const [remainingRivers, setRemainingRivers] = useState<string[]>([]);
 
@@ -33,13 +33,24 @@ export default function RiversGame() {
     useEffect(() => {
         const rivers = Object.keys(RIVERS_PATHS);
         setRemainingRivers(rivers);
-        nextTurn(rivers);
-        setCompletedRivers([]);
+        // Don't start automatically
 
         const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
         document.addEventListener('fullscreenchange', handleFsChange);
         return () => document.removeEventListener('fullscreenchange', handleFsChange);
     }, []);
+
+    const startGame = () => {
+        setGameState('playing');
+        setScore(0);
+        setErrors(0);
+        setAttempts(0);
+        setFailedRivers([]);
+        setCompletedRivers([]);
+        const rivers = Object.keys(RIVERS_PATHS);
+        setRemainingRivers(rivers);
+        nextTurn(rivers);
+    };
 
     // Auto-clear message
     useEffect(() => {
@@ -186,6 +197,24 @@ export default function RiversGame() {
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
             >
+                {/* START OVERLAY */}
+                {gameState === 'start' && (
+                    <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                        <div className="bg-cyan-500/10 p-4 rounded-full mb-6 ring-1 ring-cyan-500/30">
+                            <Globe className="w-12 h-12 text-cyan-400" />
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Ríos de España</h2>
+                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                            ¿Conoces la hidrografía española? Encuentra los ríos principales en el mapa.
+                        </p>
+                        <button
+                            onClick={startGame}
+                            className="group relative px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(6,182,212,0.5)] hover:shadow-[0_0_60px_-10px_rgba(6,182,212,0.6)] hover:-translate-y-1"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                        </button>
+                    </div>
+                )}
                 {/* Fullscreen HUD */}
                 {isFullscreen && (
                     <div className="absolute top-6 left-0 right-0 mx-auto w-[95%] max-w-6xl z-20 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-white/20 p-4 flex flex-col md:flex-row justify-between items-center shadow-2xl gap-4 animate-in slide-in-from-top duration-300">

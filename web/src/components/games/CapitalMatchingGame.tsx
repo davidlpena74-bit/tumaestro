@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, RefreshCw } from 'lucide-react';
+import { Check, X, RefreshCw, Timer, MapPin } from 'lucide-react';
 import { EU_MEMBERS_LIST, EUROPE_CAPITALS } from './data/capitals-data';
 
 type MatchItem = {
@@ -15,7 +15,7 @@ export default function CapitalMatchingGame() {
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
     const [matches, setMatches] = useState<Record<string, string>>({}); // countryId -> capitalId
-    const [completed, setCompleted] = useState(false);
+    const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
 
     // Custom Drag State
     const [draggedItem, setDraggedItem] = useState<MatchItem | null>(null);
@@ -24,7 +24,7 @@ export default function CapitalMatchingGame() {
 
     // Initialize Game
     useEffect(() => {
-        setupGame();
+        setupGame(false);
     }, []);
 
     // Global drag listener to update cursor position
@@ -54,7 +54,7 @@ export default function CapitalMatchingGame() {
     }, [isDragging]);
 
 
-    const setupGame = () => {
+    const setupGame = (autoStart = false) => {
         const pairs: MatchItem[] = EU_MEMBERS_LIST.map((country, idx) => ({
             country,
             capital: EUROPE_CAPITALS[country] || 'Unknown',
@@ -68,11 +68,14 @@ export default function CapitalMatchingGame() {
         setCapitals(sortedCapitals);
 
         setMatches({});
-        setCompleted(false);
+        setGameState(autoStart ? 'playing' : 'start');
     };
+
+    const startGame = () => setGameState('playing');
 
     // Standard HTML5 Drag Start (still needed for drop targets to recognize connection)
     const handleDragStart = (e: React.DragEvent, item: MatchItem) => {
+        if (gameState !== 'playing') return;
         // Create an invisible drag image to hide browser default ghost
         const emptyImg = new Image();
         emptyImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -99,6 +102,7 @@ export default function CapitalMatchingGame() {
     };
 
     const handleDrop = (e: React.DragEvent, targetCountryId: string) => {
+        if (gameState !== 'playing') return;
         e.preventDefault();
         const capitalId = e.dataTransfer.getData('capitalId');
 
@@ -117,7 +121,7 @@ export default function CapitalMatchingGame() {
             setMatches(newMatches);
 
             if (Object.keys(newMatches).length === EU_MEMBERS_LIST.length) {
-                setCompleted(true);
+                setGameState('won');
             }
         } else {
             // Visual feedback could be added here
@@ -128,6 +132,25 @@ export default function CapitalMatchingGame() {
 
     return (
         <div className="w-full max-w-6xl mx-auto p-4 md:p-8 relative">
+
+            {/* START OVERLAY */}
+            {gameState === 'start' && (
+                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
+                    <div className="bg-indigo-500/10 p-4 rounded-full mb-6 ring-1 ring-indigo-500/30">
+                        <MapPin className="w-12 h-12 text-indigo-400" />
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Capitales Europeas</h2>
+                    <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                        Arrastra cada capital a su país correspondiente. ¿Podrás completarlo?
+                    </p>
+                    <button
+                        onClick={startGame}
+                        className="group relative px-8 py-4 bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] hover:shadow-[0_0_60px_-10px_rgba(99,102,241,0.6)] hover:-translate-y-1"
+                    >
+                        <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                    </button>
+                </div>
+            )}
 
             {/* Custom Drag Layer (The "Cajita") */}
             {isDragging && draggedItem && (
@@ -165,7 +188,7 @@ export default function CapitalMatchingGame() {
                 />
             </div>
 
-            {completed ? (
+            {gameState === 'won' ? (
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -177,7 +200,7 @@ export default function CapitalMatchingGame() {
                     <h3 className="text-4xl font-bold text-white mb-4">¡Excelente!</h3>
                     <p className="text-xl text-slate-300 mb-8">Has completado el mapa político de la Unión Europea.</p>
                     <button
-                        onClick={setupGame}
+                        onClick={() => setupGame(true)}
                         className="px-8 py-3 bg-white text-teal-900 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
                     >
                         <RefreshCw className="w-5 h-5" />
@@ -242,14 +265,14 @@ export default function CapitalMatchingGame() {
                                         onDragEnd={handleDragEnd}
                                         className={`
                                             cursor-move p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-semibold text-center border-b-4 border-indigo-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all select-none
-                                            ${isDragging && draggedItem?.id === item.id ? 'opacity-0' : 'opacity-100'} 
+                                            ${isDragging && draggedItem?.id === item.id ? 'opacity-0' : 'opacity-100'}
                                         `}
                                     >
                                         {item.capital}
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
-                            {capitals.filter(c => !Object.values(matches).includes(c.id)).length === 0 && !completed && (
+                            {capitals.filter(c => !Object.values(matches).includes(c.id)).length === 0 && (
                                 <div className="col-span-2 text-center text-slate-500 py-12">
                                     ¡Todas las capitales asignadas!
                                 </div>
