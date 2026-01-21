@@ -1,22 +1,18 @@
 'use client';
 
-import CapitalGame from '@/components/games/CapitalGame';
-import { EU_PATHS } from '@/components/games/data/eu-paths';
-import { EU_MEMBERS_LIST } from '@/components/games/data/capitals-data';
+import CapitalMatchingGame from '@/components/games/CapitalMatchingGame';
 
 export default function EUCapitalsPage() {
     return (
-        <main className="min-h-screen bg-[#0f172a] pt-24 pb-12">
-            <div className="max-w-7xl mx-auto px-4">
-                <header className="text-center mb-8">
-                    <h1 className="text-4xl font-black text-white mb-2">Capitales de la Unión Europea</h1>
-                    <p className="text-slate-400">¿Conoces las capitales de los 27 estados miembros?</p>
-                </header>
-                <CapitalGame
-                    paths={EU_PATHS}
-                    targetList={EU_MEMBERS_LIST}
-                    title="Capitales de la UE"
-                />
+        <main className="min-h-screen bg-[#0f172a] pt-24 pb-12 relative overflow-hidden">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[100px]" />
+            </div>
+
+            <div className="relative z-10">
+                <CapitalMatchingGame />
             </div>
         </main>
     );
