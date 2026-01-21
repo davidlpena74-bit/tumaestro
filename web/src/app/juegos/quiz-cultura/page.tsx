@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export default function QuizCulturaPage() {
     return (
-        <main className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 text-white p-4 md:p-8">
+        <main className="min-h-screen bg-transparent text-white pt-32 pb-8 px-4 md:px-8">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-8">
                     <Link href="/juegos" className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors mb-4">

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function EuropeRiversPage() {
     return (
-        <div className="min-h-screen bg-[#0f172a] text-white p-4">
+        <div className="min-h-screen bg-transparent text-white pt-32 pb-8 px-4">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center gap-4 mb-8">
                     <Link

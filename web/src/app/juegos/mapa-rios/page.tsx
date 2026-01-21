@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export default function MapaRiosPage() {
     return (
-        <div className="min-h-screen bg-slate-950 flex flex-col">
+        <div className="min-h-screen bg-transparent flex flex-col pt-32">
             <Header />
             <main className="flex-1 flex flex-col items-center justify-center p-4 pt-24 relative overflow-hidden">
                 <div className="absolute inset-0 z-0">

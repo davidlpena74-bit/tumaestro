@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export default function MapaComunidadesPage() {
     return (
-        <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pt-28 pb-8 px-4 md:px-8">
+        <main className="min-h-screen bg-transparent text-white pt-32 pb-8 px-4 md:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">
                     <Link href="/juegos" className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors mb-4">

@@ -1,6 +1,6 @@
 export default function Terminos() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-teal-900 via-gray-900 to-black p-8 md:p-20 text-white font-sans">
+        <div className="min-h-screen bg-transparent pt-32 pb-12 px-4 md:px-20 text-white font-sans">
             <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-2xl">
                 <h1 className="text-4xl font-bold mb-8 text-teal-300">Términos y Condiciones</h1>
 

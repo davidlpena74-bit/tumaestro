@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export default function EuropeMapPage() {
     return (
-        <main className="min-h-screen bg-slate-950 pt-24 pb-12 px-4 relative overflow-hidden">
+        <main className="min-h-screen bg-transparent pt-32 pb-12 px-4 relative overflow-hidden">
 
             {/* Background Effects */}
             <div className="fixed inset-0 pointer-events-none">
