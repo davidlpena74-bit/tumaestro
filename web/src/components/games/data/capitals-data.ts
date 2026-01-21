@@ -113,3 +113,5 @@ export const EU_MEMBERS_LIST = [
     'Italia', 'Letonia', 'Lituania', 'Luxemburgo', 'Malta', 'Países Bajos', 'Polonia',
     'Portugal', 'Rumanía', 'Eslovaquia', 'Eslovenia', 'España', 'Suecia'
 ];
+
+export const EUROPE_LIST = Object.keys(EUROPE_CAPITALS).sort();
