@@ -30,7 +30,7 @@ const categories: Category[] = [
                 description: 'Nivel básico. Ubica las 17 comunidades en el mapa.',
                 href: '/juegos/mapa-comunidades',
                 icon: Map,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             },
             {
                 id: 'mapa',
@@ -38,7 +38,7 @@ const categories: Category[] = [
                 description: 'Nivel difícil. ¿Puedes encontrar las 52 provincias?',
                 href: '/juegos/mapa-provincias',
                 icon: Map,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             },
             {
                 id: 'europe',
@@ -46,7 +46,7 @@ const categories: Category[] = [
                 description: 'Localiza los principales países del continente europeo.',
                 href: '/juegos/mapa-europa',
                 icon: Map,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             },
             {
                 id: 'capitals-ue',
@@ -54,7 +54,7 @@ const categories: Category[] = [
                 description: '¿Sabes cuáles son las 27 capitales de la Unión Europea?',
                 href: '/juegos/capitales-ue',
                 icon: Map,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             },
             {
                 id: 'capitals-europe',
@@ -62,7 +62,7 @@ const categories: Category[] = [
                 description: 'Reto maestro: Las 50 capitales del continente.',
                 href: '/juegos/capitales-europa',
                 icon: Map,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             },
             {
                 id: 'rios',
@@ -70,7 +70,7 @@ const categories: Category[] = [
                 description: 'Identifica los principales ríos de la península.',
                 href: '/juegos/mapa-rios',
                 icon: Map,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             },
             {
                 id: 'capitals-ue-match',
@@ -78,7 +78,7 @@ const categories: Category[] = [
                 description: 'Juego de arrastrar. Empareja países y capitales de la Unión Europea.',
                 href: '/juegos/capitales-ue-match',
                 icon: Puzzle,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             },
             {
                 id: 'capitals-europe-match',
@@ -86,7 +86,7 @@ const categories: Category[] = [
                 description: 'Reto final de arrastrar. Las 50 capitales del continente.',
                 href: '/juegos/capitales-europa-match',
                 icon: Puzzle,
-                color: 'from-amber-500 to-orange-600',
+                color: 'from-emerald-500 to-teal-600',
             }
         ]
     },
@@ -100,7 +100,7 @@ const categories: Category[] = [
                 description: 'Reparte pizzas entre amigos. Juego visual de matemáticas.',
                 href: '/juegos/divisiones',
                 icon: Calculator,
-                color: 'from-orange-500 to-yellow-500',
+                color: 'from-orange-500 to-amber-600',
             }
         ]
     },
@@ -114,7 +114,7 @@ const categories: Category[] = [
                 description: 'Preguntas de historia, ciencia y arte. Pon a prueba tu mente.',
                 href: '/juegos/quiz-cultura',
                 icon: BrainCircuit,
-                color: 'from-indigo-500 to-purple-500',
+                color: 'from-violet-500 to-indigo-600',
             }
         ]
     }
