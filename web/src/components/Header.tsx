@@ -47,7 +47,7 @@ export default function Header() {
                     <div className="relative">
                         <button
                             onClick={() => setLangMenuOpen(!langMenuOpen)}
-                            className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-full text-sm font-bold text-white transition-all min-w-[90px] justify-between"
+                            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 pl-4 pr-3 py-2 rounded-full text-sm font-bold text-white transition-all"
                         >
                             <span className="flex items-center gap-2">
                                 <span className="text-lg">{language === 'es' ? '🇪🇸' : '🇺🇸'}</span>
