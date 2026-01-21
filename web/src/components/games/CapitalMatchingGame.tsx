@@ -128,6 +128,13 @@ export default function CapitalMatchingGame() {
         }
     };
 
+    const sortedCountries = [...countries].sort((a, b) => {
+        const isAMatched = !!matches[a.id];
+        const isBMatched = !!matches[b.id];
+        if (isAMatched === isBMatched) return a.country.localeCompare(b.country);
+        return isAMatched ? 1 : -1;
+    });
+
     const progress = (Object.keys(matches).length / EU_MEMBERS_LIST.length) * 100;
 
     return (
@@ -213,10 +220,11 @@ export default function CapitalMatchingGame() {
                     {/* Left Column: Countries (Drop Targets) */}
                     <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
                         <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">Países</h3>
-                        {countries.map((item) => {
+                        {sortedCountries.map((item) => {
                             const isMatched = !!matches[item.id];
                             return (
-                                <div
+                                <motion.div
+                                    layout
                                     key={item.id}
                                     onDragOver={!isMatched ? handleDragOver : undefined}
                                     onDrop={!isMatched ? (e) => handleDrop(e, item.id) : undefined}
@@ -241,7 +249,7 @@ export default function CapitalMatchingGame() {
                                     `}>
                                         {isMatched ? item.capital : 'Arrastra aquí'}
                                     </div>
-                                </div>
+                                </motion.div>
                             );
                         })}
                     </div>
