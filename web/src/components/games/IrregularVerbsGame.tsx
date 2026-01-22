@@ -35,29 +35,52 @@ export default function IrregularVerbsGame() {
 
     const currentVerb = verbs[currentIndex];
 
-    const playAudio = (text: string) => {
-        // Try to play natural audio from trusted dictionary source (US English)
-        const audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${text}&type=2`);
-        audio.play().catch(() => {
-            // Fallback to browser TTS if offline or error
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
+    const playAudio = (text: string): Promise<void> => {
+        return new Promise((resolve) => {
+            // Try to play natural audio from trusted dictionary source (US English)
+            const audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${text}&type=2`);
 
-            // Try to find a better voice if available (Google US English usually sounds better than default)
-            const voices = window.speechSynthesis.getVoices();
-            const preferredVoice = voices.find(v => v.name.includes('Google US English')) ||
-                voices.find(v => v.lang === 'en-US');
+            audio.onended = () => resolve();
+            audio.onerror = () => {
+                // Fallback to browser TTS if offline or error
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
 
-            if (preferredVoice) {
-                utterance.voice = preferredVoice;
-            }
+                // Try to find a better voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(v => v.name.includes('Google US English')) ||
+                    voices.find(v => v.lang === 'en-US');
 
-            window.speechSynthesis.speak(utterance);
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                }
+
+                utterance.onend = () => resolve();
+                utterance.onerror = () => resolve(); // Resolve on error to continue sequence
+
+                window.speechSynthesis.speak(utterance);
+            };
+
+            audio.play().catch(() => {
+                // Handle play error (e.g. user interaction policy) by triggering fallback
+                audio.onerror && audio.onerror(new Event('error'));
+            });
         });
+    };
+
+    const playSequence = async (texts: string[]) => {
+        for (const text of texts) {
+            await playAudio(text);
+            // Small pause between words
+            await new Promise(r => setTimeout(r, 300));
+        }
     };
 
     const checkAnswer = () => {
         if (!currentVerb) return;
+
+        // Play the full sequence: Infinitive -> Past Simple -> Past Participle
+        playSequence([currentVerb.infinitive, currentVerb.pastSimple, currentVerb.pastParticiple]);
 
         const isPastSimpleCorrect = inputs.pastSimple.toLowerCase().trim() === currentVerb.pastSimple.toLowerCase();
         // Allow simple match or match with alternatives if any (but here data is simple string)
