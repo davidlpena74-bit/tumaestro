@@ -7,6 +7,12 @@ import confetti from 'canvas-confetti';
 import { RIVERS_PATHS } from './data/rivers-paths';
 import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from './spanish-communities-paths'; // For Background
 import { calculatePathCentroid } from '@/lib/svg-utils';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 export default function RiversGame() {
     const [targetRiver, setTargetRiver] = useState('');
@@ -404,6 +410,22 @@ export default function RiversGame() {
                         </g>
                     </svg>
                 )}
+
+                {/* Visual Feedback Message */}
+                <AnimatePresence>
+                    {message && (
+                        <div className="absolute top-24 left-0 right-0 flex justify-center pointer-events-none z-30">
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                                className={`px-6 py-3 rounded-xl border shadow-xl backdrop-blur-md font-bold text-lg ${message.includes('Correcto') ? 'bg-green-500/90 border-green-400 text-white' : 'bg-red-500/90 border-red-400 text-white'}`}
+                            >
+                                {message}
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );
