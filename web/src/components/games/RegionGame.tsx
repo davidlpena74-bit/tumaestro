@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Timer, MapPin, RefreshCw, XCircle, CheckCircle, HelpCircle } from 'lucide-react';
+import { MapPin, ZoomIn, ZoomOut, Maximize, Minimize, HelpCircle, RefreshCw } from 'lucide-react';
+import { SPANISH_COMMUNITIES_PATHS } from './spanish-communities-paths';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { SPANISH_COMMUNITIES_PATHS } from './spanish-communities-paths';
+import GameHUD from './GameHUD';
+import { useGameLogic } from '@/hooks/useGameLogic';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -35,34 +37,68 @@ const REGION_DISPLAY_NAMES: Record<string, string> = {
 };
 
 export default function RegionGame() {
-    const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
+    // Note: RegionGame usually has 60s for Regions (fewer targets).
+    // Rivers has 120s. Let's use 60s here.
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame
+    } = useGameLogic({ initialTime: 60, penaltyTime: 5 });
+
     const [targetId, setTargetId] = useState<string | null>(null);
-    const [score, setScore] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(60); // 60s is enough for regions
-    const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'neutral' }>({ text: '', type: 'neutral' });
     const [clickedId, setClickedId] = useState<string | null>(null);
 
-    // Game Loop
+    // Zoom & Pan State
+    const [zoom, setZoom] = useState(1);
+    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const dragStart = useRef({ x: 0, y: 0 });
+    const isClick = useRef(true);
+
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const gameContainerRef = useRef<HTMLDivElement>(null);
+
+    // Fullscreen handlers
     useEffect(() => {
-        if (gameState === 'playing' && timeLeft > 0) {
-            const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-            return () => clearInterval(timer);
-        } else if (timeLeft === 0 && gameState === 'playing') {
-            setGameState('won');
+        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', handleFsChange);
+        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            gameContainerRef.current?.requestFullscreen();
+        } else {
+            document.exitFullscreen();
         }
-    }, [gameState, timeLeft]);
+    };
 
     const startGame = () => {
-        setGameState('playing');
-        setScore(0);
-        setTimeLeft(60);
+        hookStartGame();
+        setClickedId(null);
         pickNewTarget();
-        setMessage({ text: '', type: 'neutral' });
     };
 
     const pickNewTarget = () => {
         const keys = Object.keys(SPANISH_COMMUNITIES_PATHS);
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        // Simple random for now, could track remaining like other games
+        // But RegionGame original code was just random with replacement?
+        // Let's stick to original behavior for now, or improve it?
+        // Original: const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        // Ideally we should track completed ones to avoid repeats in a row or session.
+        // But for minimal refactor, let's keep random but maybe avoid immediate repeat.
+
+        let randomKey = keys[Math.floor(Math.random() * keys.length)];
+        if (targetId && keys.length > 1) {
+            while (randomKey === targetId) {
+                randomKey = keys[Math.floor(Math.random() * keys.length)];
+            }
+        }
+
         setTargetId(randomKey);
         setClickedId(null);
     };
@@ -74,94 +110,91 @@ export default function RegionGame() {
 
         if (id === targetId) {
             // Correct
-            setScore((prev) => prev + 100);
-            setMessage({ text: `¡Correcto! Es ${REGION_DISPLAY_NAMES[id] || id}`, type: 'success' });
+            addScore(100);
+            setMessage(`¡Correcto! Es ${REGION_DISPLAY_NAMES[id] || id}`);
             setTimeout(pickNewTarget, 600);
         } else {
             // Incorrect
-            setScore((prev) => Math.max(0, prev - 20));
-            setMessage({ text: '¡Esa no es! Intenta de nuevo.', type: 'error' });
+            addError();
+            // Original reduced score by 20. hook uses hook logic?
+            // hook has addScore but not removeScore easily exposed unless we add negative.
+            // addScore accepts negative?
+            // "addScore(points)" -> setScore(s => s + points).
+            // So we can do addScore(-20).
+            addScore(-20);
+            setMessage('¡Esa no es! Intenta de nuevo.');
         }
     };
 
+    // Pan Handlers
+    const handleMouseDown = (e: React.MouseEvent) => {
+        setIsDragging(true);
+        dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        setPan({
+            x: e.clientX - dragStart.current.x,
+            y: e.clientY - dragStart.current.y
+        });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const resetGame = () => {
+        hookResetGame();
+        setTargetId(null);
+        setClickedId(null);
+
+        // hookResetGame sets state to 'start' (or 'playing'? hook implementation usually resets to initial state).
+        // Let's accept 'start' state and let user click 'Start' again.
+        // Or if we want immediate restart:
+        // startGame();
+        // But GameHUD 'onReset' usually goes to start screen or restarts?
+        // In RiversGame it did: setGameState('playing'); nextTurn();
+        // Let's restart immediately.
+        startGame();
+    };
+
     return (
-        <div className="w-full max-w-5xl mx-auto p-4 flex flex-col items-center">
+        <div className="w-full max-w-6xl mx-auto p-4 flex flex-col items-center select-none">
 
-            {/* GAME HUD */}
-            <div className="w-full grid grid-cols-3 gap-4 mb-6 bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-xl items-center">
-
-                {/* Score */}
-                <div className="flex items-center gap-3 text-yellow-400">
-                    <div className="p-2 bg-yellow-500/10 rounded-lg">
-                        <Trophy className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <div className="text-xs text-yellow-500/70 font-bold uppercase tracking-wider">Puntos</div>
-                        <span className="text-2xl font-bold font-mono leading-none">{score}</span>
-                    </div>
-                </div>
-
-                {/* Target Display (Center) */}
-                <div className="flex justify-center">
-                    <AnimatePresence mode="wait">
-                        {targetId && gameState === 'playing' ? (
-                            <motion.div
-                                key={targetId}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 1.1 }}
-                                className="text-center"
-                            >
-                                <span className="text-gray-400 text-[10px] uppercase tracking-widest block mb-1">LOCALIZA</span>
-                                <span className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-400 drop-shadow-sm truncate max-w-[300px] block">
-                                    {REGION_DISPLAY_NAMES[targetId] || targetId}
-                                </span>
-                            </motion.div>
-                        ) : (
-                            <div className="flex items-center gap-2 text-gray-500 font-medium">
-                                <HelpCircle className="w-5 h-5" /> <span>Esperando...</span>
-                            </div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
-                {/* Timer (Right) */}
-                <div className="flex justify-end">
-                    <div className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-xl transition-colors font-mono font-bold text-xl border",
-                        timeLeft < 10 ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse" : "bg-slate-800 border-white/5 text-teal-400"
-                    )}>
-                        <Timer className="w-5 h-5" />
-                        {timeLeft}s
-                    </div>
-                </div>
-            </div>
-
-            {/* FEEDBACK BAR */}
-            <div className="h-10 mb-2 w-full flex justify-center">
-                <AnimatePresence>
-                    {message.text && (
-                        <motion.div
-                            key={message.text + gameState}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0 }}
-                            className={cn(
-                                "flex items-center gap-2 px-6 py-1.5 rounded-full text-sm font-bold shadow-lg border border-white/10",
-                                message.type === 'success' ? "bg-green-500/90 text-white" :
-                                    message.type === 'error' ? "bg-red-500/90 text-white" : "bg-slate-800 text-gray-300"
-                            )}
-                        >
-                            {message.type === 'success' && <CheckCircle className="w-4 h-4" />}
-                            {message.type === 'error' && <XCircle className="w-4 h-4" />}
-                            {message.text}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+            <GameHUD
+                title="Comunidades Autónomas"
+                score={score}
+                errors={errors}
+                timeLeft={timeLeft}
+                totalTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length}
+                remainingTargets={0} // Not tracking remaining in this simple mode
+                targetName={targetId ? (REGION_DISPLAY_NAMES[targetId] || targetId) : '...'}
+                message={message}
+                onReset={resetGame}
+                colorTheme="teal" // Using teal to match original styling
+                icon={<MapPin className="w-8 h-8 text-teal-400" />}
+            />
 
             {/* MAP CONTAINER */}
-            <div className="relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-2 md:p-6 overflow-hidden border border-white/5 shadow-2xl">
+            <div
+                ref={gameContainerRef}
+                className="relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group cursor-move"
+                onMouseDown={(e) => {
+                    isClick.current = true;
+                    handleMouseDown(e);
+                }}
+                onMouseMove={(e) => {
+                    if (isDragging) isClick.current = false;
+                    handleMouseMove(e);
+                }}
+                onMouseUp={() => {
+                    handleMouseUp();
+                    setTimeout(() => isClick.current = true, 50);
+                }}
+                onMouseLeave={handleMouseUp}
+            >
 
                 {/* START OVERLAY */}
                 {gameState === 'start' && (
@@ -177,15 +210,17 @@ export default function RegionGame() {
                             onClick={startGame}
                             className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
                         >
-                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <MapPin className="w-5 h-5 opacity-50" /></span>
                         </button>
                     </div>
                 )}
 
-                {/* GAME OVER OVERLAY */}
-                {gameState === 'won' && (
+                {/* GAME OVER OVERLAY - GameHUD handles standard messages, but if we want valid full screen overlay: */}
+                {gameState === 'finished' && ( // hooked uses 'finished'
                     <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                        <Trophy className="w-24 h-24 text-yellow-400 mb-6 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
+                        <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
+                            <MapPin className="w-16 h-16 text-yellow-400 animate-bounce" />
+                        </div>
                         <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
                         <div className="flex flex-col items-center gap-1 mb-8">
                             <span className="text-gray-400 text-sm uppercase tracking-widest">Puntuación Final</span>
@@ -198,6 +233,19 @@ export default function RegionGame() {
                         </button>
                     </div>
                 )}
+
+                {/* CONTROLS (Zoom/Full) */}
+                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.8))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
+                    <div className="h-2" />
+                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
+                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+                    </button>
+                    <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10" title="Reset View">
+                        <RefreshCw className="w-5 h-5" />
+                    </button>
+                </div>
 
                 {/* SVG MAP */}
                 <svg viewBox="0 0 700 700" className="w-full h-full drop-shadow-2xl">
@@ -219,51 +267,63 @@ export default function RegionGame() {
                         strokeDasharray="4 4"
                     />
 
-                    {/* Render Regions from New Map Source */}
-                    {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
-                        const isTarget = targetId === id;
-                        const isClicked = clickedId === id;
+                    <g
+                        transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
+                        style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
+                    >
+                        {/* Render Regions from New Map Source */}
+                        {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
+                            const isTarget = targetId === id;
+                            const isClicked = clickedId === id;
 
-                        // Dynamic class logic
-                        let fillClass = "fill-white/90";
-                        // Note: Using thicker stroke for regions vs provinces
-                        let strokeClass = "stroke-slate-900 stroke-[1.5]";
+                            // Dynamic class logic
+                            let fillClass = "fill-white/90";
+                            // Note: Using thicker stroke for regions vs provinces
+                            let strokeClass = "stroke-slate-900 stroke-[1.5]";
 
-                        if (gameState === 'playing') {
-                            fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
+                            if (gameState === 'playing') {
+                                fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
 
-                            if (isClicked) {
-                                strokeClass = "stroke-slate-900 stroke-[2]";
-                                if (isTarget) fillClass = "fill-green-500 animate-pulse";
-                                else fillClass = "fill-red-500";
+                                if (isClicked) {
+                                    strokeClass = "stroke-slate-900 stroke-[2]";
+                                    if (isTarget) fillClass = "fill-green-500 animate-pulse";
+                                    else fillClass = "fill-red-500";
+                                }
                             }
-                        }
 
-                        return (
-                            <g
-                                key={id}
-                                onClick={() => handleRegionClick(id)}
-                                style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
-                                className="group"
-                            >
-                                {paths.map((d, i) => (
-                                    <motion.path
-                                        key={i}
-                                        d={d}
-                                        className={cn(strokeClass, fillClass)}
-                                        initial={false}
-                                        animate={
-                                            (isClicked && isTarget) ? { scale: 1.02 } : {}
-                                        }
-                                        style={{ transformOrigin: 'center' }}
-                                    />
-                                ))}
-                            </g>
-                        );
-                    })}
+                            return (
+                                <g
+                                    key={id}
+                                    onClick={() => {
+                                        if (isClick.current) handleRegionClick(id);
+                                    }}
+                                    style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
+                                    className="group"
+                                >
+                                    {paths.map((d, i) => (
+                                        <motion.path
+                                            key={i}
+                                            d={d}
+                                            className={cn(strokeClass, fillClass)}
+                                            initial={false}
+                                            animate={
+                                                (isClicked && isTarget) ? { scale: 1.02 } : {}
+                                            }
+                                            style={{ transformOrigin: 'center' }}
+                                        />
+                                    ))}
+                                </g>
+                            );
+                        })}
+                    </g>
                 </svg>
 
             </div>
+
+            <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
+                <HelpCircle className="w-3 h-3" />
+                <span>Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.</span>
+            </p>
         </div>
     );
 }

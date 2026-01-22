@@ -7,17 +7,25 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { SPANISH_PROVINCES_PATHS, PROVINCE_NAMES } from './spanish-provinces';
 import confetti from 'canvas-confetti';
+import GameHUD from './GameHUD';
+import { useGameLogic } from '@/hooks/useGameLogic';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
 export default function MapGame() {
-    const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame
+    } = useGameLogic({ initialTime: 90, penaltyTime: 5 });
+
     const [targetId, setTargetId] = useState<string | null>(null);
-    const [score, setScore] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(90); // 90 seconds for provinces
-    const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'neutral' }>({ text: '', type: 'neutral' });
     const [clickedId, setClickedId] = useState<string | null>(null);
 
     const [attempts, setAttempts] = useState(0);
@@ -33,29 +41,11 @@ export default function MapGame() {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
-    // Game Loop
-    useEffect(() => {
-        if (gameState === 'playing' && timeLeft > 0) {
-            const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-            return () => clearInterval(timer);
-        } else if (timeLeft === 0 && gameState === 'playing') {
-            setGameState('won');
-        }
-    }, [gameState, timeLeft]);
-
     useEffect(() => {
         const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
         document.addEventListener('fullscreenchange', handleFsChange);
         return () => document.removeEventListener('fullscreenchange', handleFsChange);
     }, []);
-
-    // Auto-clear message after 1s
-    useEffect(() => {
-        if (message.text) {
-            const timer = setTimeout(() => setMessage({ text: '', type: 'neutral' }), 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [message.text]);
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
@@ -66,20 +56,23 @@ export default function MapGame() {
     };
 
     const startGame = () => {
-        setGameState('playing');
-        setScore(0);
+        hookStartGame();
         setAttempts(0);
         setCorrectCount(0);
-        setTimeLeft(90);
         pickNewTarget();
-        setMessage({ text: '', type: 'neutral' });
-        // Reset view on start? optional.
-        // setZoom(1); setPan({x:0, y:0}); 
     };
 
     const pickNewTarget = () => {
         const keys = Object.keys(PROVINCE_NAMES);
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        let randomKey = keys[Math.floor(Math.random() * keys.length)];
+
+        // Prevent repeating the same target immediately if possible
+        if (targetId && keys.length > 1) {
+            while (randomKey === targetId) {
+                randomKey = keys[Math.floor(Math.random() * keys.length)];
+            }
+        }
+
         setTargetId(randomKey);
         setClickedId(null);
     };
@@ -87,36 +80,23 @@ export default function MapGame() {
     const handleRegionClick = (id: string) => {
         if (gameState !== 'playing' || !targetId) return;
 
-        // Prevent click if we were dragging
-        // We handle this check in the mouseUp/onClick wrapper usually, 
-        // but here let's rely on the fact that if dragging, we probably moved significantly.
-        // Simple check: if isDragging was true recently? 
-        // Better: check distance in MouseUp, but here we are in onClick.
-        // We'll rely on the parent wrapper to stop propagation if it was a drag, 
-        // or just add a small check if we had `onClick` on parent too. 
-        // Since we put onClick on the `<g>`, it fires.
-
-        // The dragging logic is on the container. The paths capture clicks.
-        // We can check if `pan` changed significantly since `mouseDown`? 
-        // But `pan` updates on `mouseMove`. 
-        // Let's us a ref 'wasDragging' set on mouseMove.
-
         setClickedId(id);
         setAttempts(prev => prev + 1);
 
         if (id === targetId) {
             // Correct
-            setScore(s => s + 10);
+            addScore(10);
             setCorrectCount(prev => prev + 1);
-            setMessage({ text: `¡Bien! Es ${PROVINCE_NAMES[id]}`, type: 'success' });
+            setMessage(`¡Bien! Es ${PROVINCE_NAMES[id]}`);
             setTimeout(pickNewTarget, 600);
 
-            // Celebration if score is high?
-            if (score > 1000 && score % 1000 < 150) confetti({ particleCount: 50 });
+            // Celebration
+            if (score > 1000 && score % 1000 < 20) confetti({ particleCount: 50 });
         } else {
             // Incorrect
-            setScore((prev) => Math.max(0, prev - 30));
-            setMessage({ text: '¡Ups! Esa no es.', type: 'error' });
+            addScore(-30);
+            addError();
+            setMessage('¡Ups! Esa no es.');
         }
     };
 
@@ -142,84 +122,27 @@ export default function MapGame() {
     // Helper to check if it was a click or drag
     const isClick = useRef(true);
 
+    const resetGame = () => {
+        hookResetGame();
+        startGame();
+    };
+
     return (
         <div className="w-full max-w-7xl mx-auto p-4 flex flex-col items-center select-none">
 
-            {/* GAME HUD */}
-            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-xl items-center">
-
-                {/* Score */}
-                <div className="flex items-center justify-center md:justify-start gap-3 text-yellow-400 order-2 md:order-1">
-                    <div className="p-2 bg-yellow-500/10 rounded-lg">
-                        <Trophy className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <div className="text-xs text-yellow-500/70 font-bold uppercase tracking-wider">Puntos</div>
-                        <span className="text-2xl font-bold font-mono leading-none">{score}</span>
-                        <div className="text-[10px] text-yellow-600/60 mt-1 font-bold">
-                            {attempts > 0 ? Math.round((correctCount / attempts) * 100) : 100}% Acierto
-                        </div>
-                    </div>
-                </div>
-
-                {/* Target Display (Center) */}
-                <div className="flex justify-center order-1 md:order-2">
-                    <AnimatePresence mode="wait">
-                        {targetId && gameState === 'playing' ? (
-                            <motion.div
-                                key={targetId}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 1.1 }}
-                                className="text-center"
-                            >
-                                <span className="text-gray-400 text-[10px] uppercase tracking-widest block mb-1">LOCALIZA</span>
-                                <span className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-400 drop-shadow-sm truncate max-w-[300px] block">
-                                    {PROVINCE_NAMES[targetId]}
-                                </span>
-                            </motion.div>
-                        ) : (
-                            <div className="flex items-center gap-2 text-gray-500 font-medium">
-                                <HelpCircle className="w-5 h-5" /> <span>Esperando...</span>
-                            </div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
-                {/* Timer (Right) */}
-                <div className="flex justify-center md:justify-end order-3">
-                    <div className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-xl transition-colors font-mono font-bold text-xl border",
-                        timeLeft < 15 ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse" : "bg-slate-800 border-white/5 text-teal-400"
-                    )}>
-                        <Timer className="w-5 h-5" />
-                        {timeLeft}s
-                    </div>
-                </div>
-            </div>
-
-            {/* FEEDBACK BAR */}
-            <div className={`h-10 mb-2 w-full flex justify-center z-20 pointer-events-none transition-all duration-300 ${isFullscreen ? 'absolute top-36 md:top-32' : ''}`}>
-                <AnimatePresence>
-                    {message.text && (
-                        <motion.div
-                            key={message.text + gameState}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0 }}
-                            className={cn(
-                                "flex items-center gap-2 px-6 py-1.5 rounded-full text-sm font-bold shadow-lg border border-white/10 backdrop-blur-md pointer-events-auto",
-                                message.type === 'success' ? "bg-green-500/90 text-white" :
-                                    message.type === 'error' ? "bg-red-500/90 text-white" : "bg-slate-800 text-gray-300"
-                            )}
-                        >
-                            {message.type === 'success' && <CheckCircle className="w-4 h-4" />}
-                            {message.type === 'error' && <XCircle className="w-4 h-4" />}
-                            {message.text}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+            <GameHUD
+                title="Desafío Provincial"
+                score={score}
+                errors={errors}
+                timeLeft={timeLeft}
+                totalTargets={Object.keys(PROVINCE_NAMES).length}
+                remainingTargets={0} // Not tracking
+                targetName={targetId ? PROVINCE_NAMES[targetId] : '...'}
+                message={message}
+                onReset={resetGame}
+                colorTheme="teal"
+                icon={<Trophy className="w-8 h-8 text-teal-400" />}
+            />
 
             {/* MAP CONTAINER */}
             <div
@@ -235,43 +158,10 @@ export default function MapGame() {
                 }}
                 onMouseUp={() => {
                     handleMouseUp();
-                    // Reset isClick shortly after if needed, but the click event handler fires immediately after mouseup
                     setTimeout(() => isClick.current = true, 50);
                 }}
                 onMouseLeave={handleMouseUp}
             >
-
-                {/* Fullscreen HUD Overlay */}
-                {isFullscreen && (
-                    <div className="absolute top-6 left-0 right-0 mx-auto w-[95%] max-w-6xl z-20 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-white/20 p-4 flex flex-col md:flex-row justify-between items-center shadow-2xl gap-4 animate-in slide-in-from-top duration-300">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-teal-500/20 p-2 rounded-lg">
-                                <Trophy className="text-teal-400 w-6 h-6" />
-                            </div>
-                            <div>
-                                <span className="text-xs text-teal-300 font-bold uppercase block">Puntos</span>
-                                <span className="text-2xl font-black text-white">{score}</span>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col items-center flex-1">
-                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Encuentra</span>
-                            <span className="text-3xl font-black text-yellow-400 drop-shadow-sm animate-pulse truncate max-w-[400px]">
-                                {PROVINCE_NAMES[targetId!] || '...'}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center gap-4 text-right">
-                            <div className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-xl transition-colors font-mono font-bold text-xl border",
-                                timeLeft < 15 ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse" : "bg-slate-800 border-white/5 text-teal-400"
-                            )}>
-                                <Timer className="w-5 h-5" />
-                                {timeLeft}s
-                            </div>
-                        </div>
-                    </div>
-                )}
 
                 {/* CONTROLS (Zoom/Full) */}
                 <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
@@ -306,7 +196,7 @@ export default function MapGame() {
                 )}
 
                 {/* GAME OVER OVERLAY */}
-                {gameState === 'won' && (
+                {gameState === 'finished' && (
                     <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
                         <Trophy className="w-24 h-24 text-yellow-400 mb-6 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
                         <h2 className="text-4xl font-bold text-white mb-2">¡Tiempo Agotado!</h2>

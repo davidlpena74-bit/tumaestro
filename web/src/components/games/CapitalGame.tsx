@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, RotateCcw, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
+import { Globe, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PATH_TO_SPANISH_NAME, EUROPE_CAPITALS } from './data/capitals-data';
+import GameHUD from './GameHUD';
+import { useGameLogic } from '@/hooks/useGameLogic';
 
 interface CapitalGameProps {
     paths: Record<string, string>; // Map paths (English Key -> SVG Path)
@@ -13,13 +15,19 @@ interface CapitalGameProps {
 }
 
 export default function CapitalGame({ paths, targetList, title }: CapitalGameProps) {
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10 });
+
     const [loading, setLoading] = useState(true);
     const [targetCapital, setTargetCapital] = useState('');
     const [currentCountryName, setCurrentCountryName] = useState(''); // The country associated with the target capital
-    const [score, setScore] = useState(0);
-    const [errors, setErrors] = useState(0);
-    const [gameState, setGameState] = useState<'playing' | 'won' | 'finished'>('playing');
-    const [message, setMessage] = useState('');
 
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
     const [attempts, setAttempts] = useState(0);
@@ -52,35 +60,24 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
         setLoading(false);
     }, [paths, targetList]);
 
-    // Next turn
-    useEffect(() => {
-        if (!loading && remainingCountries.length > 0 && !targetCapital) {
-            nextTurn(remainingCountries);
-        }
-    }, [loading, remainingCountries, targetCapital]);
+    const startGame = () => {
+        hookStartGame();
+        setAttempts(0);
+        setFailedCountries([]);
+        setTargetCapital('');
+        setCurrentCountryName('');
 
-    const toggleFullscreen = () => {
-        if (!document.fullscreenElement) {
-            gameContainerRef.current?.requestFullscreen();
-            setIsFullscreen(true);
-        } else {
-            document.exitFullscreen();
-            setIsFullscreen(false);
+        // Re-calculate playable list to be safe
+        const pathCountries = Object.keys(paths).map(eng => PATH_TO_SPANISH_NAME[eng]).filter(Boolean);
+        let playable = pathCountries;
+        if (targetList) {
+            playable = pathCountries.filter(c => targetList.includes(c));
         }
+        playable = playable.filter(c => EUROPE_CAPITALS[c]);
+        setRemainingCountries(playable);
+
+        nextTurn(playable);
     };
-
-    useEffect(() => {
-        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
-        document.addEventListener('fullscreenchange', handleFsChange);
-        return () => document.removeEventListener('fullscreenchange', handleFsChange);
-    }, []);
-
-    useEffect(() => {
-        if (message) {
-            const timer = setTimeout(() => setMessage(''), 1500);
-            return () => clearTimeout(timer);
-        }
-    }, [message]);
 
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
@@ -107,7 +104,7 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
         // Is this the country for the target capital?
         if (clickedCountry === currentCountryName) {
             // Correct
-            setScore(s => s + 10);
+            addScore(10);
             setMessage(`¡Correcto! ${targetCapital} es la capital de ${clickedCountry}. 🎉`);
 
             const newRemaining = remainingCountries.filter(c => c !== currentCountryName);
@@ -115,10 +112,9 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
             nextTurn(newRemaining);
         } else {
             // Incorrect
+            addError();
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
-            setErrors(e => e + 1);
-            setScore(s => Math.max(0, s - 5));
 
             if (newAttempts >= 3) {
                 setMessage(`¡Fallaste! Era ${currentCountryName}. ❌`); // Reveal country
@@ -137,8 +133,7 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
     };
 
     const resetGame = () => {
-        setScore(0);
-        setErrors(0);
+        hookResetGame();
         setAttempts(0);
         setFailedCountries([]);
         setTargetCapital('');
@@ -154,7 +149,29 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
 
         setRemainingCountries(playable);
         setGameState('playing');
+
+        // Don't auto-start next turn on reset if just showing start screen, 
+        // but hookResetGame calls start usually? existing logic was confusing.
+        // Let's rely on standard flow: reset -> start screen or auto-start?
+        // In previous code resetGame setGameState('playing') immediately.
+        // Let's follow that.
+        nextTurn(playable);
     };
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            gameContainerRef.current?.requestFullscreen();
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    };
+    useEffect(() => {
+        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', handleFsChange);
+        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+    }, []);
 
     // Pan/Zoom Logic
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -172,53 +189,33 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
 
     const handleMouseUp = () => setIsDragging(false);
 
+    // Calculate total targets based on current configuration
+    const totalTargets = useMemo(() => {
+        const pathCountries = Object.keys(paths).map(eng => PATH_TO_SPANISH_NAME[eng]).filter(Boolean);
+        let playable = pathCountries;
+        if (targetList) {
+            playable = pathCountries.filter(c => targetList.includes(c));
+        }
+        return playable.filter(c => EUROPE_CAPITALS[c]).length;
+    }, [paths, targetList]);
+
+
     return (
         <div className="w-full max-w-6xl mx-auto p-4 select-none">
-            {/* HUD */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-xl gap-4">
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="bg-purple-500/20 p-3 rounded-xl">
-                        <Globe className="text-purple-400 w-8 h-8" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-black text-white">{score} <span className="text-sm font-normal text-purple-200">pts</span></h2>
-                        <div className="text-xs font-bold text-purple-300/70 mt-0">
-                            {(() => {
-                                const attempts = score + errors;
-                                return attempts > 0 ? Math.round((score / attempts) * 100) : 100;
-                            })()}% Acierto
-                        </div>
-                        <div className="flex gap-2 text-xs font-bold uppercase tracking-wider text-purple-300">
-                            <span>Restantes: {remainingCountries.length}</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="flex-1 text-center bg-slate-900/50 p-4 rounded-xl border border-white/10 w-full md:w-auto">
-                    <div className="text-gray-400 text-xs mb-1 uppercase tracking-widest font-bold">Busca la capital</div>
-                    <AnimatePresence mode='wait'>
-                        <motion.div
-                            key={targetCapital}
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
-                            className="text-2xl md:text-4xl font-black text-yellow-400 drop-shadow-sm truncate"
-                        >
-                            {gameState === 'finished' ? '¡COMPLETADO!' : targetCapital || 'Cargando...'}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
-
-                <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-                    <div className="flex flex-col items-end mr-4">
-                        <span className="text-red-400 font-bold text-lg">{errors}</span>
-                        <span className="text-red-400/60 text-xs uppercase">Fallos</span>
-                    </div>
-                    <button onClick={resetGame} className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition text-white border border-white/5" title="Reiniciar">
-                        <RotateCcw className="w-6 h-6" />
-                    </button>
-                </div>
-            </div>
+            <GameHUD
+                title={title}
+                score={score}
+                errors={errors}
+                timeLeft={timeLeft}
+                totalTargets={totalTargets}
+                remainingTargets={remainingCountries.length}
+                targetName={targetCapital} // Showing Capital as target
+                message={message}
+                onReset={resetGame}
+                colorTheme="purple"
+                icon={<Globe className="w-8 h-8 text-purple-400" />}
+            />
 
             {/* Map */}
             <div
@@ -229,62 +226,77 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
             >
-                {/* Fullscreen HUD */}
-                {isFullscreen && (
-                    <div className="absolute top-6 left-0 right-0 mx-auto w-[95%] max-w-6xl z-20 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-white/20 p-4 flex justify-between items-center shadow-2xl animate-in slide-in-from-top">
-                        <div className="flex items-center gap-4">
-                            <span className="text-2xl font-black text-white">{score} <span className="text-sm font-normal text-purple-200">pts</span></span>
+                {/* START OVERLAY */}
+                {gameState === 'start' && (
+                    <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                        <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
+                            <Globe className="w-12 h-12 text-purple-400" />
                         </div>
-                        <div className="flex flex-col items-center">
-                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Busca</span>
-                            <span className="text-3xl font-black text-yellow-400 drop-shadow-sm">{targetCapital}</span>
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">{title}</h2>
+                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                            Busca la capital mostrada en el mapa.
+                        </p>
+                        <button
+                            onClick={startGame}
+                            className="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(168,85,247,0.5)] hover:shadow-[0_0_60px_-10px_rgba(168,85,247,0.6)] hover:-translate-y-1"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Globe className="w-5 h-5 opacity-50" /></span>
+                        </button>
+                    </div>
+                )}
+
+                {/* FINISHED OVERLAY */}
+                {gameState === 'finished' && (
+                    <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                        <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
+                            <Globe className="w-16 h-16 text-yellow-400 animate-bounce" />
                         </div>
-                        <div>
-                            <span className="text-xl font-bold text-red-400">{errors} <span className="text-xs text-red-300">Fallos</span></span>
-                        </div>
+                        <h3 className="text-5xl font-black text-white mb-6">
+                            {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Juego Completado!'}
+                        </h3>
+                        <p className="text-2xl text-purple-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
+                        <button
+                            onClick={resetGame}
+                            className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-purple-500/20 transition-transform active:scale-95"
+                        >
+                            Jugar Otra Vez
+                        </button>
                     </div>
                 )}
 
                 {/* Controls */}
-                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 border border-white/10"><ZoomIn className="w-5 h-5" /></button>
-                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 border border-white/10"><ZoomOut className="w-5 h-5" /></button>
+                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
                     <div className="h-2" />
-                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 border border-white/10">
+                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
                         {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                     </button>
                 </div>
 
-                {gameState === 'finished' ? (
-                    <div className="text-center p-8 z-10" onMouseDown={e => e.stopPropagation()}>
-                        <Trophy className="w-32 h-32 text-yellow-400 mx-auto mb-6 animate-bounce" />
-                        <h3 className="text-5xl font-black text-white mb-6">¡Juego Completado!</h3>
-                        <p className="text-2xl text-purple-200 mb-10">Puntuación: <strong className="text-white">{score}</strong></p>
-                        <button onClick={resetGame} className="bg-gradient-to-r from-purple-500 to-indigo-600 px-10 py-4 rounded-xl font-bold text-xl text-white shadow-xl hover:scale-105 transition">Jugar Otra Vez</button>
-                    </div>
-                ) : (
+                {/* MAP */}
+                {(gameState === 'playing' || gameState === 'start') && (
                     <svg viewBox="0 0 800 600" className="w-full h-full pointer-events-none" style={{ background: '#1e293b' }}>
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                             {Object.entries(paths).map(([engName, pathD]) => {
                                 const spanishName = PATH_TO_SPANISH_NAME[engName];
                                 const isTarget = spanishName === currentCountryName;
                                 const isCompleted = spanishName && !remainingCountries.includes(spanishName);
-                                const isFailed = failedCountries.includes(spanishName);
+                                const isFailed = failedCountries.includes(spanishName || '');
 
                                 // Logic for opacity/visibility
-                                // If we have a targetList (EU only), maybe dim non-EU countries?
                                 const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
 
                                 return (
                                     <motion.path
                                         key={engName}
                                         d={pathD}
-                                        className={`stroke-[0.5px] pointer-events-auto ${isInTargetList ? 'cursor-pointer stroke-slate-900/30 hover:stroke-slate-900 hover:stroke-[1px]' : 'fill-slate-800/20 stroke-slate-800/10'}`}
+                                        className={`stroke-[0.5px] pointer-events-auto ${isInTargetList ? 'cursor-pointer stroke-white hover:stroke-white hover:stroke-[1px]' : 'fill-slate-800/20 stroke-slate-800/10'}`}
                                         initial={false}
                                         animate={{
                                             fill: isCompleted
                                                 ? (isFailed ? '#ef4444' : '#10b981') // Red or Green
-                                                : (isInTargetList ? '#ffffff' : '#1e293b'), // Playable (White) vs Background
+                                                : (isInTargetList ? '#475569' : '#1e293b'), // Playable (Slate-600) vs Background
                                             opacity: isInTargetList ? 1 : 0.3
                                         }}
                                         whileHover={isInTargetList && !isCompleted ? {
@@ -304,27 +316,12 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
                         </g>
                     </svg>
                 )}
-
-                {/* Feedback */}
-                <AnimatePresence>
-                    {message && (
-                        <div className="absolute top-24 left-0 right-0 flex justify-center pointer-events-none z-30">
-                            <motion.div
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0 }}
-                                className={`px-6 py-3 rounded-xl border shadow-xl backdrop-blur-md font-bold text-lg ${message.includes('Correcto') ? 'bg-green-500/90 border-green-400 text-white' : 'bg-red-500/90 border-red-400 text-white'}`}
-                            >
-                                {message}
-                            </motion.div>
-                        </div>
-                    )}
-                </AnimatePresence>
             </div>
 
-            <p className="text-center text-slate-500 mt-6 text-sm">
-                Encuentra el país correspondiente a la capital mostrada.
-            </p>
+            {/* Disclaimer or other footer text if needed */}
         </div>
     );
 }
+
+// Helper to calculate initial target count outside if needed, or just memo inside.
+import { useMemo } from 'react';

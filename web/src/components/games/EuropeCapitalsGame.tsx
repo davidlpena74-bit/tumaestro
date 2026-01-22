@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, RefreshCw, Timer, MapPin } from 'lucide-react';
+import { Globe, RefreshCw, Timer, MapPin } from 'lucide-react';
 import { EUROPE_LIST, EUROPE_CAPITALS, EUROPE_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
 import { useLanguage } from '@/context/LanguageContext';
+import GameHUD from './GameHUD';
+import { useGameLogic } from '@/hooks/useGameLogic';
 
 type MatchItem = {
     country: string;
@@ -15,48 +17,25 @@ type MatchItem = {
 
 export default function EuropeCapitalsGame() {
     const { language, t } = useLanguage();
+
+    // We'll use useGameLogic score/errors/timer, but handle gameState locally if needed or map it
+    // Drag & Drop usually is "until finished", timer counts up or down? Original code counted UP.
+    // Let's stick to standard behavior: Count DOWN from a generous time? Or stick to UP?
+    // User requested "MARCADOR", which usually implies the same look (Timer counting down).
+    // Let's give it 5 minutes (300s).
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame
+    } = useGameLogic({ initialTime: 300, penaltyTime: 0 }); // No time penalty for drag errors, just error count? Or maybe -10s?
+
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
     const [matches, setMatches] = useState<Record<string, string>>({}); // countryId -> capitalId
-    const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
-
-    // Localized Texts
-    const TEXTS = {
-        es: {
-            title: 'Todas las Capitales',
-            desc: 'Desafío total: Arrastra las capitales de TODOS los países de Europa.',
-            subHeader: 'Europa Completa: Países y Capitales',
-            instruction: 'Encuentra la capital de cada país europeo.',
-            dragHere: 'Arrastra aquí',
-            startBtn: 'EMPEZAR RETO',
-            allAssigned: '¡Todas las capitales asignadas!',
-            playAgain: 'Jugar de nuevo',
-            congrats: '¡Impresionante!',
-            winMsg: 'Has completado el mapa político de toda Europa.',
-            countriesTitle: 'Países',
-            capitalsTitle: 'Capitales Dispersas'
-        },
-        en: {
-            title: 'All Capitals',
-            desc: 'Total Challenge: Drag the capitals of ALL European countries.',
-            subHeader: 'Full Europe: Countries & Capitals',
-            instruction: 'Find the capital of each European country.',
-            dragHere: 'Drop here',
-            startBtn: 'START CHALLENGE',
-            allAssigned: 'All capitals assigned!',
-            playAgain: 'Play Again',
-            congrats: 'Awesome!',
-            winMsg: 'You have completed the political map of Europe.',
-            countriesTitle: 'Countries',
-            capitalsTitle: 'Scattered Capitals'
-        }
-    };
-    const content = TEXTS[language];
-
-    // Stats
-    const [errors, setErrors] = useState(0);
-    const [startTime, setStartTime] = useState<number | null>(null);
-    const [elapsedTime, setElapsedTime] = useState(0);
 
     // Custom Drag State
     const [draggedItem, setDraggedItem] = useState<MatchItem | null>(null);
@@ -65,48 +44,25 @@ export default function EuropeCapitalsGame() {
 
     // Initialize Game
     useEffect(() => {
-        setupGame(false);
+        setupGameData();
     }, [language]);
 
-    // Timer Logic
+    // Check win condition
     useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (gameState === 'playing' && startTime) {
-            interval = setInterval(() => {
-                setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
-            }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [gameState, startTime]);
-
-    // Global drag listener to update cursor position
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (isDragging) {
-                setCursorPos({ x: e.clientX, y: e.clientY });
+        if (gameState === 'playing' && countries.length > 0) {
+            if (Object.keys(matches).length === countries.length) {
+                setGameState('finished');
+                confettiEffect();
             }
-        };
-
-        const handleMouseUp = () => {
-            if (isDragging) {
-                setIsDragging(false);
-                setDraggedItem(null);
-            }
-        };
-
-        if (isDragging) {
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mouseup', handleMouseUp);
         }
+    }, [matches, countries, gameState, setGameState]);
 
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, [isDragging]);
+    const confettiEffect = async () => {
+        const confetti = (await import('canvas-confetti')).default;
+        confetti({ particleCount: 200, spread: 100 });
+    };
 
-
-    const setupGame = (autoStart = false) => {
+    const setupGameData = () => {
         const list = language === 'es' ? EUROPE_LIST : EUROPE_LIST_EN;
         const capitalsData = language === 'es' ? EUROPE_CAPITALS : EUROPE_CAPITALS_EN;
 
@@ -121,17 +77,19 @@ export default function EuropeCapitalsGame() {
 
         const sortedCapitals = [...pairs].sort((a, b) => a.capital.localeCompare(b.capital));
         setCapitals(sortedCapitals);
-
-        setMatches({});
-        setErrors(0);
-        setElapsedTime(0);
-        setStartTime(autoStart ? Date.now() : null);
-        setGameState(autoStart ? 'playing' : 'start');
     };
 
     const startGame = () => {
-        setStartTime(Date.now());
-        setGameState('playing');
+        hookStartGame();
+        setMatches({});
+        setupGameData();
+    };
+
+    const resetGame = () => {
+        hookResetGame();
+        setMatches({});
+        setupGameData();
+        startGame(); // Immediate restart
     };
 
     // Standard HTML5 Drag Start
@@ -175,34 +133,90 @@ export default function EuropeCapitalsGame() {
         if (!countryObj || !capitalObj) return;
 
         if (countryObj.id === capitalObj.id) {
+            // Match
             const newMatches = { ...matches, [targetCountryId]: capitalId };
             setMatches(newMatches);
-
-            if (Object.keys(newMatches).length === countries.length) {
-                setGameState('won');
-            }
+            addScore(100);
+            setMessage(`¡Correcto!`);
         } else {
-            setErrors(e => e + 1);
+            // Error
+            addError();
+            addScore(-20);
+            setMessage('¡Incorrecto!');
         }
     };
 
-    const sortedCountries = [...countries].sort((a, b) => {
+    // Sort countries: Matched at bottom? Or just alphabetically?
+    // Original sorted by matched first?
+    // "sortedCountries" variable name conflicts with state "countries" if not careful.
+    // Let's compute display list.
+    const displayCountries = [...countries].sort((a, b) => {
         const isAMatched = !!matches[a.id];
         const isBMatched = !!matches[b.id];
         if (isAMatched === isBMatched) return a.country.localeCompare(b.country);
-        return isAMatched ? 1 : -1;
+        return isAMatched ? 1 : -1; // Matched go to bottom
     });
 
-    const progress = (Object.keys(matches).length / countries.length) * 100;
+    const progress = Math.round((Object.keys(matches).length / countries.length) * 100) || 0;
 
-    const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    // Global drag listener to update cursor position
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (isDragging) {
+                setCursorPos({ x: e.clientX, y: e.clientY });
+            }
+        };
+        const handleMouseUp = () => {
+            if (isDragging) {
+                setIsDragging(false);
+                setDraggedItem(null);
+            }
+        };
+
+        if (isDragging) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
+        }
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isDragging]);
+
+
+    const content = {
+        title: language === 'es' ? 'Todas las Capitales' : 'All Capitals',
+        desc: language === 'es' ? 'Desafío total: Arrastra las capitales de TODOS los países de Europa.' : 'Total Challenge: Drag the capitals of ALL European countries.',
+        startBtn: language === 'es' ? 'EMPEZAR RETO' : 'START CHALLENGE',
+        dragHere: language === 'es' ? 'Arrastra aquí' : 'Drop here',
+        countriesTitle: language === 'es' ? 'Países' : 'Countries',
+        capitalsTitle: language === 'es' ? 'Capitales Dispersas' : 'Scattered Capitals',
+        allAssigned: language === 'es' ? '¡Todas las capitales asignadas!' : 'All capitals assigned!',
     };
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-4 md:p-8 relative">
+        <div className="w-full max-w-6xl mx-auto p-4 md:p-8 relative select-none">
+
+            <GameHUD
+                title={content.title}
+                score={score}
+                errors={errors}
+                timeLeft={timeLeft}
+                totalTargets={countries.length}
+                remainingTargets={countries.length - Object.keys(matches).length}
+                // HIDE TARGET BOX by passing undefined or handle inside component
+                // User said: "sin incluir el objetivo a buscar".
+                // If I pass undefined to targetName, what happens?
+                // The component renders "Loading..." or "..." if targetName is falsy.
+                // I might need to tweak GameHUD to hide the center box if targetName is strictly NULL/Undefined prop?
+                // Or I can pass a generic string like "Arrastra las capitales".
+                targetName=""
+                message={message}
+                onReset={resetGame}
+                colorTheme="purple"
+                icon={<MapPin className="w-8 h-8 text-purple-400" />}
+            />
 
             {/* START OVERLAY */}
             {gameState === 'start' && (
@@ -223,6 +237,25 @@ export default function EuropeCapitalsGame() {
                 </div>
             )}
 
+            {/* FINISHED OVERLAY */}
+            {gameState === 'finished' && (
+                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full">
+                    <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
+                        <Globe className="w-16 h-16 text-yellow-400 animate-bounce" />
+                    </div>
+                    <h3 className="text-5xl font-black text-white mb-6">
+                        {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Juego Completado!'}
+                    </h3>
+                    <p className="text-2xl text-purple-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
+                    <button
+                        onClick={resetGame}
+                        className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-purple-500/20 transition-transform active:scale-95"
+                    >
+                        Jugar Otra Vez
+                    </button>
+                </div>
+            )}
+
             {/* Custom Drag Layer */}
             {isDragging && draggedItem && createPortal(
                 <div
@@ -238,38 +271,8 @@ export default function EuropeCapitalsGame() {
                 document.body
             )}
 
-            {/* Header / Stats */}
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-white/10 pb-4 gap-4">
-                <div>
-                    <h2 className="text-3xl font-bold text-white mb-2">{content.subHeader}</h2>
-                    <div className="flex gap-6 text-slate-400">
-                        <div className="flex items-center gap-2">
-                            <Timer className="w-5 h-5 text-purple-400" />
-                            <span className="font-mono font-bold text-xl text-white">{formatTime(elapsedTime)}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <X className="w-5 h-5 text-red-400" />
-                            <span className="font-bold text-xl text-white">{errors}</span>
-                            <span className="text-sm">{t.common.errors}</span>
-                        </div>
-                    </div>
-                </div>
-                <div className="text-right">
-                    <div className="text-4xl font-black text-purple-400">
-                        {Object.keys(matches).length} <span className="text-xl text-slate-500">/ {countries.length}</span>
-                    </div>
-                    <div className="text-sm font-bold text-purple-300/70 mt-1">
-                        {(() => {
-                            const totalAttempts = Object.keys(matches).length + errors;
-                            const accuracy = totalAttempts > 0 ? Math.round((Object.keys(matches).length / totalAttempts) * 100) : 100;
-                            return `${accuracy}% ${language === 'es' ? 'Precisión' : 'Accuracy'}`;
-                        })()}
-                    </div>
-                </div>
-            </div>
-
             {/* Progress Bar */}
-            <div className="w-full h-2 bg-white/5 rounded-full mb-12 overflow-hidden">
+            <div className="w-full h-2 bg-white/5 rounded-full mb-8 overflow-hidden mt-4 md:mt-0">
                 <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
@@ -277,111 +280,79 @@ export default function EuropeCapitalsGame() {
                 />
             </div>
 
-            {gameState === 'won' ? (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border border-purple-500/30 rounded-3xl p-12 text-center"
-                >
-                    <div className="inline-flex p-4 rounded-full bg-purple-500/20 text-purple-300 mb-6">
-                        <Check className="w-12 h-12" />
-                    </div>
-                    <h3 className="text-4xl font-bold text-white mb-4">{content.congrats}</h3>
-                    <p className="text-xl text-slate-300 mb-8">{content.winMsg}</p>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Left Column: Countries (Drop Targets) */}
+                <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
+                    <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">{content.countriesTitle}</h3>
+                    {displayCountries.map((item) => {
+                        const isMatched = !!matches[item.id];
+                        return (
+                            <motion.div
+                                layout
+                                key={item.id}
+                                onDragOver={!isMatched ? handleDragOver : undefined}
+                                onDrop={!isMatched ? (e) => handleDrop(e, item.id) : undefined}
+                                className={`
+                                    relative flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300
+                                    ${isMatched
+                                        ? 'bg-purple-500/10 border-purple-500/50 order-last opacity-60'
+                                        : 'bg-white/5 border-dashed border-white/10 hover:border-white/30'
+                                    }
+                                `}
+                            >
+                                <span className={`font-bold text-lg ${isMatched ? 'text-purple-300' : 'text-white'}`}>
+                                    {item.country}
+                                </span>
 
-                    <div className="flex justify-center gap-8 mb-8">
-                        <div className="flex flex-col items-center">
-                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.time}</span>
-                            <span className="text-3xl font-black text-white">{formatTime(elapsedTime)}</span>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.errors}</span>
-                            <span className="text-3xl font-black text-red-400">{errors}</span>
-                        </div>
-                    </div>
+                                <div className={`
+                                    h-10 px-4 rounded-lg flex items-center justify-center min-w-[120px] text-sm transition-all duration-300
+                                    ${isMatched
+                                        ? 'bg-purple-500 text-white font-bold shadow-lg shadow-purple-500/20'
+                                        : 'bg-black/20 text-white/20'
+                                    }
+                                `}>
+                                    {isMatched ? item.capital : content.dragHere}
+                                </div>
+                            </motion.div>
+                        );
+                    })}
+                </div>
 
-                    <button
-                        onClick={() => setupGame(true)}
-                        className="px-8 py-3 bg-white text-purple-900 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
-                    >
-                        <RefreshCw className="w-5 h-5" />
-                        {content.playAgain}
-                    </button>
-                </motion.div>
-            ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* Left Column: Countries (Drop Targets) */}
-                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
-                        <h3 className="col-span-full text-xl font-bold text-white/50 mb-2 uppercase tracking-wider text-center">{content.countriesTitle}</h3>
-                        {sortedCountries.map((item) => {
-                            const isMatched = !!matches[item.id];
-                            return (
+                {/* Right Column: Capitals (Draggables) */}
+                <div className="lg:col-span-2 sticky top-32 h-[calc(100vh-160px)] overflow-y-auto pr-2">
+                    <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center sticky top-0 bg-slate-950/80 backdrop-blur-md z-10 py-2 rounded-lg">
+                        {content.capitalsTitle}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3 pb-8">
+                        <AnimatePresence>
+                            {capitals.filter(c => !Object.values(matches).includes(c.id)).map((item) => (
                                 <motion.div
-                                    layout
                                     key={item.id}
-                                    onDragOver={!isMatched ? handleDragOver : undefined}
-                                    onDrop={!isMatched ? (e) => handleDrop(e, item.id) : undefined}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    draggable="true"
+                                    onDragStart={(e) => handleDragStart(e as any, item)}
+                                    onDragEnd={handleDragEnd}
                                     className={`
-                                        relative flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300
-                                        ${isMatched
-                                            ? 'bg-purple-500/10 border-purple-500/50 order-last opacity-60'
-                                            : 'bg-white/5 border-dashed border-white/10 hover:border-white/30'
-                                        }
+                                        cursor-move p-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold text-center border-b-4 border-purple-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all select-none
+                                        ${isDragging && draggedItem?.id === item.id ? 'opacity-0' : 'opacity-100'}
                                     `}
                                 >
-                                    <span className={`font-bold text-lg ${isMatched ? 'text-purple-300' : 'text-white'}`}>
-                                        {item.country}
-                                    </span>
-
-                                    <div className={`
-                                        h-10 px-4 rounded-lg flex items-center justify-center min-w-[120px] text-sm transition-all duration-300
-                                        ${isMatched
-                                            ? 'bg-purple-500 text-white font-bold shadow-lg shadow-purple-500/20'
-                                            : 'bg-black/20 text-white/20'
-                                        }
-                                    `}>
-                                        {isMatched ? item.capital : content.dragHere}
-                                    </div>
+                                    {item.capital}
                                 </motion.div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Right Column: Capitals (Draggables) */}
-                    <div className="lg:col-span-2 sticky top-32 h-[calc(100vh-160px)] overflow-y-auto pr-2">
-                        <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center sticky top-0 bg-slate-950/80 backdrop-blur-md z-10 py-2 rounded-lg">
-                            {content.capitalsTitle}
-                        </h3>
-                        <div className="grid grid-cols-2 gap-3 pb-8">
-                            <AnimatePresence>
-                                {capitals.filter(c => !Object.values(matches).includes(c.id)).map((item) => (
-                                    <motion.div
-                                        key={item.id}
-                                        layout
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.5 }}
-                                        draggable="true"
-                                        onDragStart={(e) => handleDragStart(e as any, item)}
-                                        onDragEnd={handleDragEnd}
-                                        className={`
-                                            cursor-move p-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold text-center border-b-4 border-purple-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all select-none
-                                            ${isDragging && draggedItem?.id === item.id ? 'opacity-0' : 'opacity-100'}
-                                        `}
-                                    >
-                                        {item.capital}
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
-                            {capitals.filter(c => !Object.values(matches).includes(c.id)).length === 0 && (
-                                <div className="col-span-2 text-center text-slate-500 py-12">
-                                    {content.allAssigned}
-                                </div>
-                            )}
-                        </div>
+                            ))}
+                        </AnimatePresence>
+                        {capitals.filter(c => !Object.values(matches).includes(c.id)).length === 0 && (
+                            <div className="col-span-2 text-center text-slate-500 py-12">
+                                {content.allAssigned}
+                            </div>
+                        )}
                     </div>
                 </div>
-            )}
+            </div>
+
         </div>
     );
 }

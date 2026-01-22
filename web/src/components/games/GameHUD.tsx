@@ -75,21 +75,23 @@ export default function GameHUD({
                     </div>
                 </div>
 
-                {/* CENTER: Target Display */}
-                <div className="flex-1 text-center bg-slate-900/50 p-2 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[80px]">
-                    <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1">Encuentra</div>
-                    <AnimatePresence mode='wait'>
-                        <motion.div
-                            key={targetName || 'loading'}
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className={cn("text-2xl md:text-3xl font-black drop-shadow-sm truncate max-w-[300px]", theme.text)}
-                        >
-                            {targetName || '...'}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
+                {/* CENTER: Target Display - Only show if targetName is provided */}
+                {targetName !== "" && (
+                    <div className="flex-1 text-center bg-slate-900/50 p-2 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[80px]">
+                        <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1">Encuentra</div>
+                        <AnimatePresence mode='wait'>
+                            <motion.div
+                                key={targetName || 'loading'}
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.9, opacity: 0 }}
+                                className={cn("text-2xl md:text-3xl font-black drop-shadow-sm truncate max-w-[300px]", theme.text)}
+                            >
+                                {targetName || '...'}
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+                )}
 
                 {/* RIGHT: Timer, Errors, Reset */}
                 <div className="flex items-center gap-3 w-full md:w-auto justify-end">
