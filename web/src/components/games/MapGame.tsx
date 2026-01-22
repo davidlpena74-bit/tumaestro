@@ -27,6 +27,7 @@ export default function MapGame() {
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
+    const [solvedIds, setSolvedIds] = useState<string[]>([]);
 
     const [attempts, setAttempts] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
@@ -59,11 +60,16 @@ export default function MapGame() {
         hookStartGame();
         setAttempts(0);
         setCorrectCount(0);
+        setSolvedIds([]); // Reset solved list
         pickNewTarget();
     };
 
     const pickNewTarget = () => {
-        const keys = Object.keys(PROVINCE_NAMES);
+        const allKeys = Object.keys(PROVINCE_NAMES);
+        const availableKeys = allKeys.filter(k => !solvedIds.includes(k));
+
+        const keys = availableKeys.length > 0 ? availableKeys : allKeys;
+
         let randomKey = keys[Math.floor(Math.random() * keys.length)];
 
         // Prevent repeating the same target immediately if possible
@@ -79,6 +85,7 @@ export default function MapGame() {
 
     const handleRegionClick = (id: string) => {
         if (gameState !== 'playing' || !targetId) return;
+        if (solvedIds.includes(id)) return; // Prevent clicking already solved
 
         setClickedId(id);
         setAttempts(prev => prev + 1);
@@ -86,6 +93,7 @@ export default function MapGame() {
         if (id === targetId) {
             // Correct
             addScore(10);
+            setSolvedIds(prev => [...prev, id]); // Add to solved list
             setCorrectCount(prev => prev + 1);
             setMessage(`¡Bien! Es ${PROVINCE_NAMES[id]}`);
             setTimeout(pickNewTarget, 600);
@@ -136,7 +144,7 @@ export default function MapGame() {
                 errors={errors}
                 timeLeft={timeLeft}
                 totalTargets={Object.keys(PROVINCE_NAMES).length}
-                remainingTargets={0} // Not tracking
+                remainingTargets={Object.keys(PROVINCE_NAMES).length - solvedIds.length}
                 targetName={targetId ? PROVINCE_NAMES[targetId] : '...'}
                 message={message}
                 onReset={resetGame}
@@ -251,12 +259,17 @@ export default function MapGame() {
                         {Object.entries(SPANISH_PROVINCES_PATHS).map(([id, paths]) => {
                             const isTarget = targetId === id;
                             const isClicked = clickedId === id;
+                            const isSolved = solvedIds.includes(id);
 
                             let fillClass = "fill-white/90";
                             let strokeClass = "stroke-slate-900/50 stroke-[0.5]";
 
                             if (gameState === 'playing') {
                                 fillClass = "fill-white hover:fill-teal-200 cursor-pointer transition-all duration-150 hover:drop-shadow-[4px_6px_6px_rgba(0,0,0,0.5)] hover:scale-[1.02] vector-effect-non-scaling-stroke"; // 3D diagonal effect
+
+                                if (isSolved) {
+                                    fillClass = "fill-green-500/80"; // Persistent completed style
+                                }
 
                                 if (isClicked) {
                                     strokeClass = "stroke-slate-900 stroke-1";

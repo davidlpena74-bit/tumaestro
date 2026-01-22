@@ -51,6 +51,7 @@ export default function RegionGame() {
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
+    const [solvedIds, setSolvedIds] = useState<string[]>([]);
 
     // Zoom & Pan State
     const [zoom, setZoom] = useState(1);
@@ -80,17 +81,27 @@ export default function RegionGame() {
     const startGame = () => {
         hookStartGame();
         setClickedId(null);
+        setSolvedIds([]);
         pickNewTarget();
     };
 
     const pickNewTarget = () => {
-        const keys = Object.keys(SPANISH_COMMUNITIES_PATHS);
-        // Simple random for now, could track remaining like other games
-        // But RegionGame original code was just random with replacement?
-        // Let's stick to original behavior for now, or improve it?
-        // Original: const randomKey = keys[Math.floor(Math.random() * keys.length)];
-        // Ideally we should track completed ones to avoid repeats in a row or session.
-        // But for minimal refactor, let's keep random but maybe avoid immediate repeat.
+        // Exclude already solved regions if we want to force completion without repeats?
+        // Original logic was random. User just wants correct ones to stay marked.
+        // Let's keep logic simple: if solved, it stays green. Can it be target again?
+        // Typically in "locate all" games, solved ones are removed from pool.
+        // Let's try to remove solved ones from pool if possible, OR just mark them.
+        // User asked "que se quede marcada".
+        // Let's persist the mark first.
+
+        const allKeys = Object.keys(SPANISH_COMMUNITIES_PATHS);
+        const availableKeys = allKeys.filter(k => !solvedIds.includes(k));
+
+        // If all solved, maybe game over? hook typically handles time or we can check here.
+        // If solvedIds.length === allKeys.length -> win?
+        // Let's just pick from available if any, otherwise fallback to any (random practice).
+
+        const keys = availableKeys.length > 0 ? availableKeys : allKeys;
 
         let randomKey = keys[Math.floor(Math.random() * keys.length)];
         if (targetId && keys.length > 1) {
@@ -105,12 +116,14 @@ export default function RegionGame() {
 
     const handleRegionClick = (id: string) => {
         if (gameState !== 'playing' || !targetId) return;
+        if (solvedIds.includes(id)) return; // Prevent clicking already solved?
 
         setClickedId(id);
 
         if (id === targetId) {
             // Correct
             addScore(100);
+            setSolvedIds(prev => [...prev, id]);
             setMessage(`¡Correcto! Es ${REGION_DISPLAY_NAMES[id] || id}`);
             setTimeout(pickNewTarget, 600);
         } else {
@@ -149,6 +162,7 @@ export default function RegionGame() {
         hookResetGame();
         setTargetId(null);
         setClickedId(null);
+        setSolvedIds([]);
 
         // hookResetGame sets state to 'start' (or 'playing'? hook implementation usually resets to initial state).
         // Let's accept 'start' state and let user click 'Start' again.
@@ -169,7 +183,7 @@ export default function RegionGame() {
                 errors={errors}
                 timeLeft={timeLeft}
                 totalTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length}
-                remainingTargets={0} // Not tracking remaining in this simple mode
+                remainingTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length - solvedIds.length}
                 targetName={targetId ? (REGION_DISPLAY_NAMES[targetId] || targetId) : '...'}
                 message={message}
                 onReset={resetGame}
@@ -275,6 +289,7 @@ export default function RegionGame() {
                         {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
                             const isTarget = targetId === id;
                             const isClicked = clickedId === id;
+                            const isSolved = solvedIds.includes(id);
 
                             // Dynamic class logic
                             let fillClass = "fill-white/90";
@@ -283,6 +298,10 @@ export default function RegionGame() {
 
                             if (gameState === 'playing') {
                                 fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
+
+                                if (isSolved) {
+                                    fillClass = "fill-green-500/80"; // Persistent completed style
+                                }
 
                                 if (isClicked) {
                                     strokeClass = "stroke-slate-900 stroke-[2]";
