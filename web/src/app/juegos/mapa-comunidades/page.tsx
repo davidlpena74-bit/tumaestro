@@ -1,8 +1,12 @@
-'use client';
-
+import { Metadata } from 'next';
 import RegionGame from '@/components/games/RegionGame';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'Mapa de Comunidades Autónomas - Juego de Geografía | TuMaestro.es',
+    description: 'Juego interactivo para aprender las Comunidades Autónomas de España. Pon a prueba tus conocimientos de geografía.',
+};
 
 export default function MapaComunidadesPage() {
     return (

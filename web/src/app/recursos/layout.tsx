@@ -1,12 +1,11 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Material Didáctico y Apuntes Gratis',
-    description: 'Biblioteca digital de recursos educativos. Descarga gratis apuntes, exámenes resueltos, resúmenes y ejercicios de Matemáticas, Lengua, Historia y Geografía.',
-    keywords: ['material didactico', 'apuntes gratis', 'examenes resueltos', 'recursos educativos', 'ejercicios matematicas', 'resumenes historia'],
+    title: 'Recursos y Apuntes Gratuitos | TuMaestro.es',
+    description: 'Descarga apuntes de matemáticas, lengua, historia y más. Material didáctico verificado por profesores.',
 };
 
-export default function ResourcesLayout({
+export default function RecursosLayout({
     children,
 }: {
     children: React.ReactNode;

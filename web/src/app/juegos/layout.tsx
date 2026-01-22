@@ -1,12 +1,11 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Juegos Educativos Online: Geografía y Cultura',
-    description: 'Aprende divirtiéndote con nuestros juegos educativos interactivos. Mapas de España, Quiz de Cultura General y retos de Geografía para estudiantes.',
-    keywords: ['juegos educativos', 'mapa interactivo españa', 'quiz cultura general', 'aprender jugando', 'geografia interactiva', 'juegos primaria eso'],
+    title: 'Juegos Educativos Interactivos | TuMaestro.es',
+    description: 'Aprende geografía, matemáticas e idiomas jugando. Mapas interactivos de España y Europa, cálculo mental y más.',
 };
 
-export default function GamesLayout({
+export default function JuegosLayout({
     children,
 }: {
     children: React.ReactNode;

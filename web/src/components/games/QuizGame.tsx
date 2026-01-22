@@ -1,48 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, ArrowRight, RefreshCcw } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { QUESTIONS, type Question } from './data/quiz-questions';
 
 // Utility for cleaner classes
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-const QUESTIONS = [
-    {
-        id: 1,
-        question: "¿Cuál es la capital de Francia?",
-        options: ["Londres", "Berlín", "París", "Madrid"],
-        correct: 2 // Index of "París"
-    },
-    {
-        id: 2,
-        question: "¿Cuánto es 7 x 8?",
-        options: ["48", "54", "56", "64"],
-        correct: 2 // Index of "56"
-    },
-    {
-        id: 3,
-        question: "¿Qué elemento químico es 'O'?",
-        options: ["Oro", "Oxígeno", "Osmio", "Oganesón"],
-        correct: 1 // Index of "Oxígeno"
-    },
-    {
-        id: 4,
-        question: "¿Quién escribió 'Don Quijote'?",
-        options: ["Cervantes", "García Márquez", "Machado", "Lorca"],
-        correct: 0 // Index of "Cervantes"
-    },
-    {
-        id: 5,
-        question: "¿En qué año llegó el hombre a la luna?",
-        options: ["1959", "1969", "1975", "1982"],
-        correct: 1 // 1969
-    }
-];
+const QUESTIONS_PER_GAME = 10;
 
 export default function QuizGame() {
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -50,8 +20,17 @@ export default function QuizGame() {
     const [isAnswered, setIsAnswered] = useState(false);
     const [score, setScore] = useState(0);
     const [gameState, setGameState] = useState<'intro' | 'playing' | 'finished'>('intro');
+    const [gameQuestions, setGameQuestions] = useState<Question[]>([]);
 
-    const currentQuestion = QUESTIONS[currentQuestionIdx];
+    useEffect(() => {
+        if (gameState === 'playing') {
+            // Shuffle and pick 10 questions
+            const shuffled = [...QUESTIONS].sort(() => 0.5 - Math.random());
+            setGameQuestions(shuffled.slice(0, QUESTIONS_PER_GAME));
+        }
+    }, [gameState]);
+
+    const currentQuestion = gameQuestions[currentQuestionIdx];
 
     const handleStart = () => {
         setGameState('playing');
@@ -76,7 +55,7 @@ export default function QuizGame() {
     };
 
     const handleNext = () => {
-        if (currentQuestionIdx < QUESTIONS.length - 1) {
+        if (currentQuestionIdx < gameQuestions.length - 1) {
             setCurrentQuestionIdx((prev) => prev + 1);
             resetQuestionState();
         } else {
@@ -86,7 +65,7 @@ export default function QuizGame() {
 
     return (
         <div className="w-full max-w-2xl mx-auto min-h-[500px] flex items-center justify-center p-4">
-            <div className="relative w-full bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden">
+            <div className="relative w-full bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden min-h-[500px] flex flex-col justify-center">
 
                 {/* Background Gradients */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl -z-10" />
@@ -107,7 +86,7 @@ export default function QuizGame() {
                                 Desafío de Conocimiento
                             </h2>
                             <p className="text-gray-300 text-lg">
-                                Pon a prueba tu mente con estas 5 preguntas rápidas.
+                                Pon a prueba tu mente con {QUESTIONS_PER_GAME} preguntas aleatorias de Historia, Geografía y Ciencia.
                             </p>
                             <button
                                 onClick={handleStart}
@@ -119,25 +98,31 @@ export default function QuizGame() {
                     )}
 
                     {/* GAME SCREEN */}
-                    {gameState === 'playing' && (
+                    {gameState === 'playing' && currentQuestion && (
                         <motion.div
-                            key="question"
+                            key={`q-${currentQuestion.id}`}
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -50 }}
                             transition={{ duration: 0.3 }}
                             className="w-full"
                         >
-                            {/* Progress Bar */}
-                            <div className="flex justify-between text-sm text-gray-400 mb-2">
-                                <span>Pregunta {currentQuestionIdx + 1} de {QUESTIONS.length}</span>
-                                <span>Puntos: {score} {currentQuestionIdx > 0 && <span className="text-teal-400/80 ml-2 text-xs">({Math.round((score / currentQuestionIdx) * 100)}%)</span>}</span>
+                            {/* Category Badge */}
+                            <div className="flex justify-between items-center mb-4">
+                                <span className="text-xs font-bold uppercase tracking-wider text-teal-400 border border-teal-500/30 px-2 py-1 rounded-lg bg-teal-500/10">
+                                    {currentQuestion.category}
+                                </span>
+                                <span className="text-sm text-gray-400">
+                                    {currentQuestionIdx + 1} / {QUESTIONS_PER_GAME}
+                                </span>
                             </div>
+
+                            {/* Progress Bar */}
                             <div className="h-2 w-full bg-white/10 rounded-full mb-8 overflow-hidden">
                                 <motion.div
                                     className="h-full bg-teal-500"
-                                    initial={{ width: `${((currentQuestionIdx) / QUESTIONS.length) * 100}%` }}
-                                    animate={{ width: `${((currentQuestionIdx + 1) / QUESTIONS.length) * 100}%` }}
+                                    initial={{ width: `${((currentQuestionIdx) / QUESTIONS_PER_GAME) * 100}%` }}
+                                    animate={{ width: `${((currentQuestionIdx + 1) / QUESTIONS_PER_GAME) * 100}%` }}
                                 />
                             </div>
 
@@ -190,7 +175,7 @@ export default function QuizGame() {
                                         onClick={handleNext}
                                         className="px-6 py-2 bg-white text-slate-900 font-bold rounded-lg hover:bg-gray-200 transition flex items-center gap-2"
                                     >
-                                        {currentQuestionIdx === QUESTIONS.length - 1 ? "Ver Resultados" : "Siguiente"} <ArrowRight className="w-4 h-4" />
+                                        {currentQuestionIdx === QUESTIONS_PER_GAME - 1 ? "Ver Resultados" : "Siguiente"} <ArrowRight className="w-4 h-4" />
                                     </motion.button>
                                 )}
                             </div>
@@ -207,11 +192,11 @@ export default function QuizGame() {
                         >
                             <h2 className="text-3xl font-bold text-white mb-2">¡Completado!</h2>
                             <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-yellow-400 to-orange-500 my-6">
-                                {score} / {QUESTIONS.length}
+                                {score} / {QUESTIONS_PER_GAME}
                             </div>
                             <p className="text-gray-300 mb-8">
-                                {score === QUESTIONS.length ? "¡Perfecto! Eres un genio." :
-                                    score > QUESTIONS.length / 2 ? "¡Muy bien! Casi perfecto." :
+                                {score === QUESTIONS_PER_GAME ? "¡Perfecto! Eres un genio." :
+                                    score > QUESTIONS_PER_GAME / 2 ? "¡Muy bien! Casi perfecto." :
                                         "Buen intento, sigue practicando."}
                             </p>
 
