@@ -350,8 +350,8 @@ export default function CapitalMatchingGame() {
                     </div>
 
                     {/* Right Column: Capitals (Draggables) */}
-                    <div className="lg:col-span-2">
-                        <div className="grid grid-cols-2 gap-3 sticky top-4">
+                    <div className="lg:col-span-2 sticky top-32 h-[calc(100vh-160px)] overflow-y-auto pr-2">
+                        <div className="grid grid-cols-2 gap-3 pb-8">
                             <AnimatePresence>
                                 {capitals.filter(c => !Object.values(matches).includes(c.id)).map((item) => (
                                     <motion.div

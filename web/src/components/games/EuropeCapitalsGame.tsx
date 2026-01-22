@@ -348,11 +348,11 @@ export default function EuropeCapitalsGame() {
                     </div>
 
                     {/* Right Column: Capitals (Draggables) */}
-                    <div className="lg:col-span-2">
-                        <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center sticky top-4 bg-[#0f172a] z-10 py-2">
+                    <div className="lg:col-span-2 sticky top-32 h-[calc(100vh-160px)] overflow-y-auto pr-2">
+                        <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider text-center sticky top-0 bg-slate-950/80 backdrop-blur-md z-10 py-2 rounded-lg">
                             {content.capitalsTitle}
                         </h3>
-                        <div className="grid grid-cols-2 gap-3 sticky top-16">
+                        <div className="grid grid-cols-2 gap-3 pb-8">
                             <AnimatePresence>
                                 {capitals.filter(c => !Object.values(matches).includes(c.id)).map((item) => (
                                     <motion.div
