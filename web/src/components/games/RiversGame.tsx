@@ -25,6 +25,7 @@ export default function RiversGame() {
     const [pan, setPan] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const dragStart = useRef({ x: 0, y: 0 });
+    const clickStart = useRef({ x: 0, y: 0 });
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -74,8 +75,9 @@ export default function RiversGame() {
     const handleRiverClick = (name: string, e: React.MouseEvent) => {
         e.stopPropagation(); // Stop pan
         if (gameState !== 'playing') return;
-        // Increased tolerance to 10px
-        if (Math.abs(pan.x - dragStart.current.x) > 10 || Math.abs(pan.y - dragStart.current.y) > 10) return;
+
+        // Check if it was a drag or a click
+        if (Math.abs(e.clientX - clickStart.current.x) > 10 || Math.abs(e.clientY - clickStart.current.y) > 10) return;
 
         if (name === targetRiver) {
             // Correct
@@ -134,6 +136,7 @@ export default function RiversGame() {
     const handleMouseDown = (e: React.MouseEvent) => {
         setIsDragging(true);
         dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+        clickStart.current = { x: e.clientX, y: e.clientY };
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
@@ -275,7 +278,7 @@ export default function RiversGame() {
                 ) : (
                     <svg
                         viewBox="0 0 800 600"
-                        className="w-full h-full pointer-events-none"
+                        className="w-full h-full"
                         style={{ background: '#0f172a' }} // Dark background
                     >
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
