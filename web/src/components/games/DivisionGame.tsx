@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Trophy, Timer } from 'lucide-react';
+import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Trophy, Timer, Hand } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 type GameState = 'start' | 'playing' | 'feedback' | 'finished';
@@ -24,22 +24,35 @@ export default function DivisionGame() {
     const [userAnswer, setUserAnswer] = useState('');
     const [userRemainder, setUserRemainder] = useState('');
     const [streak, setStreak] = useState(0);
+    const [dragActive, setDragActive] = useState(false);
+
+    // Refs for drop zones
+    const friendRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     // Generate new problem
     const generateProblem = (targetState: GameState = 'playing') => {
         let maxDividend = 12;
         let maxDivisor = 3;
 
-        if (level > 2) { maxDividend = 20; maxDivisor = 5; }
-        if (level > 5) { maxDividend = 50; maxDivisor = 9; }
+        // Level scaling
+        if (level === 1) { maxDividend = 10; maxDivisor = 2; } // Very simple
+        else if (level === 2) { maxDividend = 15; maxDivisor = 3; }
+        else if (level > 2) { maxDividend = 25; maxDivisor = 5; }
+        else if (level > 5) { maxDividend = 50; maxDivisor = 8; }
 
         // Ensure clean divisions for lower levels
         let divisor = Math.floor(Math.random() * (maxDivisor - 1)) + 2; // Min 2
+
+        // For level 1, force even numbers and no remainder
+        if (level === 1) {
+            divisor = 2;
+        }
+
         let quotient = Math.floor(Math.random() * 5) + 1;
 
         // Sometimes odd numbers in higher levels
         let remainder = 0;
-        if (level > 4 && Math.random() > 0.5) {
+        if (level > 3 && Math.random() > 0.5) {
             remainder = Math.floor(Math.random() * (divisor - 1)) + 1;
         }
 
@@ -75,7 +88,7 @@ export default function DivisionGame() {
         }
     };
 
-    // Distribute ALL automatically (for impatient kids or higher levels)
+    // Distribute ALL automatically
     const autoDistribute = () => {
         const q = Math.floor(problem.dividend / problem.divisor);
         const r = problem.dividend % problem.divisor;
@@ -83,10 +96,34 @@ export default function DivisionGame() {
         setItemsLeft(r);
     };
 
+    // DRAG AND DROP HANDLER
+    const handleDragEnd = (event: any, info: any) => {
+        setDragActive(false);
+        const point = { x: info.point.x, y: info.point.y };
+
+        // Check if dropped on any friend
+        // We use document.elementFromPoint for simplicity with pointer events
+        const elem = document.elementFromPoint(point.x, point.y);
+        const friendIdx = elem?.closest('[data-friend-index]')?.getAttribute('data-friend-index');
+
+        if (friendIdx !== undefined && friendIdx !== null) {
+            const idx = parseInt(friendIdx);
+            if (!isNaN(idx) && itemsLeft > 0) {
+                // Determine how many to drop? Just 1 for manual drag
+                setDistributedCounts(prev => {
+                    const newCounts = [...prev];
+                    newCounts[idx]++;
+                    return newCounts;
+                });
+                setItemsLeft(prev => prev - 1);
+            }
+        }
+    };
+
     const checkAnswer = () => {
         const isQuotientCorrect = parseInt(userAnswer) === problem.quotient;
         const isRemainderCorrect = problem.remainder === 0
-            ? true // If no remainder, ignore field or check empty
+            ? true // If no remainder, ignore field or check empty or 0
             : parseInt(userRemainder || '0') === problem.remainder;
 
         if (isQuotientCorrect && isRemainderCorrect) {
@@ -101,10 +138,10 @@ export default function DivisionGame() {
             setTimeout(() => {
                 setLevel(l => l + 1);
                 generateProblem();
-            }, 2500);
+            }, 4000); // Longer wait to read feedback
         } else {
             setStreak(0);
-            // Shake effect or error msg
+            // Shake effect
             const btn = document.getElementById('submit-btn');
             btn?.classList.add('animate-shake');
             setTimeout(() => btn?.classList.remove('animate-shake'), 500);
@@ -112,7 +149,7 @@ export default function DivisionGame() {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-4 relative">
+        <div className="w-full max-w-5xl mx-auto p-4 relative select-none">
 
             {/* START OVERLAY */}
             {gameState === 'start' && (
@@ -122,7 +159,7 @@ export default function DivisionGame() {
                     </div>
                     <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">División de Pizzas</h2>
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                        ¡Ayuda a repartir las pizzas entre los amigos! Aprende a dividir de forma visual y divertida.
+                        ¡Arrastra las pizzas para repartirlas entre los amigos! Aprende a dividir jugando.
                     </p>
                     <button
                         onClick={startGame}
@@ -146,98 +183,97 @@ export default function DivisionGame() {
                 </div>
             </div>
 
-            {/* Game Area */}
-            <div className="grid md:grid-cols-2 gap-8 items-start">
+            {/* Game Grid */}
+            <div className="grid lg:grid-cols-2 gap-8 items-start">
 
-                {/* Visual Area */}
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-8 min-h-[400px] flex flex-col relative overflow-hidden">
-                    <h3 className="text-white text-center mb-6 font-bold text-lg">
+                {/* VISUAL INTERACTION AREA */}
+                <div className="bg-white/5 border border-white/10 rounded-3xl p-6 min-h-[500px] flex flex-col relative overflow-hidden">
+                    <h3 className="text-white text-center mb-2 font-bold text-lg">
                         Reparte {problem.dividend} Pizzas entre {problem.divisor} Amigos
                     </h3>
+                    <p className="text-white/40 text-center text-xs mb-6 flex items-center justify-center gap-2">
+                        <Hand className="w-4 h-4" /> Arrastra las pizzas hacia los amigos
+                    </p>
 
-                    {/* Source Container (Pizzas Left) */}
-                    <div className="flex flex-wrap gap-2 justify-center mb-8 min-h-[60px] p-4 bg-slate-900/50 rounded-xl border border-dashed border-white/20">
+                    {/* PIZZA SOURCE (DRAGGABLE) */}
+                    <div className="flex flex-wrap gap-2 justify-center mb-8 min-h-[100px] p-4 bg-slate-900/50 rounded-xl border border-dashed border-white/20 relative z-20">
                         <AnimatePresence>
                             {Array.from({ length: itemsLeft }).map((_, i) => (
                                 <motion.div
-                                    key={`pizza-${i}`}
+                                    key={i} // Using index as key for simple stack
+                                    layoutId={`pizza-source-${i}`} // Stable layout ID? Maybe just simple unique
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    exit={{ scale: 0, y: 50, opacity: 0 }}
-                                    className="relative"
+                                    exit={{ scale: 0, opacity: 0 }}
+                                    drag
+                                    dragSnapToOrigin
+                                    onDragStart={() => setDragActive(true)}
+                                    whileDrag={{ scale: 1.2, zIndex: 100, cursor: 'grabbing' }}
+                                    onDragEnd={handleDragEnd}
+                                    className="cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
                                 >
-                                    <Pizza className="w-8 h-8 text-orange-500 fill-orange-500/20" />
+                                    <Pizza className="w-10 h-10 text-orange-500 fill-orange-500/20 drop-shadow-lg" />
                                 </motion.div>
                             ))}
                         </AnimatePresence>
                         {itemsLeft === 0 && <span className="text-gray-500 text-sm self-center">¡Caja vacía!</span>}
                     </div>
 
-                    {/* Controls */}
-                    <div className="flex justify-center gap-4 mb-8">
-                        <button
-                            onClick={distributeOneRound}
-                            disabled={itemsLeft < problem.divisor}
-                            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-bold text-sm transition shadow-lg shadow-blue-600/20"
-                        >
-                            Repartir 1 a todos
-                        </button>
-                        <button
-                            onClick={autoDistribute}
-                            disabled={itemsLeft < problem.divisor}
-                            className="bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-bold text-sm transition shadow-lg shadow-teal-600/20"
-                        >
-                            Repartir Todo
-                        </button>
-                        <button
-                            onClick={() => {
-                                setItemsLeft(problem.dividend);
-                                setDistributedCounts(new Array(problem.divisor).fill(0));
-                            }}
-                            className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition"
-                            title="Reiniciar Reparto"
-                        >
-                            <RefreshCw className="w-5 h-5" />
-                        </button>
-                    </div>
-
-                    {/* Targets (Friends) */}
-                    <div className="flex flex-wrap justify-center gap-6 mt-auto">
+                    {/* DROP TARGETS (FRIENDS) */}
+                    <div className="flex flex-wrap justify-center gap-4 mt-auto">
                         {distributedCounts.map((count, idx) => (
-                            <div key={idx} className="flex flex-col items-center gap-2">
+                            <div
+                                key={idx}
+                                data-friend-index={idx} // Used for hit detection
+                                className={`flex flex-col items-center gap-2 transition-all p-2 rounded-2xl ${dragActive ? 'bg-blue-500/20 ring-2 ring-blue-400 border-transparent scale-105' : 'bg-transparent border border-transparent'}`}
+                            >
                                 <div className="relative">
-                                    <Smile className="w-16 h-16 text-yellow-400" />
-                                    <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-slate-900">
+                                    <Smile className={`w-14 h-14 ${dragActive ? 'text-blue-200 animate-bounce' : 'text-yellow-400'}`} />
+                                    <div className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-slate-900 shadow-lg">
                                         {count}
                                     </div>
                                 </div>
-                                <div className="bg-white/10 p-2 rounded-lg w-20 h-20 flex flex-wrap content-start gap-1 justify-center overflow-auto border border-white/5">
+                                <div className="bg-slate-800/50 p-2 rounded-xl w-24 h-24 flex flex-wrap content-start gap-1 justify-center overflow-auto border border-white/10 shadow-inner">
                                     {Array.from({ length: count }).map((_, pi) => (
                                         <motion.div
-                                            key={pi}
+                                            key={`p-${idx}-${pi}`}
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
+                                            className="relative"
                                         >
-                                            <Pizza className="w-4 h-4 text-orange-400" />
+                                            <Pizza className="w-5 h-5 text-orange-400" />
                                         </motion.div>
                                     ))}
                                 </div>
                             </div>
                         ))}
                     </div>
+
+                    {/* Reset/Auto Helpers */}
+                    <div className="flex justify-center gap-2 mt-6 pt-4 border-t border-white/5">
+                        <button onClick={distributeOneRound} disabled={itemsLeft < problem.divisor} className="text-xs bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-3 py-2 rounded-lg transition">
+                            Repartir 1 vuelta
+                        </button>
+                        <button onClick={autoDistribute} disabled={itemsLeft < problem.divisor} className="text-xs bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-3 py-2 rounded-lg transition">
+                            Repartir Todo
+                        </button>
+                        <button onClick={() => { setItemsLeft(problem.dividend); setDistributedCounts(new Array(problem.divisor).fill(0)); }} className="text-xs bg-white/5 hover:bg-white/10 text-red-300 hover:text-red-200 px-3 py-2 rounded-lg transition">
+                            <RefreshCw className="w-3 h-3 inline mr-1" /> Reiniciar
+                        </button>
+                    </div>
                 </div>
 
-                {/* Math Area */}
+                {/* MATH CONTROLS AREA */}
                 <div className="flex flex-col gap-6">
-                    <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl text-center">
+                    <div className="bg-slate-900/50 backdrop-blur-md border border-white/20 p-8 rounded-3xl text-center shadow-2xl">
                         <h2 className="text-2xl font-bold text-white mb-8">Escribe la División</h2>
 
-                        <div className="flex items-center justify-center gap-4 text-3xl md:text-5xl font-black text-white mb-12 font-mono">
-                            <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner">
+                        <div className="flex flex-wrap items-center justify-center gap-4 text-3xl md:text-5xl font-black text-white mb-12 font-mono">
+                            <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner min-w-[3ch] text-center">
                                 {problem.dividend}
                             </div>
                             <span className="text-teal-400">÷</span>
-                            <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner">
+                            <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner min-w-[3ch] text-center">
                                 {problem.divisor}
                             </div>
                             <span>=</span>
@@ -249,17 +285,16 @@ export default function DivisionGame() {
                                 onChange={(e) => setUserAnswer(e.target.value)}
                                 className="w-24 bg-white text-slate-900 p-4 rounded-xl border-4 border-blue-500 focus:border-blue-400 outline-none text-center shadow-[0_0_20px_rgba(59,130,246,0.5)] placeholder-gray-300"
                                 placeholder="?"
-                                autoFocus
                             />
                         </div>
 
-                        {/* Remainder Input (if needed or advanced levels) */}
+                        {/* Remainder Input */}
                         <AnimatePresence>
                             {(itemsLeft > 0 || level > 3) && (
                                 <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
-                                    className="mb-8 p-4 bg-orange-500/10 rounded-xl border border-orange-500/30"
+                                    className="mb-8 p-4 bg-orange-500/10 rounded-xl border border-orange-500/30 inline-block mx-auto"
                                 >
                                     <label className="text-orange-300 text-sm font-bold block mb-2 uppercase tracking-wider">
                                         ¿Sobró algo? (Resto)
@@ -268,7 +303,7 @@ export default function DivisionGame() {
                                         type="number"
                                         value={userRemainder}
                                         onChange={(e) => setUserRemainder(e.target.value)}
-                                        className="w-20 bg-slate-900 text-orange-400 p-2 rounded-lg border-2 border-orange-500/50 outline-none text-center text-xl font-bold"
+                                        className="w-24 bg-slate-900 text-orange-400 p-2 rounded-lg border-2 border-orange-500/50 outline-none text-center text-2xl font-bold"
                                         placeholder="0"
                                     />
                                 </motion.div>
@@ -280,22 +315,30 @@ export default function DivisionGame() {
                             onClick={checkAnswer}
                             className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white text-xl font-black py-4 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2"
                         >
-                            Comprobar <CheckCircle className="w-6 h-6" />
+                            Comprobar Respuesta <CheckCircle className="w-6 h-6" />
                         </button>
                     </div>
 
-                    {/* Feedback Message */}
+                    {/* EDUCATIONAL FEEDBACK */}
                     <AnimatePresence>
                         {gameState === 'feedback' && (
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0 }}
-                                className="bg-green-500 text-white p-6 rounded-2xl text-center shadow-2xl border-2 border-green-400"
+                                className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-6 rounded-3xl text-center shadow-2xl border border-white/20"
                             >
-                                <h3 className="text-2xl font-black mb-1">¡Correcto! 🎉</h3>
-                                <p className="font-medium text-green-50">
-                                    {problem.dividend} dividido entre {problem.divisor} es igual a {problem.quotient}
+                                <h3 className="text-2xl font-black mb-4">¡Genial! 🎉</h3>
+                                <div className="bg-black/20 rounded-xl p-4 mb-4">
+                                    <p className="text-lg mb-2 text-indigo-200 uppercase tracking-widest text-xs font-bold">Concepto Clave</p>
+                                    <p className="font-mono text-xl md:text-2xl font-bold">
+                                        <span className="text-teal-300">{problem.quotient}</span> <span className="text-white/50">x</span> <span className="text-orange-300">{problem.divisor}</span>
+                                        {problem.remainder > 0 && <span className="text-yellow-300"> + {problem.remainder}</span>}
+                                        <span className="text-white/50"> = </span> <span className="text-white">{problem.dividend}</span>
+                                    </p>
+                                </div>
+                                <p className="text-indigo-100 text-sm">
+                                    {problem.dividend} pizzas divididas entre {problem.divisor} amigos son {problem.quotient} pizzas para cada uno
                                     {problem.remainder > 0 && ` y sobran ${problem.remainder}`}.
                                 </p>
                             </motion.div>
@@ -303,12 +346,13 @@ export default function DivisionGame() {
                     </AnimatePresence>
                 </div>
             </div>
-
-            <div className="mt-12 text-center">
-                <p className="text-white/30 text-sm">
-                    Arrastra las pizzas o usa los botones para repartir. Luego escribe el resultado.
-                </p>
-            </div>
         </div>
+    );
+} <div className="mt-12 text-center">
+    <p className="text-white/30 text-sm">
+        Arrastra las pizzas o usa los botones para repartir. Luego escribe el resultado.
+    </p>
+</div>
+        </div >
     );
 }
