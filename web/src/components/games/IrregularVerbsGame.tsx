@@ -36,9 +36,24 @@ export default function IrregularVerbsGame() {
     const currentVerb = verbs[currentIndex];
 
     const playAudio = (text: string) => {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
-        window.speechSynthesis.speak(utterance);
+        // Try to play natural audio from trusted dictionary source (US English)
+        const audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${text}&type=2`);
+        audio.play().catch(() => {
+            // Fallback to browser TTS if offline or error
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+
+            // Try to find a better voice if available (Google US English usually sounds better than default)
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => v.name.includes('Google US English')) ||
+                voices.find(v => v.lang === 'en-US');
+
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        });
     };
 
     const checkAnswer = () => {
