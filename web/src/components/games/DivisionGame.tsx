@@ -348,11 +348,4 @@ export default function DivisionGame() {
             </div>
         </div>
     );
-} <div className="mt-12 text-center">
-    <p className="text-white/30 text-sm">
-        Arrastra las pizzas o usa los botones para repartir. Luego escribe el resultado.
-    </p>
-</div>
-        </div >
-    );
 }
