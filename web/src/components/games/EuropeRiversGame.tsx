@@ -1,17 +1,27 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Globe, RotateCcw, ZoomIn, ZoomOut, Maximize, Minimize, Timer } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { EUROPE_RIVERS_PATHS } from './data/europe-rivers-paths';
-import { EUROPE_PATHS } from './data/europe-paths'; // For Background
+import { EUROPE_PATHS, EUROPE_DISPLAY_NAMES } from './data/europe-paths'; // For Background
+import { calculatePathCentroid } from '@/lib/svg-utils';
+
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 export default function EuropeRiversGame() {
     const [targetRiver, setTargetRiver] = useState('');
     const [score, setScore] = useState(0);
     const [errors, setErrors] = useState(0);
+    const [hints, setHints] = useState(0);
     const [gameState, setGameState] = useState<'start' | 'playing' | 'won' | 'finished'>('start');
+    const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
     const [message, setMessage] = useState('');
     const [remainingRivers, setRemainingRivers] = useState<string[]>([]);
 
@@ -30,6 +40,23 @@ export default function EuropeRiversGame() {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
+    // Memoize country labels
+    const countryLabels = useMemo(() => {
+        return Object.entries(EUROPE_PATHS).map(([id, pathD]) => {
+            const centroid = calculatePathCentroid(pathD);
+            const spanishName = EUROPE_DISPLAY_NAMES[id];
+
+            // Only label if we have a Spanish name and centroid
+            if (!spanishName || !centroid) return null;
+
+            return {
+                id,
+                name: spanishName,
+                ...centroid
+            };
+        }).filter(Boolean) as { id: string; name: string; x: number; y: number }[];
+    }, []);
+
     // Initialize
     useEffect(() => {
         const rivers = Object.keys(EUROPE_RIVERS_PATHS);
@@ -40,10 +67,22 @@ export default function EuropeRiversGame() {
         return () => document.removeEventListener('fullscreenchange', handleFsChange);
     }, []);
 
+    // Timer Loop
+    useEffect(() => {
+        if (gameState === 'playing' && timeLeft > 0) {
+            const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+            return () => clearInterval(timer);
+        } else if (timeLeft === 0 && gameState === 'playing') {
+            setGameState('finished');
+        }
+    }, [gameState, timeLeft]);
+
     const startGame = () => {
         setGameState('playing');
         setScore(0);
         setErrors(0);
+        setHints(0);
+        setTimeLeft(120);
         setAttempts(0);
         setFailedRivers([]);
         setCompletedRivers([]);
@@ -99,6 +138,7 @@ export default function EuropeRiversGame() {
                 setMessage(`¡Fallaste 3/3! ${targetRiver} marcado en rojo. ❌`);
                 setFailedRivers(prev => [...prev, targetRiver]);
                 setCompletedRivers(prev => [...prev, targetRiver]); // It's done, but failed
+                setTimeLeft(prev => Math.max(0, prev - 10)); // Penalty 10s
 
                 const newRemaining = remainingRivers.filter(r => r !== targetRiver);
                 setRemainingRivers(newRemaining);
@@ -113,6 +153,8 @@ export default function EuropeRiversGame() {
     const resetGame = () => {
         setScore(0);
         setErrors(0);
+        setHints(0);
+        setTimeLeft(120);
         setAttempts(0);
         setFailedRivers([]);
         setCompletedRivers([]);
@@ -159,29 +201,48 @@ export default function EuropeRiversGame() {
                     </div>
                     <div>
                         <h2 className="text-3xl font-black text-white">{score} <span className="text-sm font-normal text-emerald-200">pts</span></h2>
+                        <div className="text-xs font-bold text-emerald-300/70 mt-0 flex gap-3">
+                            <span>
+                                {(() => {
+                                    const total = completedRivers.length + errors;
+                                    return total > 0 ? Math.round((completedRivers.length / total) * 100) : 100;
+                                })()}% Acierto
+                            </span>
+                        </div>
                         <div className="flex gap-2 text-xs font-bold uppercase tracking-wider text-emerald-300">
                             <span>Restantes: {remainingRivers.length}</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex-1 text-center bg-slate-900/50 p-4 rounded-xl border border-white/10 w-full md:w-auto">
-                    <div className="text-gray-400 text-xs mb-1 uppercase tracking-widest font-bold">Encuentra el Río</div>
+                <div className="flex-1 text-center bg-slate-900/50 p-4 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[100px]">
+                    <div className="text-gray-400 text-[10px] mb-1 uppercase tracking-widest font-bold">Encuentra</div>
                     <AnimatePresence mode='wait'>
                         <motion.div
                             key={targetRiver}
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.8, opacity: 0 }}
-                            className="text-2xl md:text-3xl font-black text-cyan-400 drop-shadow-sm truncate"
+                            className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-teal-400 drop-shadow-sm truncate max-w-[300px]"
                         >
-                            {gameState === 'finished' ? '¡COMPLETADO!' : targetRiver || 'Cargando...'}
+                            {gameState === 'finished' ? (timeLeft === 0 ? '¡TIEMPO!' : '¡COMPLETADO!') : targetRiver || 'Cargando...'}
                         </motion.div>
                     </AnimatePresence>
                 </div>
 
                 <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-                    <div className="flex flex-col items-end mr-4">
+                    {/* Timer */}
+                    <div className={cn(
+                        "flex items-center gap-2 px-4 py-3 rounded-xl font-mono font-bold text-xl border transition-all shadow-lg",
+                        timeLeft < 20
+                            ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse"
+                            : "bg-slate-800/80 border-white/10 text-emerald-400"
+                    )}>
+                        <Timer className="w-5 h-5" />
+                        <span>{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+                    </div>
+
+                    <div className="flex flex-col items-end mr-2">
                         <span className="text-red-400 font-bold text-lg">{errors}</span>
                         <span className="text-red-400/60 text-xs uppercase">Fallos</span>
                     </div>
@@ -273,19 +334,38 @@ export default function EuropeRiversGame() {
                     <svg
                         viewBox="0 0 800 600"
                         className="w-full h-full"
-                        style={{ background: '#0f172a' }} // Dark background
+                        viewBox="0 0 800 600"
+                        className="w-full h-full"
+                        style={{ background: '#ffffff' }} // White background
                     >
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                             {/* BACKGROUND: EUROPE MAP */}
-                            <g className="opacity-10 pointer-events-none">
+                            <g className="pointer-events-none">
                                 {Object.values(EUROPE_PATHS).map((d: any, i) => (
                                     <path
                                         key={i}
                                         d={d}
-                                        fill="#ffffff"
-                                        stroke="#cbd5e1"
+                                        fill="#f8fafc" // Slate-50
+                                        stroke="#94a3b8" // Slate-400
                                         strokeWidth="0.5"
                                     />
+                                ))}
+                            </g>
+
+                            {/* COUNTRY LABELS */}
+                            <g className="pointer-events-none select-none">
+                                {countryLabels.map((label, i) => (
+                                    <text
+                                        key={i}
+                                        x={label.x}
+                                        y={label.y}
+                                        textAnchor="middle"
+                                        dominantBaseline="middle"
+                                        className="text-[6px] fill-slate-500 font-semibold tracking-wide uppercase opacity-90"
+                                        style={{ fontSize: '6px' }} // Tiny font for Europe
+                                    >
+                                        {label.name}
+                                    </text>
                                 ))}
                             </g>
 
