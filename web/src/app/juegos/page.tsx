@@ -12,6 +12,7 @@ type Game = {
     href: string;
     icon: any;
     color: string;
+    grade: string;
 };
 
 type Category = {
@@ -35,6 +36,7 @@ export default function GamesHubPage() {
                     href: '/juegos/mapa-comunidades',
                     icon: Map,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'mapa',
@@ -43,6 +45,7 @@ export default function GamesHubPage() {
                     href: '/juegos/mapa-provincias',
                     icon: Map,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'europe',
@@ -51,6 +54,7 @@ export default function GamesHubPage() {
                     href: '/juegos/mapa-europa',
                     icon: Map,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'capitals-ue',
@@ -59,6 +63,7 @@ export default function GamesHubPage() {
                     href: '/juegos/capitales-ue',
                     icon: Map,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'capitals-europe',
@@ -67,6 +72,7 @@ export default function GamesHubPage() {
                     href: '/juegos/capitales-europa',
                     icon: Map,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'rios',
@@ -75,6 +81,7 @@ export default function GamesHubPage() {
                     href: '/juegos/mapa-rios',
                     icon: Map,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'rios-europa',
@@ -83,6 +90,7 @@ export default function GamesHubPage() {
                     href: '/juegos/rios-europa',
                     icon: Map,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'capitals-ue-match',
@@ -91,6 +99,7 @@ export default function GamesHubPage() {
                     href: '/juegos/capitales-ue-match',
                     icon: Puzzle,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 },
                 {
                     id: 'capitals-europe-match',
@@ -99,6 +108,7 @@ export default function GamesHubPage() {
                     href: '/juegos/capitales-europa-match',
                     icon: Puzzle,
                     color: 'from-emerald-500 to-teal-600',
+                    grade: '5º Primaria'
                 }
             ]
         },
@@ -113,6 +123,7 @@ export default function GamesHubPage() {
                     href: '/juegos/divisiones',
                     icon: Calculator,
                     color: 'from-orange-500 to-amber-600',
+                    grade: '3º Primaria'
                 }
             ]
         },
@@ -127,6 +138,7 @@ export default function GamesHubPage() {
                     href: '/juegos/quiz-cultura',
                     icon: BrainCircuit,
                     color: 'from-violet-500 to-indigo-600',
+                    grade: '5º Primaria'
                 }
             ]
         },
@@ -141,6 +153,7 @@ export default function GamesHubPage() {
                     href: '/juegos/verbos-irregulares',
                     icon: Languages,
                     color: 'from-pink-500 to-rose-600',
+                    grade: '5º Primaria'
                 }
             ]
         }
@@ -199,8 +212,13 @@ export default function GamesHubPage() {
                                                 {/* Hover Glow */}
                                                 <div className={`absolute -right-20 -top-20 w-64 h-64 bg-gradient-to-br ${game.color} opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity`} />
 
-                                                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center mb-6 shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300`}>
-                                                    <game.icon className="w-8 h-8 text-white" />
+                                                <div className="flex justify-between items-start mb-6">
+                                                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300`}>
+                                                        <game.icon className="w-8 h-8 text-white" />
+                                                    </div>
+                                                    <span className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-gray-400 border border-white/5 uppercase tracking-wide">
+                                                        {game.grade}
+                                                    </span>
                                                 </div>
 
                                                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-colors">
