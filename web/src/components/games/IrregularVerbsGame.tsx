@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, CheckCircle2, XCircle, HelpCircle, Trophy, ArrowRight, BookOpen } from 'lucide-react';
+import { RefreshCw, CheckCircle2, XCircle, HelpCircle, Trophy, ArrowRight, BookOpen, Volume2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { IRREGULAR_VERBS, type IrregularVerb } from './data/irregular-verbs';
 
@@ -34,6 +34,12 @@ export default function IrregularVerbsGame() {
     };
 
     const currentVerb = verbs[currentIndex];
+
+    const playAudio = (text: string) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
+    };
 
     const checkAnswer = () => {
         if (!currentVerb) return;
@@ -134,7 +140,16 @@ export default function IrregularVerbsGame() {
                     <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
                         <BookOpen className="w-8 h-8 text-white" />
                     </div>
-                    <h2 className="text-4xl font-black text-white mb-2 capitalize">{currentVerb.infinitive}</h2>
+                    <div className="flex items-center gap-3 mb-2">
+                        <h2 className="text-4xl font-black text-white capitalize">{currentVerb.infinitive}</h2>
+                        <button
+                            onClick={() => playAudio(currentVerb.infinitive)}
+                            className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white hover:scale-105 active:scale-95"
+                            title="Escuchar pronunciación"
+                        >
+                            <Volume2 className="w-6 h-6" />
+                        </button>
+                    </div>
                     <p className="text-blue-100 text-lg">({currentVerb.translation})</p>
                 </motion.div>
 
