@@ -52,7 +52,7 @@ export default function Home() {
         </p>
 
         {/* TARJETAS DE SELECCIÓN (GLASSMORPHISM) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
 
           {/* OPCIÓN A: PROFESORES */}
           <div
@@ -89,6 +89,25 @@ export default function Home() {
             </p>
             <button className="bg-white text-gray-900 px-6 py-2 rounded-full font-bold text-sm w-full max-w-[200px] hover:bg-orange-500 hover:text-white transition z-10">
               Explorar Recursos
+            </button>
+          </div>
+
+          {/* OPCIÓN C: JUEGOS (NUEVA) */}
+          <div
+            onClick={() => router.push('/juegos')}
+            className="group bg-white/30 backdrop-blur-md border border-white/40 p-8 rounded-2xl cursor-pointer hover:bg-white/40 hover:scale-[1.02] transition-all duration-300 text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+          >
+            {/* Icono Watermark Background */}
+            <div className="mb-6 transition duration-500 group-hover:scale-110 drop-shadow-2xl">
+              <img src="/icons/game-controller.svg" className="w-32 h-32 object-contain" alt="Juegos" />
+            </div>
+
+            <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-md z-10">Aprende Jugando</h2>
+            <p className="text-gray-200 text-sm mb-6 max-w-xs drop-shadow-sm z-10">
+              Diviértete mientras aprendes geografía, matemáticas y cultura general.
+            </p>
+            <button className="bg-white text-gray-900 px-6 py-2 rounded-full font-bold text-sm w-full max-w-[200px] hover:bg-purple-500 hover:text-white transition z-10">
+              Jugar Ahora
             </button>
           </div>
 
