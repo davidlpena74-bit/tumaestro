@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap, Landmark, Puzzle } from 'lucide-react';
+import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap, Landmark, Puzzle, Languages } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 type Game = {
@@ -127,6 +127,20 @@ export default function GamesHubPage() {
                     href: '/juegos/quiz-cultura',
                     icon: BrainCircuit,
                     color: 'from-violet-500 to-indigo-600',
+                }
+            ]
+        },
+        {
+            id: 'idiomas',
+            title: 'Idiomas',
+            games: [
+                {
+                    id: 'verbos-irregulares',
+                    title: 'Verbos Irregulares',
+                    description: 'Practica lo formas de los verbos irregulares en inglés.',
+                    href: '/juegos/verbos-irregulares',
+                    icon: Languages,
+                    color: 'from-pink-500 to-rose-600',
                 }
             ]
         }

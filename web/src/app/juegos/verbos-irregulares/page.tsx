@@ -1,0 +1,28 @@
+'use client';
+
+import IrregularVerbsGame from '@/components/games/IrregularVerbsGame';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+
+export default function IrregularVerbsGamePage() {
+    return (
+        <main className="min-h-screen bg-transparent pt-32 pb-12">
+            <div className="max-w-7xl mx-auto px-4">
+                <div className="flex items-center gap-4 mb-8">
+                    <Link
+                        href="/juegos"
+                        className="p-2 hover:bg-white/10 rounded-xl transition-colors text-white"
+                    >
+                        <ArrowLeft className="w-6 h-6" />
+                    </Link>
+                    <div>
+                        <h1 className="text-4xl font-black text-white mb-2">Verbos Irregulares</h1>
+                        <p className="text-slate-400">Pon a prueba tu conocimiento de los verbos irregulares en inglés.</p>
+                    </div>
+                </div>
+
+                <IrregularVerbsGame />
+            </div>
+        </main>
+    );
+}

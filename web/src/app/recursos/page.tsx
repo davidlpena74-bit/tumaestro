@@ -42,6 +42,15 @@ const subjects = [
         stat: '85+ Recursos'
     },
     {
+        id: 'idiomas',
+        title: 'Idiomas',
+        description: 'Inglés, francés y otros idiomas. Gramática y vocabulario.',
+        href: '/recursos/idiomas',
+        icon: BookOpen,
+        color: 'from-pink-500 to-rose-500',
+        stat: 'Nuevo'
+    },
+    {
         id: 'fisica',
         title: 'Física y Química',
         description: 'Experimentos, fórmulas y tabla periódica.',
