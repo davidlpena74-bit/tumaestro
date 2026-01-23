@@ -77,7 +77,7 @@ export default function GameHUD({
 
                 {/* CENTER: Target Display - Only show if targetName is provided */}
                 {targetName !== "" && (
-                    <div className="flex-1 text-center bg-slate-900/50 p-2 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[80px]">
+                    <div className="flex-1 text-center bg-slate-900/50 px-1 py-2 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[80px]">
                         <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1">Encuentra</div>
                         <AnimatePresence mode='wait'>
                             <motion.div
@@ -85,7 +85,7 @@ export default function GameHUD({
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.9, opacity: 0 }}
-                                className={cn("text-2xl md:text-3xl font-black drop-shadow-sm truncate max-w-[300px]", theme.text)}
+                                className={cn("text-xl md:text-2xl font-black drop-shadow-sm px-2 text-balance leading-tight", theme.text)}
                             >
                                 {targetName || '...'}
                             </motion.div>
