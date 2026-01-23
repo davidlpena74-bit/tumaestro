@@ -5,28 +5,37 @@ import { EUROPE_PATHS } from '@/components/games/data/europe-paths';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
+import Header from '@/components/Header';
+
 export default function EuropeCapitalsMapPage() {
     return (
-        <main className="min-h-screen bg-transparent pt-32 pb-12">
-            <div className="max-w-7xl mx-auto px-4">
-                <div className="flex items-center gap-4 mb-8">
-                    <Link
-                        href="/juegos"
-                        className="p-2 hover:bg-white/10 rounded-xl transition-colors text-white"
-                    >
-                        <ArrowLeft className="w-6 h-6" />
-                    </Link>
-                    <div>
-                        <h1 className="text-4xl font-black text-white mb-2">Capitales de Europa</h1>
-                        <p className="text-slate-400">Ubica en el mapa todos los países de Europa (Mapa Interactivo).</p>
-                    </div>
+        <div className="min-h-screen bg-transparent flex flex-col">
+            <Header />
+            <main className="flex-1 p-4 pt-32 pb-12 relative overflow-hidden">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                    <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[100px]" />
                 </div>
 
-                <CapitalGame
-                    paths={EUROPE_PATHS}
-                    title="Capitales de Europa"
-                />
-            </div>
-        </main>
+                <div className="relative z-10 w-full max-w-7xl mx-auto">
+                    <div className="mb-0">
+                        <Link href="/juegos" className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors mb-4">
+                            <ArrowLeft className="w-4 h-4" /> Volver a Juegos
+                        </Link>
+                        <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 mb-2">
+                            Capitales de Europa
+                        </h1>
+                        <p className="text-gray-400 text-lg max-w-2xl">
+                            Ubica en el mapa todos los países de Europa (Mapa Interactivo).
+                        </p>
+                    </div>
+
+                    <CapitalGame
+                        paths={EUROPE_PATHS}
+                        title="Capitales de Europa"
+                    />
+                </div>
+            </main>
+        </div>
     );
 }

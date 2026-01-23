@@ -7,6 +7,12 @@ import confetti from 'canvas-confetti';
 import { EUROPE_PATHS } from './data/europe-paths';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 // Expanded Mapping for all 50 generated countries
 const COUNTRY_MAPPING: Record<string, string> = {
@@ -207,139 +213,144 @@ export default function EuropeGame() {
     };
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-4 select-none">
+        <div
+            ref={gameContainerRef}
+            className={cn(
+                "w-full flex flex-col items-center select-none transition-all duration-300",
+                isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : ""
+            )}
+        >
+            <div className={cn(
+                "w-full flex flex-col items-center",
+                isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
+            )}>
+                <GameHUD
+                    title="Mapa de Europa"
+                    score={score}
+                    errors={errors}
+                    timeLeft={timeLeft}
+                    totalTargets={Object.keys(COUNTRY_MAPPING).length} // Roughly correct, though some small states might be missing in map?
+                    remainingTargets={remainingCountries.length}
+                    targetName={targetCountry}
+                    message={message}
+                    onReset={resetGame}
+                    colorTheme="teal"
+                    icon={<Globe className="w-8 h-8 text-teal-400" />}
+                />
 
-            <GameHUD
-                title="Mapa de Europa"
-                score={score}
-                errors={errors}
-                timeLeft={timeLeft}
-                totalTargets={Object.keys(COUNTRY_MAPPING).length} // Roughly correct, though some small states might be missing in map?
-                remainingTargets={remainingCountries.length}
-                targetName={targetCountry}
-                message={message}
-                onReset={resetGame}
-                colorTheme="blue"
-                icon={<Globe className="w-8 h-8 text-blue-400" />}
-            />
-
-            {/* Map Interaction Layer */}
-            <div
-                ref={gameContainerRef}
-                className="relative bg-[#1a2333] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-            >
-                {/* START OVERLAY */}
-                {gameState === 'start' && (
-                    <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
-                        <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
-                            <Globe className="w-12 h-12 text-blue-400" />
+                {/* Map Interaction Layer */}
+                <div
+                    className={cn(
+                        "relative w-full bg-[#1a2333] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
+                        isFullscreen && "flex-1 min-h-[500px]"
+                    )}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                >
+                    {/* START OVERLAY */}
+                    {gameState === 'start' && (
+                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                            <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
+                                <Globe className="w-12 h-12 text-blue-400" />
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Mapa de Europa</h2>
+                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                                Pon a prueba tu geografía. ¿Puedes ubicar todos los países del continente?
+                            </p>
+                            <button
+                                onClick={startGame}
+                                className="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.6)] hover:-translate-y-1"
+                            >
+                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                            </button>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Mapa de Europa</h2>
-                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                            Pon a prueba tu geografía. ¿Puedes ubicar todos los países del continente?
-                        </p>
-                        <button
-                            onClick={startGame}
-                            className="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.6)] hover:-translate-y-1"
-                        >
-                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                    )}
+
+                    {/* FINISHED OVERLAY */}
+                    {gameState === 'finished' && (
+                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                            <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
+                                <Globe className="w-16 h-16 text-yellow-400 animate-bounce" />
+                            </div>
+                            <h3 className="text-5xl font-black text-white mb-6">
+                                {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Mapa Completado!'}
+                            </h3>
+                            <p className="text-2xl text-blue-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
+                            <button
+                                onClick={resetGame}
+                                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-blue-500/20 transition-transform active:scale-95"
+                            >
+                                Jugar Otra Vez
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Controls */}
+                    <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                        <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                        <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
+                        <div className="h-2" />
+                        <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
+                            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                         </button>
                     </div>
-                )}
 
-                {/* FINISHED OVERLAY */}
-                {gameState === 'finished' && (
-                    <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
-                        <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
-                            <Globe className="w-16 h-16 text-yellow-400 animate-bounce" />
-                        </div>
-                        <h3 className="text-5xl font-black text-white mb-6">
-                            {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Mapa Completado!'}
-                        </h3>
-                        <p className="text-2xl text-blue-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
-                        <button
-                            onClick={resetGame}
-                            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-blue-500/20 transition-transform active:scale-95"
+                    {/* MAP */}
+                    {(gameState === 'playing' || gameState === 'start') && (
+                        <svg
+                            viewBox="0 0 800 600"
+                            className="w-full h-full pointer-events-none"
+                            style={{ background: '#1e293b' }}
                         >
-                            Jugar Otra Vez
-                        </button>
-                    </div>
-                )}
+                            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                                {Object.entries(EUROPE_PATHS).map(([engName, pathD]) => {
+                                    const spanishName = COUNTRY_MAPPING[engName];
+                                    const isTarget = spanishName === targetCountry;
+                                    const isCompleted = spanishName && !remainingCountries.includes(spanishName);
+                                    const isPlayable = !!spanishName;
 
-                {/* Controls */}
-                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
-                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
-                    <div className="h-2" />
-                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
-                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                    </button>
+                                    return (
+                                        <motion.path
+                                            key={engName}
+                                            d={pathD}
+                                            className={`
+                                            stroke-[0.5px] pointer-events-auto transition-colors duration-150
+                                            ${isPlayable
+                                                    ? `cursor-pointer stroke-slate-900/30 hover:stroke-slate-900 hover:stroke-[1px] ${!isCompleted ? 'hover:fill-teal-100' : ''}`
+                                                    : 'fill-slate-800/30 stroke-slate-800/50'
+                                                }
+                                        `}
+                                            initial={false}
+                                            animate={{
+                                                fill: isCompleted
+                                                    ? failedCountries.includes(spanishName)
+                                                        ? '#ef4444' // Red (Failed)
+                                                        : '#10b981' // Green (Correct)
+                                                    : isPlayable
+                                                        ? '#ffffff' // White (Pending)
+                                                        : '#1e293b', // Dark background-like
+                                                opacity: 1,
+                                                scale: 1,
+                                            }}
+                                            onClick={(e: any) => {
+                                                e.stopPropagation();
+                                                handleCountryClick(engName)
+                                            }}
+                                            style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
+                                        />
+                                    );
+                                })}
+                            </g>
+                        </svg>
+                    )}
                 </div>
 
-                {/* MAP */}
-                {(gameState === 'playing' || gameState === 'start') && (
-                    <svg
-                        viewBox="0 0 800 600"
-                        className="w-full h-full pointer-events-none"
-                        style={{ background: '#1e293b' }}
-                    >
-                        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                            {Object.entries(EUROPE_PATHS).map(([engName, pathD]) => {
-                                const spanishName = COUNTRY_MAPPING[engName];
-                                const isTarget = spanishName === targetCountry;
-                                const isCompleted = spanishName && !remainingCountries.includes(spanishName);
-                                const isPlayable = !!spanishName;
-
-                                return (
-                                    <motion.path
-                                        key={engName}
-                                        d={pathD}
-                                        className={`
-                                            stroke-[0.5px] pointer-events-auto
-                                            ${isPlayable
-                                                ? 'cursor-pointer stroke-slate-900/30 hover:stroke-slate-900 hover:stroke-[1px]'
-                                                : 'fill-slate-800/30 stroke-slate-800/50'
-                                            }
-                                        `}
-                                        initial={false}
-                                        animate={{
-                                            fill: isCompleted
-                                                ? failedCountries.includes(spanishName)
-                                                    ? '#ef4444' // Red (Failed)
-                                                    : '#10b981' // Green (Correct)
-                                                : isPlayable
-                                                    ? '#ffffff' // White (Pending)
-                                                    : '#1e293b', // Dark background-like
-                                            opacity: 1,
-                                            scale: 1,
-                                            filter: "drop-shadow(0px 0px 0px rgba(0,0,0,0))"
-                                        }}
-                                        whileHover={isPlayable && !isCompleted ? {
-                                            fill: '#bae6fd', // Light Blue Hover
-                                            scale: 1.02,
-                                            filter: "drop-shadow(3px 5px 4px rgba(0,0,0,0.5))",
-                                            transition: { duration: 0.2 }
-                                        } : {}}
-                                        onClick={(e: any) => {
-                                            e.stopPropagation();
-                                            handleCountryClick(engName)
-                                        }}
-                                        style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
-                                    />
-                                );
-                            })}
-                        </g>
-                    </svg>
-                )}
+                <p className="text-center text-slate-500 mt-6 text-sm">
+                    Datos cartográficos optimizados por Map Agent. Fuente: Natural Earth.
+                </p>
             </div>
-
-            <p className="text-center text-slate-500 mt-6 text-sm">
-                Datos cartográficos optimizados por Map Agent. Fuente: Natural Earth.
-            </p>
-        </div >
+        </div>
     );
 }

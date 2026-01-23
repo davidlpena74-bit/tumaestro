@@ -169,163 +169,175 @@ export default function EuropeRiversGame() {
     const handleMouseUp = () => setIsDragging(false);
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-4 select-none">
+        <div
+            ref={gameContainerRef}
+            className={cn(
+                "w-full flex flex-col items-center select-none transition-all duration-300",
+                isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : ""
+            )}
+        >
+            <div className={cn(
+                "w-full flex flex-col items-center",
+                isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
+            )}>
+                <GameHUD
+                    title="Ríos de Europa"
+                    score={score}
+                    errors={errors}
+                    timeLeft={timeLeft}
+                    totalTargets={Object.keys(EUROPE_RIVERS_PATHS).length}
+                    remainingTargets={remainingRivers.length}
+                    targetName={targetRiver}
+                    message={message}
+                    onReset={resetGame}
+                    colorTheme="teal"
+                    icon={<Globe className="w-8 h-8 text-teal-400" />}
+                />
 
-            <GameHUD
-                title="Ríos de Europa"
-                score={score}
-                errors={errors}
-                timeLeft={timeLeft}
-                totalTargets={Object.keys(EUROPE_RIVERS_PATHS).length}
-                remainingTargets={remainingRivers.length}
-                targetName={targetRiver}
-                message={message}
-                onReset={resetGame}
-                colorTheme="emerald"
-                icon={<Globe className="w-8 h-8 text-emerald-400" />}
-            />
-
-            {/* MAP CONTAINER */}
-            <div
-                ref={gameContainerRef}
-                className="relative bg-[#1e293b] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-            >
-                {/* START OVERLAY */}
-                {gameState === 'start' && (
-                    <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
-                        <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
-                            <Globe className="w-12 h-12 text-emerald-400" />
+                {/* MAP CONTAINER */}
+                <div
+                    className={cn(
+                        "relative w-full bg-[#1e293b] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
+                        isFullscreen && "flex-1 min-h-[500px]"
+                    )}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                >
+                    {/* START OVERLAY */}
+                    {gameState === 'start' && (
+                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                            <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
+                                <Globe className="w-12 h-12 text-emerald-400" />
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Ríos de Europa</h2>
+                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                                Viaja por el continente y encuentra los ríos más importantes.
+                            </p>
+                            <button
+                                onClick={startGame}
+                                className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1"
+                            >
+                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                            </button>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Ríos de Europa</h2>
-                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                            Viaja por el continente y encuentra los ríos más importantes.
-                        </p>
-                        <button
-                            onClick={startGame}
-                            className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1"
-                        >
-                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                    )}
+
+                    {/* FINISHED OVERLAY */}
+                    {gameState === 'finished' && (
+                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                            <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
+                                <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                            </div>
+                            <h3 className="text-5xl font-black text-white mb-6">
+                                {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Ríos Completados!'}
+                            </h3>
+                            <p className="text-2xl text-emerald-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
+                            <button
+                                onClick={resetGame}
+                                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-emerald-500/20 transition-transform active:scale-95"
+                            >
+                                Jugar Otra Vez
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Controls */}
+                    <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                        <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                        <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
+                        <div className="h-2" />
+                        <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
+                            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                         </button>
                     </div>
-                )}
 
-                {/* FINISHED OVERLAY */}
-                {gameState === 'finished' && (
-                    <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
-                        <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
-                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
-                        </div>
-                        <h3 className="text-5xl font-black text-white mb-6">
-                            {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Ríos Completados!'}
-                        </h3>
-                        <p className="text-2xl text-emerald-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
-                        <button
-                            onClick={resetGame}
-                            className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-emerald-500/20 transition-transform active:scale-95"
+                    {/* MAP */}
+                    {(gameState === 'playing' || gameState === 'start') && (
+                        <svg
+                            viewBox="0 0 800 600"
+                            className="w-full h-full"
+                            style={{ background: '#ffffff' }} // White background
                         >
-                            Jugar Otra Vez
-                        </button>
-                    </div>
-                )}
+                            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                                {/* BACKGROUND: EUROPE MAP */}
+                                <g className="pointer-events-none">
+                                    {Object.values(EUROPE_PATHS).map((d: any, i) => (
+                                        <path
+                                            key={i}
+                                            d={d}
+                                            fill="#f8fafc" // Slate-50
+                                            stroke="#94a3b8" // Slate-400
+                                            strokeWidth="0.5"
+                                        />
+                                    ))}
+                                </g>
 
-                {/* Controls */}
-                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
-                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
-                    <div className="h-2" />
-                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
-                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                    </button>
+                                {/* COUNTRY LABELS */}
+                                <g className="pointer-events-none select-none">
+                                    {countryLabels.map((label, i) => (
+                                        <text
+                                            key={i}
+                                            x={label.x}
+                                            y={label.y}
+                                            textAnchor="middle"
+                                            dominantBaseline="middle"
+                                            className="text-[6px] fill-slate-500 font-semibold tracking-wide uppercase opacity-90"
+                                            style={{ fontSize: '6px' }} // Tiny font for Europe
+                                        >
+                                            {label.name}
+                                        </text>
+                                    ))}
+                                </g>
+
+                                {/* RIVERS LAYER */}
+                                {Object.entries(EUROPE_RIVERS_PATHS).map(([name, d]) => {
+                                    const isTarget = name === targetRiver;
+                                    const isCompleted = completedRivers.includes(name);
+                                    const isFailed = failedRivers.includes(name);
+
+                                    // Stroke Colors
+                                    let strokeColor = '#38bdf8'; // sky-400 (Default)
+                                    if (isCompleted) strokeColor = '#22c55e'; // green-500
+                                    if (isFailed) strokeColor = '#ef4444'; // red-500
+
+                                    return (
+                                        <g key={name} className="cursor-pointer group pointer-events-auto">
+                                            {/* Invisible thick path for click area */}
+                                            <path
+                                                onClick={(e) => handleRiverClick(name, e)}
+                                                d={d}
+                                                stroke="white"
+                                                strokeWidth="30" // Generous hit area
+                                                fill="none"
+                                                opacity="0"
+                                                className="transition-all"
+                                            />
+
+                                            {/* Visible River path */}
+                                            <path
+                                                onClick={(e) => handleRiverClick(name, e)}
+                                                d={d}
+                                                stroke={strokeColor}
+                                                strokeWidth={isTarget || isCompleted ? 4 : 2}
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                fill="none"
+                                                className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-teal-400 group-hover:stroke-[4px]' : ''}`}
+                                            />
+                                        </g>
+                                    );
+                                })}
+                            </g>
+                        </svg>
+                    )}
                 </div>
 
-                {/* MAP */}
-                {(gameState === 'playing' || gameState === 'start') && (
-                    <svg
-                        viewBox="0 0 800 600"
-                        className="w-full h-full"
-                        style={{ background: '#ffffff' }} // White background
-                    >
-                        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                            {/* BACKGROUND: EUROPE MAP */}
-                            <g className="pointer-events-none">
-                                {Object.values(EUROPE_PATHS).map((d: any, i) => (
-                                    <path
-                                        key={i}
-                                        d={d}
-                                        fill="#f8fafc" // Slate-50
-                                        stroke="#94a3b8" // Slate-400
-                                        strokeWidth="0.5"
-                                    />
-                                ))}
-                            </g>
-
-                            {/* COUNTRY LABELS */}
-                            <g className="pointer-events-none select-none">
-                                {countryLabels.map((label, i) => (
-                                    <text
-                                        key={i}
-                                        x={label.x}
-                                        y={label.y}
-                                        textAnchor="middle"
-                                        dominantBaseline="middle"
-                                        className="text-[6px] fill-slate-500 font-semibold tracking-wide uppercase opacity-90"
-                                        style={{ fontSize: '6px' }} // Tiny font for Europe
-                                    >
-                                        {label.name}
-                                    </text>
-                                ))}
-                            </g>
-
-                            {/* RIVERS LAYER */}
-                            {Object.entries(EUROPE_RIVERS_PATHS).map(([name, d]) => {
-                                const isTarget = name === targetRiver;
-                                const isCompleted = completedRivers.includes(name);
-                                const isFailed = failedRivers.includes(name);
-
-                                // Stroke Colors
-                                let strokeColor = '#38bdf8'; // sky-400 (Default)
-                                if (isCompleted) strokeColor = '#22c55e'; // green-500
-                                if (isFailed) strokeColor = '#ef4444'; // red-500
-
-                                return (
-                                    <g key={name} className="cursor-pointer group pointer-events-auto">
-                                        {/* Invisible thick path for click area */}
-                                        <path
-                                            onClick={(e) => handleRiverClick(name, e)}
-                                            d={d}
-                                            stroke="white"
-                                            strokeWidth="30" // Generous hit area
-                                            fill="none"
-                                            opacity="0"
-                                            className="transition-all"
-                                        />
-
-                                        {/* Visible River path */}
-                                        <path
-                                            onClick={(e) => handleRiverClick(name, e)}
-                                            d={d}
-                                            stroke={strokeColor}
-                                            strokeWidth={isTarget || isCompleted ? 4 : 2}
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            fill="none"
-                                            className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-purple-400 group-hover:stroke-[4px]' : ''} drop-shadow-md`}
-                                        />
-                                    </g>
-                                );
-                            })}
-                        </g>
-                    </svg>
-                )}
+                <p className="text-center text-slate-500 mt-6 text-sm">
+                    Encuentra el río correspondiente en el mapa de Europa.
+                </p>
             </div>
-
-            <p className="text-center text-slate-500 mt-6 text-sm">
-                Encuentra el río correspondiente en el mapa de Europa.
-            </p>
         </div>
     );
 }

@@ -175,179 +175,191 @@ export default function RegionGame() {
     };
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-4 flex flex-col items-center select-none">
+        <div
+            ref={gameContainerRef}
+            className={cn(
+                "w-full flex flex-col items-center select-none transition-all duration-300",
+                isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : ""
+            )}
+        >
+            <div className={cn(
+                "w-full flex flex-col items-center",
+                isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
+            )}>
+                <GameHUD
+                    title="Comunidades Autónomas"
+                    score={score}
+                    errors={errors}
+                    timeLeft={timeLeft}
+                    totalTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length}
+                    remainingTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length - solvedIds.length}
+                    targetName={targetId ? (REGION_DISPLAY_NAMES[targetId] || targetId) : '...'}
+                    message={message}
+                    onReset={resetGame}
+                    colorTheme="teal" // Using teal to match original styling
+                    icon={<MapPin className="w-8 h-8 text-teal-400" />}
+                />
 
-            <GameHUD
-                title="Comunidades Autónomas"
-                score={score}
-                errors={errors}
-                timeLeft={timeLeft}
-                totalTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length}
-                remainingTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length - solvedIds.length}
-                targetName={targetId ? (REGION_DISPLAY_NAMES[targetId] || targetId) : '...'}
-                message={message}
-                onReset={resetGame}
-                colorTheme="teal" // Using teal to match original styling
-                icon={<MapPin className="w-8 h-8 text-teal-400" />}
-            />
+                {/* MAP CONTAINER */}
+                <div
+                    className={cn(
+                        "relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group cursor-move",
+                        isFullscreen && "flex-1 min-h-[500px]"
+                    )}
+                    onMouseDown={(e) => {
+                        isClick.current = true;
+                        handleMouseDown(e);
+                    }}
+                    onMouseMove={(e) => {
+                        if (isDragging) isClick.current = false;
+                        handleMouseMove(e);
+                    }}
+                    onMouseUp={() => {
+                        handleMouseUp();
+                        setTimeout(() => isClick.current = true, 50);
+                    }}
+                    onMouseLeave={handleMouseUp}
+                >
 
-            {/* MAP CONTAINER */}
-            <div
-                ref={gameContainerRef}
-                className="relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group cursor-move"
-                onMouseDown={(e) => {
-                    isClick.current = true;
-                    handleMouseDown(e);
-                }}
-                onMouseMove={(e) => {
-                    if (isDragging) isClick.current = false;
-                    handleMouseMove(e);
-                }}
-                onMouseUp={() => {
-                    handleMouseUp();
-                    setTimeout(() => isClick.current = true, 50);
-                }}
-                onMouseLeave={handleMouseUp}
-            >
-
-                {/* START OVERLAY */}
-                {gameState === 'start' && (
-                    <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                        <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
-                            <MapPin className="w-12 h-12 text-teal-400" />
+                    {/* START OVERLAY */}
+                    {gameState === 'start' && (
+                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
+                            <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
+                                <MapPin className="w-12 h-12 text-teal-400" />
+                            </div>
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Comunidades Autónomas</h2>
+                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                                ¿Te sabes las 17 Comunidades y 2 Ciudades Autónomas de España?
+                            </p>
+                            <button
+                                onClick={startGame}
+                                className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
+                            >
+                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <MapPin className="w-5 h-5 opacity-50" /></span>
+                            </button>
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Comunidades Autónomas</h2>
-                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                            ¿Te sabes las 17 Comunidades y 2 Ciudades Autónomas de España?
-                        </p>
-                        <button
-                            onClick={startGame}
-                            className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
+                    )}
+
+                    {/* GAME OVER OVERLAY */}
+                    {gameState === 'finished' && (
+                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
+                            <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
+                                <MapPin className="w-16 h-16 text-yellow-400 animate-bounce" />
+                            </div>
+                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                            <div className="flex flex-col items-center gap-1 mb-8">
+                                <span className="text-gray-400 text-sm uppercase tracking-widest">Puntuación Final</span>
+                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
+                                    {score}
+                                </span>
+                            </div>
+                            <button onClick={startGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
+                                <RefreshCw className="w-5 h-5" /> Jugar de nuevo
+                            </button>
+                        </div>
+                    )}
+
+                    {/* CONTROLS (Zoom/Full) */}
+                    <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                        <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                        <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.8))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
+                        <div className="h-2" />
+                        <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
+                            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+                        </button>
+                        <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10" title="Reset View">
+                            <RefreshCw className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    {/* SVG MAP */}
+                    <svg viewBox="-140 0 840 700" className="w-full h-full drop-shadow-2xl">
+                        <defs>
+                            <filter id="glow-hover-region" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+
+                        {/* CANARY ISLANDS INSET FRAME (Custom Projection) */}
+                        <rect
+                            x="-130" y="470" width="280" height="200"
+                            className="fill-none stroke-white/20 stroke-1 pointer-events-none"
+                            rx="8"
+                            strokeDasharray="4 4"
+                        />
+
+                        <g
+                            transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
+                            style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
                         >
-                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <MapPin className="w-5 h-5 opacity-50" /></span>
-                        </button>
-                    </div>
-                )}
+                            {/* Render Regions from New Map Source */}
+                            {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
+                                const isTarget = targetId === id;
+                                const isClicked = clickedId === id;
+                                const isSolved = solvedIds.includes(id);
 
-                {/* GAME OVER OVERLAY - GameHUD handles standard messages, but if we want valid full screen overlay: */}
-                {gameState === 'finished' && ( // hooked uses 'finished'
-                    <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                        <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
-                            <MapPin className="w-16 h-16 text-yellow-400 animate-bounce" />
-                        </div>
-                        <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
-                        <div className="flex flex-col items-center gap-1 mb-8">
-                            <span className="text-gray-400 text-sm uppercase tracking-widest">Puntuación Final</span>
-                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
-                                {score}
-                            </span>
-                        </div>
-                        <button onClick={startGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                            <RefreshCw className="w-5 h-5" /> Jugar de nuevo
-                        </button>
-                    </div>
-                )}
+                                // Dynamic class logic
+                                let fillClass = "fill-white/90";
+                                // Note: Using thicker stroke for regions vs provinces
+                                let strokeClass = "stroke-slate-900 stroke-[1.5]";
 
-                {/* CONTROLS (Zoom/Full) */}
-                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
-                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.8))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
-                    <div className="h-2" />
-                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
-                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                    </button>
-                    <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10" title="Reset View">
-                        <RefreshCw className="w-5 h-5" />
-                    </button>
+                                if (gameState === 'playing') {
+                                    fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
+
+                                    if (isSolved) {
+                                        fillClass = "fill-green-500/80"; // Persistent completed style
+                                    }
+
+                                    if (isClicked) {
+                                        strokeClass = "stroke-slate-900 stroke-[2]";
+                                        if (isTarget) fillClass = "fill-green-500 animate-pulse";
+                                        else fillClass = "fill-red-500";
+                                    }
+                                }
+
+                                // Shift Inset Regions (Canarias only) to match new box position
+                                const isInset = id === 'canarias';
+                                const regionTransform = isInset ? "translate(-160, 0)" : undefined;
+
+                                return (
+                                    <g
+                                        key={id}
+                                        transform={regionTransform}
+                                        onClick={() => {
+                                            if (isClick.current) handleRegionClick(id);
+                                        }}
+                                        style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
+                                        className="group"
+                                    >
+                                        {paths.map((d, i) => (
+                                            <motion.path
+                                                key={i}
+                                                d={d}
+                                                className={cn(strokeClass, fillClass)}
+                                                initial={false}
+                                                animate={
+                                                    (isClicked && isTarget) ? { scale: 1.02 } : {}
+                                                }
+                                                style={{ transformOrigin: 'center' }}
+                                            />
+                                        ))}
+                                    </g>
+                                );
+                            })}
+                        </g>
+                    </svg>
+
                 </div>
 
-                {/* SVG MAP */}
-                <svg viewBox="-140 0 840 700" className="w-full h-full drop-shadow-2xl">
-                    <defs>
-                        <filter id="glow-hover-region" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                            <feMerge>
-                                <feMergeNode in="coloredBlur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                    </defs>
-
-                    {/* CANARY ISLANDS INSET FRAME (Custom Projection) */}
-                    <rect
-                        x="-130" y="470" width="280" height="200"
-                        className="fill-none stroke-white/20 stroke-1 pointer-events-none"
-                        rx="8"
-                        strokeDasharray="4 4"
-                    />
-
-                    <g
-                        transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
-                        style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
-                    >
-                        {/* Render Regions from New Map Source */}
-                        {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
-                            const isTarget = targetId === id;
-                            const isClicked = clickedId === id;
-                            const isSolved = solvedIds.includes(id);
-
-                            // Dynamic class logic
-                            let fillClass = "fill-white/90";
-                            // Note: Using thicker stroke for regions vs provinces
-                            let strokeClass = "stroke-slate-900 stroke-[1.5]";
-
-                            if (gameState === 'playing') {
-                                fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
-
-                                if (isSolved) {
-                                    fillClass = "fill-green-500/80"; // Persistent completed style
-                                }
-
-                                if (isClicked) {
-                                    strokeClass = "stroke-slate-900 stroke-[2]";
-                                    if (isTarget) fillClass = "fill-green-500 animate-pulse";
-                                    else fillClass = "fill-red-500";
-                                }
-                            }
-
-                            // Shift Inset Regions (Canarias only) to match new box position
-                            const isInset = id === 'canarias';
-                            const regionTransform = isInset ? "translate(-160, 0)" : undefined;
-
-                            return (
-                                <g
-                                    key={id}
-                                    transform={regionTransform}
-                                    onClick={() => {
-                                        if (isClick.current) handleRegionClick(id);
-                                    }}
-                                    style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
-                                    className="group"
-                                >
-                                    {paths.map((d, i) => (
-                                        <motion.path
-                                            key={i}
-                                            d={d}
-                                            className={cn(strokeClass, fillClass)}
-                                            initial={false}
-                                            animate={
-                                                (isClicked && isTarget) ? { scale: 1.02 } : {}
-                                            }
-                                            style={{ transformOrigin: 'center' }}
-                                        />
-                                    ))}
-                                </g>
-                            );
-                        })}
-                    </g>
-                </svg>
-
+                <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
+                    <HelpCircle className="w-3 h-3" />
+                    <span>Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.</span>
+                </p>
             </div>
-
-            <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
-                <HelpCircle className="w-3 h-3" />
-                <span>Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.</span>
-            </p>
         </div>
     );
 }

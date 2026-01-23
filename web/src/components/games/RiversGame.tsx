@@ -166,156 +166,168 @@ export default function RiversGame() {
     const handleMouseUp = () => setIsDragging(false);
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-4 select-none">
+        <div
+            ref={gameContainerRef}
+            className={cn(
+                "w-full flex flex-col items-center select-none transition-all duration-300",
+                isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : ""
+            )}
+        >
+            <div className={cn(
+                "w-full flex flex-col items-center",
+                isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
+            )}>
+                <GameHUD
+                    title="Ríos de España"
+                    score={score}
+                    errors={errors}
+                    timeLeft={timeLeft}
+                    totalTargets={Object.keys(RIVERS_PATHS).length}
+                    remainingTargets={remainingRivers.length}
+                    targetName={targetRiver}
+                    message={message}
+                    onReset={resetGame}
+                    colorTheme="teal"
+                    icon={<Globe className="w-8 h-8 text-teal-400" />}
+                />
 
-            <GameHUD
-                title="Ríos de España"
-                score={score}
-                errors={errors}
-                timeLeft={timeLeft}
-                totalTargets={Object.keys(RIVERS_PATHS).length}
-                remainingTargets={remainingRivers.length}
-                targetName={targetRiver}
-                message={message}
-                onReset={resetGame}
-                colorTheme="blue"
-                icon={<Globe className="w-8 h-8 text-blue-400" />}
-            />
-
-            {/* MAP CONTAINER */}
-            <div
-                ref={gameContainerRef}
-                className="relative bg-[#1e293b] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-            >
-                {/* START OVERLAY */}
-                {gameState === 'start' && (
-                    <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
-                        <div className="bg-cyan-500/10 p-4 rounded-full mb-6 ring-1 ring-cyan-500/30">
-                            <Globe className="w-12 h-12 text-cyan-400" />
+                {/* MAP CONTAINER */}
+                <div
+                    className={cn(
+                        "relative w-full bg-[#1e293b] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
+                        isFullscreen && "flex-1 min-h-[500px]"
+                    )}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                >
+                    {/* START OVERLAY */}
+                    {gameState === 'start' && (
+                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                            <div className="bg-cyan-500/10 p-4 rounded-full mb-6 ring-1 ring-cyan-500/30">
+                                <Globe className="w-12 h-12 text-cyan-400" />
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Ríos de España</h2>
+                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                                ¿Conoces la hidrografía española? Encuentra los ríos principales en el mapa.
+                            </p>
+                            <button
+                                onClick={startGame}
+                                className="group relative px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(6,182,212,0.5)] hover:shadow-[0_0_60px_-10px_rgba(6,182,212,0.6)] hover:-translate-y-1"
+                            >
+                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                            </button>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Ríos de España</h2>
-                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                            ¿Conoces la hidrografía española? Encuentra los ríos principales en el mapa.
-                        </p>
-                        <button
-                            onClick={startGame}
-                            className="group relative px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(6,182,212,0.5)] hover:shadow-[0_0_60px_-10px_rgba(6,182,212,0.6)] hover:-translate-y-1"
-                        >
-                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                    )}
+
+                    {/* FINISHED OVERLAY */}
+                    {gameState === 'finished' && (
+                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                            <Trophy className="w-32 h-32 text-yellow-400 mx-auto mb-6 animate-bounce drop-shadow-[0_0_50px_rgba(250,204,21,0.5)]" />
+                            <h3 className="text-5xl font-black text-white mb-6">
+                                {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Ríos Completados!'}
+                            </h3>
+                            <p className="text-2xl text-blue-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
+                            <button
+                                onClick={resetGame}
+                                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-green-500/20 transition-transform active:scale-95"
+                            >
+                                Jugar Otra Vez
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Controls */}
+                    <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
+                        <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
+                        <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
+                        <div className="h-2" />
+                        <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
+                            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                         </button>
                     </div>
-                )}
 
-                {/* FINISHED OVERLAY */}
-                {gameState === 'finished' && (
-                    <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
-                        <Trophy className="w-32 h-32 text-yellow-400 mx-auto mb-6 animate-bounce drop-shadow-[0_0_50px_rgba(250,204,21,0.5)]" />
-                        <h3 className="text-5xl font-black text-white mb-6">
-                            {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Ríos Completados!'}
-                        </h3>
-                        <p className="text-2xl text-blue-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
-                        <button
-                            onClick={resetGame}
-                            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-green-500/20 transition-transform active:scale-95"
+                    {/* MAP */}
+                    {(gameState === 'playing' || gameState === 'start') && (
+                        <svg
+                            viewBox="0 0 800 600"
+                            className="w-full h-full"
+                            style={{ background: '#ffffff' }} // White background
                         >
-                            Jugar Otra Vez
-                        </button>
-                    </div>
-                )}
+                            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                                {/* BACKGROUND: SPAIN MAP */}
+                                <g className="pointer-events-none">
+                                    {Object.values(SPANISH_COMMUNITIES_PATHS).flat().map((d: any, i) => (
+                                        <path
+                                            key={i}
+                                            d={d}
+                                            fill="#f8fafc" // Slate-50
+                                            stroke="#94a3b8" // Slate-400
+                                            strokeWidth="1"
+                                        />
+                                    ))}
+                                </g>
 
-                {/* Controls */}
-                <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
-                    <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
-                    <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
-                    <div className="h-2" />
-                    <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
-                        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                    </button>
+                                {/* REGION LABELS */}
+                                <g className="pointer-events-none select-none">
+                                    {regionLabels.map((label, i) => label.x && (
+                                        <text
+                                            key={i}
+                                            x={label.x}
+                                            y={label.y}
+                                            textAnchor="middle"
+                                            dominantBaseline="middle"
+                                            className="text-[10px] fill-slate-500 font-semibold tracking-wide uppercase opacity-90"
+                                            style={{ fontSize: '9px' }} // Slightly larger
+                                        >
+                                            {label.name}
+                                        </text>
+                                    ))}
+                                </g>
+
+                                {/* RIVERS LAYER */}
+                                {Object.entries(RIVERS_PATHS).map(([name, d]) => {
+                                    const isTarget = name === targetRiver;
+                                    const isCompleted = completedRivers.includes(name);
+                                    const isFailed = failedRivers.includes(name);
+
+                                    // Stroke colors
+                                    let strokeColor = '#38bdf8'; // sky-400 default
+                                    if (isCompleted) strokeColor = '#22c55e'; // green-500
+                                    if (isFailed) strokeColor = '#ef4444'; // red-500
+
+                                    return (
+                                        <g key={name} className="cursor-pointer group pointer-events-auto">
+                                            {/* Invisible thick path for easier clicking */}
+                                            <path
+                                                onClick={(e) => handleRiverClick(name, e)}
+                                                d={d}
+                                                stroke="white"
+                                                strokeWidth="30" // Generous hit area
+                                                fill="none"
+                                                opacity="0" // Visible for hits but invisible to eye
+                                                className="transition-all"
+                                            />
+
+                                            {/* Visible River path */}
+                                            <path
+                                                onClick={(e) => handleRiverClick(name, e)}
+                                                d={d}
+                                                stroke={strokeColor}
+                                                strokeWidth={isTarget || isCompleted ? 4 : 3}
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                fill="none"
+                                                className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-teal-400 group-hover:stroke-[4px]' : ''}`}
+                                            />
+                                        </g>
+                                    );
+                                })}
+                            </g>
+                        </svg>
+                    )}
                 </div>
-
-                {/* MAP */}
-                {(gameState === 'playing' || gameState === 'start') && (
-                    <svg
-                        viewBox="0 0 800 600"
-                        className="w-full h-full"
-                        style={{ background: '#ffffff' }} // White background
-                    >
-                        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                            {/* BACKGROUND: SPAIN MAP */}
-                            <g className="pointer-events-none">
-                                {Object.values(SPANISH_COMMUNITIES_PATHS).flat().map((d: any, i) => (
-                                    <path
-                                        key={i}
-                                        d={d}
-                                        fill="#f8fafc" // Slate-50
-                                        stroke="#94a3b8" // Slate-400
-                                        strokeWidth="1"
-                                    />
-                                ))}
-                            </g>
-
-                            {/* REGION LABELS */}
-                            <g className="pointer-events-none select-none">
-                                {regionLabels.map((label, i) => label.x && (
-                                    <text
-                                        key={i}
-                                        x={label.x}
-                                        y={label.y}
-                                        textAnchor="middle"
-                                        dominantBaseline="middle"
-                                        className="text-[10px] fill-slate-500 font-semibold tracking-wide uppercase opacity-90"
-                                        style={{ fontSize: '9px' }} // Slightly larger
-                                    >
-                                        {label.name}
-                                    </text>
-                                ))}
-                            </g>
-
-                            {/* RIVERS LAYER */}
-                            {Object.entries(RIVERS_PATHS).map(([name, d]) => {
-                                const isTarget = name === targetRiver;
-                                const isCompleted = completedRivers.includes(name);
-                                const isFailed = failedRivers.includes(name);
-
-                                // Stroke colors
-                                let strokeColor = '#38bdf8'; // sky-400 default
-                                if (isCompleted) strokeColor = '#22c55e'; // green-500
-                                if (isFailed) strokeColor = '#ef4444'; // red-500
-
-                                return (
-                                    <g key={name} className="cursor-pointer group pointer-events-auto">
-                                        {/* Invisible thick path for easier clicking */}
-                                        <path
-                                            onClick={(e) => handleRiverClick(name, e)}
-                                            d={d}
-                                            stroke="white"
-                                            strokeWidth="30" // Generous hit area
-                                            fill="none"
-                                            opacity="0" // Visible for hits but invisible to eye
-                                            className="transition-all"
-                                        />
-
-                                        {/* Visible River path */}
-                                        <path
-                                            onClick={(e) => handleRiverClick(name, e)}
-                                            d={d}
-                                            stroke={strokeColor}
-                                            strokeWidth={isTarget || isCompleted ? 4 : 3}
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            fill="none"
-                                            className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-purple-400 group-hover:stroke-[4px]' : ''} drop-shadow-md`}
-                                        />
-                                    </g>
-                                );
-                            })}
-                        </g>
-                    </svg>
-                )}
             </div>
         </div>
     );
