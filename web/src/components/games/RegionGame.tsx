@@ -262,7 +262,7 @@ export default function RegionGame() {
                 </div>
 
                 {/* SVG MAP */}
-                <svg viewBox="0 0 700 700" className="w-full h-full drop-shadow-2xl">
+                <svg viewBox="-60 0 760 700" className="w-full h-full drop-shadow-2xl">
                     <defs>
                         <filter id="glow-hover-region" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur stdDeviation="3" result="coloredBlur" />
@@ -275,7 +275,7 @@ export default function RegionGame() {
 
                     {/* CANARY ISLANDS INSET FRAME (Custom Projection) */}
                     <rect
-                        x="0" y="470" width="280" height="200"
+                        x="-50" y="470" width="280" height="200"
                         className="fill-none stroke-white/20 stroke-1 pointer-events-none"
                         rx="8"
                         strokeDasharray="4 4"
@@ -310,9 +310,9 @@ export default function RegionGame() {
                                 }
                             }
 
-                            // Shift Inset Regions (Canarias, Ceuta, Melilla) to match new box position
-                            const isInset = ['canarias', 'ceuta', 'melilla'].includes(id);
-                            const regionTransform = isInset ? "translate(-30, 0)" : undefined;
+                            // Shift Inset Regions (Canarias only) to match new box position
+                            const isInset = id === 'canarias';
+                            const regionTransform = isInset ? "translate(-80, 0)" : undefined;
 
                             return (
                                 <g
