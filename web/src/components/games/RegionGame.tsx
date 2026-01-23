@@ -275,7 +275,7 @@ export default function RegionGame() {
 
                     {/* CANARY ISLANDS INSET FRAME (Custom Projection) */}
                     <rect
-                        x="30" y="470" width="280" height="200"
+                        x="0" y="470" width="280" height="200"
                         className="fill-none stroke-white/20 stroke-1 pointer-events-none"
                         rx="8"
                         strokeDasharray="4 4"
@@ -310,9 +310,14 @@ export default function RegionGame() {
                                 }
                             }
 
+                            // Shift Inset Regions (Canarias, Ceuta, Melilla) to match new box position
+                            const isInset = ['canarias', 'ceuta', 'melilla'].includes(id);
+                            const regionTransform = isInset ? "translate(-30, 0)" : undefined;
+
                             return (
                                 <g
                                     key={id}
+                                    transform={regionTransform}
                                     onClick={() => {
                                         if (isClick.current) handleRegionClick(id);
                                     }}
