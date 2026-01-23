@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function IrregularVerbsGamePage() {
     return (
-        <main className="min-h-screen bg-transparent pt-32 pb-12">
+        <main className="min-h-screen bg-transparent pt-24 pb-12">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex items-center gap-4 mb-8">
                     <Link
