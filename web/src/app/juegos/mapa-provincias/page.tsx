@@ -1,8 +1,12 @@
-'use client';
-
+import { Metadata } from 'next';
 import CopiaJuego1 from '@/components/games/CopiaJuego1';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'Mapa de Provincias de España - Juego de Geografía | TuMaestro.es',
+    description: 'Aprende las provincias de España con este juego interactivo. Ubica las 50 provincias y mejora tu conocimiento geográfico.',
+};
 
 export default function MapaProvinciasPage() {
     return (
@@ -19,10 +23,10 @@ export default function MapaProvinciasPage() {
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]">
-                            Reto Geográfico
+                            Reto Provincias de España 🇪🇸
                         </h1>
                         <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
-                            Demuestra tu conocimiento del mapa de España. Localiza todas las provincias antes de que se agote el tiempo.
+                            ¿Eres capaz de ubicar las 50 provincias en el mapa? Pon a prueba tu rapidez y precisión geográfica.
                         </p>
                     </div>
 

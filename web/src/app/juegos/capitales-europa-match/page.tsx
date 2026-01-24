@@ -1,6 +1,12 @@
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import EuropeCapitalsGame from '@/components/games/EuropeCapitalsGame';
+
+export const metadata: Metadata = {
+    title: 'Puzzle: Capitales de Europa - Juego Interactivo | TuMaestro.es',
+    description: 'Completa el mapa de Europa arrastrando cada capital a su país. Un reto educativo divertido para todas las edades.',
+};
 
 export default function EuropeCapitalsMatchPage() {
     return (
@@ -17,10 +23,10 @@ export default function EuropeCapitalsMatchPage() {
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]">
-                            Reto de Capitales
+                            Puzzle: Capitales Europa 🧩
                         </h1>
                         <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
-                            Arrastra y suelta todas las capitales del continente.
+                            El gran reto de las capitales europeas. Arrastra y suelta cada nombre en el país correcto para completar el continente.
                         </p>
                     </div>
 

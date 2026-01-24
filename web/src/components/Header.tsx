@@ -42,6 +42,9 @@ export default function Header() {
                     <Link href="/recursos" className="hidden md:block text-white/80 hover:text-teal-400 font-medium transition-colors text-sm">
                         {t.header.resources}
                     </Link>
+                    <Link href="/profesores" className="hidden md:block text-white/80 hover:text-teal-400 font-medium transition-colors text-sm">
+                        {t.header.teachers}
+                    </Link>
 
                     {/* Language Selector Dropdown */}
                     <div className="relative">

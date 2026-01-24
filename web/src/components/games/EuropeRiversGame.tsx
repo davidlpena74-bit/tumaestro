@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { EUROPE_RIVERS_PATHS } from './data/europe-rivers-paths';
-import { EUROPE_PATHS, EUROPE_DISPLAY_NAMES } from './data/europe-paths'; // For Background
+import { EUROPE_PATHS } from './data/europe-paths'; // For Background
+import { EUROPE_MAPPING } from './data/country-translations';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
@@ -51,7 +52,7 @@ export default function EuropeRiversGame() {
     const countryLabels = useMemo(() => {
         return Object.entries(EUROPE_PATHS).map(([id, pathD]) => {
             const centroid = calculatePathCentroid(pathD);
-            const spanishName = EUROPE_DISPLAY_NAMES[id];
+            const spanishName = EUROPE_MAPPING[id];
 
             if (!spanishName || !centroid) return null;
 

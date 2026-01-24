@@ -1,11 +1,14 @@
-'use client';
-
+import { Metadata } from 'next';
 import CapitalGame from '@/components/games/CapitalGame';
 import { EUROPE_PATHS } from '@/components/games/data/europe-paths';
 import { EU_MEMBERS_LIST } from '@/components/games/data/capitals-data';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
+export const metadata: Metadata = {
+    title: 'Capitales de la Unión Europea - Juego Interactivo | TuMaestro.es',
+    description: 'Aprende las capitales de los países miembros de la Unión Europea con este mapa interactivo. ¡Domina la geografía política de Europa!',
+};
 
 export default function EUCapitalsMapPage() {
     return (
@@ -22,10 +25,10 @@ export default function EUCapitalsMapPage() {
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]">
-                            Capitales de la UE
+                            Reto Capitales UE 🇪🇺
                         </h1>
                         <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
-                            Ubica en el mapa el país correspondiente a la capital (Mapa Interactivo).
+                            Localiza el país correspondiente a la capital que aparece en pantalla. Domina los estados miembros de la Unión Europea.
                         </p>
                     </div>
 

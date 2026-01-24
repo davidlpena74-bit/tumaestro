@@ -21,6 +21,10 @@ interface GameHUDProps {
     message?: string;
     onReset: () => void;
 
+    // Metadata
+    region?: string;
+    gameType?: string;
+
     // Customization
     colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow';
     icon?: React.ReactNode;

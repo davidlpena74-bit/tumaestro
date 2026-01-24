@@ -1,14 +1,14 @@
 import { Metadata } from 'next';
-import EuropeGame from '@/components/games/EuropeGame';
+import AsiaOceaniaMapGame from '@/components/games/AsiaOceaniaMapGame';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Mapa de Europa - Juego de Geografía | TuMaestro.es',
-    description: 'Aprende los países de Europa con este mapa interactivo. Ubica todas las naciones del continente europeo.',
+    title: 'Mapa de Asia y Oceanía - Juego de Geografía | TuMaestro.es',
+    description: 'Juego de geografía interactivo para aprender los países de Asia y Oceanía. Desktop y móvil.',
 };
 
-export default function EuropeMapPage() {
+export default function AsiaOceaniaMapPage() {
     return (
         <div className="min-h-screen bg-transparent flex flex-col">
             <main className="flex-1 p-4 pt-24 pb-12 relative overflow-hidden">
@@ -23,14 +23,14 @@ export default function EuropeMapPage() {
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(16,185,129,0.3)]">
-                            Reto Mapa de Europa 🌍
+                            Reto Asia y Oceanía 🌍
                         </h1>
                         <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
-                            ¿Puedes localizar todos los países? Demuestra tus conocimientos de geografía sobre el continente europeo.
+                            Desde las estepas de Asia Central hasta las islas del Pacífico. El reto geográfico más extenso de la plataforma.
                         </p>
                     </div>
 
-                    <EuropeGame />
+                    <AsiaOceaniaMapGame />
                 </div>
             </main>
         </div>

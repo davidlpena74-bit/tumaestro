@@ -1,6 +1,12 @@
+import { Metadata } from 'next';
 import EuropeRiversGame from '@/components/games/EuropeRiversGame';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+    title: 'Ríos de Europa - Juego de Hidrografía Interactiva | TuMaestro.es',
+    description: 'Aprende los ríos más importantes de Europa: el Danubio, el Rin, el Volga y muchos más. ¡Ponte a prueba en nuestro mapa interactivo!',
+};
 
 export default function EuropeRiversPage() {
     return (
@@ -17,10 +23,10 @@ export default function EuropeRiversPage() {
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]">
-                            Ríos de Europa
+                            Reto Ríos de Europa 🌊
                         </h1>
-                        <p className="text-gray-400 text-lg mb-6 relative z-10 mt-[1.5cm]">
-                            Encuentra los principales ríos del continente en el mapa
+                        <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
+                            ¿Podrás identificar los grandes cursos fluviales europeos? Desde el Rin hasta el Volga, demuestra tu dominio de la hidrografía continental.
                         </p>
                     </div>
 

@@ -1,6 +1,12 @@
-import { default as RiversGame } from '@/components/games/RiversGame';
+import { Metadata } from 'next';
+import RiversGame from '@/components/games/RiversGame';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'Mapa de Ríos de España - Juego de Geografía | TuMaestro.es',
+    description: 'Juego interactivo para aprender los principales ríos de España. Identifica su curso y desembocadura.',
+};
 
 export default function MapaRiosPage() {
     return (
@@ -17,10 +23,10 @@ export default function MapaRiosPage() {
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]">
-                            Ríos de España
+                            Reto Ríos de España 🌊
                         </h1>
-                        <p className="text-gray-400 text-lg mb-6 relative z-10 mt-[1.5cm]">
-                            Identifica los ríos principales en el mapa.
+                        <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
+                            ¿Sabes dónde nace el Ebro o por dónde pasa el Guadalquivir? Pon a prueba tu conocimiento de la hidrografía española.
                         </p>
                     </div>
 
