@@ -10,6 +10,7 @@ import { SPANISH_PROVINCES_PATHS, PROVINCE_NAMES } from './spanish-provinces';
 import confetti from 'canvas-confetti';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { useLanguage } from '@/context/LanguageContext';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -31,6 +32,7 @@ delete (GAME_PROVINCE_NAMES as any)['santacruz'];
 delete (GAME_PROVINCE_NAMES as any)['laspalmas'];
 
 export default function MapGame() {
+    const { t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -172,6 +174,8 @@ export default function MapGame() {
                     totalTargets={Object.keys(GAME_PROVINCE_NAMES).length}
                     remainingTargets={Object.keys(GAME_PROVINCE_NAMES).length - solvedIds.length}
                     targetName={targetId ? GAME_PROVINCE_NAMES[targetId] : '...'}
+                    region={t.gamesPage.regions.spain}
+                    gameType={t.gamesPage.gameTypes.map}
                     message={message}
                     onReset={resetGame}
                     colorTheme="teal"

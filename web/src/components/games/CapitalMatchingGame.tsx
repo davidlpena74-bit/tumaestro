@@ -245,9 +245,16 @@ export default function CapitalMatchingGame() {
                 <div>
                     <h2 className="text-3xl font-bold text-white mb-2">{content.subHeader}</h2>
                     <div className="flex gap-6 text-slate-400">
-                        <div className="flex items-center gap-2">
-                            <Timer className="w-5 h-5 text-indigo-400" />
-                            <span className="font-mono font-bold text-xl text-white">{formatTime(elapsedTime)}</span>
+                        <div className="flex flex-col items-center gap-1">
+                            <div className="flex items-center gap-2">
+                                <Timer className="w-5 h-5 text-indigo-400" />
+                                <span className="font-mono font-bold text-xl text-white">{formatTime(elapsedTime)}</span>
+                            </div>
+                            {gameState === 'playing' && (
+                                <span className="text-[10px] uppercase font-bold text-indigo-300/70 tracking-wider">
+                                    {t.common.remaining}: {countries.length - Object.keys(matches).length}
+                                </span>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             <X className="w-5 h-5 text-red-400" />

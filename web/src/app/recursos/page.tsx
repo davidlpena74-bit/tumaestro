@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, FlaskConical, ArrowRight, Library } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { Calculator, Quotes, Translate, GlobeHemisphereWest, Atom, BookOpen } from '@phosphor-icons/react';
 
 const subjects = [
     {
@@ -10,7 +11,7 @@ const subjects = [
         title: 'Matemáticas',
         description: 'Álgebra, geometría, cálculo y problemas lógicos.',
         href: '/recursos/matematicas',
-        iconSrc: '/icons/math.svg',
+        icon: Calculator,
         color: 'from-blue-500 to-cyan-500',
         stat: '150+ Recursos'
     },
@@ -19,7 +20,7 @@ const subjects = [
         title: 'Lengua y Literatura',
         description: 'Gramática, sintaxis y análisis de textos clásicos.',
         href: '/recursos/lengua',
-        iconSrc: '/icons/language.svg',
+        icon: Quotes,
         color: 'from-orange-500 to-red-500',
         stat: '120+ Recursos'
     },
@@ -28,7 +29,7 @@ const subjects = [
         title: 'Inglés',
         description: 'Vocabulario, listening y ejercicios de speaking.',
         href: '/recursos/ingles',
-        iconSrc: '/icons/english.svg',
+        icon: Translate,
         color: 'from-pink-500 to-rose-500',
         stat: '90+ Recursos'
     },
@@ -37,7 +38,7 @@ const subjects = [
         title: 'Historia y Geografía',
         description: 'Mapas interactivos, líneas de tiempo y documentos históricos.',
         href: '/recursos/geografia',
-        iconSrc: '/icons/geography.svg',
+        icon: GlobeHemisphereWest,
         color: 'from-emerald-500 to-teal-500',
         stat: '85+ Recursos'
     },
@@ -46,7 +47,7 @@ const subjects = [
         title: 'Idiomas',
         description: 'Inglés, francés y otros idiomas. Gramática y vocabulario.',
         href: '/recursos/idiomas',
-        icon: BookOpen,
+        icon: Translate,
         color: 'from-pink-500 to-rose-500',
         stat: 'Nuevo'
     },
@@ -55,7 +56,7 @@ const subjects = [
         title: 'Física y Química',
         description: 'Experimentos, fórmulas y tabla periódica.',
         href: '/recursos/fisica',
-        icon: FlaskConical, // Fallback to Lucide component
+        icon: Atom,
         color: 'from-violet-500 to-purple-500',
         stat: 'Coming Soon'
     }
@@ -104,12 +105,7 @@ export default function ResourcesHubPage() {
 
                                     <div className="flex justify-between items-start mb-6">
                                         <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${subject.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300 p-3`}>
-                                            {subject.iconSrc ? (
-                                                <img src={subject.iconSrc} alt={subject.title} className="w-full h-full object-contain" />
-                                            ) : (
-                                                // @ts-ignore
-                                                <subject.icon className="w-8 h-8 text-white" />
-                                            )}
+                                            <subject.icon className="w-10 h-10 text-white" weight="duotone" />
                                         </div>
                                         <span className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-gray-400 border border-white/5 uppercase tracking-wide">
                                             {subject.stat}
@@ -138,7 +134,7 @@ export default function ResourcesHubPage() {
                         transition={{ delay: 0.6 }}
                         className="relative h-full min-h-[250px] flex flex-col items-center justify-center bg-white/5 border border-white/5 border-dashed rounded-3xl p-8 text-center text-gray-500 group cursor-default backdrop-blur-sm"
                     >
-                        <BookOpen className="w-10 h-10 mb-4 opacity-20 group-hover:opacity-40 transition-opacity" />
+                        <BookOpen className="w-10 h-10 mb-4 opacity-20 group-hover:opacity-40 transition-opacity" weight="duotone" />
                         <h3 className="text-lg font-bold mb-1">Más Materias</h3>
                         <p className="text-xs">Pronto añadiremos Economía, Biología y más.</p>
                     </motion.div>

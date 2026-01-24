@@ -1,24 +1,26 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CarouselAutoScroll() {
+    const { t } = useLanguage();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isPaused, setIsPaused] = useState(false);
 
     const getSubjectIcon = (subjectName: string) => {
         switch (subjectName) {
-            case 'Matemáticas':
+            case t.common.subjects.math:
                 return <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>;
-            case 'Inglés':
+            case t.common.subjects.english:
                 return <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>;
-            case 'Física':
+            case t.common.subjects.physics:
                 return <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>;
-            case 'Programación':
+            case t.common.subjects.programming:
                 return <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>;
-            case 'Química':
+            case t.common.subjects.chemistry:
                 return <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>;
-            case 'Historia':
+            case t.common.subjects.history:
                 return <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
             default:
                 return null;
@@ -26,12 +28,12 @@ export default function CarouselAutoScroll() {
     };
 
     const courses = [
-        { id: 1, teacher: { full_name: 'Ana García' }, subject: { name: 'Matemáticas' }, title: 'Clases de Cálculo y Álgebra para universitarios', price_per_hour: 25 },
-        { id: 2, teacher: { full_name: 'Carlos Ruiz' }, subject: { name: 'Inglés' }, title: 'Preparación C1/C2 Cambridge y conversación', price_per_hour: 20 },
-        { id: 3, teacher: { full_name: 'María López' }, subject: { name: 'Física' }, title: 'Física para Bachillerato y Selectividad', price_per_hour: 22 },
-        { id: 4, teacher: { full_name: 'David Pena' }, subject: { name: 'Programación' }, title: 'Aprende React, Next.js y Tailwind desde cero', price_per_hour: 30 },
-        { id: 5, teacher: { full_name: 'Laura B.' }, subject: { name: 'Química' }, title: 'Refuerzo de Química general y orgánica', price_per_hour: 18 },
-        { id: 6, teacher: { full_name: 'Javier M.' }, subject: { name: 'Historia' }, title: 'Historia de España para EBAU', price_per_hour: 15 },
+        { id: 1, teacher: { full_name: 'Ana García' }, subject: { name: t.common.subjects.math }, title: 'Clases de Cálculo y Álgebra para universitarios', price_per_hour: 25 },
+        { id: 2, teacher: { full_name: 'Carlos Ruiz' }, subject: { name: t.common.subjects.english }, title: 'Preparación C1/C2 Cambridge y conversación', price_per_hour: 20 },
+        { id: 3, teacher: { full_name: 'María López' }, subject: { name: t.common.subjects.physics }, title: 'Física para Bachillerato y Selectividad', price_per_hour: 22 },
+        { id: 4, teacher: { full_name: 'David Pena' }, subject: { name: t.common.subjects.programming }, title: 'Aprende React, Next.js y Tailwind desde cero', price_per_hour: 30 },
+        { id: 5, teacher: { full_name: 'Laura B.' }, subject: { name: t.common.subjects.chemistry }, title: 'Refuerzo de Química general y orgánica', price_per_hour: 18 },
+        { id: 6, teacher: { full_name: 'Javier M.' }, subject: { name: t.common.subjects.history }, title: 'Historia de España para EBAU', price_per_hour: 15 },
     ];
 
     // Duplicar array para loop infinito fluido
@@ -91,12 +93,12 @@ export default function CarouselAutoScroll() {
                         {/* Estrellas Mock */}
                         <div className="flex items-center gap-1 mb-2">
                             <span className="text-yellow-400 text-xs drop-shadow-sm">★★★★★</span>
-                            <span className="text-gray-800 text-[10px] font-bold">(NUEVO)</span>
+                            <span className="text-gray-800 text-[10px] font-bold">({t.home.trending})</span>
                         </div>
                         <p className="text-gray-800 text-xs line-clamp-2 mb-2 font-medium leading-tight h-8">{course.title}</p>
                         <div className="flex justify-between items-center pt-2 border-t border-gray-900/10">
                             <span className="font-bold text-lg text-gray-900">{course.price_per_hour}€</span>
-                            <button className="text-teal-900 font-bold text-xs bg-white/50 px-2.5 py-1 rounded-lg hover:bg-white/80 transition border border-white/40 shadow-sm">Perfil</button>
+                            <button className="text-teal-900 font-bold text-xs bg-white/50 px-2.5 py-1 rounded-lg hover:bg-white/80 transition border border-white/40 shadow-sm">{t.common.profile}</button>
                         </div>
                     </div>
                 </div>

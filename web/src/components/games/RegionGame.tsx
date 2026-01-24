@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, ZoomIn, ZoomOut, Maximize, Minimize, HelpCircle, RefreshCw } from 'lucide-react';
-import { SPANISH_COMMUNITIES_PATHS } from './spanish-communities-paths';
+import { Trophy, Timer, MapPin, Map as MapIcon, RefreshCw, XCircle, CheckCircle, HelpCircle, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { SPANISH_COMMUNITIES_PATHS } from './spanish-communities-paths';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { useLanguage } from '@/context/LanguageContext';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -37,6 +38,7 @@ const REGION_DISPLAY_NAMES: Record<string, string> = {
 };
 
 export default function RegionGame() {
+    const { language, t } = useLanguage();
     // Note: RegionGame usually has 60s for Regions (fewer targets).
     // Rivers has 120s. Let's use 60s here.
     const {
@@ -188,17 +190,19 @@ export default function RegionGame() {
                 isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
             )}>
                 <GameHUD
-                    title="Comunidades Autónomas"
+                    title="Comunidades"
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
-                    totalTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length}
-                    remainingTargets={Object.keys(SPANISH_COMMUNITIES_PATHS).length - solvedIds.length}
+                    totalTargets={Object.keys(REGION_DISPLAY_NAMES).length}
+                    remainingTargets={Object.keys(REGION_DISPLAY_NAMES).length - solvedIds.length}
                     targetName={targetId ? (REGION_DISPLAY_NAMES[targetId] || targetId) : '...'}
+                    region={t.gamesPage.regions.spain}
+                    gameType={t.gamesPage.gameTypes.map}
                     message={message}
                     onReset={resetGame}
-                    colorTheme="teal" // Using teal to match original styling
-                    icon={<MapPin className="w-8 h-8 text-teal-400" />}
+                    colorTheme="emerald"
+                    icon={<MapIcon className="w-8 h-8 text-emerald-400" />}
                 />
 
                 {/* MAP CONTAINER */}

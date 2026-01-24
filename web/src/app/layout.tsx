@@ -28,6 +28,10 @@ export const metadata: Metadata = {
     url: 'https://tumaestro.es',
     siteName: 'TuMaestro.es',
   },
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 import CookieConsent from "@/components/CookieConsent";

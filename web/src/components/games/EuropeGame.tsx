@@ -7,6 +7,7 @@ import confetti from 'canvas-confetti';
 import { EUROPE_PATHS } from './data/europe-paths';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -70,6 +71,7 @@ const COUNTRY_MAPPING: Record<string, string> = {
 };
 
 export default function EuropeGame() {
+    const { t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -232,6 +234,8 @@ export default function EuropeGame() {
                     totalTargets={Object.keys(COUNTRY_MAPPING).length} // Roughly correct, though some small states might be missing in map?
                     remainingTargets={remainingCountries.length}
                     targetName={targetCountry}
+                    region={t.gamesPage.regions.europe}
+                    gameType={t.gamesPage.gameTypes.map}
                     message={message}
                     onReset={resetGame}
                     colorTheme="teal"

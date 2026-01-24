@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Trophy, Timer, Hand } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useLanguage } from '@/context/LanguageContext';
 
 type GameState = 'start' | 'playing' | 'feedback' | 'finished';
 
@@ -15,6 +16,7 @@ interface DivisionProblem {
 }
 
 export default function DivisionGame() {
+    const { t } = useLanguage();
     const [level, setLevel] = useState(1);
     const [points, setPoints] = useState(0);
     const [gameState, setGameState] = useState<GameState>('start');
@@ -171,15 +173,28 @@ export default function DivisionGame() {
             )}
 
             {/* HUD */}
-            <div className="flex justify-between items-center mb-8 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
-                <div className="flex items-center gap-2">
-                    <Trophy className="text-yellow-400 w-6 h-6" />
-                    <span className="text-2xl font-black text-white">{points}</span>
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl gap-4">
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    <div className="p-3 rounded-xl bg-orange-500/20">
+                        <Trophy className="text-orange-400 w-8 h-8" />
+                    </div>
+                    <div>
+                        <h2 className="text-3xl font-black text-white leading-none">
+                            {points} <span className="text-sm font-normal text-orange-300">pts</span>
+                        </h2>
+                        <div className="flex gap-3 text-xs font-bold mt-1 text-orange-300 uppercase tracking-wider">
+                            <span>Nivel {level}</span>
+                            <span>•</span>
+                            <span>{t.gamesPage.gameTypes.math}</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="text-white font-bold">Nivel {level}</div>
-                <div className="flex items-center gap-2">
-                    <div className="text-sm text-gray-400">Racha</div>
-                    <div className="font-black text-orange-400 text-xl">x{streak}</div>
+
+                <div className="flex items-center gap-6 w-full md:w-auto justify-end">
+                    <div className="flex flex-col items-end">
+                        <span className="text-orange-400 font-black text-xl leading-none">x{streak}</span>
+                        <span className="text-orange-400/60 text-[10px] uppercase font-bold tracking-widest">Racha</span>
+                    </div>
                 </div>
             </div>
 

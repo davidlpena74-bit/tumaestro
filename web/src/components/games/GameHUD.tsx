@@ -1,7 +1,8 @@
 'use client';
 
-import { Trophy, Timer, Globe, RotateCcw, XCircle, CheckCircle } from 'lucide-react';
+import { Trophy, Timer, GlobeHemisphereWest, ArrowCounterClockwise, XCircle, CheckCircle } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -47,6 +48,7 @@ export default function GameHUD({
     colorTheme = 'blue',
     icon
 }: GameHUDProps) {
+    const { t } = useLanguage();
     const theme = THEMES[colorTheme];
 
     // Calculate accuracy
@@ -62,15 +64,14 @@ export default function GameHUD({
                 {/* LEFT: Score & Accuracy */}
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     <div className={cn("p-3 rounded-xl", theme.bg)}>
-                        {icon || <Globe className={cn("w-8 h-8", theme.text)} />}
+                        {icon || <GlobeHemisphereWest className={cn("w-8 h-8", theme.text)} weight="duotone" />}
                     </div>
                     <div>
                         <h2 className="text-3xl font-black text-white leading-none">
                             {score} <span className={cn("text-sm font-normal", theme.sub)}>pts</span>
                         </h2>
-                        <div className={cn("flex gap-3 text-xs font-bold mt-1", theme.sub)}>
+                        <div className={cn("flex flex-wrap gap-x-3 gap-y-1 text-xs font-bold mt-1 uppercase tracking-wider", theme.sub)}>
                             <span>{accuracy}% Acierto</span>
-                            {remainingTargets > 0 && <span>• Restantes: {remainingTargets}</span>}
                         </div>
                     </div>
                 </div>
@@ -96,21 +97,28 @@ export default function GameHUD({
                 {/* RIGHT: Timer, Errors, Reset */}
                 <div className="flex items-center gap-3 w-full md:w-auto justify-end">
 
-                    {/* Timer */}
-                    <div className={cn(
-                        "flex items-center gap-2 px-3 py-2 rounded-xl font-mono font-bold text-xl border transition-all shadow-lg min-w-[100px] justify-center",
-                        timeLeft < 20
-                            ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse"
-                            : "bg-slate-800/80 border-white/10 " + theme.text
-                    )}>
-                        <Timer className="w-5 h-5" />
-                        <span>{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+                    {/* Timer & Remaining */}
+                    <div className="flex flex-col items-center gap-1">
+                        <div className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-xl font-mono font-bold text-xl border transition-all shadow-lg min-w-[100px] justify-center",
+                            timeLeft < 20
+                                ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse"
+                                : "bg-slate-800/80 border-white/10 " + theme.text
+                        )}>
+                            <Timer className="w-5 h-5" weight="bold" />
+                            <span>{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+                        </div>
+                        {remainingTargets > 0 && (
+                            <span className={cn("text-[10px] uppercase font-bold tracking-wider", theme.sub)}>
+                                {t.common.remaining}: {remainingTargets}
+                            </span>
+                        )}
                     </div>
 
                     {/* Errors */}
                     <div className="flex flex-col items-end mr-2">
                         <span className="text-red-400 font-bold text-lg leading-none">{errors}</span>
-                        <span className="text-red-400/60 text-[10px] uppercase font-bold">Fallos</span>
+                        <span className="text-red-400/60 text-[10px] uppercase font-bold">{t.common.errors}</span>
                     </div>
 
                     {/* Reset Button */}
@@ -119,7 +127,7 @@ export default function GameHUD({
                         className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition text-white border border-white/5 hover:border-white/20"
                         title="Reiniciar"
                     >
-                        <RotateCcw className="w-5 h-5" />
+                        <ArrowCounterClockwise className="w-5 h-5" weight="bold" />
                     </button>
                 </div>
             </div>
@@ -139,7 +147,7 @@ export default function GameHUD({
                                     : "bg-red-500/90 border-red-400 text-white"
                             )}
                         >
-                            {message.includes('Correcto') ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+                            {message.includes('Correcto') || message.includes('Success') ? <CheckCircle className="w-5 h-5" weight="fill" /> : <XCircle className="w-5 h-5" weight="fill" />}
                             {message}
                         </motion.div>
                     </div>

@@ -15,6 +15,15 @@ export const TRANSLATIONS = {
             congrats: '¡Impresionante!',
             victoryMessage: 'Has completado el desafío con éxito.',
             back: 'Volver',
+            profile: 'Perfil',
+            subjects: {
+                math: 'Matemáticas',
+                english: 'Inglés',
+                physics: 'Física',
+                programming: 'Programación',
+                chemistry: 'Química',
+                history: 'Historia'
+            }
         },
         header: {
             games: 'Juegos',
@@ -24,17 +33,45 @@ export const TRANSLATIONS = {
             students: 'Alumnos'
         },
         home: {
-            title: 'Tu Maestro Virtual',
-            subtitle: 'La plataforma educativa del futuro. Aprende jugando, repasa con inteligencia artificial y domina todas las asignaturas.',
-            ctaStudent: 'Soy Alumno',
-            ctaTeacher: 'Soy Profesor',
-            featuresTitle: '¿Por qué TuMaestro?',
-            feature1Title: 'Aprendizaje Gamificado',
-            feature1Desc: 'Convierte el estudio en una aventura con nuestros juegos interactivos.',
-            feature2Title: 'IA Personalizada',
-            feature2Desc: 'Tu asistente virtual te ayuda a resolver dudas 24/7.',
-            feature3Title: 'Seguimiento Real',
-            feature3Desc: 'Profesores y padres pueden ver el progreso detallado.',
+            heroTitle: 'Tu futuro empieza aquí',
+            heroSubtitle: 'Elige cómo quieres aprender hoy',
+            findTeacher: 'Busco Profesor',
+            findTeacherDesc: 'Encuentra clases particulares presenciales u online con expertos verificados.',
+            findTeacherBtn: 'Ver Profesores',
+            resources: 'Material Didáctico',
+            resourcesDesc: 'Descarga apuntes, exámenes resueltos y ejercicios de refuerzo.',
+            resourcesBtn: 'Explorar Recursos',
+            learnPlaying: 'Aprende Jugando',
+            learnPlayingDesc: 'Diviértete mientras aprendes geografía, matemáticas y cultura general.',
+            learnPlayingBtn: 'Jugar Ahora',
+            featuredTeachers: 'Profesores Destacados',
+            featuredTeachersDesc: 'Clases particulares a tu medida',
+            viewAll: 'Ver todos',
+            resourceLibrary: 'Biblioteca de Recursos',
+            resourceLibraryDesc: 'Accede a una colección curada de apuntes, exámenes resueltos y guías de estudio. Todo organizado por materia y nivel educativo para maximizar tu rendimiento.',
+            exploreLibrary: 'Explorar Biblioteca',
+            featuredResources: {
+                language: 'Lengua',
+                math: 'Mates',
+                english: 'Inglés',
+                geography: 'Geografía'
+            },
+            trending: 'NUEVO',
+            updated: 'ACTUALIZADO',
+            gamesHeroTitle: 'Aprende Jugando',
+            gamesHeroDesc: 'Descubre nuestra nueva zona de juegos interactivos. Pon a prueba tus conocimientos de geografía y cultura general con retos diseñados para aprender divirtiéndote.',
+            exploreGames: 'Explorar Juegos',
+            gameVisuals: {
+                map: 'Mapa',
+                quiz: 'Quiz',
+                ranking: 'Ranking',
+                play: 'Jugar'
+            },
+            footer: {
+                rights: '© 2026 TuMaestro.es. Todos los derechos reservados.',
+                terms: 'Términos y Condiciones',
+                privacy: 'Política de Privacidad'
+            }
         },
         gamesPage: {
             title: 'Aprende Jugando',
@@ -69,7 +106,18 @@ export const TRANSLATIONS = {
                 quizDesc: 'Preguntas de historia, ciencia y arte.',
             },
             playBtn: 'JUGAR AHORA',
-            comingSoon: 'Pronto añadiremos más asignaturas como Historia y Lengua'
+            comingSoon: 'Pronto añadiremos más asignaturas como Historia y Lengua',
+            regions: {
+                spain: 'España',
+                europe: 'Europa'
+            },
+            gameTypes: {
+                map: 'Mapa',
+                puzzle: 'Puzzle',
+                quiz: 'Quiz',
+                math: 'Cálculo',
+                verbs: 'Verbos'
+            }
         }
     },
     en: {
@@ -86,6 +134,15 @@ export const TRANSLATIONS = {
             congrats: 'Awesome!',
             victoryMessage: 'You have successfully completed the challenge.',
             back: 'Back',
+            profile: 'Profile',
+            subjects: {
+                math: 'Math',
+                english: 'English',
+                physics: 'Physics',
+                programming: 'Programming',
+                chemistry: 'Chemistry',
+                history: 'History'
+            }
         },
         header: {
             games: 'Games',
@@ -95,17 +152,45 @@ export const TRANSLATIONS = {
             students: 'Students'
         },
         home: {
-            title: 'Your Virtual Teacher',
-            subtitle: 'The educational platform of the future. Learn by playing, review with AI, and master all subjects.',
-            ctaStudent: 'I am a Student',
-            ctaTeacher: 'I am a Teacher',
-            featuresTitle: 'Why TuMaestro?',
-            feature1Title: 'Gamified Learning',
-            feature1Desc: 'Turn studying into an adventure with our interactive games.',
-            feature2Title: 'Personalized AI',
-            feature2Desc: 'Your virtual assistant helps you solve doubts 24/7.',
-            feature3Title: 'Real Tracking',
-            feature3Desc: 'Teachers and parents can see detailed progress.',
+            heroTitle: 'Your future starts here',
+            heroSubtitle: 'Choose how you want to learn today',
+            findTeacher: 'Find a Teacher',
+            findTeacherDesc: 'Find in-person or online private lessons with verified experts.',
+            findTeacherBtn: 'View Teachers',
+            resources: 'Educational Material',
+            resourcesDesc: 'Download notes, solved exams, and reinforcement exercises.',
+            resourcesBtn: 'Explore Resources',
+            learnPlaying: 'Learn by Playing',
+            learnPlayingDesc: 'Have fun while learning geography, math, and general culture.',
+            learnPlayingBtn: 'Play Now',
+            featuredTeachers: 'Featured Teachers',
+            featuredTeachersDesc: 'Private lessons tailored to you',
+            viewAll: 'View all',
+            resourceLibrary: 'Resource Library',
+            resourceLibraryDesc: 'Access a curated collection of notes, solved exams, and study guides. All organized by subject and educational level to maximize your performance.',
+            exploreLibrary: 'Explore Library',
+            featuredResources: {
+                language: 'Language',
+                math: 'Math',
+                english: 'English',
+                geography: 'Geography'
+            },
+            trending: 'NEW',
+            updated: 'UPDATED',
+            gamesHeroTitle: 'Learn by Playing',
+            gamesHeroDesc: 'Discover our new area of interactive games. Test your knowledge of geography and general culture with challenges designed to learn while having fun.',
+            exploreGames: 'Explore Games',
+            gameVisuals: {
+                map: 'Map',
+                quiz: 'Quiz',
+                ranking: 'Ranking',
+                play: 'Play'
+            },
+            footer: {
+                rights: '© 2026 TuMaestro.es. All rights reserved.',
+                terms: 'Terms and Conditions',
+                privacy: 'Privacy Policy'
+            }
         },
         gamesPage: {
             title: 'Learn by Playing',
@@ -140,7 +225,18 @@ export const TRANSLATIONS = {
                 quizDesc: 'History, science, and art questions.',
             },
             playBtn: 'PLAY NOW',
-            comingSoon: 'Soon we will add more subjects like History and Language'
+            comingSoon: 'Soon we will add more subjects like History and Language',
+            regions: {
+                spain: 'Spain',
+                europe: 'Europe'
+            },
+            gameTypes: {
+                map: 'Map',
+                puzzle: 'Puzzle',
+                quiz: 'Quiz',
+                math: 'Calculation',
+                verbs: 'Verbs'
+            }
         }
     }
 };

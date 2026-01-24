@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, CheckCircle2, XCircle, HelpCircle, Trophy, ArrowRight, BookOpen, Volume2 } from 'lucide-react';
+import { RefreshCw, CheckCircle2, XCircle, HelpCircle, Trophy, ArrowRight, BookOpen, Volume2, Timer } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
 import { IRREGULAR_VERBS, type IrregularVerb } from './data/irregular-verbs';
 
 export default function IrregularVerbsGame() {
+    const { t } = useLanguage();
     const [verbs, setVerbs] = useState<IrregularVerb[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [score, setScore] = useState(0);
@@ -152,18 +154,29 @@ export default function IrregularVerbsGame() {
 
     return (
         <div className="w-full max-w-4xl mx-auto p-4">
-            {/* Header Stats */}
-            <div className="flex justify-between items-center mb-8 bg-slate-800/50 p-4 rounded-2xl border border-white/5">
-                <div className="flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    <span className="text-white font-bold">{score} pts</span>
+            {/* Header Stats / HUD */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-slate-900/50 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-xl gap-4">
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    <div className="p-3 rounded-xl bg-blue-500/20">
+                        <Trophy className="text-blue-400 w-8 h-8" />
+                    </div>
+                    <div>
+                        <h2 className="text-3xl font-black text-white leading-none">
+                            {score} <span className="text-sm font-normal text-blue-300">pts</span>
+                        </h2>
+                        <div className="flex gap-3 text-xs font-bold mt-1 text-blue-300 uppercase tracking-wider">
+                            <span>{currentIndex + 1} / {verbs.length}</span>
+                            <span>•</span>
+                            <span>{t.gamesPage.gameTypes.verbs}</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="text-slate-400 text-sm font-medium">
-                    Verbo {currentIndex + 1} de {verbs.length}
-                </div>
-                <div className="flex items-center gap-2 text-orange-400">
-                    <div className="text-xs uppercase font-bold tracking-wider">Racha</div>
-                    <div className="font-black text-xl">{streak}</div>
+
+                <div className="flex items-center gap-6 w-full md:w-auto justify-end">
+                    <div className="flex flex-col items-end">
+                        <span className="text-orange-400 font-black text-xl leading-none">x{streak}</span>
+                        <span className="text-orange-400/60 text-[10px] uppercase font-bold tracking-widest">Racha</span>
+                    </div>
                 </div>
             </div>
 

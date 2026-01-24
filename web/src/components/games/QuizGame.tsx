@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, ArrowRight, RefreshCcw } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowRight, RefreshCcw, Trophy } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { QUESTIONS, type Question } from './data/quiz-questions';
@@ -15,6 +16,7 @@ function cn(...inputs: ClassValue[]) {
 const QUESTIONS_PER_GAME = 10;
 
 export default function QuizGame() {
+    const { t } = useLanguage();
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -64,7 +66,26 @@ export default function QuizGame() {
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto min-h-[500px] flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl mx-auto min-h-[500px] flex flex-col items-center justify-center p-4">
+            {/* HUD */}
+            <div className="w-full flex flex-col md:flex-row justify-between items-center mb-6 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl gap-4">
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    <div className="p-3 rounded-xl bg-violet-500/20">
+                        <Trophy className="text-violet-400 w-8 h-8" />
+                    </div>
+                    <div>
+                        <h2 className="text-3xl font-black text-white leading-none">
+                            {score} <span className="text-sm font-normal text-violet-300">pts</span>
+                        </h2>
+                        <div className="flex gap-3 text-xs font-bold mt-1 text-violet-300 uppercase tracking-wider">
+                            <span>{currentQuestionIdx + 1} / {QUESTIONS_PER_GAME}</span>
+                            <span>•</span>
+                            <span>{t.gamesPage.gameTypes.quiz}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="relative w-full bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden min-h-[500px] flex flex-col justify-center">
 
                 {/* Background Gradients */}
@@ -111,9 +132,6 @@ export default function QuizGame() {
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-xs font-bold uppercase tracking-wider text-teal-400 border border-teal-500/30 px-2 py-1 rounded-lg bg-teal-500/10">
                                     {currentQuestion.category}
-                                </span>
-                                <span className="text-sm text-gray-400">
-                                    {currentQuestionIdx + 1} / {QUESTIONS_PER_GAME}
                                 </span>
                             </div>
 

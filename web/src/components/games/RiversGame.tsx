@@ -9,6 +9,7 @@ import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from './spanish-commu
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,6 +18,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export default function RiversGame() {
+    const { t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -185,6 +187,8 @@ export default function RiversGame() {
                     totalTargets={Object.keys(RIVERS_PATHS).length}
                     remainingTargets={remainingRivers.length}
                     targetName={targetRiver}
+                    region={t.gamesPage.regions.spain}
+                    gameType={t.gamesPage.gameTypes.map}
                     message={message}
                     onReset={resetGame}
                     colorTheme="teal"

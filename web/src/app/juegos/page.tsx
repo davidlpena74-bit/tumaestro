@@ -2,8 +2,24 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Map, BrainCircuit, ArrowRight, Calculator, Globe, MapPin, GraduationCap, Landmark, Puzzle, Languages } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import {
+    MapTrifold,
+    Brain,
+    Calculator,
+    GlobeHemisphereWest,
+    PushPin,
+    Student,
+    PuzzlePiece,
+    Translate,
+    ArrowRight
+} from '@phosphor-icons/react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 type Game = {
     id: string;
@@ -13,6 +29,8 @@ type Game = {
     icon: any;
     color: string;
     grade: string;
+    region?: string;
+    gameType?: string;
 };
 
 type Category = {
@@ -34,9 +52,11 @@ export default function GamesHubPage() {
                     title: t.gamesPage.gameTitles.region,
                     description: t.gamesPage.gameTitles.regionDesc,
                     href: '/juegos/mapa-comunidades',
-                    icon: Map,
+                    icon: MapTrifold,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.spain,
+                    gameType: t.gamesPage.gameTypes.map
                 },
 
                 {
@@ -44,72 +64,88 @@ export default function GamesHubPage() {
                     title: t.gamesPage.gameTitles.provinces,
                     description: t.gamesPage.gameTitles.provincesDesc,
                     href: '/juegos/mapa-provincias',
-                    icon: Map,
+                    icon: MapTrifold,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.spain,
+                    gameType: t.gamesPage.gameTypes.map
                 },
                 {
                     id: 'europe',
                     title: t.gamesPage.gameTitles.europeMap,
                     description: t.gamesPage.gameTitles.europeMapDesc,
                     href: '/juegos/mapa-europa',
-                    icon: Map,
+                    icon: MapTrifold,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.europe,
+                    gameType: t.gamesPage.gameTypes.map
                 },
                 {
                     id: 'capitals-ue',
                     title: t.gamesPage.gameTitles.euCapitalsMap,
                     description: t.gamesPage.gameTitles.euCapitalsMapDesc,
                     href: '/juegos/capitales-ue',
-                    icon: Map,
+                    icon: MapTrifold,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.europe,
+                    gameType: t.gamesPage.gameTypes.map
                 },
                 {
                     id: 'capitals-europe',
                     title: t.gamesPage.gameTitles.europeCapitalsMap,
                     description: t.gamesPage.gameTitles.europeCapitalsMapDesc,
                     href: '/juegos/capitales-europa',
-                    icon: Map,
+                    icon: MapTrifold,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.europe,
+                    gameType: t.gamesPage.gameTypes.map
                 },
                 {
                     id: 'rios',
                     title: t.gamesPage.gameTitles.riversSpain,
                     description: t.gamesPage.gameTitles.riversSpainDesc,
                     href: '/juegos/mapa-rios',
-                    icon: Map,
+                    icon: MapTrifold,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.spain,
+                    gameType: t.gamesPage.gameTypes.map
                 },
                 {
                     id: 'rios-europa',
                     title: t.gamesPage.gameTitles.riversEurope,
                     description: t.gamesPage.gameTitles.riversEuropeDesc,
                     href: '/juegos/rios-europa',
-                    icon: Map,
+                    icon: MapTrifold,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.europe,
+                    gameType: t.gamesPage.gameTypes.map
                 },
                 {
                     id: 'capitals-ue-match',
                     title: t.gamesPage.gameTitles.euCapitalsPuzzle,
                     description: t.gamesPage.gameTitles.euCapitalsPuzzleDesc,
                     href: '/juegos/capitales-ue-match',
-                    icon: Puzzle,
+                    icon: PuzzlePiece,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.europe,
+                    gameType: t.gamesPage.gameTypes.puzzle
                 },
                 {
                     id: 'capitals-europe-match',
                     title: t.gamesPage.gameTitles.europeCapitalsPuzzle,
                     description: t.gamesPage.gameTitles.europeCapitalsPuzzleDesc,
                     href: '/juegos/capitales-europa-match',
-                    icon: Puzzle,
+                    icon: PuzzlePiece,
                     color: 'from-emerald-500 to-teal-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    region: t.gamesPage.regions.europe,
+                    gameType: t.gamesPage.gameTypes.puzzle
                 }
             ]
         },
@@ -124,7 +160,8 @@ export default function GamesHubPage() {
                     href: '/juegos/divisiones',
                     icon: Calculator,
                     color: 'from-orange-500 to-amber-600',
-                    grade: '3º Primaria'
+                    grade: '3º Prim.',
+                    gameType: t.gamesPage.gameTypes.math
                 }
             ]
         },
@@ -137,9 +174,10 @@ export default function GamesHubPage() {
                     title: t.gamesPage.gameTitles.quiz,
                     description: t.gamesPage.gameTitles.quizDesc,
                     href: '/juegos/quiz-cultura',
-                    icon: BrainCircuit,
+                    icon: Brain,
                     color: 'from-violet-500 to-indigo-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    gameType: t.gamesPage.gameTypes.quiz
                 }
             ]
         },
@@ -152,9 +190,10 @@ export default function GamesHubPage() {
                     title: 'Verbos Irregulares',
                     description: 'Practica lo formas de los verbos irregulares en inglés.',
                     href: '/juegos/verbos-irregulares',
-                    icon: Languages,
+                    icon: Translate,
                     color: 'from-pink-500 to-rose-600',
-                    grade: '5º Primaria'
+                    grade: '5º Prim.',
+                    gameType: t.gamesPage.gameTypes.verbs
                 }
             ]
         }
@@ -213,13 +252,56 @@ export default function GamesHubPage() {
                                                 {/* Hover Glow */}
                                                 <div className={`absolute -right-20 -top-20 w-64 h-64 bg-gradient-to-br ${game.color} opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity`} />
 
-                                                <div className="flex justify-between items-start mb-6">
+                                                <div className="mb-6">
                                                     <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300`}>
-                                                        <game.icon className="w-8 h-8 text-white" />
+                                                        <game.icon className="w-10 h-10 text-white" weight="duotone" />
                                                     </div>
-                                                    <span className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-gray-400 border border-white/5 uppercase tracking-wide">
-                                                        {game.grade}
-                                                    </span>
+
+                                                    {/* Stacked Badges in Corner */}
+                                                    <div className="absolute top-6 right-6 flex flex-col items-end gap-1.5 pointer-events-none">
+                                                        {/* Grade Badge */}
+                                                        <div className={cn(
+                                                            "px-3 py-1 rounded-full text-[9px] font-black border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-[92px] justify-center backdrop-blur-md",
+                                                            category.id === 'geography' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                                                category.id === 'math' ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                                                                    category.id === 'culture' ? "bg-violet-500/10 text-violet-400 border-violet-500/20" :
+                                                                        category.id === 'idiomas' ? "bg-pink-500/10 text-pink-400 border-pink-500/20" :
+                                                                            "bg-white/5 text-gray-400 border-white/5"
+                                                        )}>
+                                                            <Student className="w-3.5 h-3.5" weight="bold" />
+                                                            {game.grade}
+                                                        </div>
+
+                                                        {/* Region Badge */}
+                                                        {game.region && (
+                                                            <div className={cn(
+                                                                "px-3 py-1 rounded-full text-[9px] font-black border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-[92px] justify-center backdrop-blur-md",
+                                                                category.id === 'geography' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                                                    category.id === 'math' ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                                                                        category.id === 'culture' ? "bg-violet-500/10 text-violet-400 border-violet-500/20" :
+                                                                            category.id === 'idiomas' ? "bg-pink-500/10 text-pink-400 border-pink-500/20" :
+                                                                                "bg-teal-500/10 text-teal-400 border-teal-500/20"
+                                                            )}>
+                                                                <GlobeHemisphereWest className="w-3.5 h-3.5" weight="bold" />
+                                                                {game.region}
+                                                            </div>
+                                                        )}
+
+                                                        {/* Game Type Badge */}
+                                                        {game.gameType && (
+                                                            <div className={cn(
+                                                                "px-3 py-1 rounded-full text-[9px] font-black border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-[92px] justify-center backdrop-blur-md",
+                                                                category.id === 'geography' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                                                                    category.id === 'math' ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                                                                        category.id === 'culture' ? "bg-violet-500/10 text-violet-400 border-violet-500/20" :
+                                                                            category.id === 'idiomas' ? "bg-pink-500/10 text-pink-400 border-pink-500/20" :
+                                                                                "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+                                                            )}>
+                                                                <Brain className="w-3.5 h-3.5" weight="bold" />
+                                                                {game.gameType}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
 
                                                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-colors">
@@ -249,7 +331,7 @@ export default function GamesHubPage() {
                     className="mt-20 pt-10 border-t border-white/5 text-center"
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm">
-                        <GraduationCap className="w-4 h-4" />
+                        <Student className="w-4 h-4" />
                         <span>{t.gamesPage.comingSoon}</span>
                     </div>
                 </motion.div>

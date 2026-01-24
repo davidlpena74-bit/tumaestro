@@ -7,6 +7,7 @@ import confetti from 'canvas-confetti';
 import { PATH_TO_SPANISH_NAME, EUROPE_CAPITALS } from './data/capitals-data';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -21,6 +22,7 @@ interface CapitalGameProps {
 }
 
 export default function CapitalGame({ paths, targetList, title }: CapitalGameProps) {
+    const { t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -217,6 +219,8 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
                     totalTargets={totalTargets}
                     remainingTargets={remainingCountries.length}
                     targetName={targetCapital}
+                    region={t.gamesPage.regions.europe}
+                    gameType={t.gamesPage.gameTypes.map}
                     message={message}
                     onReset={resetGame}
                     colorTheme="teal"
