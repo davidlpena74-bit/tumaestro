@@ -15,6 +15,21 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+// Merged data for the game: join Canarias into 1 target
+const GAME_PROVINCE_PATHS = { ...SPANISH_PROVINCES_PATHS };
+const GAME_PROVINCE_NAMES = { ...PROVINCE_NAMES };
+
+GAME_PROVINCE_PATHS['canarias'] = [
+    ...(SPANISH_PROVINCES_PATHS['santacruz'] || []),
+    ...(SPANISH_PROVINCES_PATHS['laspalmas'] || [])
+];
+delete (GAME_PROVINCE_PATHS as any)['santacruz'];
+delete (GAME_PROVINCE_PATHS as any)['laspalmas'];
+
+GAME_PROVINCE_NAMES['canarias'] = "Canarias";
+delete (GAME_PROVINCE_NAMES as any)['santacruz'];
+delete (GAME_PROVINCE_NAMES as any)['laspalmas'];
+
 export default function MapGame() {
     const {
         gameState, setGameState,
@@ -29,6 +44,7 @@ export default function MapGame() {
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
     const [solvedIds, setSolvedIds] = useState<string[]>([]);
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
     const [attempts, setAttempts] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
@@ -66,7 +82,7 @@ export default function MapGame() {
     };
 
     const pickNewTarget = () => {
-        const allKeys = Object.keys(PROVINCE_NAMES);
+        const allKeys = Object.keys(GAME_PROVINCE_NAMES);
         const availableKeys = allKeys.filter(k => !solvedIds.includes(k));
 
         const keys = availableKeys.length > 0 ? availableKeys : allKeys;
@@ -96,7 +112,7 @@ export default function MapGame() {
             addScore(10);
             setSolvedIds(prev => [...prev, id]); // Add to solved list
             setCorrectCount(prev => prev + 1);
-            setMessage(`¡Bien! Es ${PROVINCE_NAMES[id]}`);
+            setMessage(`¡Bien! Es ${GAME_PROVINCE_NAMES[id]}`);
             setTimeout(pickNewTarget, 600);
 
             // Celebration
@@ -153,9 +169,9 @@ export default function MapGame() {
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
-                    totalTargets={Object.keys(PROVINCE_NAMES).length}
-                    remainingTargets={Object.keys(PROVINCE_NAMES).length - solvedIds.length}
-                    targetName={targetId ? PROVINCE_NAMES[targetId] : '...'}
+                    totalTargets={Object.keys(GAME_PROVINCE_NAMES).length}
+                    remainingTargets={Object.keys(GAME_PROVINCE_NAMES).length - solvedIds.length}
+                    targetName={targetId ? GAME_PROVINCE_NAMES[targetId] : '...'}
                     message={message}
                     onReset={resetGame}
                     colorTheme="teal"
@@ -255,6 +271,9 @@ export default function MapGame() {
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
+                            <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
+                            </filter>
                         </defs>
 
                         {/* Transform Group */}
@@ -273,10 +292,15 @@ export default function MapGame() {
                             />
 
                             {/* Render Provinces */}
-                            {Object.entries(SPANISH_PROVINCES_PATHS).map(([id, paths]) => {
+                            {[...Object.entries(GAME_PROVINCE_PATHS)].sort(([idA], [idB]) => {
+                                if (idA === hoveredId) return 1;
+                                if (idB === hoveredId) return -1;
+                                return 0;
+                            }).map(([id, paths]) => {
                                 const isTarget = targetId === id;
                                 const isClicked = clickedId === id;
                                 const isSolved = solvedIds.includes(id);
+                                const isHovered = hoveredId === id;
 
                                 let fillClass = "fill-white/90";
                                 let strokeClass = "stroke-slate-900/50 stroke-[0.5]";
@@ -296,7 +320,7 @@ export default function MapGame() {
                                 }
 
                                 // Transform logic for special regions
-                                const isCanaryIsland = id === 'santacruz' || id === 'laspalmas';
+                                const isCanaryIsland = id === 'canarias';
                                 const isCeutaMelilla = id === 'ceuta' || id === 'melilla';
 
                                 // Canary Islands: move to bottom-left inset box
@@ -316,6 +340,8 @@ export default function MapGame() {
                                     <g
                                         key={id}
                                         transform={regionTransform}
+                                        onMouseEnter={() => gameState === 'playing' && setHoveredId(id)}
+                                        onMouseLeave={() => setHoveredId(null)}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             // Only trigger if we weren't just dragging
@@ -323,12 +349,42 @@ export default function MapGame() {
                                         }}
                                         className="pointer-events-auto"
                                     >
+                                        {/* Hit Area: Stable invisible paths */}
                                         {paths.map((d, i) => (
                                             <path
-                                                key={i}
+                                                key={`hit-${i}`}
                                                 d={d}
-                                                className={cn(strokeClass, fillClass)}
-                                                style={{ transformOrigin: 'center' }}
+                                                fill="transparent"
+                                                stroke="transparent"
+                                                strokeWidth="5"
+                                            />
+                                        ))}
+
+                                        {/* Visual Area: Elevated paths */}
+                                        {paths.map((d, i) => (
+                                            <motion.path
+                                                key={`vis-${i}`}
+                                                d={d}
+                                                className={cn(
+                                                    strokeClass,
+                                                    fillClass,
+                                                    isHovered && gameState === 'playing' && !isSolved && !isClicked && "fill-teal-100"
+                                                )}
+                                                animate={
+                                                    isHovered && gameState === 'playing'
+                                                        ? { y: -8, scale: 1.05 }
+                                                        : {
+                                                            scale: (isClicked && isTarget) ? 1.02 : 1,
+                                                            y: 0
+                                                        }
+                                                }
+                                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                                                style={{
+                                                    transformOrigin: 'center',
+                                                    filter: isHovered && gameState === 'playing' ? 'url(#elevation-shadow)' : 'none',
+                                                    zIndex: isHovered ? 50 : 1,
+                                                    pointerEvents: 'none'
+                                                }}
                                             />
                                         ))}
                                     </g>

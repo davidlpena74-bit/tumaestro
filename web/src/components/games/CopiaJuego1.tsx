@@ -16,6 +16,21 @@ function cn(...inputs: ClassValue[]) {
 // Nombres bonitos para mostrar
 // Use PROVINCE_NAMES from the imported file
 
+// Merged data for the game: join Canarias into 1 target
+const GAME_PROVINCE_PATHS = { ...SPANISH_PROVINCES_PATHS };
+const GAME_PROVINCE_NAMES = { ...PROVINCE_NAMES };
+
+GAME_PROVINCE_PATHS['canarias'] = [
+    ...(SPANISH_PROVINCES_PATHS['santacruz'] || []),
+    ...(SPANISH_PROVINCES_PATHS['laspalmas'] || [])
+];
+delete (GAME_PROVINCE_PATHS as any)['santacruz'];
+delete (GAME_PROVINCE_PATHS as any)['laspalmas'];
+
+GAME_PROVINCE_NAMES['canarias'] = "Canarias";
+delete (GAME_PROVINCE_NAMES as any)['santacruz'];
+delete (GAME_PROVINCE_NAMES as any)['laspalmas'];
+
 export default function RegionGame() {
     // Note: RegionGame usually has 60s for Regions (fewer targets).
     // Rivers has 120s. Let's use 60s here.
@@ -32,6 +47,7 @@ export default function RegionGame() {
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
     const [solvedIds, setSolvedIds] = useState<string[]>([]);
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
     // Zoom & Pan State
     const [zoom, setZoom] = useState(1);
@@ -66,20 +82,8 @@ export default function RegionGame() {
     };
 
     const pickNewTarget = () => {
-        // Exclude already solved regions if we want to force completion without repeats?
-        // Original logic was random. User just wants correct ones to stay marked.
-        // Let's keep logic simple: if solved, it stays green. Can it be target again?
-        // Typically in "locate all" games, solved ones are removed from pool.
-        // Let's try to remove solved ones from pool if possible, OR just mark them.
-        // User asked "que se quede marcada".
-        // Let's persist the mark first.
-
-        const allKeys = Object.keys(PROVINCE_NAMES);
+        const allKeys = Object.keys(GAME_PROVINCE_NAMES);
         const availableKeys = allKeys.filter(k => !solvedIds.includes(k));
-
-        // If all solved, maybe game over? hook typically handles time or we can check here.
-        // If solvedIds.length === allKeys.length -> win?
-        // Let's just pick from available if any, otherwise fallback to any (random practice).
 
         const keys = availableKeys.length > 0 ? availableKeys : allKeys;
 
@@ -104,16 +108,11 @@ export default function RegionGame() {
             // Correct
             addScore(100);
             setSolvedIds(prev => [...prev, id]);
-            setMessage(`¡Correcto! Es ${PROVINCE_NAMES[id] || id}`);
+            setMessage(`¡Correcto! Es ${GAME_PROVINCE_NAMES[id] || id}`);
             setTimeout(pickNewTarget, 600);
         } else {
             // Incorrect
             addError();
-            // Original reduced score by 20. hook uses hook logic?
-            // hook has addScore but not removeScore easily exposed unless we add negative.
-            // addScore accepts negative?
-            // "addScore(points)" -> setScore(s => s + points).
-            // So we can do addScore(-20).
             addScore(-20);
             setMessage('¡Esa no es! Intenta de nuevo.');
         }
@@ -143,14 +142,6 @@ export default function RegionGame() {
         setTargetId(null);
         setClickedId(null);
         setSolvedIds([]);
-
-        // hookResetGame sets state to 'start' (or 'playing'? hook implementation usually resets to initial state).
-        // Let's accept 'start' state and let user click 'Start' again.
-        // Or if we want immediate restart:
-        // startGame();
-        // But GameHUD 'onReset' usually goes to start screen or restarts?
-        // In RiversGame it did: setGameState('playing'); nextTurn();
-        // Let's restart immediately.
         startGame();
     };
 
@@ -171,9 +162,9 @@ export default function RegionGame() {
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
-                    totalTargets={Object.keys(SPANISH_PROVINCES_PATHS).length}
-                    remainingTargets={Object.keys(SPANISH_PROVINCES_PATHS).length - solvedIds.length}
-                    targetName={targetId ? (PROVINCE_NAMES[targetId] || targetId) : '...'}
+                    totalTargets={Object.keys(GAME_PROVINCE_NAMES).length}
+                    remainingTargets={Object.keys(GAME_PROVINCE_NAMES).length - solvedIds.length}
+                    targetName={targetId ? (GAME_PROVINCE_NAMES[targetId] || targetId) : '...'}
                     message={message}
                     onReset={resetGame}
                     colorTheme="teal" // Using teal to match original styling
@@ -262,6 +253,9 @@ export default function RegionGame() {
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
+                            <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
+                            </filter>
                         </defs>
 
                         {/* CANARY ISLANDS INSET FRAME (Custom Projection) */}
@@ -277,10 +271,15 @@ export default function RegionGame() {
                             style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
                         >
                             {/* Render Regions from New Map Source */}
-                            {Object.entries(SPANISH_PROVINCES_PATHS).map(([id, paths]) => {
+                            {[...Object.entries(GAME_PROVINCE_PATHS)].sort(([idA], [idB]) => {
+                                if (idA === hoveredId) return 1;
+                                if (idB === hoveredId) return -1;
+                                return 0;
+                            }).map(([id, paths]) => {
                                 const isTarget = targetId === id;
                                 const isClicked = clickedId === id;
                                 const isSolved = solvedIds.includes(id);
+                                const isHovered = hoveredId === id;
 
                                 // Dynamic class logic
                                 let fillClass = "fill-white/90";
@@ -302,7 +301,7 @@ export default function RegionGame() {
                                 }
 
                                 // Special regions transform
-                                const isCanaryIsland = id === 'santacruz' || id === 'laspalmas';
+                                const isCanaryIsland = id === 'canarias';
                                 const isCeutaMelilla = id === 'ceuta' || id === 'melilla';
 
                                 let regionTransform = undefined;
@@ -319,22 +318,51 @@ export default function RegionGame() {
                                     <g
                                         key={id}
                                         transform={regionTransform}
+                                        onMouseEnter={() => gameState === 'playing' && setHoveredId(id)}
+                                        onMouseLeave={() => setHoveredId(null)}
                                         onClick={() => {
                                             if (isClick.current) handleRegionClick(id);
                                         }}
-                                        style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
+                                        style={{
+                                            pointerEvents: gameState === 'playing' ? 'all' : 'none',
+                                            cursor: gameState === 'playing' ? 'pointer' : 'default'
+                                        }}
                                         className="group"
                                     >
+                                        {/* Hit area for stability */}
+                                        {paths.map((d, i) => (
+                                            <path
+                                                key={`hit-${i}`}
+                                                d={d}
+                                                fill="transparent"
+                                                stroke="transparent"
+                                                strokeWidth="5"
+                                            />
+                                        ))}
+
+                                        {/* Visual animated area */}
                                         {paths.map((d, i) => (
                                             <motion.path
-                                                key={i}
+                                                key={`vis-${i}`}
                                                 d={d}
-                                                className={cn(strokeClass, fillClass)}
+                                                className={cn(
+                                                    strokeClass,
+                                                    fillClass,
+                                                    isHovered && gameState === 'playing' && !isSolved && !isClicked && "fill-teal-100"
+                                                )}
                                                 initial={false}
                                                 animate={
-                                                    (isClicked && isTarget) ? { scale: 1.02 } : {}
+                                                    isHovered && gameState === 'playing'
+                                                        ? { y: -8, scale: 1.05 }
+                                                        : (isClicked && isTarget) ? { scale: 1.02, y: 0 } : { scale: 1, y: 0 }
                                                 }
-                                                style={{ transformOrigin: 'center' }}
+                                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                                                style={{
+                                                    transformOrigin: 'center',
+                                                    filter: isHovered && gameState === 'playing' ? 'url(#elevation-shadow)' : 'none',
+                                                    zIndex: isHovered ? 50 : 1,
+                                                    pointerEvents: 'none'
+                                                }}
                                             />
                                         ))}
                                     </g>

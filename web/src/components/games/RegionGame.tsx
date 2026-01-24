@@ -52,6 +52,7 @@ export default function RegionGame() {
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
     const [solvedIds, setSolvedIds] = useState<string[]>([]);
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
     // Zoom & Pan State
     const [zoom, setZoom] = useState(1);
@@ -282,6 +283,10 @@ export default function RegionGame() {
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
+                            {/* NEW: 3D Elevation Shadow */}
+                            <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
+                            </filter>
                         </defs>
 
                         {/* CANARY ISLANDS INSET FRAME (Custom Projection) */}
@@ -297,10 +302,16 @@ export default function RegionGame() {
                             style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
                         >
                             {/* Render Regions from New Map Source */}
-                            {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
+                            {[...Object.entries(SPANISH_COMMUNITIES_PATHS)].sort(([idA], [idB]) => {
+                                // Keep hovered item at the end to render on top
+                                if (idA === hoveredId) return 1;
+                                if (idB === hoveredId) return -1;
+                                return 0;
+                            }).map(([id, paths]) => {
                                 const isTarget = targetId === id;
                                 const isClicked = clickedId === id;
                                 const isSolved = solvedIds.includes(id);
+                                const isHovered = hoveredId === id;
 
                                 // Dynamic class logic
                                 let fillClass = "fill-white/90";
@@ -329,22 +340,54 @@ export default function RegionGame() {
                                     <g
                                         key={id}
                                         transform={regionTransform}
+                                        onMouseEnter={() => gameState === 'playing' && setHoveredId(id)}
+                                        onMouseLeave={() => setHoveredId(null)}
                                         onClick={() => {
                                             if (isClick.current) handleRegionClick(id);
                                         }}
-                                        style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
+                                        style={{
+                                            pointerEvents: gameState === 'playing' ? 'all' : 'none',
+                                            cursor: gameState === 'playing' ? 'pointer' : 'default'
+                                        }}
                                         className="group"
                                     >
+                                        {/* Hit Area: Invisible paths that don't move to keep hover stable */}
+                                        {paths.map((d, i) => (
+                                            <path
+                                                key={`hit-${i}`}
+                                                d={d}
+                                                fill="transparent"
+                                                stroke="transparent"
+                                                strokeWidth="5"
+                                            />
+                                        ))}
+
+                                        {/* Visual Area: Elevated paths */}
                                         {paths.map((d, i) => (
                                             <motion.path
-                                                key={i}
+                                                key={`vis-${i}`}
                                                 d={d}
-                                                className={cn(strokeClass, fillClass)}
+                                                className={cn(
+                                                    strokeClass,
+                                                    fillClass,
+                                                    isHovered && gameState === 'playing' && !isSolved && !isClicked && "fill-teal-100"
+                                                )}
                                                 initial={false}
                                                 animate={
-                                                    (isClicked && isTarget) ? { scale: 1.02 } : {}
+                                                    isHovered && gameState === 'playing'
+                                                        ? { y: -8, scale: 1.05 }
+                                                        : {
+                                                            scale: (isClicked && isTarget) ? 1.02 : 1,
+                                                            y: 0
+                                                        }
                                                 }
-                                                style={{ transformOrigin: 'center' }}
+                                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                                                style={{
+                                                    transformOrigin: 'center',
+                                                    filter: (isHovered && gameState === 'playing') ? 'url(#elevation-shadow)' : 'none',
+                                                    zIndex: isHovered ? 50 : 1,
+                                                    pointerEvents: 'none' // Hover is managed by the invisible hit paths
+                                                }}
                                             />
                                         ))}
                                     </g>
