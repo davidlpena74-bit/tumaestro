@@ -340,7 +340,7 @@ export default function GamesHubPage() {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.3 + (catIdx * 0.1) }}
-                                className="flex items-center gap-4 mb-10 pb-1"
+                                className="flex items-center gap-4 mb-1 pb-0"
                             >
                                 <h2 className={cn("text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r pb-2", category.colorTheme)}>{category.title}</h2>
                             </motion.div>
