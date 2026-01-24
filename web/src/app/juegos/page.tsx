@@ -38,6 +38,7 @@ export default function GamesHubPage() {
                     color: 'from-emerald-500 to-teal-600',
                     grade: '5º Primaria'
                 },
+
                 {
                     id: 'mapa',
                     title: t.gamesPage.gameTitles.provinces,

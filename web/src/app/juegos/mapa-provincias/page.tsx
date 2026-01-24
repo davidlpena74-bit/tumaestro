@@ -1,6 +1,6 @@
 'use client';
 
-import MapGame from '@/components/games/MapGame';
+import CopiaJuego1 from '@/components/games/CopiaJuego1';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -26,7 +26,7 @@ export default function MapaProvinciasPage() {
                         </p>
                     </div>
 
-                    <MapGame />
+                    <CopiaJuego1 />
                 </div>
             </main>
         </div>
