@@ -45,6 +45,7 @@ export default function EuropeRiversGame() {
     const dragStart = useRef({ x: 0, y: 0 });
     const clickStart = useRef({ x: 0, y: 0 });
 
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
@@ -265,18 +266,34 @@ export default function EuropeRiversGame() {
                             className="w-full h-full"
                             style={{ background: '#ffffff' }} // White background
                         >
+                            <defs>
+                                <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
+                                </filter>
+                            </defs>
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                                 {/* BACKGROUND: EUROPE MAP */}
-                                <g className="pointer-events-none">
-                                    {Object.values(EUROPE_PATHS).map((d: any, i) => (
-                                        <path
-                                            key={i}
-                                            d={d}
-                                            fill="#f8fafc" // Slate-50
-                                            stroke="#94a3b8" // Slate-400
-                                            strokeWidth="0.5"
-                                        />
-                                    ))}
+                                <g className="pointer-events-auto cursor-default">
+                                    {Object.entries(EUROPE_PATHS).map(([id, d], i) => {
+                                        const isHovered = hoveredId === id;
+                                        return (
+                                            <motion.path
+                                                key={i}
+                                                d={d}
+                                                fill={isHovered ? "#f1f5f9" : "#f8fafc"} // Slate-50
+                                                stroke="#94a3b8" // Slate-400
+                                                strokeWidth="0.5"
+                                                onMouseEnter={() => setHoveredId(id)}
+                                                onMouseLeave={() => setHoveredId(null)}
+                                                animate={isHovered ? { y: -8, scale: 1.02 } : { y: 0, scale: 1 }}
+                                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                                                style={{
+                                                    transformOrigin: 'center',
+                                                    filter: isHovered ? 'url(#elevation-shadow)' : 'none'
+                                                }}
+                                            />
+                                        );
+                                    })}
                                 </g>
 
                                 {/* COUNTRY LABELS */}

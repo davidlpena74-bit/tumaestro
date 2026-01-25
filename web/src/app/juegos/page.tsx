@@ -11,7 +11,8 @@ import {
     Student,
     PuzzlePiece,
     Translate,
-    ArrowRight
+    ArrowRight,
+    Dna
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -40,6 +41,7 @@ type Subsection = {
 type Category = {
     id: string;
     title: string;
+    icon: any;
     colorTheme: string; // The base color for the whole section
     subsections: Subsection[];
 };
@@ -51,6 +53,7 @@ export default function GamesHubPage() {
         {
             id: 'geography',
             title: t.gamesPage.categories.geography,
+            icon: MapTrifold,
             colorTheme: 'from-emerald-500 to-teal-600',
             subsections: [
                 {
@@ -246,8 +249,51 @@ export default function GamesHubPage() {
             ]
         },
         {
+            id: 'biology',
+            title: t.gamesPage.categories.biology,
+            icon: Dna,
+            colorTheme: 'from-blue-500 to-cyan-600',
+            subsections: [
+                {
+                    games: [
+                        {
+                            id: 'celula-animal',
+                            title: t.gamesPage.gameTitles.animalCell,
+                            description: t.gamesPage.gameTitles.animalCellDesc,
+                            href: '/juegos/celula-animal',
+                            icon: Dna,
+                            color: 'from-blue-500 to-cyan-600',
+                            grade: '1º ESO',
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'musculos',
+                            title: t.gamesPage.gameTitles.muscles,
+                            description: t.gamesPage.gameTitles.musclesDesc,
+                            href: '/juegos/musculos',
+                            icon: Brain,
+                            color: 'from-blue-500 to-cyan-600',
+                            grade: 'Primaria',
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'esqueleto',
+                            title: t.gamesPage.gameTitles.skeleton,
+                            description: t.gamesPage.gameTitles.skeletonDesc,
+                            href: '/juegos/esqueleto',
+                            icon: Dna,
+                            color: 'from-blue-500 to-cyan-600',
+                            grade: 'Primaria',
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             id: 'math',
             title: t.gamesPage.categories.math,
+            icon: Calculator,
             colorTheme: 'from-orange-500 to-amber-600',
             subsections: [
                 {
@@ -269,6 +315,7 @@ export default function GamesHubPage() {
         {
             id: 'culture',
             title: t.gamesPage.categories.culture,
+            icon: Brain,
             colorTheme: 'from-violet-500 to-indigo-600',
             subsections: [
                 {
@@ -290,6 +337,7 @@ export default function GamesHubPage() {
         {
             id: 'idiomas',
             title: 'Idiomas',
+            icon: Translate,
             colorTheme: 'from-pink-500 to-rose-600',
             subsections: [
                 {
@@ -332,9 +380,52 @@ export default function GamesHubPage() {
                     </motion.p>
                 </header>
 
+                {/* Subject Jump-Links (Chips) */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-20 px-4 relative z-20 w-full"
+                >
+                    {categories.map((category) => (
+                        <a
+                            key={category.id}
+                            href={`#${category.id}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById(category.id)?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="group relative block w-full"
+                        >
+                            <div className={cn(
+                                "relative w-full px-4 py-4 rounded-2xl backdrop-blur-xl border border-white/10 text-white font-bold text-sm transition-all duration-300",
+                                "group-hover:border-white/30 group-hover:-translate-y-1 shadow-2xl overflow-hidden",
+                                "flex flex-col items-center justify-center gap-3"
+                            )}>
+                                {/* Theme Background (Semi-transparent) */}
+                                <div className={`absolute inset-0 bg-gradient-to-br ${category.colorTheme} opacity-10 group-hover:opacity-20 transition-opacity duration-300`} />
+
+                                {/* Icon */}
+                                <category.icon className={cn("w-6 h-6 mb-1 transition-transform duration-300 group-hover:scale-110",
+                                    category.id === 'geography' && "text-emerald-400",
+                                    category.id === 'biology' && "text-blue-400",
+                                    category.id === 'math' && "text-orange-400",
+                                    category.id === 'culture' && "text-violet-400",
+                                    category.id === 'idiomas' && "text-pink-400"
+                                )} weight="duotone" />
+
+                                <span className="relative z-10 tracking-tight text-center whitespace-nowrap">{category.title}</span>
+
+                                {/* Active Indicator Dash */}
+                                <div className={`w-12 h-1 rounded-full bg-gradient-to-r ${category.colorTheme} opacity-40 group-hover:opacity-100 transition-all duration-300`} />
+                            </div>
+                        </a>
+                    ))}
+                </motion.div>
+
                 <div className="space-y-24">
                     {categories.map((category, catIdx) => (
-                        <div key={category.id}>
+                        <div key={category.id} id={category.id} className="scroll-mt-32">
                             {/* Main Category Title */}
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}

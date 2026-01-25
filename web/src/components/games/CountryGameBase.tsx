@@ -23,6 +23,7 @@ interface CountryGameProps {
     colorTheme?: "emerald" | "blue" | "purple" | "orange" | "teal" | "yellow";
     initialZoom?: number;
     initialPan?: { x: number; y: number };
+    elevationHeight?: number;
 }
 
 export default function CountryGameBase({
@@ -33,7 +34,8 @@ export default function CountryGameBase({
     initialTime = 180,
     colorTheme = "emerald",
     initialZoom = 1,
-    initialPan = { x: 0, y: 0 }
+    initialPan = { x: 0, y: 0 },
+    elevationHeight = 8
 }: CountryGameProps) {
     const { t } = useLanguage();
     const {
@@ -260,7 +262,7 @@ export default function CountryGameBase({
                     <svg viewBox="0 0 800 600" className="w-full h-full drop-shadow-2xl">
                         <defs>
                             <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                                <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
+                                <feDropShadow dx="0" dy={elevationHeight} stdDeviation="5" floodOpacity="0.4" />
                             </filter>
                         </defs>
 
@@ -316,8 +318,8 @@ export default function CountryGameBase({
                                             )}
                                             initial={false}
                                             animate={
-                                                (isHovered && gameState === 'playing' && !isCompleted)
-                                                    ? { y: -8, scale: 1.05 }
+                                                (isHovered && gameState === 'playing')
+                                                    ? { y: -elevationHeight, scale: 1.05 }
                                                     : { scale: 1, y: 0 }
                                             }
                                             transition={{ type: "spring", stiffness: 300, damping: 22 }}

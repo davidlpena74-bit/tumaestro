@@ -55,7 +55,7 @@ export const TRANSLATIONS = {
                 language: 'Lengua',
                 math: 'Mates',
                 english: 'Inglés',
-                geography: 'Geografía'
+                geography: 'Ciencias Sociales'
             },
             trending: 'NUEVO',
             updated: 'ACTUALIZADO',
@@ -78,9 +78,10 @@ export const TRANSLATIONS = {
             title: 'Aprende Jugando',
             subtitle: 'Selecciona un desafío de nuestra colección educativa.',
             categories: {
-                geography: 'Geografía',
+                geography: 'Ciencias Sociales',
                 math: 'Matemáticas',
-                culture: 'Cultura General'
+                culture: 'Cultura General',
+                biology: 'Ciencias Naturales'
             },
             gameTitles: {
                 region: 'Comunidades Autónomas',
@@ -113,6 +114,12 @@ export const TRANSLATIONS = {
                 divisionDesc: 'Reparte pizzas entre amigos. Juego visual.',
                 quiz: 'Quiz de Cultura',
                 quizDesc: 'Preguntas de historia, ciencia y arte.',
+                animalCell: 'La Célula Animal',
+                animalCellDesc: 'Identifica los orgánulos y partes fundamentales de la célula animal.',
+                muscles: 'Los Músculos',
+                musclesDesc: 'Identifica los principales músculos del cuerpo por delante y por detrás.',
+                skeleton: 'El Esqueleto',
+                skeletonDesc: 'Aprende los huesos principales del cuerpo humano.'
             },
             playBtn: 'JUGAR AHORA',
             comingSoon: 'Pronto añadiremos más asignaturas como Historia y Lengua',
@@ -130,6 +137,42 @@ export const TRANSLATIONS = {
                 quiz: 'Quiz',
                 math: 'Cálculo',
                 verbs: 'Verbos'
+            },
+            cellParts: {
+                nucleus: 'Núcleo',
+                nucleolus: 'Nucléolo',
+                mitochondria: 'Mitocondria',
+                golgi: 'Aparato de Golgi',
+                reticulum: 'Retículo Endoplasmático',
+                cytoplasm: 'Citoplasma',
+                membrane: 'Membrana',
+                lysosome: 'Lisosoma',
+                ribosome: 'Ribosoma',
+                centrioles: 'Centriolos'
+            },
+            muscles: {
+                pectoralis: 'Pectorales',
+                deltoid: 'Deltoides',
+                biceps: 'Bíceps',
+                abdominals: 'Abdominales',
+                quadriceps: 'Cuádriceps',
+                trapezius: 'Trapecio',
+                latissimus: 'Dorsales',
+                triceps: 'Tríceps',
+                gluteus: 'Glúteos',
+                gastrocnemius: 'Gemelos'
+            },
+            bones: {
+                skull: 'Cráneo',
+                ribs: 'Costillas',
+                humerus: 'Húmero',
+                spine: 'Columna',
+                pelvis: 'Pelvis',
+                femur: 'Fémur',
+                tibia: 'Tibia',
+                fibula: 'Peroné',
+                ulna: 'Cúbito',
+                radius: 'Radio'
             }
         }
     },
@@ -187,7 +230,7 @@ export const TRANSLATIONS = {
                 language: 'Language',
                 math: 'Math',
                 english: 'English',
-                geography: 'Geography'
+                geography: 'Social Science'
             },
             trending: 'NEW',
             updated: 'UPDATED',
@@ -210,9 +253,10 @@ export const TRANSLATIONS = {
             title: 'Learn by Playing',
             subtitle: 'Select a challenge from our educational collection.',
             categories: {
-                geography: 'Geography',
+                geography: 'Social Science',
                 math: 'Mathematics',
-                culture: 'General Knowledge'
+                culture: 'General Knowledge',
+                biology: 'Natural Science'
             },
             gameTitles: {
                 region: 'Autonomous Communities',
@@ -245,6 +289,12 @@ export const TRANSLATIONS = {
                 divisionDesc: 'Share pizzas among friends. Visual math game.',
                 quiz: 'Culture Quiz',
                 quizDesc: 'History, science, and art questions.',
+                animalCell: 'The Animal Cell',
+                animalCellDesc: 'Identify the organelles and fundamental parts of the animal cell.',
+                muscles: 'The Muscles',
+                musclesDesc: 'Identify the main muscles of the body from both front and back.',
+                skeleton: 'The Skeleton',
+                skeletonDesc: 'Learn the main bones of the human body.'
             },
             playBtn: 'PLAY NOW',
             comingSoon: 'Soon we will add more subjects like History and Language',
@@ -262,6 +312,42 @@ export const TRANSLATIONS = {
                 quiz: 'Quiz',
                 math: 'Calculation',
                 verbs: 'Verbs'
+            },
+            cellParts: {
+                nucleus: 'Nucleus',
+                nucleolus: 'Nucleolus',
+                mitochondria: 'Mitochondria',
+                golgi: 'Golgi Apparatus',
+                reticulum: 'Endoplasmic Reticulum',
+                cytoplasm: 'Cytoplasm',
+                membrane: 'Membrane',
+                lysosome: 'Lysosome',
+                ribosome: 'Ribosome',
+                centrioles: 'Centrioles'
+            },
+            muscles: {
+                pectoralis: 'Pectorals',
+                deltoid: 'Deltoids',
+                biceps: 'Biceps',
+                abdominals: 'Abdominals',
+                quadriceps: 'Quadriceps',
+                trapezius: 'Trapezius',
+                latissimus: 'Latissimus Dorsi',
+                triceps: 'Triceps',
+                gluteus: 'Gluteus',
+                gastrocnemius: 'Calves'
+            },
+            bones: {
+                skull: 'Skull',
+                ribs: 'Ribs',
+                humerus: 'Humerus',
+                spine: 'Spine',
+                pelvis: 'Pelvis',
+                femur: 'Femur',
+                tibia: 'Tibia',
+                fibula: 'Fibula',
+                ulna: 'Ulna',
+                radius: 'Radius'
             }
         }
     }

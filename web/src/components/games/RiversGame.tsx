@@ -44,6 +44,7 @@ export default function RiversGame() {
     const dragStart = useRef({ x: 0, y: 0 });
     const clickStart = useRef({ x: 0, y: 0 });
     const isClick = useRef(true);
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -287,17 +288,34 @@ export default function RiversGame() {
                             {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
                                 let fillClass = "fill-white/90";
                                 let strokeClass = "stroke-slate-900/10 stroke-[0.5]";
+                                const isHovered = hoveredId === id;
 
                                 const isInset = id === 'canarias';
                                 const regionTransform = isInset ? "translate(-160, 0)" : undefined;
 
                                 return (
-                                    <g key={id} transform={regionTransform} className="pointer-events-none">
+                                    <g
+                                        key={id}
+                                        transform={regionTransform}
+                                        className="pointer-events-auto cursor-default"
+                                        onMouseEnter={() => setHoveredId(id)}
+                                        onMouseLeave={() => setHoveredId(null)}
+                                    >
                                         {paths.map((d, i) => (
-                                            <path
+                                            <motion.path
                                                 key={`vis-${i}`}
                                                 d={d}
-                                                className={cn(strokeClass, fillClass)}
+                                                className={cn(
+                                                    strokeClass,
+                                                    fillClass,
+                                                    isHovered && "fill-teal-50/50"
+                                                )}
+                                                animate={isHovered ? { y: -8, scale: 1.02 } : { y: 0, scale: 1 }}
+                                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                                                style={{
+                                                    transformOrigin: 'center',
+                                                    filter: isHovered ? 'url(#elevation-shadow)' : 'none'
+                                                }}
                                             />
                                         ))}
                                     </g>
