@@ -217,7 +217,7 @@ export default function HumanMusclesGame() {
                 remainingTargets={currentParts.length - Object.keys(matches).length}
                 targetName=""
                 onReset={startGame}
-                colorTheme="teal"
+                colorTheme="blue"
                 message={gameOver ? t.common.victoryMessage : undefined}
                 icon={<Barbell className="w-8 h-8 text-blue-400" weight="duotone" />}
             />
@@ -231,7 +231,7 @@ export default function HumanMusclesGame() {
                             <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-bold text-center">Instrucciones</p>
                             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl mb-4">
                                 <div className="flex items-center gap-4 mb-3">
-                                    <HandGrabbing className="w-8 h-8 text-orange-400" />
+                                    <HandGrabbing className="w-8 h-8 text-blue-400" />
                                     <span className="text-white font-bold">Arrastra para conectar</span>
                                 </div>
                                 <p className="text-white/60 text-sm">Une cada etiqueta con su músculo correspondiente. Si te equivocas, la línea no se fijará.</p>
@@ -252,24 +252,23 @@ export default function HumanMusclesGame() {
                 </div>
 
                 {/* Diagram Area */}
-                {/* Diagram Area */}
                 <div
                     ref={diagramRef}
-                    className="lg:col-span-9 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none"
+                    className="lg:col-span-9 bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none shadow-2xl"
                 >
-                    {/* START OVERLAY */}
+                    {/* START OVERLAY - Unified with Map style */}
                     {!gameStarted && !gameOver && (
                         <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                            <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30 shadow-[0_0_30px_rgba(249,115,22,0.2)]">
-                                <HandGrabbing className="w-16 h-16 text-orange-400" />
+                            <div className="bg-blue-500/10 p-6 rounded-full mb-6 ring-1 ring-blue-500/30">
+                                <HandGrabbing className="w-16 h-16 text-blue-400" />
                             </div>
-                            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Anatomía Humana</h2>
-                            <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Anatomía Humana</h2>
+                            <p className="text-gray-300 mb-8 max-w-xl text-lg leading-relaxed font-medium">
                                 ¿Conoces tu propio cuerpo? Conecta cada músculo con su ubicación correcta en el menor tiempo posible.
                             </p>
                             <button
                                 onClick={startGame}
-                                className="group relative px-10 py-5 bg-orange-500 hover:bg-orange-400 text-white font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1"
+                                className="group relative px-10 py-5 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.6)] hover:-translate-y-1"
                             >
                                 <span className="relative z-10 flex items-center gap-3">
                                     EMPEZAR RETO <ArrowCounterClockwise className="w-6 h-6 opacity-50" />
@@ -278,71 +277,39 @@ export default function HumanMusclesGame() {
                         </div>
                     )}
 
-                    {/* GAME OVER OVERLAY */}
-                    {gameOver && (
-                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                            <Trophy className="w-24 h-24 text-yellow-400 mb-6 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
-                            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">¡Excelente Trabajo!</h2>
-                            <p className="text-white/60 text-lg mb-8 uppercase tracking-widest font-medium">Has completado el sistema muscular</p>
-
-                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Aciertos Totales</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-orange-300 to-red-600 drop-shadow-sm">
-                                    {Object.keys(matches).length} / {currentParts.length}
-                                </span>
-                            </div>
-
-                            <button
-                                onClick={startGame}
-                                className="flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105 hover:border-white/40"
+                    {/* WON OVERLAY - Unified with Map style */}
+                    <AnimatePresence>
+                        {gameOver && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]"
                             >
-                                <ArrowCounterClockwise className="w-5 h-5" /> Jugar de nuevo
-                            </button>
-                        </div>
-                    )}
-                    {/* START OVERLAY */}
-                    {!gameStarted && !gameOver && (
-                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                            <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30 shadow-[0_0_30px_rgba(249,115,22,0.2)]">
-                                <HandGrabbing className="w-16 h-16 text-orange-400" />
-                            </div>
-                            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Anatomía Humana</h2>
-                            <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">
-                                ¿Conoces tu propio cuerpo? Conecta cada músculo con su ubicación correcta en el menor tiempo posible.
-                            </p>
-                            <button
-                                onClick={startGame}
-                                className="group relative px-10 py-5 bg-orange-500 hover:bg-orange-400 text-white font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1"
-                            >
-                                <span className="relative z-10 flex items-center gap-3">
-                                    EMPEZAR RETO <ArrowCounterClockwise className="w-6 h-6 opacity-50" />
-                                </span>
-                            </button>
-                        </div>
-                    )}
+                                <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
+                                    <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                </div>
+                                <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
 
-                    {/* GAME OVER OVERLAY */}
-                    {gameOver && (
-                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                            <Trophy className="w-24 h-24 text-yellow-400 mb-6 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
-                            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">¡Excelente Trabajo!</h2>
-                            <p className="text-white/60 text-lg mb-8 uppercase tracking-widest font-medium">Has completado el sistema muscular</p>
+                                <div className="flex gap-12 mb-8 mt-4">
+                                    <div className="flex flex-col items-center gap-1">
+                                        <span className="text-gray-400 text-xs uppercase tracking-widest font-bold font-medium italic">Tiempo</span>
+                                        <span className="text-4xl font-black text-white">{time}s</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-1">
+                                        <span className="text-gray-400 text-xs uppercase tracking-widest font-bold font-medium italic">Errores</span>
+                                        <span className="text-4xl font-black text-red-500">{errors}</span>
+                                    </div>
+                                </div>
 
-                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Aciertos Totales</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-orange-300 to-red-600 drop-shadow-sm">
-                                    {Object.keys(matches).length} / {currentParts.length}
-                                </span>
-                            </div>
-
-                            <button
-                                onClick={startGame}
-                                className="flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105 hover:border-white/40"
-                            >
-                                <ArrowCounterClockwise className="w-5 h-5" /> Jugar de nuevo
-                            </button>
-                        </div>
-                    )}
+                                <button
+                                    onClick={startGame}
+                                    className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
+                                >
+                                    <ArrowCounterClockwise className="w-5 h-5" /> Jugar de nuevo
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     {/* View Switch Overlay Buttons */}
                     <div className="absolute top-8 left-1/2 -translate-x-1/2 flex gap-2 z-30 bg-black/40 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10">
                         <button
@@ -417,7 +384,7 @@ export default function HumanMusclesGame() {
                                 y1={dragState.startY}
                                 x2={dragState.currX}
                                 y2={dragState.currY}
-                                stroke="#fb923c"
+                                stroke="#3b82f6"
                                 strokeWidth="4"
                                 strokeDasharray="8 4"
                                 className="animate-pulse"
@@ -443,7 +410,7 @@ export default function HumanMusclesGame() {
                                         w-full h-full rounded-xl flex items-center justify-center px-4 text-center cursor-grab active:cursor-grabbing transition-all duration-300 shadow-xl border
                                         ${matches[item.id]
                                             ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 pointer-events-none'
-                                            : 'bg-slate-800/90 border-white/20 hover:border-orange-500/50 hover:bg-slate-800 text-white'
+                                            : 'bg-slate-800/90 border-white/20 hover:border-blue-500/50 hover:bg-slate-800 text-white'
                                         }
                                     `}
                                 >
@@ -477,7 +444,7 @@ export default function HumanMusclesGame() {
                                          transition-all duration-300
                                          ${Object.values(matches).includes(part.id)
                                             ? 'fill-emerald-500 stroke-emerald-400'
-                                            : 'fill-white/10 stroke-white/30 hover:fill-orange-500/30 hover:stroke-orange-400 hover:r-20'
+                                            : 'fill-white/10 stroke-white/30 hover:fill-blue-500/30 hover:stroke-blue-400 hover:r-20'
                                         }
                                      `}
                                     strokeWidth="3"
@@ -486,7 +453,7 @@ export default function HumanMusclesGame() {
                                     cx={part.x}
                                     cy={part.y}
                                     r="6"
-                                    fill={Object.values(matches).includes(part.id) ? '#ffffff' : '#fb923c'}
+                                    fill={Object.values(matches).includes(part.id) ? '#ffffff' : '#3b82f6'}
                                 />
                             </g>
                         ))}

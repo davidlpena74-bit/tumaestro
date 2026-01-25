@@ -44,7 +44,7 @@ export default function RiversGame() {
     const dragStart = useRef({ x: 0, y: 0 });
     const clickStart = useRef({ x: 0, y: 0 });
     const isClick = useRef(true);
-    const [hoveredId, setHoveredId] = useState<string | null>(null);
+
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -204,7 +204,7 @@ export default function RiversGame() {
                 {/* MAP CONTAINER */}
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl cursor-move",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl cursor-move",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}
@@ -213,14 +213,14 @@ export default function RiversGame() {
                     onMouseLeave={handleMouseUp}
                 >
 
-                    {/* START OVERLAY */}
+                    {/* START OVERLAY - Unified with Map style */}
                     {gameState === 'start' && (
                         <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]" onMouseDown={e => e.stopPropagation()}>
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <MapPin className="w-12 h-12 text-teal-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Ríos de España</h2>
-                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Ríos de España</h2>
+                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                                 ¿Sabes dónde nace y por dónde pasa cada río?
                             </p>
                             <button
@@ -232,19 +232,21 @@ export default function RiversGame() {
                         </div>
                     )}
 
-                    {/* GAME OVER OVERLAY */}
+                    {/* WON OVERLAY - Unified with Map style */}
                     {gameState === 'finished' && (
-                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]" onMouseDown={e => e.stopPropagation()}>
+                        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]" onMouseDown={e => e.stopPropagation()}>
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                             </div>
                             <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
-                            <div className="flex flex-col items-center gap-1 mb-8">
-                                <span className="text-gray-400 text-sm uppercase tracking-widest">Puntuación Final</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
+
+                            <div className="bg-transparent border border-white/20 p-8 rounded-3xl text-center shadow-2xl">
+                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
+                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
                                     {score}
                                 </span>
                             </div>
+
                             <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
                                 <RefreshCw className="w-5 h-5" /> Jugar de nuevo
                             </button>
@@ -270,6 +272,10 @@ export default function RiversGame() {
                             <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
                                 <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
                             </filter>
+                            <filter id="river-glow">
+                                <feGaussianBlur stdDeviation="1.5" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
                         </defs>
 
                         {/* CANARY ISLANDS INSET FRAME */}
@@ -284,12 +290,8 @@ export default function RiversGame() {
                             transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
                             style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
                         >
-                            {/* BACKGROUND: Static Regions from Map 1 (Graphics only) */}
+                            {/* BACKGROUND: Static Regions (Graphics only) */}
                             {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
-                                let fillClass = "fill-white/90";
-                                let strokeClass = "stroke-slate-900/10 stroke-[0.5]";
-                                const isHovered = hoveredId === id;
-
                                 const isInset = id === 'canarias';
                                 const regionTransform = isInset ? "translate(-160, 0)" : undefined;
 
@@ -297,25 +299,14 @@ export default function RiversGame() {
                                     <g
                                         key={id}
                                         transform={regionTransform}
-                                        className="pointer-events-auto cursor-default"
-                                        onMouseEnter={() => setHoveredId(id)}
-                                        onMouseLeave={() => setHoveredId(null)}
+                                        className="pointer-events-none"
                                     >
                                         {paths.map((d, i) => (
-                                            <motion.path
+                                            <path
                                                 key={`vis-${i}`}
                                                 d={d}
-                                                className={cn(
-                                                    strokeClass,
-                                                    fillClass,
-                                                    isHovered && "fill-teal-50/50"
-                                                )}
-                                                animate={isHovered ? { y: -8, scale: 1.02 } : { y: 0, scale: 1 }}
-                                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                                                style={{
-                                                    transformOrigin: 'center',
-                                                    filter: isHovered ? 'url(#elevation-shadow)' : 'none'
-                                                }}
+                                                className="stroke-slate-900/10 stroke-[0.5] fill-white/90"
+                                                style={{ transformOrigin: 'center' }}
                                             />
                                         ))}
                                     </g>
@@ -363,11 +354,21 @@ export default function RiversGame() {
                                         <path
                                             d={d}
                                             stroke={strokeColor}
-                                            strokeWidth={isTarget || isCompleted ? 5 : 3}
+                                            strokeWidth={isTarget || isCompleted ? 6 : 4}
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             fill="none"
-                                            className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-[8px]' : ''}`}
+                                            className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-[10px]' : ''}`}
+                                            style={{ filter: 'url(#river-glow)' }}
+                                        />
+                                        <path
+                                            d={d}
+                                            stroke="rgba(255,255,255,0.3)"
+                                            strokeWidth={(isTarget || isCompleted ? 6 : 4) / 2}
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            fill="none"
+                                            className="pointer-events-none"
                                         />
                                     </g>
                                 );

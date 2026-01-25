@@ -62,8 +62,8 @@ export default function GameHUD({
 
     return (
         <div className="w-full relative z-20">
-            {/* HUD CARD */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl gap-4">
+            {/* HUD CARD - Darker Slate Glass (bg-slate-900/60) */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-slate-900/60 backdrop-blur-xl p-4 rounded-2xl border border-white/10 shadow-2xl gap-4">
 
                 {/* LEFT: Score & Accuracy */}
                 <div className="flex items-center gap-4 w-full md:w-auto">

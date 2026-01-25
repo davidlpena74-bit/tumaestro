@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, RefreshCw, Timer, MapPin } from 'lucide-react';
+import { Check, X, RefreshCw, Timer, MapPin, Trophy } from 'lucide-react';
 import { EU_MEMBERS_LIST, EUROPE_CAPITALS, EU_MEMBERS_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -206,19 +206,19 @@ export default function CapitalMatchingGame() {
     return (
         <div className="w-full max-w-6xl mx-auto p-4 md:p-8 relative">
 
-            {/* START OVERLAY */}
+            {/* START OVERLAY - Unified with Map style */}
             {gameState === 'start' && (
-                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
+                <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
                     <div className="bg-indigo-500/10 p-4 rounded-full mb-6 ring-1 ring-indigo-500/30">
                         <MapPin className="w-12 h-12 text-indigo-400" />
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">{content.title}</h2>
-                    <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{content.title}</h2>
+                    <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                         {content.desc}
                     </p>
                     <button
                         onClick={startGame}
-                        className="group relative px-8 py-4 bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] hover:shadow-[0_0_60px_-10px_rgba(99,102,241,0.6)] hover:-translate-y-1"
+                        className="group relative px-8 py-4 bg-indigo-500 hover:bg-indigo-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] hover:shadow-[0_0_60px_-10px_rgba(99,102,241,0.6)] hover:-translate-y-1"
                     >
                         <span className="relative z-10 flex items-center gap-2">{content.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
                     </button>
@@ -288,33 +288,33 @@ export default function CapitalMatchingGame() {
 
             {gameState === 'won' ? (
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-indigo-900/50 border border-indigo-500/30 rounded-3xl p-12 text-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl animate-in fade-in duration-500"
                 >
-                    <div className="inline-flex p-4 rounded-full bg-indigo-500/20 text-indigo-300 mb-6">
-                        <Check className="w-12 h-12" />
+                    <div className="bg-indigo-500/10 p-4 rounded-full mb-6 ring-1 ring-indigo-500/30">
+                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                     </div>
-                    <h3 className="text-4xl font-bold text-white mb-4">{content.congrats}</h3>
-                    <p className="text-xl text-slate-300 mb-8">{content.winMsg}</p>
+                    <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
 
-                    <div className="flex justify-center gap-8 mb-8">
-                        <div className="flex flex-col items-center">
-                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.time}</span>
-                            <span className="text-3xl font-black text-white">{formatTime(elapsedTime)}</span>
+                    <div className="flex gap-12 mb-8 mt-4">
+                        <div className="flex flex-col items-center gap-1">
+                            <span className="text-gray-400 text-xs uppercase tracking-widest font-bold font-medium italic">Tiempo</span>
+                            <span className="text-4xl font-black text-white">{formatTime(elapsedTime)}</span>
                         </div>
-                        <div className="flex flex-col items-center">
-                            <span className="text-slate-400 uppercase tracking-widest text-xs font-bold">{t.common.errors}</span>
-                            <span className="text-3xl font-black text-red-400">{errors}</span>
+                        <div className="flex flex-col items-center gap-1">
+                            <span className="text-gray-400 text-xs uppercase tracking-widest font-bold font-medium italic">Errores</span>
+                            <span className="text-4xl font-black text-red-500">{errors}</span>
                         </div>
                     </div>
+
+                    <p className="text-gray-300 mb-8 max-w-sm">{content.winMsg}</p>
 
                     <button
                         onClick={() => setupGame(true)}
-                        className="px-8 py-3 bg-white text-indigo-900 font-bold rounded-full hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
+                        className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
                     >
-                        <RefreshCw className="w-5 h-5" />
-                        {content.playAgain}
+                        <RefreshCw className="w-5 h-5" /> {content.playAgain}
                     </button>
                 </motion.div>
             ) : (

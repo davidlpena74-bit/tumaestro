@@ -5,7 +5,11 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: 'Ríos de Europa - Juego de Hidrografía Interactiva | TuMaestro.es',
-    description: 'Aprende los ríos más importantes de Europa: el Danubio, el Rin, el Volga y muchos más. ¡Ponte a prueba en nuestro mapa interactivo!',
+    description: 'Aprende los ríos más importantes de Europa: el Danubio, el Rin, el Volga y muchos más. ¡Ponte a prueba en nuestro mapa interactivo gratuito!',
+    keywords: ['ríos de europa', 'hidrografía europa', 'juego interactivo', 'danubio', 'rin', 'volga', 'geografía continental'],
+    alternates: {
+        canonical: 'https://tumaestro.es/juegos/rios-europa',
+    },
 };
 
 export default function EuropeRiversPage() {
@@ -22,10 +26,10 @@ export default function EuropeRiversPage() {
                         <Link href="/juegos" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-6">
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
-                        <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]">
+                        <h1 className="text-4xl md:text-5xl font-black text-white mb-4 drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]">
                             Reto Ríos de Europa 🌊
                         </h1>
-                        <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
+                        <p className="text-white/80 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
                             ¿Podrás identificar los grandes cursos fluviales europeos? Desde el Rin hasta el Volga, demuestra tu dominio de la hidrografía continental.
                         </p>
                     </div>

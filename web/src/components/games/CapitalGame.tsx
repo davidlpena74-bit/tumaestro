@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
+import { Globe, ZoomIn, ZoomOut, Maximize, Minimize, Trophy, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PATH_TO_SPANISH_NAME, EUROPE_CAPITALS } from './data/capitals-data';
 import GameHUD from './GameHUD';
@@ -229,7 +229,7 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
 
                 <div
                     className={cn(
-                        "relative w-full bg-[#1a2333] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
+                        "relative w-full bg-transparent rounded-3xl overflow-hidden border border-white/5 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}
@@ -237,14 +237,14 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseUp}
                 >
-                    {/* START OVERLAY */}
+                    {/* START OVERLAY - Unified with Map style */}
                     {gameState === 'start' && (
                         <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <Globe className="w-12 h-12 text-teal-400" />
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">{title}</h2>
-                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
+                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                                 Busca la capital mostrada en el mapa.
                             </p>
                             <button
@@ -256,21 +256,23 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
                         </div>
                     )}
 
-                    {/* FINISHED OVERLAY */}
+                    {/* WON OVERLAY - Unified with Map style */}
                     {gameState === 'finished' && (
-                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-3xl" onMouseDown={e => e.stopPropagation()}>
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
-                                <Globe className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                             </div>
-                            <h3 className="text-5xl font-black text-white mb-6">
-                                {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Juego Completado!'}
-                            </h3>
-                            <p className="text-2xl text-teal-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
-                            <button
-                                onClick={resetGame}
-                                className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-teal-500/20 transition-transform active:scale-95"
-                            >
-                                Jugar Otra Vez
+                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+
+                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
+                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
+                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
+                                    {score}
+                                </span>
+                            </div>
+
+                            <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
+                                <RefreshCw className="w-5 h-5" /> Jugar de nuevo
                             </button>
                         </div>
                     )}
@@ -287,7 +289,7 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
 
                     {/* MAP */}
                     {(gameState === 'playing' || gameState === 'start') && (
-                        <svg viewBox="0 0 800 600" className="w-full h-full pointer-events-none" style={{ background: '#1e293b' }}>
+                        <svg viewBox="0 0 800 600" className="w-full h-full pointer-events-none" style={{ background: 'transparent' }}>
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                                 {Object.entries(paths).map(([engName, pathD]) => {
                                     const spanishName = PATH_TO_SPANISH_NAME[engName];

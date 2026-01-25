@@ -4,8 +4,12 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Mapa de Ríos de España - Juego de Geografía | TuMaestro.es',
-    description: 'Juego interactivo para aprender los principales ríos de España. Identifica su curso y desembocadura.',
+    title: 'Mapa de Ríos de España - Juego de Geografía Hidrografía | TuMaestro.es',
+    description: 'Juego interactivo gratuito para aprender los principales ríos de España. Identifica su curso, nacimiento y desembocadura de forma divertida.',
+    keywords: ['ríos de españa', 'geografía españa', 'juego interactivo', 'hidrografía española', 'aprender geografía', 'primaria', 'secundaria'],
+    alternates: {
+        canonical: 'https://tumaestro.es/juegos/mapa-rios',
+    },
 };
 
 export default function MapaRiosPage() {
@@ -22,10 +26,10 @@ export default function MapaRiosPage() {
                         <Link href="/juegos" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-6">
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
-                        <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]">
+                        <h1 className="text-4xl md:text-5xl font-black text-white mb-4 drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]">
                             Reto Ríos de España 🌊
                         </h1>
-                        <p className="text-gray-400 text-lg max-w-2xl mb-6 relative z-10 mt-[1.5cm]">
+                        <p className="text-white/80 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
                             ¿Sabes dónde nace el Ebro o por dónde pasa el Guadalquivir? Pon a prueba tu conocimiento de la hidrografía española.
                         </p>
                     </div>

@@ -3,7 +3,6 @@ import fs from 'fs';
 import { geoMercator, geoPath } from 'd3-geo';
 
 // 1. Define Projection (Matches generate_europa_paths.mjs exactly)
-// We need the bounding box to match the background map where we will overlay these rivers.
 const boundingBox = {
     type: "Feature",
     geometry: {
@@ -23,8 +22,46 @@ const projection = geoMercator()
 
 const pathGenerator = geoPath().projection(projection);
 
-// 2. Define Manual Coordinates for Major European Rivers
-// Format: [[lon, lat], [lon, lat], ...]
+/**
+ * Adds realistic meandering to a segment between two points.
+ */
+function addMeandering(p1, p2, depth = 3, intensity = 0.05) {
+    if (depth === 0) return [p2];
+
+    const mid = [
+        (p1[0] + p2[0]) / 2,
+        (p1[1] + p2[1]) / 2
+    ];
+
+    const dx = p2[0] - p1[0];
+    const dy = p2[1] - p1[1];
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    if (length < 0.01) return [p2];
+
+    const nx = -dy / length;
+    const ny = dx / length;
+
+    const displacement = (Math.random() - 0.5) * intensity * length;
+    mid[0] += nx * displacement;
+    mid[1] += ny * displacement;
+
+    return [
+        ...addMeandering(p1, mid, depth - 1, intensity),
+        ...addMeandering(mid, p2, depth - 1, intensity)
+    ];
+}
+
+function processRiver(coords) {
+    let newCoords = [coords[0]];
+    for (let i = 0; i < coords.length - 1; i++) {
+        // Lower intensity for Europe (0.2 instead of 0.4) due to scale
+        const meanderPoints = addMeandering(coords[i], coords[i + 1], 3, 0.2);
+        newCoords = newCoords.concat(meanderPoints);
+    }
+    return newCoords;
+}
+
 const EUROPE_RIVERS_DATA = {
     'Danubio': [
         [8.1, 48.1], [10.0, 48.5], [14.0, 48.3], [16.4, 48.2], [19.0, 47.5], [21.0, 44.8], [24.0, 43.7], [28.0, 43.7], [29.6, 45.2]
@@ -73,15 +110,16 @@ const EUROPE_RIVERS_DATA = {
     ]
 };
 
-// 3. Generate TS Content
 let output = "export const EUROPE_RIVERS_PATHS: Record<string, string> = {\n";
 
 Object.entries(EUROPE_RIVERS_DATA).forEach(([name, coords]) => {
+    const realisticCoords = processRiver(coords);
+
     const geojsonFeature = {
         type: "Feature",
         geometry: {
             type: "LineString",
-            coordinates: coords // D3 uses [lon, lat]
+            coordinates: realisticCoords
         },
         properties: { name }
     };
@@ -95,4 +133,4 @@ Object.entries(EUROPE_RIVERS_DATA).forEach(([name, coords]) => {
 output += "};\n";
 
 fs.writeFileSync('src/components/games/data/europe-rivers-paths.ts', output);
-console.log("Europe rivers paths generated successfully!");
+console.log("Realistic Europe rivers paths generated!");

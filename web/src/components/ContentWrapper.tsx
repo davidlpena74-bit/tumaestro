@@ -21,7 +21,7 @@ export default function ContentWrapper({
                 w-full max-w-[1400px] relative z-0
                 ${transparent
                     ? 'bg-transparent'
-                    : 'bg-slate-950/60 backdrop-blur-2xl shadow-2xl border-x border-white/10'
+                    : 'bg-white/10 backdrop-blur-3xl shadow-2xl border-x border-white/20'
                 }
             `}>
                 {children}

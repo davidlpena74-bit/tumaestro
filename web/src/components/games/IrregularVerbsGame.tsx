@@ -31,9 +31,12 @@ export default function IrregularVerbsGame() {
         setScore(0);
         setStreak(0);
         setGameOver(false);
+        setGameStarted(true);
         setInputs({ pastSimple: '', pastParticiple: '' });
         setShowResult(null);
     };
+
+    const [gameStarted, setGameStarted] = useState(false);
 
     const currentVerb = verbs[currentIndex];
 
@@ -129,25 +132,27 @@ export default function IrregularVerbsGame() {
     if (gameOver) {
         return (
             <div className="w-full max-w-2xl mx-auto p-6">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center"
-                >
-                    <div className="w-24 h-24 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Trophy className="w-12 h-12 text-yellow-400" />
+                {/* WON OVERLAY - Unified with Map style */}
+                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl animate-in fade-in duration-500">
+                    <div className="bg-rose-500/10 p-4 rounded-full mb-6 ring-1 ring-rose-500/30">
+                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                     </div>
-                    <h2 className="text-3xl font-black text-white mb-4">¡Juego Completado!</h2>
-                    <p className="text-xl text-gray-300 mb-8">
-                        Tu puntuación final: <span className="text-blue-400 font-bold">{score}</span> puntos
-                    </p>
+                    <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+
+                    <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
+                        <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
+                        <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
+                            {score}
+                        </span>
+                    </div>
+
                     <button
                         onClick={startNewGame}
-                        className="px-8 py-4 bg-blue-500 hover:bg-blue-400 text-white rounded-xl font-bold transition-all transform hover:scale-105 flex items-center gap-2 mx-auto"
+                        className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
                     >
                         <RefreshCw className="w-5 h-5" /> Jugar de nuevo
                     </button>
-                </motion.div>
+                </div>
             </div>
         );
     }
@@ -157,14 +162,14 @@ export default function IrregularVerbsGame() {
             {/* Header Stats / HUD */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-slate-900/50 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-xl gap-4">
                 <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="p-3 rounded-xl bg-blue-500/20">
-                        <Trophy className="text-blue-400 w-8 h-8" />
+                    <div className="p-3 rounded-xl bg-rose-500/20">
+                        <Trophy className="text-rose-400 w-8 h-8" />
                     </div>
                     <div>
                         <h2 className="text-3xl font-black text-white leading-none">
                             {score} <span className="text-sm font-normal text-blue-300">pts</span>
                         </h2>
-                        <div className="flex gap-3 text-xs font-bold mt-1 text-blue-300 uppercase tracking-wider">
+                        <div className="flex gap-3 text-xs font-bold mt-1 text-rose-300 uppercase tracking-wider">
                             <span>{currentIndex + 1} / {verbs.length}</span>
                             <span>•</span>
                             <span>{t.gamesPage.gameTypes.verbs}</span>
@@ -180,13 +185,32 @@ export default function IrregularVerbsGame() {
                 </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-                {/* Verb Card */}
+            <div className="grid md:grid-cols-2 gap-8 relative">
+                {/* START OVERLAY - Unified with Map style */}
+                {!gameStarted && (
+                    <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
+                        <div className="bg-rose-500/10 p-6 rounded-full mb-6 ring-1 ring-rose-500/30">
+                            <BookOpen className="w-16 h-16 text-rose-400" />
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Verbos Irregulares</h2>
+                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
+                            Domina el inglés practicando los verbos más importantes. ¿Te los sabes todos?
+                        </p>
+                        <button
+                            onClick={startNewGame}
+                            className="group relative px-10 py-5 bg-rose-500 hover:bg-rose-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(244,63,94,0.5)] hover:shadow-[0_0_60px_-10px_rgba(244,63,94,0.6)] hover:-translate-y-1"
+                        >
+                            <span className="relative z-10 flex items-center gap-3">
+                                EMPEZAR RETO <ArrowRight className="w-6 h-6 opacity-50" />
+                            </span>
+                        </button>
+                    </div>
+                )}
                 <motion.div
                     key={currentVerb.id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-xl"
+                    className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-xl"
                 >
                     <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
                         <BookOpen className="w-8 h-8 text-white" />
@@ -206,7 +230,7 @@ export default function IrregularVerbsGame() {
 
                 {/* Input Area */}
                 <div className="space-y-6">
-                    <div className="bg-slate-900/50 p-6 rounded-3xl border border-white/10 space-y-4">
+                    <div className="bg-transparent p-6 rounded-3xl border border-white/10 space-y-4 shadow-2xl">
                         <div>
                             <label className="block text-sm font-bold text-slate-400 mb-2 ml-1">Past Simple</label>
                             <input

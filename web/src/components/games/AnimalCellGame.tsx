@@ -179,7 +179,7 @@ export default function AnimalCellGame() {
                 remainingTargets={CELL_PARTS.length - matches.length}
                 targetName=""
                 onReset={startGame}
-                colorTheme="teal"
+                colorTheme="blue"
                 message={gameState === 'won' ? t.common.victoryMessage : undefined}
                 icon={<Dna className="w-8 h-8 text-blue-400" weight="duotone" />}
             />
@@ -263,7 +263,7 @@ export default function AnimalCellGame() {
                 </div>
 
                 {/* Diagram Area */}
-                <div className="lg:col-span-9 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[500px]">
+                <div className="lg:col-span-9 bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[500px] shadow-2xl">
 
                     <div className="relative w-full h-full max-w-2xl flex items-center justify-center">
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80">
@@ -296,59 +296,61 @@ export default function AnimalCellGame() {
                         </svg>
                     </div>
                 </div>
-            </div>
 
-            {/* Overlays */}
-            {gameState === 'start' && (
-                <div className="fixed inset-0 z-[100] bg-slate-950/98 backdrop-blur-2xl flex flex-col items-center justify-center p-8 text-center border-emerald-500/20 border-8 inset-12 rounded-[4rem]">
-                    <motion.div initial={{ scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 0 }} className="bg-emerald-500 p-8 rounded-[2rem] mb-10 shadow-[0_0_50px_rgba(16,185,129,0.4)]">
-                        <Check className="w-16 h-16 text-white" strokeWidth={4} />
-                    </motion.div>
-                    <h2 className="text-7xl font-black text-white mb-6 tracking-tight italic">LA CÉLULA ANIMAL</h2>
-                    <p className="text-slate-400 text-2xl max-w-lg mb-12 font-semibold">
-                        Un reto de precisión. Conecta cada orgánulo con su nombre trazando una línea.
-                    </p>
-                    <button
-                        onClick={startGame}
-                        className="px-24 py-8 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-4xl rounded-[2.5rem] transition-all shadow-[0_25px_60px_rgba(16,185,129,0.3)] hover:-translate-y-2 active:scale-95"
-                    >
-                        COMENZAR
-                    </button>
-                </div>
-            )}
-
-            <AnimatePresence>
-                {gameState === 'won' && (
-                    <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                        className="fixed inset-0 z-[110] bg-emerald-950/98 backdrop-blur-3xl flex flex-col items-center justify-center p-8 text-center"
-                    >
-                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1, y: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="bg-white p-10 rounded-full mb-10 shadow-[0_0_80px_rgba(255,255,255,0.3)]">
-                            <Check className="w-20 h-20 text-emerald-900" strokeWidth={6} />
-                        </motion.div>
-                        <h2 className="text-9xl font-black text-white mb-6 skew-x-[-5deg]">¡EXPERTO!</h2>
-                        <p className="text-emerald-100 text-3xl font-bold mb-16 opacity-80 uppercase tracking-widest">Biología completada con éxito</p>
-
-                        <div className="flex gap-24 mb-20 text-white">
-                            <div className="text-center group">
-                                <span className="text-sm uppercase font-black text-emerald-400 tracking-tighter block mb-4 group-hover:scale-110 transition-transform">TIEMPO FINAL</span>
-                                <span className="text-7xl font-black drop-shadow-lg">{formatTime(elapsedTime)}</span>
-                            </div>
-                            <div className="text-center group">
-                                <span className="text-sm uppercase font-black text-red-500 tracking-tighter block mb-4 group-hover:scale-110 transition-transform">ERRORES</span>
-                                <span className="text-7xl font-black drop-shadow-lg">{errors}</span>
-                            </div>
+                {/* START OVERLAY - Unified with Map style */}
+                {gameState === 'start' && (
+                    <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[3rem]">
+                        <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
+                            <Dna className="w-12 h-12 text-blue-400" weight="duotone" />
                         </div>
-
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">La Célula Animal</h2>
+                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                            Un reto de precisión. Conecta cada orgánulo con su nombre trazando una línea.
+                        </p>
                         <button
                             onClick={startGame}
-                            className="px-20 py-8 bg-white text-emerald-900 font-black text-3xl rounded-[3rem] hover:bg-emerald-50 hover:scale-105 active:scale-95 transition-all flex items-center gap-6 shadow-2xl"
+                            className="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.6)] hover:-translate-y-1"
                         >
-                            <RefreshCw className="w-10 h-10" /> VOLVER A JUGAR
+                            <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Check className="w-5 h-5 opacity-50" /></span>
                         </button>
-                    </motion.div>
+                    </div>
                 )}
-            </AnimatePresence>
+
+                {/* WON OVERLAY - Unified with Map style */}
+                <AnimatePresence>
+                    {gameState === 'won' && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[3rem]"
+                        >
+                            <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
+                                <Check className="w-16 h-16 text-yellow-400 animate-bounce" />
+                            </div>
+                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+
+                            <div className="flex gap-12 mb-8 mt-4">
+                                <div className="flex flex-col items-center gap-1">
+                                    <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Tiempo</span>
+                                    <span className="text-4xl font-black text-white">{formatTime(elapsedTime)}</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-1">
+                                    <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Errores</span>
+                                    <span className="text-4xl font-black text-red-500">{errors}</span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={startGame}
+                                className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
+                            >
+                                <RefreshCw className="w-5 h-5" /> Jugar de nuevo
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     );
 }

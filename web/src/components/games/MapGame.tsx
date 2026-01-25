@@ -182,10 +182,10 @@ export default function MapGame() {
                     icon={<Trophy className="w-8 h-8 text-teal-400" />}
                 />
 
-                {/* MAP CONTAINER */}
+                {/* MAP CONTAINER - Made transparent */}
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-[#1a2333] rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl group cursor-move",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl group cursor-move",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={(e) => {
@@ -226,14 +226,14 @@ export default function MapGame() {
                         </button>
                     </div>
 
-                    {/* START OVERLAY */}
+                    {/* START OVERLAY - Unified with Map style */}
                     {gameState === 'start' && (
                         <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <MapPin className="w-12 h-12 text-teal-400" />
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Desafío Provincial</h2>
-                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Desafío Provincial</h2>
+                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                                 Demuestra que conoces cada rincón del país. Tienes 90 segundos para ubicar todas las provincias posibles.
                             </p>
                             <button
@@ -245,17 +245,21 @@ export default function MapGame() {
                         </div>
                     )}
 
-                    {/* GAME OVER OVERLAY */}
+                    {/* WON OVERLAY - Unified with Map style */}
                     {gameState === 'finished' && (
-                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                            <Trophy className="w-24 h-24 text-yellow-400 mb-6 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
-                            <h2 className="text-4xl font-bold text-white mb-2">¡Tiempo Agotado!</h2>
-                            <div className="flex flex-col items-center gap-1 mb-8">
-                                <span className="text-gray-400 text-sm uppercase tracking-widest">Puntuación Final</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
+                        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
+                            <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
+                                <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                            </div>
+                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+
+                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
+                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
+                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
                                     {score}
                                 </span>
                             </div>
+
                             <button onClick={startGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
                                 <RefreshCw className="w-5 h-5" /> Intentar de nuevo
                             </button>

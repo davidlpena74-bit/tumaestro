@@ -45,7 +45,7 @@ export default function EuropeRiversGame() {
     const dragStart = useRef({ x: 0, y: 0 });
     const clickStart = useRef({ x: 0, y: 0 });
 
-    const [hoveredId, setHoveredId] = useState<string | null>(null);
+
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
@@ -203,7 +203,7 @@ export default function EuropeRiversGame() {
                 {/* MAP CONTAINER */}
                 <div
                     className={cn(
-                        "relative w-full bg-[#1e293b] rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
+                        "relative w-full bg-transparent rounded-3xl overflow-hidden border border-white/5 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}
@@ -264,36 +264,30 @@ export default function EuropeRiversGame() {
                         <svg
                             viewBox="0 0 800 600"
                             className="w-full h-full"
-                            style={{ background: '#ffffff' }} // White background
+                            style={{ background: 'transparent' }} // Transparent background
                         >
                             <defs>
                                 <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
                                     <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
                                 </filter>
+                                <filter id="river-glow">
+                                    <feGaussianBlur stdDeviation="1" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
                             </defs>
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                                {/* BACKGROUND: EUROPE MAP */}
-                                <g className="pointer-events-auto cursor-default">
-                                    {Object.entries(EUROPE_PATHS).map(([id, d], i) => {
-                                        const isHovered = hoveredId === id;
-                                        return (
-                                            <motion.path
-                                                key={i}
-                                                d={d}
-                                                fill={isHovered ? "#f1f5f9" : "#f8fafc"} // Slate-50
-                                                stroke="#94a3b8" // Slate-400
-                                                strokeWidth="0.5"
-                                                onMouseEnter={() => setHoveredId(id)}
-                                                onMouseLeave={() => setHoveredId(null)}
-                                                animate={isHovered ? { y: -8, scale: 1.02 } : { y: 0, scale: 1 }}
-                                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                                                style={{
-                                                    transformOrigin: 'center',
-                                                    filter: isHovered ? 'url(#elevation-shadow)' : 'none'
-                                                }}
-                                            />
-                                        );
-                                    })}
+                                {/* BACKGROUND: EUROPE MAP (Graphics only) */}
+                                <g className="pointer-events-none">
+                                    {Object.entries(EUROPE_PATHS).map(([id, d], i) => (
+                                        <path
+                                            key={i}
+                                            d={d}
+                                            fill="#f8fafc" // Slate-50
+                                            stroke="#94a3b8" // Slate-400
+                                            strokeWidth="0.5"
+                                            style={{ transformOrigin: 'center' }}
+                                        />
+                                    ))}
                                 </g>
 
                                 {/* COUNTRY LABELS */}
@@ -342,11 +336,21 @@ export default function EuropeRiversGame() {
                                                 onClick={(e) => handleRiverClick(name, e)}
                                                 d={d}
                                                 stroke={strokeColor}
-                                                strokeWidth={isTarget || isCompleted ? 4 : 2}
+                                                strokeWidth={isTarget || isCompleted ? 5 : 3}
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 fill="none"
-                                                className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-teal-400 group-hover:stroke-[4px]' : ''}`}
+                                                className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-teal-400 group-hover:stroke-[6px]' : ''}`}
+                                                style={{ filter: 'url(#river-glow)' }}
+                                            />
+                                            <path
+                                                d={d}
+                                                stroke="rgba(255,255,255,0.3)"
+                                                strokeWidth={(isTarget || isCompleted ? 5 : 3) / 2}
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                fill="none"
+                                                className="pointer-events-none opacity-50"
                                             />
                                         </g>
                                     );

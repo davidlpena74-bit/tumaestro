@@ -153,19 +153,19 @@ export default function DivisionGame() {
     return (
         <div className="w-full max-w-5xl mx-auto p-4 relative select-none">
 
-            {/* START OVERLAY */}
+            {/* START OVERLAY - Unified with Map style */}
             {gameState === 'start' && (
-                <div className="absolute inset-0 z-50 bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
+                <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
                     <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30">
                         <Pizza className="w-16 h-16 text-orange-500" />
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">División de Pizzas</h2>
+                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">División de Pizzas</h2>
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                         ¡Arrastra las pizzas para repartirlas entre los amigos! Aprende a dividir jugando.
                     </p>
                     <button
                         onClick={startGame}
-                        className="group relative px-8 py-4 bg-orange-500 hover:bg-orange-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1"
+                        className="group relative px-8 py-4 bg-orange-500 hover:bg-orange-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1"
                     >
                         <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
                     </button>
@@ -202,7 +202,7 @@ export default function DivisionGame() {
             <div className="grid lg:grid-cols-2 gap-8 items-start">
 
                 {/* VISUAL INTERACTION AREA */}
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-6 min-h-[500px] flex flex-col relative overflow-hidden">
+                <div className="bg-transparent border border-white/10 rounded-3xl p-6 min-h-[500px] flex flex-col relative overflow-hidden shadow-2xl">
                     <h3 className="text-white text-center mb-2 font-bold text-lg">
                         Reparte {problem.dividend} Pizzas entre {problem.divisor} Amigos
                     </h3>
@@ -211,12 +211,12 @@ export default function DivisionGame() {
                     </p>
 
                     {/* PIZZA SOURCE (DRAGGABLE) */}
-                    <div className="flex flex-wrap gap-2 justify-center mb-8 min-h-[100px] p-4 bg-slate-900/50 rounded-xl border border-dashed border-white/20 relative z-20">
+                    <div className="flex flex-wrap gap-2 justify-center mb-8 min-h-[100px] p-4 bg-transparent rounded-xl border border-dashed border-white/20 relative z-20">
                         <AnimatePresence>
                             {Array.from({ length: itemsLeft }).map((_, i) => (
                                 <motion.div
-                                    key={i} // Using index as key for simple stack
-                                    layoutId={`pizza-source-${i}`} // Stable layout ID? Maybe just simple unique
+                                    key={i}
+                                    layoutId={`pizza-source-${i}`}
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     exit={{ scale: 0, opacity: 0 }}
@@ -280,7 +280,7 @@ export default function DivisionGame() {
 
                 {/* MATH CONTROLS AREA */}
                 <div className="flex flex-col gap-6">
-                    <div className="bg-slate-900/50 backdrop-blur-md border border-white/20 p-8 rounded-3xl text-center shadow-2xl">
+                    <div className="bg-transparent border border-white/20 p-8 rounded-3xl text-center shadow-2xl">
                         <h2 className="text-2xl font-bold text-white mb-8">Escribe la División</h2>
 
                         <div className="flex flex-wrap items-center justify-center gap-4 text-3xl md:text-5xl font-black text-white mb-12 font-mono">
@@ -360,7 +360,7 @@ export default function DivisionGame() {
                         )}
                     </AnimatePresence>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
