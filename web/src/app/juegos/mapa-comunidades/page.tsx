@@ -26,10 +26,10 @@ export default function MapaComunidadesPage() {
                         <Link href="/juegos" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-6">
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
-                        <h1 className="text-4xl md:text-5xl font-black text-white mb-4 drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]">
+                        <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
                             Reto Comunidades Autónomas
                         </h1>
-                        <p className="text-white/80 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
+                        <p className="text-slate-700 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
                             Demuestra que conoces el mapa político de España. Ubica las 17 Comunidades y 2 Ciudades Autónomas.
                         </p>
                     </div>

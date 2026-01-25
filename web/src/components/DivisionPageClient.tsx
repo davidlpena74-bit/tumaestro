@@ -20,10 +20,10 @@ export default function DivisionPageClient() {
                 </Link>
 
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-6xl font-black text-white mb-4 drop-shadow-lg">
+                    <h1 className="text-4xl md:text-6xl font-black text-slate-800 mb-4">
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-yellow-400">Reparto de Pizzas</span> 🍕
                     </h1>
-                    <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                    <p className="text-xl text-slate-700 max-w-2xl mx-auto">
                         Ayuda a repartir las pizzas equitativamente entre los amigos. ¡Aprende a dividir jugando!
                     </p>
                 </div>

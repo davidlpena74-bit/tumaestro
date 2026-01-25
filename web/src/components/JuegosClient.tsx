@@ -366,7 +366,7 @@ export default function JuegosClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-white pb-2 drop-shadow-[0_4px_20px_rgba(20,184,166,0.3)]"
+                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
                     >
                         {t.gamesPage.title}
                     </motion.h1>
@@ -374,7 +374,7 @@ export default function JuegosClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-white/70 max-w-2xl mx-auto mt-2 font-medium"
+                        className="text-xl text-slate-700 max-w-2xl mx-auto mt-2 font-medium"
                     >
                         {t.gamesPage.subtitle}
                     </motion.p>
@@ -442,9 +442,9 @@ export default function JuegosClient() {
                                 transition={{ delay: 0.3 + (catIdx * 0.1) }}
                                 className="flex items-center gap-4 mb-1 pb-0"
                             >
-                                <h2 className="text-4xl font-black text-white mb-1 pb-2 drop-shadow-[0_4px_15px_rgba(255,255,255,0.3)]">{category.title}</h2>
+                                <h2 className="text-4xl font-black text-slate-800 mb-1 pb-2">{category.title}</h2>
                             </motion.div>
-                            <div className="w-full h-0.5 bg-white/10 mt-0" />
+                            <div className="w-full h-0.5 bg-slate-800/30 mt-0" />
 
                             <div className="space-y-12 mt-8">
                                 {category.subsections.map((sub, subIdx) => (
@@ -456,8 +456,8 @@ export default function JuegosClient() {
                                                 animate={{ opacity: 1 }}
                                                 className="text-xl font-bold mb-6 flex items-center gap-3"
                                             >
-                                                <div className="w-2 h-2 rounded-full bg-white/40" />
-                                                <span className="text-white/80">
+                                                <div className="w-2 h-2 rounded-full bg-slate-700/50" />
+                                                <span className="text-slate-700">
                                                     {sub.title}
                                                 </span>
                                             </motion.h3>

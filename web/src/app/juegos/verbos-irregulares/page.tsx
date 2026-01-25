@@ -16,8 +16,8 @@ export default function IrregularVerbsGamePage() {
                         <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                     </Link>
                     <div>
-                        <h1 className="text-4xl font-black text-white mb-2">Verbos Irregulares</h1>
-                        <p className="text-slate-400">Pon a prueba tu conocimiento de los verbos irregulares en inglés.</p>
+                        <h1 className="text-4xl font-black text-slate-800 mb-2">Verbos Irregulares</h1>
+                        <p className="text-slate-700">Pon a prueba tu conocimiento de los verbos irregulares en inglés.</p>
                     </div>
                 </div>
 
