@@ -26,19 +26,20 @@ type MusclePart = {
     y: number;
 };
 
+// Recalibrated for v2 synthetic image
 const MUSCLE_PARTS: MusclePart[] = [
     // Front View
-    { id: 'pectoralis', nameKey: 'pectoralis', view: 'front', x: 400, y: 300 },
-    { id: 'deltoid-f', nameKey: 'deltoid', view: 'front', x: 310, y: 240 },
-    { id: 'biceps', nameKey: 'biceps', view: 'front', x: 290, y: 340 },
-    { id: 'abdominals', nameKey: 'abdominals', view: 'front', x: 400, y: 440 },
-    { id: 'quadriceps', nameKey: 'quadriceps', view: 'front', x: 360, y: 650 },
+    { id: 'pectoralis', nameKey: 'pectoralis', view: 'front', x: 400, y: 310 }, // Torso is usually centered
+    { id: 'deltoid-f', nameKey: 'deltoid', view: 'front', x: 310, y: 250 },   // Shoulders
+    { id: 'biceps', nameKey: 'biceps', view: 'front', x: 280, y: 360 },      // Arms
+    { id: 'abdominals', nameKey: 'abdominals', view: 'front', x: 400, y: 460 },
+    { id: 'quadriceps', nameKey: 'quadriceps', view: 'front', x: 365, y: 640 }, // Legs
 
     // Back View
-    { id: 'trapezius', nameKey: 'trapezius', view: 'back', x: 400, y: 220 },
-    { id: 'latissimus', nameKey: 'latissimus', view: 'back', x: 330, y: 380 },
-    { id: 'triceps', nameKey: 'triceps', view: 'back', x: 280, y: 350 },
-    { id: 'gluteus', nameKey: 'gluteus', view: 'back', x: 400, y: 550 },
+    { id: 'trapezius', nameKey: 'trapezius', view: 'back', x: 400, y: 230 },
+    { id: 'latissimus', nameKey: 'latissimus', view: 'back', x: 340, y: 360 },
+    { id: 'triceps', nameKey: 'triceps', view: 'back', x: 270, y: 360 },
+    { id: 'gluteus', nameKey: 'gluteus', view: 'back', x: 400, y: 530 },
     { id: 'gastrocnemius', nameKey: 'gastrocnemius', view: 'back', x: 360, y: 800 },
 ];
 
@@ -253,6 +254,7 @@ export default function HumanMusclesGame() {
                 </div>
 
                 {/* Diagram Area */}
+                {/* Diagram Area */}
                 <div
                     ref={diagramRef}
                     className="lg:col-span-9 bg-black/40 backdrop-blur-sm border border-white/10 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] shadow-2xl overflow-hidden cursor-crosshair select-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/50 via-slate-950/80 to-black/90"
@@ -359,25 +361,23 @@ export default function HumanMusclesGame() {
                         </button>
                     </div>
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={currentView}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
-                        >
-                            <div className="relative w-[300px] h-full">
+                    <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
+                        <div className="relative w-[300px] h-full overflow-hidden">
+                            <motion.div
+                                animate={{ x: currentView === 'front' ? '0%' : '-50%' }}
+                                transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                                className="absolute top-0 left-0 h-full w-[200%]"
+                            >
                                 <Image
-                                    src={currentView === 'front' ? "/images/games/muscles-front.png" : "/images/games/muscles-back.png"}
-                                    alt={`3D Human Muscles ${currentView}`}
+                                    src="/images/games/muscles-combined-hq-v2.png"
+                                    alt="Human Muscles Anatomy"
                                     fill
-                                    className="object-contain py-8"
+                                    className="object-contain"
                                     priority
                                 />
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
+                            </motion.div>
+                        </div>
+                    </div>
 
                     {/* Interaction Layer (SVG) */}
                     <svg

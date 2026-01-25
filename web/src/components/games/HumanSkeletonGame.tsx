@@ -23,21 +23,21 @@ type BonePart = {
     y: number;
 };
 
-// PRELIMINARY COORDINATES - These will need calibration based on the generated image
+// Calibrated coordinates based on the new combined anatomy image (similar to muscles game)
 const BONE_PARTS: BonePart[] = [
     // Front View
-    { id: 'skull', nameKey: 'skull', view: 'front', x: 400, y: 80 },
-    { id: 'ribs', nameKey: 'ribs', view: 'front', x: 400, y: 280 },
-    { id: 'humerus', nameKey: 'humerus', view: 'front', x: 290, y: 300 },
-    { id: 'pelvis', nameKey: 'pelvis', view: 'front', x: 400, y: 450 },
-    { id: 'femur', nameKey: 'femur', view: 'front', x: 360, y: 600 },
+    { id: 'skull', nameKey: 'skull', view: 'front', x: 400, y: 140 },
+    { id: 'ribs', nameKey: 'ribs', view: 'front', x: 400, y: 310 },
+    { id: 'humerus', nameKey: 'humerus', view: 'front', x: 320, y: 320 },
+    { id: 'pelvis', nameKey: 'pelvis', view: 'front', x: 400, y: 460 },
+    { id: 'femur', nameKey: 'femur', view: 'front', x: 370, y: 580 },
 
     // Back View
     { id: 'spine', nameKey: 'spine', view: 'back', x: 400, y: 300 },
-    { id: 'ulna', nameKey: 'ulna', view: 'back', x: 260, y: 400 },
-    { id: 'radius', nameKey: 'radius', view: 'back', x: 280, y: 400 },
-    { id: 'tibia', nameKey: 'tibia', view: 'back', x: 360, y: 750 },
-    { id: 'fibula', nameKey: 'fibula', view: 'back', x: 380, y: 750 },
+    { id: 'ulna', nameKey: 'ulna', view: 'back', x: 270, y: 380 },
+    { id: 'radius', nameKey: 'radius', view: 'back', x: 290, y: 380 },
+    { id: 'tibia', nameKey: 'tibia', view: 'back', x: 360, y: 740 },
+    { id: 'fibula', nameKey: 'fibula', view: 'back', x: 380, y: 740 },
 ];
 
 export default function HumanSkeletonGame() {
@@ -246,6 +246,7 @@ export default function HumanSkeletonGame() {
                 </div>
 
                 {/* Diagram Area */}
+                {/* Diagram Area */}
                 <div
                     ref={diagramRef}
                     className="lg:col-span-9 bg-black/40 backdrop-blur-sm border border-white/10 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] shadow-2xl overflow-hidden cursor-crosshair select-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/50 via-slate-950/80 to-black/90"
@@ -309,25 +310,23 @@ export default function HumanSkeletonGame() {
                         </button>
                     </div>
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={currentView}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
-                        >
-                            <div className="relative w-[300px] h-full">
+                    <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
+                        <div className="relative w-[300px] h-full overflow-hidden">
+                            <motion.div
+                                animate={{ x: currentView === 'front' ? '0%' : '-50%' }}
+                                transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                                className="absolute top-0 left-0 h-full w-[200%]"
+                            >
                                 <Image
-                                    src={currentView === 'front' ? "/images/games/skeleton-front.png" : "/images/games/skeleton-back.png"}
-                                    alt={`Human Skeleton ${currentView}`}
+                                    src="/images/games/skeleton-combined-hq.png"
+                                    alt="Human Skeleton Anatomy"
                                     fill
-                                    className="object-contain py-8"
+                                    className="object-contain"
                                     priority
                                 />
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
+                            </motion.div>
+                        </div>
+                    </div>
 
                     {/* Interaction Layer (SVG) */}
                     <svg

@@ -30,17 +30,18 @@ export default function AnimalCellGame() {
 
     const [boxCoords, setBoxCoords] = useState<Record<string, { x: number, y: number }>>({});
 
+    // Calibrated coordinates for the new 3D Cell Model
     const CELL_PARTS: CellPart[] = [
-        { id: 'nucleus', nameKey: 'nucleus', x: 420, y: 300, color: '#f87171' },
-        { id: 'nucleolus', nameKey: 'nucleolus', x: 420, y: 300, color: '#ef4444' },
-        { id: 'mitochondria', nameKey: 'mitochondria', x: 300, y: 450, color: '#fb923c' },
-        { id: 'golgi', nameKey: 'golgi', x: 570, y: 350, color: '#fbbf24' },
-        { id: 'reticulum', nameKey: 'reticulum', x: 420, y: 180, color: '#818cf8' },
-        { id: 'cytoplasm', nameKey: 'cytoplasm', x: 220, y: 250, color: '#60a5fa' },
-        { id: 'membrane', nameKey: 'membrane', x: 170, y: 450, color: '#2dd4bf' },
-        { id: 'lysosome', nameKey: 'lysosome', x: 620, y: 450, color: '#a78bfa' },
-        { id: 'ribosome', nameKey: 'ribosome', x: 270, y: 150, color: '#f472b6' },
-        { id: 'centrioles', nameKey: 'centrioles', x: 570, y: 180, color: '#fb7185' },
+        { id: 'nucleus', nameKey: 'nucleus', x: 520, y: 280, color: '#9f1239' }, // Large purple/red nucleus
+        { id: 'nucleolus', nameKey: 'nucleolus', x: 520, y: 280, color: '#4c0519' }, // Center of nucleus
+        { id: 'mitochondria', nameKey: 'mitochondria', x: 230, y: 240, color: '#ea580c' }, // Orange structure left
+        { id: 'golgi', nameKey: 'golgi', x: 650, y: 400, color: '#eab308' }, // Yellow folded structure right-bottom
+        { id: 'reticulum', nameKey: 'reticulum', x: 420, y: 180, color: '#3b82f6' }, // Blue structure top/around
+        { id: 'cytoplasm', nameKey: 'cytoplasm', x: 200, y: 450, color: '#60a5fa' }, // General fluid area
+        { id: 'membrane', nameKey: 'membrane', x: 120, y: 300, color: '#2dd4bf' }, // Outer edge
+        { id: 'lysosome', nameKey: 'lysosome', x: 680, y: 250, color: '#a855f7' }, // Small purple spheres
+        { id: 'ribosome', nameKey: 'ribosome', x: 340, y: 140, color: '#f472b6' }, // Small dots
+        { id: 'centrioles', nameKey: 'centrioles', x: 550, y: 120, color: '#fb7185' }, // Near top
     ];
 
     useEffect(() => {
@@ -159,7 +160,7 @@ export default function AnimalCellGame() {
     };
 
     return (
-        <div className="w-full max-w-7xl mx-auto p-4 md:p-8 min-h-screen select-none">
+        <div className="w-full max-w-7xl mx-auto p-4 md:p-8 select-none">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6 bg-slate-900/50 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
                 <div>
@@ -265,46 +266,38 @@ export default function AnimalCellGame() {
                 </div>
 
                 {/* Diagram Area */}
-                <div className="lg:col-span-9 bg-white/5 backdrop-blur-sm border border-white/10 p-6 md:p-12 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[600px] shadow-inner">
-                    <svg ref={svgRef} viewBox="0 0 800 600" className="w-full h-full max-w-2xl drop-shadow-[0_0_60px_rgba(0,0,0,0.4)] overflow-visible">
-                        {/* Cell Body */}
-                        <circle cx="420" cy="300" r="260" fill="rgba(16, 185, 129, 0.03)" stroke="rgba(16, 185, 129, 0.15)" strokeWidth="4" />
-                        <circle cx="420" cy="300" r="250" fill="url(#organelle-glow)" opacity="0.35" />
+                <div className="lg:col-span-9 bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[500px] shadow-inner">
 
+                    <div className="relative w-full h-full max-w-2xl flex items-center justify-center">
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80">
+                            <img
+                                src="/images/games/animal-cell-hq.png"
+                                alt="3D Animal Cell Anatomy"
+                                className="object-contain max-h-[550px]"
+                            />
+                        </div>
 
-                        <defs>
-                            <radialGradient id="organelle-glow">
-                                <stop offset="0%" stopColor="rgba(52, 211, 153, 0.4)" />
-                                <stop offset="100%" stopColor="rgba(16, 185, 129, 0)" />
-                            </radialGradient>
-                        </defs>
-
-                        {/* Visual Rep of Organelles */}
-                        <circle cx="420" cy="300" r="75" fill="#f87171" opacity="0.7" stroke="#ef4444" strokeWidth="2" /> {/* Nucleus */}
-                        <circle cx="420" cy="300" r="25" fill="#ef4444" /> {/* Nucleolus */}
-                        <ellipse cx="300" cy="450" rx="42" ry="22" fill="#fb923c" opacity="0.85" transform="rotate(-35, 300, 450)" /> {/* Mito */}
-                        <path d="M 540 330 Q 575 305, 610 330 M 540 350 Q 575 325, 610 350" stroke="#fbbf24" strokeWidth="10" strokeLinecap="round" fill="none" opacity="0.8" /> {/* Golgi */}
-                        <path d="M 320 230 Q 360 160, 530 160 Q 510 230, 420 230" fill="none" stroke="#818cf8" strokeWidth="22" opacity="0.3" strokeLinecap="round" /> {/* ER */}
-                        <circle cx="620" cy="450" r="20" fill="#a78bfa" opacity="0.9" /> {/* Lysosome */}
-
-                        {/* Connection Nodes (Invisible or Glow circles) */}
-                        {CELL_PARTS.map((part) => (
-                            <g key={`node-${part.id}`}>
-                                <circle
-                                    cx={part.x}
-                                    cy={part.y}
-                                    r={matches.includes(part.id) ? 12 : 18}
-                                    fill={matches.includes(part.id) ? part.color : "rgba(255,255,255,0.08)"}
-                                    stroke={activeDragId === part.id ? "#fff" : "rgba(255,255,255,0.2)"}
-                                    strokeWidth={activeDragId === part.id ? 4 : 2}
-                                    className="transition-all duration-300"
-                                />
-                                {activeDragId === part.id && (
-                                    <circle cx={part.x} cy={part.y} r="30" fill="none" stroke="#fff" opacity="0.4" className="animate-ping" />
-                                )}
-                            </g>
-                        ))}
-                    </svg>
+                        <svg ref={svgRef} viewBox="0 0 800 600" className="w-full h-full absolute inset-0 z-20 overflow-visible">
+                            {/* Connection Nodes over the image */}
+                            {CELL_PARTS.map((part) => (
+                                <g key={`node-${part.id}`}>
+                                    <circle
+                                        cx={part.x}
+                                        cy={part.y}
+                                        r={matches.includes(part.id) ? 12 : 18}
+                                        fill={matches.includes(part.id) ? part.color : "rgba(255,255,255,0.08)"}
+                                        stroke={activeDragId === part.id ? "#fff" : "rgba(255,255,255,0.2)"}
+                                        strokeWidth={activeDragId === part.id ? 4 : 2}
+                                        className="transition-all duration-300 backdrop-blur-sm"
+                                    />
+                                    <circle cx={part.x} cy={part.y} r="6" fill="#fff" opacity="0.5" />
+                                    {activeDragId === part.id && (
+                                        <circle cx={part.x} cy={part.y} r="30" fill="none" stroke="#fff" opacity="0.4" className="animate-ping" />
+                                    )}
+                                </g>
+                            ))}
+                        </svg>
+                    </div>
                 </div>
             </div>
 
