@@ -11,9 +11,11 @@ import {
     CaretLeft,
     CaretRight,
     HandGrabbing,
-    ArrowCounterClockwise
+    ArrowCounterClockwise,
+    Skull
 } from '@phosphor-icons/react';
 import confetti from 'canvas-confetti';
+import GameHUD from './GameHUD';
 
 type BonePart = {
     id: string;
@@ -64,6 +66,7 @@ export default function HumanSkeletonGame() {
         currY: 0
     });
     const [time, setTime] = useState(0);
+    const [errors, setErrors] = useState(0);
     const diagramRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
@@ -90,6 +93,7 @@ export default function HumanSkeletonGame() {
         setGameStarted(true);
         setGameOver(false);
         setMatches({});
+        setErrors(0);
         setTime(0);
         setDragState({
             active: false,
@@ -185,6 +189,8 @@ export default function HumanSkeletonGame() {
                     colors: ['#34d399', '#ffffff']
                 });
                 checkCompletion(newMatches);
+            } else {
+                setErrors(prev => prev + 1);
             }
         }
 
@@ -192,29 +198,23 @@ export default function HumanSkeletonGame() {
     };
 
     return (
-        <div className="w-full max-w-7xl mx-auto p-4 md:p-8 min-h-screen select-none">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 md:pb-8 pt-0 min-h-screen select-none">
 
 
             {/* Header / HUD */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-6 bg-slate-900/50 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] shadow-2xl relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="relative z-10">
-                    <h2 className="text-3xl font-black text-white mb-1 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-500">
-                        {t.gamesPage.gameTitles.skeleton}
-                    </h2>
-                    <p className="text-white/40 font-medium tracking-wide uppercase text-xs">Conecta las partes correctamente</p>
-                </div>
-
-                <div className="flex gap-8 relative z-10 bg-black/20 backdrop-blur-md px-8 py-4 rounded-3xl border border-white/5">
-                    <div className="text-center group/stat">
-                        <div className="flex items-center gap-2 text-emerald-400 mb-1 justify-center">
-                            <CheckCircle weight="fill" className="w-5 h-5" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest">Aciertos</span>
-                        </div>
-                        <span className="text-2xl font-black text-white">{Object.keys(matches).length} / {currentParts.length}</span>
-                    </div>
-                </div>
-            </div>
+            <GameHUD
+                title={t.gamesPage.gameTitles.skeleton}
+                score={Object.keys(matches).length * 100}
+                errors={errors}
+                timeLeft={time}
+                totalTargets={currentParts.length}
+                remainingTargets={currentParts.length - Object.keys(matches).length}
+                targetName=""
+                onReset={startGame}
+                colorTheme="teal"
+                message={gameOver ? t.common.victoryMessage : undefined}
+                icon={<Skull className="w-8 h-8 text-blue-400" weight="duotone" />}
+            />
 
             <div className="grid lg:grid-cols-12 gap-8 items-start">
                 {/* Left Sidebar: Controls & Instructions */}
@@ -249,7 +249,7 @@ export default function HumanSkeletonGame() {
                 {/* Diagram Area */}
                 <div
                     ref={diagramRef}
-                    className="lg:col-span-9 bg-black/40 backdrop-blur-sm border border-white/10 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] shadow-2xl overflow-hidden cursor-crosshair select-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/50 via-slate-950/80 to-black/90"
+                    className="lg:col-span-9 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none"
                 >
                     {/* START OVERLAY */}
                     {!gameStarted && !gameOver && (

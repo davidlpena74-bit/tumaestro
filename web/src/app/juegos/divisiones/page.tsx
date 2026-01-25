@@ -15,7 +15,7 @@ export default function DivisionPage() {
             </div>
 
             <div className="max-w-7xl mx-auto relative z-10">
-                <Link href="/juegos" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors mb-8">
+                <Link href="/juegos" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-8">
                     <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                 </Link>
 

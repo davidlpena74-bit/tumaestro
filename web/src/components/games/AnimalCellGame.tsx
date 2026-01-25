@@ -2,8 +2,16 @@
 
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Timer, RefreshCw, X, Info } from 'lucide-react';
+import {
+    Check,
+    Timer,
+    RefreshCw,
+    X,
+    Info
+} from 'lucide-react';
+import { Dna } from '@phosphor-icons/react';
 import { useLanguage } from '@/context/LanguageContext';
+import GameHUD from './GameHUD';
 
 type CellPart = {
     id: string;
@@ -160,32 +168,21 @@ export default function AnimalCellGame() {
     };
 
     return (
-        <div className="w-full max-w-7xl mx-auto p-4 md:p-8 select-none">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 md:pb-8 pt-0 min-h-screen select-none">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6 bg-slate-900/50 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
-                <div>
-                    <h2 className="text-4xl font-black text-white mb-2 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-500">
-                        {t.gamesPage.gameTitles.animalCell}
-                    </h2>
-                </div>
-
-                <div className="flex gap-8 text-white">
-                    <div className="flex flex-col items-center">
-                        <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1">{t.common.time}</span>
-                        <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
-                            <Timer className="w-5 h-5 text-emerald-400" />
-                            <span className="font-mono text-xl font-bold">{formatTime(elapsedTime)}</span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1">{t.common.errors}</span>
-                        <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
-                            <X className="w-5 h-5 text-red-400" />
-                            <span className="font-mono text-xl font-bold">{errors}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <GameHUD
+                title={t.gamesPage.gameTitles.animalCell}
+                score={matches.length * 100}
+                errors={errors}
+                timeLeft={elapsedTime}
+                totalTargets={CELL_PARTS.length}
+                remainingTargets={CELL_PARTS.length - matches.length}
+                targetName=""
+                onReset={startGame}
+                colorTheme="teal"
+                message={gameState === 'won' ? t.common.victoryMessage : undefined}
+                icon={<Dna className="w-8 h-8 text-blue-400" weight="duotone" />}
+            />
 
             {/* Main Game Area */}
             <div
@@ -266,7 +263,7 @@ export default function AnimalCellGame() {
                 </div>
 
                 {/* Diagram Area */}
-                <div className="lg:col-span-9 bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[500px] shadow-inner">
+                <div className="lg:col-span-9 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[500px]">
 
                     <div className="relative w-full h-full max-w-2xl flex items-center justify-center">
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80">

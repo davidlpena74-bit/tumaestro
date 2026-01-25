@@ -20,7 +20,7 @@ export default function AmericaMapPage() {
 
                 <div className="relative z-10 w-full max-w-7xl mx-auto">
                     <div>
-                        <Link href="/juegos" className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors mb-6">
+                        <Link href="/juegos" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-6">
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 -mb-8 relative z-[100] pb-2 drop-shadow-[0_4px_20px_rgba(16,185,129,0.3)]">

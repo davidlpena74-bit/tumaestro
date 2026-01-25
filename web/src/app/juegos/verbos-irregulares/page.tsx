@@ -11,9 +11,9 @@ export default function IrregularVerbsGamePage() {
                 <div className="flex items-center gap-4 mb-8">
                     <Link
                         href="/juegos"
-                        className="p-2 hover:bg-white/10 rounded-xl transition-colors text-white"
+                        className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40"
                     >
-                        <ArrowLeft className="w-6 h-6" />
+                        <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                     </Link>
                     <div>
                         <h1 className="text-4xl font-black text-white mb-2">Verbos Irregulares</h1>
