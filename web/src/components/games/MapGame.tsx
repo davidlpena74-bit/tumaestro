@@ -314,7 +314,7 @@ export default function MapGame() {
                                 let strokeClass = "stroke-slate-900/50 stroke-[0.5]";
 
                                 if (gameState === 'playing') {
-                                    fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
+                                    fillClass = "fill-white hover:fill-slate-200 cursor-pointer transition-colors duration-150";
 
                                     if (isSolved) {
                                         fillClass = "fill-green-500/80"; // Persistent completed style
@@ -376,7 +376,7 @@ export default function MapGame() {
                                                 className={cn(
                                                     strokeClass,
                                                     fillClass,
-                                                    isHovered && gameState === 'playing' && !isSolved && !isClicked && "fill-teal-100"
+                                                    isHovered && gameState === 'playing' && !isSolved && !isClicked && "fill-slate-200"
                                                 )}
                                                 animate={
                                                     isHovered && gameState === 'playing'

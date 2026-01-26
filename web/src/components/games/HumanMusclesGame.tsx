@@ -26,27 +26,30 @@ type MusclePart = {
     view: 'front' | 'back';
     x: number;
     y: number;
+    lx: number; // Label X position when matched
+    ly: number; // Label Y position when matched
 };
 
 // Recalibrated for v2 synthetic image
 const MUSCLE_PARTS: MusclePart[] = [
     // Front View
-    { id: 'pectoralis', nameKey: 'pectoralis', view: 'front', x: 400, y: 310 }, // Torso is usually centered
-    { id: 'deltoid-f', nameKey: 'deltoid', view: 'front', x: 310, y: 250 },   // Shoulders
-    { id: 'biceps', nameKey: 'biceps', view: 'front', x: 280, y: 360 },      // Arms
-    { id: 'abdominals', nameKey: 'abdominals', view: 'front', x: 400, y: 460 },
-    { id: 'quadriceps', nameKey: 'quadriceps', view: 'front', x: 365, y: 640 }, // Legs
+    { id: 'pectoralis', nameKey: 'pectoralis', view: 'front', x: 370, y: 311, lx: 700, ly: 311 },
+    { id: 'deltoid-f', nameKey: 'deltoid', view: 'front', x: 476, y: 287, lx: 700, ly: 287 },
+    { id: 'biceps', nameKey: 'biceps', view: 'front', x: 493, y: 349, lx: 700, ly: 349 },
+    { id: 'abdominals', nameKey: 'abdominals', view: 'front', x: 408, y: 404, lx: 700, ly: 404 },
+    { id: 'quadriceps', nameKey: 'quadriceps', view: 'front', x: 367, y: 549, lx: 700, ly: 549 },
 
     // Back View
-    { id: 'trapezius', nameKey: 'trapezius', view: 'back', x: 400, y: 230 },
-    { id: 'latissimus', nameKey: 'latissimus', view: 'back', x: 340, y: 360 },
-    { id: 'triceps', nameKey: 'triceps', view: 'back', x: 270, y: 360 },
-    { id: 'gluteus', nameKey: 'gluteus', view: 'back', x: 400, y: 530 },
-    { id: 'gastrocnemius', nameKey: 'gastrocnemius', view: 'back', x: 360, y: 800 },
+    { id: 'trapezius', nameKey: 'trapezius', view: 'back', x: 371, y: 270, lx: 700, ly: 270 },
+    { id: 'latissimus', nameKey: 'latissimus', view: 'back', x: 456, y: 348, lx: 700, ly: 348 },
+    { id: 'triceps', nameKey: 'triceps', view: 'back', x: 323, y: 351, lx: 700, ly: 351 },
+    { id: 'gluteus', nameKey: 'gluteus', view: 'back', x: 378, y: 495, lx: 700, ly: 495 },
+    { id: 'femoral', nameKey: 'femoral', view: 'back', x: 442, y: 594, lx: 700, ly: 594 },
+    { id: 'gastrocnemius', nameKey: 'gastrocnemius', view: 'back', x: 362, y: 694, lx: 700, ly: 694 },
 ];
 
 export default function HumanMusclesGame() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
     const [gameStarted, setGameStarted] = useState(false);
     const [gameOver, setGameOver] = useState(false);
@@ -76,12 +79,33 @@ export default function HumanMusclesGame() {
     // Calculate label positions dynamically based on current view parts
     const currentParts = MUSCLE_PARTS.filter(p => p.view === currentView);
     const labelPositions = React.useMemo(() => {
-        return currentParts.map((part, index) => ({
-            ...part,
-            labelX: index % 2 === 0 ? 30 : 570, // Alternating Left/Right columns
-            labelY: 150 + (index * 130) // Vertical spacing
-        }));
-    }, [currentView, currentParts]);
+        // 1. Sort all parts by Y coordinate to define fixed slots on the right
+        const sortedByY = [...currentParts].sort((a, b) => a.y - b.y);
+
+        // 2. Sort only unmatched parts alphabetically for the compact left stack
+        const unmatchedSorted = currentParts
+            .filter(p => !matches[p.id])
+            .sort((a, b) => {
+                const nameA = (t.gamesPage.muscles as any)[a.nameKey] || '';
+                const nameB = (t.gamesPage.muscles as any)[b.nameKey] || '';
+                return nameA.localeCompare(nameB, language);
+            });
+
+        return currentParts.map((part) => {
+            const isMatched = !!matches[part.id];
+
+            // Fixed slot index for the right side (based on body height)
+            const yOrderIndex = sortedByY.findIndex(p => p.id === part.id);
+            // Dynamic compact index for the left side
+            const unmatchedIndex = unmatchedSorted.findIndex(p => p.id === part.id);
+
+            return {
+                ...part,
+                labelX: isMatched ? 700 : -100,
+                labelY: 150 + ((isMatched ? yOrderIndex : unmatchedIndex) * 80)
+            };
+        });
+    }, [currentView, currentParts, matches, t, language]);
 
 
 
@@ -156,12 +180,11 @@ export default function HumanMusclesGame() {
 
         e.stopPropagation(); // Prevent scrolling on touch
         const { x: svgX, y: svgY } = getSVGCoordinates(e);
-
         setDragState({
             active: true,
             startId: id,
             startType: type,
-            startX: type === 'point' ? x : (x + 100), // Center of label roughly
+            startX: type === 'point' ? x : (x > 400 ? x : x + 200),
             startY: type === 'point' ? y : (y + 30),
             currX: svgX,
             currY: svgY
@@ -204,7 +227,7 @@ export default function HumanMusclesGame() {
 
 
     return (
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 md:pb-8 pt-0 min-h-screen select-none">
+        <div className="w-full px-4 md:px-8 pb-4 md:pb-8 pt-0 select-none">
 
 
             {/* Header / HUD */}
@@ -222,39 +245,11 @@ export default function HumanMusclesGame() {
                 icon={<Barbell className="w-8 h-8 text-blue-400" weight="duotone" />}
             />
 
-            <div className="grid lg:grid-cols-12 gap-8 items-start">
-                {/* Left Sidebar: Controls & Instructions */}
-                <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 p-8 rounded-[2.5rem] shadow-xl h-full flex flex-col justify-center">
-                        <div className="animate-in slide-in-from-left duration-500">
-                            {/* <img src="/images/logo_tumaestro_v2.svg" alt="Tu Maestro" className="w-24 opacity-20 mb-6 mx-auto" /> */}
-                            <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-bold text-center">Instrucciones</p>
-                            <div className="bg-white/5 border border-white/10 p-6 rounded-3xl mb-4">
-                                <div className="flex items-center gap-4 mb-3">
-                                    <HandGrabbing className="w-8 h-8 text-blue-400" />
-                                    <span className="text-white font-bold">Arrastra para conectar</span>
-                                </div>
-                                <p className="text-white/60 text-sm">Une cada etiqueta con su músculo correspondiente. Si te equivocas, la línea no se fijará.</p>
-                            </div>
-
-                            <button
-                                onClick={() => setCurrentView(prev => {
-                                    setMatches({});
-                                    return prev === 'front' ? 'back' : 'front';
-                                })}
-                                className="w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all group"
-                            >
-                                <ArrowsLeftRight className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                                CAMBIAR VISTA
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
+            <div className="w-full">
                 {/* Diagram Area */}
                 <div
                     ref={diagramRef}
-                    className="lg:col-span-9 bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none shadow-2xl"
+                    className="w-full bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none shadow-2xl"
                 >
                     {/* START OVERLAY - Unified with Map style */}
                     {!gameStarted && !gameOver && (
@@ -264,7 +259,7 @@ export default function HumanMusclesGame() {
                             </div>
                             <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Anatomía Humana</h2>
                             <p className="text-gray-300 mb-8 max-w-xl text-lg leading-relaxed font-medium">
-                                ¿Conoces tu propio cuerpo? Conecta cada músculo con su ubicación correcta en el menor tiempo posible.
+                                ¿Conoces tu propio cuerpo? Arrastra cada etiqueta para conectarla con su músculo correspondiente. Si te equivocas, la línea no se fijará.
                             </p>
                             <button
                                 onClick={startGame}
@@ -311,7 +306,7 @@ export default function HumanMusclesGame() {
                         )}
                     </AnimatePresence>
                     {/* View Switch Overlay Buttons */}
-                    <div className="absolute top-8 left-1/2 -translate-x-1/2 flex gap-2 z-30 bg-black/40 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10">
+                    <div className="absolute top-8 left-1/2 -translate-x-1/2 flex gap-2 z-30 bg-slate-900/60 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10 shadow-2xl">
                         <button
                             onClick={() => { setCurrentView('front'); setMatches({}); }}
                             className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${currentView === 'front' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:text-white'}`}
@@ -364,12 +359,13 @@ export default function HumanMusclesGame() {
                             return (
                                 <motion.line
                                     key={`line-${labelId}-${partId}`}
-                                    x1={label.labelX + 100} // Center of label (width 200)
-                                    y1={label.labelY + 30}  // Center of label (height 60)
+                                    x1={label.labelX > 400 ? label.labelX : label.labelX + 200}
+                                    y1={label.labelY + 30}
                                     x2={part.x}
                                     y2={part.y}
                                     stroke="#10b981"
                                     strokeWidth="4"
+                                    className="pointer-events-none"
                                     initial={{ pathLength: 0, opacity: 0 }}
                                     animate={{ pathLength: 1, opacity: 1 }}
                                     transition={{ duration: 0.5 }}
@@ -387,7 +383,7 @@ export default function HumanMusclesGame() {
                                 stroke="#3b82f6"
                                 strokeWidth="4"
                                 strokeDasharray="8 4"
-                                className="animate-pulse"
+                                className="animate-pulse pointer-events-none"
                             />
                         )}
 
@@ -409,14 +405,14 @@ export default function HumanMusclesGame() {
                                     className={`
                                         w-full h-full rounded-xl flex items-center justify-center px-4 text-center cursor-grab active:cursor-grabbing transition-all duration-300 shadow-xl border
                                         ${matches[item.id]
-                                            ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 pointer-events-none'
+                                            ? 'bg-transparent border-emerald-500/50 text-slate-700 pointer-events-none shadow-[0_0_15px_rgba(16,185,129,0.1)]'
                                             : 'bg-slate-800/90 border-white/20 hover:border-blue-500/50 hover:bg-slate-800 text-white'
                                         }
                                     `}
                                 >
                                     <div className="flex items-center gap-2">
-                                        {matches[item.id] && <CheckCircle className="w-4 h-4 text-emerald-400" weight="fill" />}
-                                        <span className="text-xs font-bold uppercase tracking-wide">
+                                        {matches[item.id] && <CheckCircle className="w-4 h-4 text-emerald-500" weight="fill" />}
+                                        <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-700' : 'text-white'}`}>
                                             {(t.gamesPage.muscles as any)[item.nameKey]}
                                         </span>
                                     </div>

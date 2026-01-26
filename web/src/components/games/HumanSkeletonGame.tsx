@@ -23,27 +23,30 @@ type BonePart = {
     view: 'front' | 'back';
     x: number;
     y: number;
+    lx: number; // Label X when matched
+    ly: number; // Label Y when matched
 };
 
 // Calibrated coordinates based on the new combined anatomy image (similar to muscles game)
 const BONE_PARTS: BonePart[] = [
     // Front View
-    { id: 'skull', nameKey: 'skull', view: 'front', x: 400, y: 140 },
-    { id: 'ribs', nameKey: 'ribs', view: 'front', x: 400, y: 310 },
-    { id: 'humerus', nameKey: 'humerus', view: 'front', x: 320, y: 320 },
-    { id: 'pelvis', nameKey: 'pelvis', view: 'front', x: 400, y: 460 },
-    { id: 'femur', nameKey: 'femur', view: 'front', x: 370, y: 580 },
+    { id: 'skull', nameKey: 'skull', view: 'front', x: 410, y: 190, lx: 700, ly: 190 },
+    { id: 'ribs', nameKey: 'ribs', view: 'front', x: 438, y: 334, lx: 700, ly: 334 },
+    { id: 'humerus', nameKey: 'humerus', view: 'front', x: 488, y: 345, lx: 700, ly: 345 },
+    { id: 'pelvis', nameKey: 'pelvis', view: 'front', x: 371, y: 445, lx: 700, ly: 445 },
+    { id: 'femur', nameKey: 'femur', view: 'front', x: 450, y: 574, lx: 700, ly: 574 },
+    { id: 'tibia', nameKey: 'tibia', view: 'front', x: 376, y: 728, lx: 700, ly: 728 },
+    { id: 'fibula', nameKey: 'fibula', view: 'front', x: 456, y: 679, lx: 700, ly: 679 },
+    { id: 'radius', nameKey: 'radius', view: 'front', x: 533, y: 446, lx: 700, ly: 446 },
+    { id: 'ulna', nameKey: 'ulna', view: 'front', x: 524, y: 463, lx: 700, ly: 463 },
 
     // Back View
-    { id: 'spine', nameKey: 'spine', view: 'back', x: 400, y: 300 },
-    { id: 'ulna', nameKey: 'ulna', view: 'back', x: 270, y: 380 },
-    { id: 'radius', nameKey: 'radius', view: 'back', x: 290, y: 380 },
-    { id: 'tibia', nameKey: 'tibia', view: 'back', x: 360, y: 740 },
-    { id: 'fibula', nameKey: 'fibula', view: 'back', x: 380, y: 740 },
+    { id: 'spine', nameKey: 'spine', view: 'back', x: 401, y: 293, lx: 700, ly: 293 },
+    { id: 'scapula', nameKey: 'scapula', view: 'back', x: 363, y: 315, lx: 700, ly: 315 },
 ];
 
 export default function HumanSkeletonGame() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
     const [gameStarted, setGameStarted] = useState(false);
     const [gameOver, setGameOver] = useState(false);
@@ -72,13 +75,35 @@ export default function HumanSkeletonGame() {
 
     // Calculate label positions dynamically based on current view parts
     const currentParts = BONE_PARTS.filter(p => p.view === currentView);
+
     const labelPositions = React.useMemo(() => {
-        return currentParts.map((part, index) => ({
-            ...part,
-            labelX: index % 2 === 0 ? 30 : 570, // Alternating Left/Right columns
-            labelY: 150 + (index * 130) // Vertical spacing
-        }));
-    }, [currentView, currentParts]);
+        // 1. Sort all parts by Y coordinate to define fixed slots on the right
+        const sortedByY = [...currentParts].sort((a, b) => a.y - b.y);
+
+        // 2. Sort only unmatched parts alphabetically for the compact left stack
+        const unmatchedSorted = currentParts
+            .filter(p => !matches[p.id])
+            .sort((a, b) => {
+                const nameA = (t.gamesPage.bones as any)[a.nameKey] || '';
+                const nameB = (t.gamesPage.bones as any)[b.nameKey] || '';
+                return nameA.localeCompare(nameB, language);
+            });
+
+        return currentParts.map((part) => {
+            const isMatched = !!matches[part.id];
+
+            // Fixed slot index for the right side (based on body height)
+            const yOrderIndex = sortedByY.findIndex(p => p.id === part.id);
+            // Dynamic compact index for the left side
+            const unmatchedIndex = unmatchedSorted.findIndex(p => p.id === part.id);
+
+            return {
+                ...part,
+                labelX: isMatched ? 580 : 20, // Inside the 800px viewBox
+                labelY: 150 + ((isMatched ? yOrderIndex : unmatchedIndex) * 80)
+            };
+        });
+    }, [currentView, currentParts, matches, t, language]);
 
 
     useEffect(() => {
@@ -157,7 +182,7 @@ export default function HumanSkeletonGame() {
             active: true,
             startId: id,
             startType: type,
-            startX: type === 'point' ? x : (x + 100), // Center of label roughly
+            startX: type === 'point' ? x : (x < 400 ? x + 200 : x), // Right edge if on left, left edge if on right
             startY: type === 'point' ? y : (y + 30),
             currX: svgX,
             currY: svgY
@@ -216,40 +241,12 @@ export default function HumanSkeletonGame() {
                 icon={<Skull className="w-8 h-8 text-blue-400" weight="duotone" />}
             />
 
-            <div className="grid lg:grid-cols-12 gap-8 items-start">
-                {/* Left Sidebar: Controls & Instructions */}
-                <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 p-8 rounded-[2.5rem] shadow-xl h-full flex flex-col justify-center">
-                        <div className="animate-in slide-in-from-left duration-500">
-                            {/* <img src="/images/logo_tumaestro_v2.svg" alt="Tu Maestro" className="w-24 opacity-20 mb-6 mx-auto" /> */}
-                            <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-bold text-center">Instrucciones</p>
-                            <div className="bg-white/5 border border-white/10 p-6 rounded-3xl mb-4">
-                                <div className="flex items-center gap-4 mb-3">
-                                    <HandGrabbing className="w-8 h-8 text-blue-400" />
-                                    <span className="text-white font-bold">Arrastra para conectar</span>
-                                </div>
-                                <p className="text-white/60 text-sm">Une cada etiqueta con su hueso correspondiente. Si te equivocas, la línea no se fijará.</p>
-                            </div>
+            <div className="w-full">
 
-                            <button
-                                onClick={() => setCurrentView(prev => {
-                                    setMatches({});
-                                    return prev === 'front' ? 'back' : 'front';
-                                })}
-                                className="w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all group"
-                            >
-                                <ArrowsLeftRight className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                                CAMBIAR VISTA
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Diagram Area */}
                 {/* Diagram Area */}
                 <div
                     ref={diagramRef}
-                    className="lg:col-span-9 bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none shadow-2xl"
+                    className="w-full bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none shadow-2xl"
                 >
                     {/* START OVERLAY - Unified with Map style */}
                     {!gameStarted && !gameOver && (
@@ -339,7 +336,6 @@ export default function HumanSkeletonGame() {
                         </div>
                     </div>
 
-                    {/* Interaction Layer (SVG) */}
                     <svg
                         ref={svgRef}
                         viewBox="0 0 800 1000"
@@ -359,8 +355,8 @@ export default function HumanSkeletonGame() {
                             return (
                                 <motion.line
                                     key={`line-${labelId}-${partId}`}
-                                    x1={label.labelX + 100} // Center of label (width 200)
-                                    y1={label.labelY + 30}  // Center of label (height 60)
+                                    x1={label.labelX < 400 ? label.labelX + 200 : label.labelX} // Right edge if on left, left edge if on right
+                                    y1={label.labelY + 30}  // Center of label height
                                     x2={part.x}
                                     y2={part.y}
                                     stroke="#10b981"
@@ -404,14 +400,14 @@ export default function HumanSkeletonGame() {
                                     className={`
                                         w-full h-full rounded-xl flex items-center justify-center px-4 text-center cursor-grab active:cursor-grabbing transition-all duration-300 shadow-xl border
                                         ${matches[item.id]
-                                            ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 pointer-events-none'
-                                            : 'bg-slate-800/90 border-white/20 hover:border-teal-500/50 hover:bg-slate-800 text-white'
+                                            ? 'bg-transparent border-emerald-500/50 text-slate-700 pointer-events-none shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                                            : 'bg-slate-800/90 border-white/20 hover:border-blue-500/50 hover:bg-slate-800 text-white'
                                         }
                                     `}
                                 >
                                     <div className="flex items-center gap-2">
                                         {matches[item.id] && <CheckCircle className="w-4 h-4 text-emerald-400" weight="fill" />}
-                                        <span className="text-xs font-bold uppercase tracking-wide">
+                                        <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-700' : 'text-white'}`}>
                                             {(t.gamesPage.bones as any)[item.nameKey]}
                                         </span>
                                     </div>
@@ -439,7 +435,7 @@ export default function HumanSkeletonGame() {
                                          transition-all duration-300
                                          ${Object.values(matches).includes(part.id)
                                             ? 'fill-emerald-500 stroke-emerald-400'
-                                            : 'fill-white/10 stroke-white/30 hover:fill-teal-500/30 hover:stroke-teal-400 hover:r-20'
+                                            : 'fill-white/10 stroke-white/30 hover:fill-blue-500/30 hover:stroke-blue-400 hover:r-20'
                                         }
                                      `}
                                     strokeWidth="3"

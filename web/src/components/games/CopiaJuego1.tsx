@@ -284,17 +284,17 @@ export default function RegionGame() {
                                 // Dynamic class logic
                                 let fillClass = "fill-white/90";
                                 // Note: Using thicker stroke for regions vs provinces
-                                let strokeClass = "stroke-slate-900 stroke-[1.5]";
+                                let strokeClass = "stroke-slate-900 stroke-[0.8]";
 
                                 if (gameState === 'playing') {
-                                    fillClass = "fill-white hover:fill-teal-100 cursor-pointer transition-colors duration-150";
+                                    fillClass = "fill-white hover:fill-slate-200 cursor-pointer transition-colors duration-150";
 
                                     if (isSolved) {
                                         fillClass = "fill-green-500/80"; // Persistent completed style
                                     }
 
                                     if (isClicked) {
-                                        strokeClass = "stroke-slate-900 stroke-[2]";
+                                        strokeClass = "stroke-slate-900 stroke-1";
                                         if (isTarget) fillClass = "fill-green-500 animate-pulse";
                                         else fillClass = "fill-red-500";
                                     }
@@ -348,7 +348,7 @@ export default function RegionGame() {
                                                 className={cn(
                                                     strokeClass,
                                                     fillClass,
-                                                    isHovered && gameState === 'playing' && !isSolved && !isClicked && "fill-teal-100"
+                                                    isHovered && gameState === 'playing' && !isSolved && !isClicked && "fill-slate-200"
                                                 )}
                                                 initial={false}
                                                 animate={

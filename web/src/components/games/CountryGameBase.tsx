@@ -279,7 +279,7 @@ export default function CountryGameBase({
                                 const isHovered = hoveredId === spanishName;
                                 const isPlayable = !!spanishName;
 
-                                let fillClass = isPlayable ? "fill-white/90 hover:fill-teal-100" : "fill-slate-800/20";
+                                let fillClass = isPlayable ? "fill-white/90 hover:fill-slate-200" : "fill-slate-800/20";
                                 let strokeClass = "stroke-slate-900/30 stroke-[0.5px]";
 
                                 if (isCompleted) {
@@ -313,7 +313,7 @@ export default function CountryGameBase({
                                             className={cn(
                                                 strokeClass,
                                                 fillClass,
-                                                isHovered && gameState === 'playing' && !isCompleted && "fill-teal-100",
+                                                isHovered && gameState === 'playing' && !isCompleted && "fill-slate-200",
                                                 isPlayable && "cursor-pointer"
                                             )}
                                             initial={false}

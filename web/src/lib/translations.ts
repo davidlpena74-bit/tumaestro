@@ -160,7 +160,8 @@ export const TRANSLATIONS = {
                 latissimus: 'Dorsales',
                 triceps: 'Tríceps',
                 gluteus: 'Glúteos',
-                gastrocnemius: 'Gemelos'
+                gastrocnemius: 'Gemelos',
+                femoral: 'Femoral'
             },
             bones: {
                 skull: 'Cráneo',
@@ -172,7 +173,8 @@ export const TRANSLATIONS = {
                 tibia: 'Tibia',
                 fibula: 'Peroné',
                 ulna: 'Cúbito',
-                radius: 'Radio'
+                radius: 'Radio',
+                scapula: 'Homóplatos'
             }
         }
     },
@@ -334,8 +336,9 @@ export const TRANSLATIONS = {
                 trapezius: 'Trapezius',
                 latissimus: 'Latissimus Dorsi',
                 triceps: 'Triceps',
-                gluteus: 'Gluteus',
-                gastrocnemius: 'Calves'
+                gluteus: 'Glutus',
+                gastrocnemius: 'Calves',
+                femoral: 'Hamstrings'
             },
             bones: {
                 skull: 'Skull',
@@ -347,7 +350,8 @@ export const TRANSLATIONS = {
                 tibia: 'Tibia',
                 fibula: 'Fibula',
                 ulna: 'Ulna',
-                radius: 'Radius'
+                radius: 'Radius',
+                scapula: 'Scapula'
             }
         }
     }
