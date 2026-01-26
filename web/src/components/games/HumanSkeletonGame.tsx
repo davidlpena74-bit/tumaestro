@@ -303,7 +303,7 @@ export default function HumanSkeletonGame() {
                         )}
                     </AnimatePresence>
                     {/* View Switch Overlay Buttons */}
-                    <div className="absolute top-8 left-1/2 -translate-x-1/2 flex gap-2 z-30 bg-black/40 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10">
+                    <div className="absolute top-8 left-1/2 -translate-x-1/2 flex gap-2 z-30 bg-slate-900/60 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10 shadow-2xl">
                         <button
                             onClick={() => { setCurrentView('front'); setMatches({}); }}
                             className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${currentView === 'front' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:text-white'}`}

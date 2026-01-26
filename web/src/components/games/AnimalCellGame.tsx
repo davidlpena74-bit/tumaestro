@@ -86,7 +86,7 @@ export default function AnimalCellGame() {
 
             return {
                 ...part,
-                labelX: isMatched ? 700 : -100, // Center 800 or 0
+                labelX: isMatched ? 750 : -150, // Moved further out
                 labelY: 100 + ((isMatched ? yOrderIndex : unmatchedIndex) * 70) // Slightly tighter for cell parts
             };
         });
@@ -159,7 +159,7 @@ export default function AnimalCellGame() {
             active: true,
             startId: id,
             startType: type,
-            startX: type === 'point' ? x : (x > 400 ? x : x + 200),
+            startX: type === 'point' ? x : (x < 400 ? x + 200 : x),
             startY: type === 'point' ? y : (y + 30),
             currX: svgX,
             currY: svgY
@@ -285,7 +285,7 @@ export default function AnimalCellGame() {
 
                     <svg
                         ref={svgRef}
-                        viewBox="0 0 800 1000"
+                        viewBox="-200 0 1200 1000"
                         className="absolute inset-0 w-full h-full z-20"
                         onMouseMove={handleDragMove}
                         onTouchMove={handleDragMove}
@@ -301,7 +301,7 @@ export default function AnimalCellGame() {
                             return (
                                 <motion.line
                                     key={`line-${labelId}-${partId}`}
-                                    x1={label.labelX > 400 ? label.labelX : label.labelX + 200}
+                                    x1={label.labelX < 400 ? label.labelX + 200 : label.labelX}
                                     y1={label.labelY + 30}
                                     x2={part.x}
                                     y2={part.y}
@@ -351,12 +351,13 @@ export default function AnimalCellGame() {
                                     `}
                                 >
                                     <div className="flex items-center gap-2">
-                                        {matches[item.id] && <CheckCircle className="w-4 h-4 text-emerald-500" weight="fill" />}
                                         <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-700' : 'text-white'}`}>
                                             {(t.gamesPage.cellParts as any)[item.nameKey]}
                                         </span>
                                     </div>
                                 </div>
+                                {/* Connector Dot for Label */}
+                                <div className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white/20 ${item.labelX < 400 ? '-right-1.5' : '-left-1.5'} ${matches[item.id] ? 'bg-emerald-500 border-emerald-500' : 'bg-slate-900'}`} />
                             </foreignObject>
                         ))}
 
