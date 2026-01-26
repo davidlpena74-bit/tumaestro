@@ -99,7 +99,7 @@ export default function HumanSkeletonGame() {
 
             return {
                 ...part,
-                labelX: isMatched ? 580 : 20, // Inside the 800px viewBox
+                labelX: isMatched ? 650 : -50, // Moved further out (-70 units shift)
                 labelY: 150 + ((isMatched ? yOrderIndex : unmatchedIndex) * 80)
             };
         });
@@ -338,7 +338,7 @@ export default function HumanSkeletonGame() {
 
                     <svg
                         ref={svgRef}
-                        viewBox="0 0 800 1000"
+                        viewBox="-100 0 1000 1000"
                         className="absolute inset-0 w-full h-full z-20"
                         onMouseMove={handleDragMove}
                         onTouchMove={handleDragMove}
@@ -406,14 +406,13 @@ export default function HumanSkeletonGame() {
                                     `}
                                 >
                                     <div className="flex items-center gap-2">
-                                        {matches[item.id] && <CheckCircle className="w-4 h-4 text-emerald-400" weight="fill" />}
                                         <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-700' : 'text-white'}`}>
                                             {(t.gamesPage.bones as any)[item.nameKey]}
                                         </span>
                                     </div>
                                 </div>
                                 {/* Connector Dot for Label */}
-                                <div className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white/20 bg-slate-900 ${item.labelX < 400 ? '-right-1.5' : '-left-1.5'} ${matches[item.id] ? 'bg-emerald-500 border-emerald-500' : ''}`} />
+                                <div className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white/20 ${item.labelX < 400 ? '-right-1.5' : '-left-1.5'} ${matches[item.id] ? 'bg-emerald-500 border-emerald-500' : 'bg-slate-900'}`} />
                             </foreignObject>
                         ))}
 
