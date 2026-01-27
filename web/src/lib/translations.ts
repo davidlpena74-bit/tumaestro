@@ -116,6 +116,8 @@ export const TRANSLATIONS = {
                 quizDesc: 'Preguntas de historia, ciencia y arte.',
                 animalCell: 'La Célula Animal',
                 animalCellDesc: 'Identifica los orgánulos y partes fundamentales de la célula animal.',
+                plantCell: 'La Célula Vegetal',
+                plantCellDesc: 'Identifica los orgánulos y partes fundamentales de la célula vegetal.',
                 muscles: 'Los Músculos',
                 musclesDesc: 'Identifica los principales músculos del cuerpo por delante y por detrás.',
                 skeleton: 'El Esqueleto',
@@ -148,7 +150,10 @@ export const TRANSLATIONS = {
                 membrane: 'Membrana',
                 lysosome: 'Lisosoma',
                 ribosome: 'Ribosoma',
-                centrioles: 'Centriolos'
+                centrioles: 'Centriolos',
+                chloroplast: 'Cloroplasto',
+                vacuole: 'Vacuola Central',
+                cellWall: 'Pared Celular'
             },
             muscles: {
                 pectoralis: 'Pectorales',
@@ -293,6 +298,8 @@ export const TRANSLATIONS = {
                 quizDesc: 'History, science, and art questions.',
                 animalCell: 'The Animal Cell',
                 animalCellDesc: 'Identify the organelles and fundamental parts of the animal cell.',
+                plantCell: 'The Plant Cell',
+                plantCellDesc: 'Identify the organelles and fundamental parts of the plant cell.',
                 muscles: 'The Muscles',
                 musclesDesc: 'Identify the main muscles of the body from both front and back.',
                 skeleton: 'The Skeleton',
@@ -325,7 +332,10 @@ export const TRANSLATIONS = {
                 membrane: 'Membrane',
                 lysosome: 'Lysosome',
                 ribosome: 'Ribosome',
-                centrioles: 'Centrioles'
+                centrioles: 'Centrioles',
+                chloroplast: 'Chloroplast',
+                vacuole: 'Central Vacuole',
+                cellWall: 'Cell Wall'
             },
             muscles: {
                 pectoralis: 'Pectorals',

@@ -8,18 +8,29 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Configuration map
 const IMAGES_TO_PROCESS = [
+    // {
+    //     src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/human_skeleton_3d_premium_render_1769519057770.png",
+    //     dest: "skeleton-3d-0.png"
+    // },
+    // {
+    //     src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/human_skeleton_3d_45deg_premium_render_1769519509885.png",
+    //     dest: "skeleton-3d-45.png"
+    // },
+    // {
+    //     src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/human_skeleton_3d_side_premium_render_1769519323228.png",
+    //     dest: "skeleton-3d-90.png"
+    // },
+    // {
+    //     src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/human_skeleton_3d_135deg_premium_render_1769519616700.png",
+    //     dest: "skeleton-3d-135.png"
+    // },
+    // {
+    //     src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/human_skeleton_3d_back_premium_render_1769519124843.png",
+    //     dest: "skeleton-3d-180.png"
+    // },
     {
-        src: "C:/Users/david/.gemini/antigravity/brain/7aac6950-7008-406e-985e-c71a94795150/skeleton_front_transparent_1769334196674.png",
-        dest: "muscles-front-hq.png"
-    },
-    {
-        src: "C:/Users/david/.gemini/antigravity/brain/7aac6950-7008-406e-985e-c71a94795150/skeleton_back_transparent_1769334221572.png",
-        dest: "muscles-back-hq.png"
-    },
-    // Adding the one the user just uploaded explicitly
-    {
-        src: "C:/Users/david/.gemini/antigravity/brain/7aac6950-7008-406e-985e-c71a94795150/animal_cell_3d_cutaway_1769352671932.png",
-        dest: "animal-cell-hq.png"
+        src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/plant_cell_3d_clean_no_labels_1769528374078.png",
+        dest: "plant-cell-3d.png"
     }
 ];
 

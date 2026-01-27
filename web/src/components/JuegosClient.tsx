@@ -12,7 +12,8 @@ import {
     PuzzlePiece,
     Translate,
     ArrowRight,
-    Dna
+    Dna,
+    Plant
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -267,6 +268,16 @@ export default function JuegosClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
+                            id: 'celula-vegetal',
+                            title: t.gamesPage.gameTitles.plantCell,
+                            description: t.gamesPage.gameTitles.plantCellDesc,
+                            href: '/juegos/celula-vegetal',
+                            icon: Plant,
+                            color: 'from-blue-500 to-emerald-600',
+                            grade: '1º ESO',
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
                             id: 'musculos',
                             title: t.gamesPage.gameTitles.muscles,
                             description: t.gamesPage.gameTitles.musclesDesc,
@@ -404,9 +415,15 @@ export default function JuegosClient() {
                             className="group relative block w-full perspective-1000"
                         >
                             <div className={cn(
-                                "relative w-full px-4 py-4 rounded-2xl backdrop-blur-2xl border border-white/10 text-white font-bold text-sm transition-all duration-300",
+                                "relative w-full px-4 py-4 rounded-2xl border border-white/10 text-white font-bold text-sm transition-all duration-300",
                                 "group-hover:border-white/30 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden",
-                                "flex flex-col items-center justify-center gap-3 bg-slate-900 preserve-3d"
+                                "flex flex-col items-center justify-center gap-3 preserve-3d",
+                                "bg-slate-950",
+                                category.id === 'geography' && "bg-emerald-950/60",
+                                category.id === 'biology' && "bg-blue-950/60",
+                                category.id === 'math' && "bg-orange-950/60",
+                                category.id === 'culture' && "bg-violet-950/60",
+                                category.id === 'idiomas' && "bg-pink-950/60"
                             )}>
                                 {/* Shine Effect */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -482,14 +499,16 @@ export default function JuegosClient() {
                                                         {/* 3D Shadow/Glow Background */}
                                                         <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-[2rem] blur-3xl -z-10`} />
 
-                                                        <div className={`
-                                                            h-full bg-slate-900 border border-white/10 p-8 rounded-[2rem] 
-                                                            transition-all duration-500 transform-gpu
-                                                            group-hover:border-white/25
-                                                            shadow-[0_20px_50px_rgba(0,0,0,0.5)]
-                                                            group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)]
-                                                            relative overflow-hidden
-                                                        `}>
+                                                        <div className={cn(
+                                                            "h-full border border-white/10 p-8 rounded-[2rem] transition-all duration-500 transform-gpu relative overflow-hidden flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)] group-hover:border-white/25",
+                                                            "bg-slate-950",
+                                                            game.color.includes('emerald') && "bg-emerald-950/70",
+                                                            game.color.includes('blue') && "bg-blue-950/70",
+                                                            game.color.includes('orange') && "bg-orange-950/70",
+                                                            game.color.includes('violet') && "bg-violet-950/70",
+                                                            game.color.includes('pink') && "bg-pink-950/70",
+                                                            game.color.includes('rose') && "bg-rose-950/70"
+                                                        )}>
                                                             {/* 3D Top Glare Effect */}
                                                             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
