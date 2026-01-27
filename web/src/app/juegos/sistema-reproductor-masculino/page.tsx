@@ -2,19 +2,19 @@
 
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import PlantCellGame from '@/components/games/PlantCellGame';
+import MaleReproductiveGame from '@/components/games/MaleReproductiveGame';
 import { useLanguage } from '@/context/LanguageContext';
 
-export default function PlantCellPage() {
+export default function MaleReproductivePage() {
     const { t } = useLanguage();
 
     return (
         <div className="min-h-screen bg-transparent flex flex-col">
             <main className="flex-1 p-4 pt-24 pb-12 relative overflow-hidden">
-                {/* Visual Glows (Template consistency) */}
+                {/* Visual Glows */}
                 <div className="absolute inset-0 z-0 pointer-events-none">
-                    <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px]" />
-                    <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-green-600/10 rounded-full blur-[100px]" />
+                    <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[100px]" />
                 </div>
 
                 <div className="relative z-10 w-full max-w-7xl mx-auto">
@@ -23,14 +23,14 @@ export default function PlantCellPage() {
                             <ArrowLeft className="w-4 h-4" /> {t.common.back} a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
-                            {t.gamesPage.gameTitles.plantCell} 🌿
+                            {t.gamesPage.gameTitles.maleReproductive} 🧬
                         </h1>
-                        <p className="text-slate-700 font-medium text-lg mb-8 leading-relaxed max-w-3xl">
-                            {t.gamesPage.gameTitles.plantCellDesc}. Arrastra cada etiqueta para conectarla con su ubicación correspondiente en el modelo interactivo de la célula vegetal.
+                        <p className="text-slate-700 font-medium text-lg mb-8 leading-relaxed">
+                            {t.gamesPage.gameTitles.maleReproductiveDesc}. Arrastra cada etiqueta para conectarla con su ubicación correspondiente. Si te equivocas, la línea no se fijará.
                         </p>
                     </div>
 
-                    <PlantCellGame />
+                    <MaleReproductiveGame />
                 </div>
             </main>
         </div>

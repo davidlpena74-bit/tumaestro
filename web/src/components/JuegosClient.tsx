@@ -272,9 +272,29 @@ export default function JuegosClient() {
                             title: t.gamesPage.gameTitles.plantCell,
                             description: t.gamesPage.gameTitles.plantCellDesc,
                             href: '/juegos/celula-vegetal',
-                            icon: Plant,
-                            color: 'from-blue-500 to-emerald-600',
+                            icon: Dna,
+                            color: 'from-blue-500 to-cyan-600',
                             grade: '1º ESO',
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'male-reproductive',
+                            title: t.gamesPage.gameTitles.maleReproductive,
+                            description: t.gamesPage.gameTitles.maleReproductiveDesc,
+                            href: '/juegos/sistema-reproductor-masculino',
+                            icon: Dna,
+                            color: 'from-blue-500 to-indigo-600',
+                            grade: '3º ESO',
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'female-reproductive',
+                            title: t.gamesPage.gameTitles.femaleReproductive,
+                            description: t.gamesPage.gameTitles.femaleReproductiveDesc,
+                            href: '/juegos/sistema-reproductor-femenino',
+                            icon: Dna,
+                            color: 'from-blue-500 to-cyan-600',
+                            grade: '3º ESO',
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {

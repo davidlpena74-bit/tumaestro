@@ -121,7 +121,11 @@ export const TRANSLATIONS = {
                 muscles: 'Los Músculos',
                 musclesDesc: 'Identifica los principales músculos del cuerpo por delante y por detrás.',
                 skeleton: 'El Esqueleto',
-                skeletonDesc: 'Aprende los huesos principales del cuerpo humano.'
+                skeletonDesc: 'Aprende los huesos principales del cuerpo humano.',
+                maleReproductive: 'Aparato Reproductor Masculino',
+                maleReproductiveDesc: 'Identifica las partes y órganos del sistema reproductor masculino.',
+                femaleReproductive: 'Aparato Reproductor Femenino',
+                femaleReproductiveDesc: 'Identifica las partes y órganos del sistema reproductor femenino.'
             },
             playBtn: 'JUGAR AHORA',
             comingSoon: 'Pronto añadiremos más asignaturas como Historia y Lengua',
@@ -180,6 +184,28 @@ export const TRANSLATIONS = {
                 ulna: 'Cúbito',
                 radius: 'Radio',
                 scapula: 'Homóplatos'
+            },
+            reproductive: {
+                bladder: 'Vejiga',
+                seminalVesicle: 'Vesícula Seminal',
+                vasDeferens: 'Conducto Deferente',
+                prostate: 'Próstata',
+                urethra: 'Uretra',
+                penis: 'Pene',
+                glans: 'Glande',
+                testicle: 'Testículo',
+                scrotum: 'Escroto',
+                epididymis: 'Epidídimo'
+            },
+            femaleReproductive: {
+                ovary: 'Ovario',
+                fallopianTube: 'Trompa de Falopio',
+                uterus: 'Útero (Matriz)',
+                cervix: 'Cuello Uterino',
+                vagina: 'Vagina',
+                endometrium: 'Endometrio',
+                myometrium: 'Miometrio',
+                fimbriae: 'Fimbrias'
             }
         }
     },
@@ -303,7 +329,11 @@ export const TRANSLATIONS = {
                 muscles: 'The Muscles',
                 musclesDesc: 'Identify the main muscles of the body from both front and back.',
                 skeleton: 'The Skeleton',
-                skeletonDesc: 'Learn the main bones of the human body.'
+                skeletonDesc: 'Learn the main bones of the human body.',
+                maleReproductive: 'Male Reproductive System',
+                maleReproductiveDesc: 'Identify the parts and organs of the male reproductive system.',
+                femaleReproductive: 'Female Reproductive System',
+                femaleReproductiveDesc: 'Identify the parts and organs of the female reproductive system.'
             },
             playBtn: 'PLAY NOW',
             comingSoon: 'Soon we will add more subjects like History and Language',
@@ -362,6 +392,28 @@ export const TRANSLATIONS = {
                 ulna: 'Ulna',
                 radius: 'Radius',
                 scapula: 'Scapula'
+            },
+            reproductive: {
+                bladder: 'Bladder',
+                seminalVesicle: 'Seminal Vesicle',
+                vasDeferens: 'Vas Deferens',
+                prostate: 'Prostate',
+                urethra: 'Urethra',
+                penis: 'Penis',
+                glans: 'Glans',
+                testicle: 'Testicle',
+                scrotum: 'Scrotum',
+                epididymis: 'Epididymis'
+            },
+            femaleReproductive: {
+                ovary: 'Ovary',
+                fallopianTube: 'Fallopian Tube',
+                uterus: 'Uterus',
+                cervix: 'Cervix',
+                vagina: 'Vagina',
+                endometrium: 'Endometrium',
+                myometrium: 'Myometrium',
+                fimbriae: 'Fimbriae'
             }
         }
     }
