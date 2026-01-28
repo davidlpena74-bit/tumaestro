@@ -38,7 +38,7 @@ export default function CountryGameBase({
     initialPan = { x: 0, y: 0 },
     elevationHeight = 8
 }: CountryGameProps) {
-    const { t } = useLanguage();
+    const { language, t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -99,7 +99,7 @@ export default function CountryGameBase({
         const next = currentRemaining[randomIndex];
         setTargetCountry(next);
         setAttempts(0);
-        speak(`${t.common.find} ${next}`);
+        speak(`${t.common.find} ${next}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleCountryClick = (engName: string) => {

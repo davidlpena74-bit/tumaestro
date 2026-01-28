@@ -8,6 +8,7 @@ import { EUROPE_LIST, EUROPE_CAPITALS, EUROPE_LIST_EN, EUROPE_CAPITALS_EN } from
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { speak } from '@/lib/speech-utils';
 
 type MatchItem = {
     country: string;
@@ -137,12 +138,16 @@ export default function EuropeCapitalsGame() {
             const newMatches = { ...matches, [targetCountryId]: capitalId };
             setMatches(newMatches);
             addScore(100);
-            setMessage(`¡Correcto!`);
+            const msg = language === 'es' ? '¡Correcto!' : 'Correct!';
+            setMessage(msg);
+            speak(msg, language === 'es' ? 'es-ES' : 'en-US');
         } else {
             // Error
             addError();
             addScore(-20);
-            setMessage('¡Incorrecto!');
+            const msg = language === 'es' ? '¡Incorrecto!' : 'Incorrect!';
+            setMessage(msg);
+            speak(msg, language === 'es' ? 'es-ES' : 'en-US');
         }
     };
 

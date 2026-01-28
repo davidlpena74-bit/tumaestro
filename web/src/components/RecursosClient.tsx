@@ -150,34 +150,37 @@ export default function RecursosClient() {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {filteredSubjects.map((subject, idx) => (
                         <motion.div
                             key={subject.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.1 * idx + 0.3 }}
+                            className="h-full"
                         >
                             <Link href={subject.href} className="group relative block h-full">
                                 <div className={`absolute inset-0 bg-gradient-to-br ${subject.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-3xl blur-xl`} />
-                                <div className={`h-full bg-white/30 backdrop-blur-md border border-white/40 p-8 rounded-3xl transition-all duration-300 group-hover:bg-white/30 group-hover:border-white/40 group-hover:translate-y-[-5px] overflow-hidden relative flex flex-col shadow-2xl`}>
+                                <div className={`h-full bg-white/30 backdrop-blur-md border border-white/40 py-4 px-5 rounded-3xl transition-all duration-300 group-hover:bg-white/30 group-hover:border-white/40 group-hover:translate-y-[-5px] overflow-hidden relative flex flex-col shadow-2xl`}>
 
                                     {/* Hover Glow */}
                                     <div className={`absolute -right-20 -top-20 w-64 h-64 bg-gradient-to-br ${subject.color} opacity-[0.05] rounded-full blur-3xl group-hover:opacity-10 transition-opacity`} />
 
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${subject.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300 p-3`}>
-                                            <subject.icon className="w-10 h-10 text-white" weight="duotone" />
+                                    <div className="flex items-start gap-3 mb-2">
+                                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${subject.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300 p-2 flex-shrink-0`}>
+                                            <subject.icon className="w-5 h-5 text-white" weight="duotone" />
                                         </div>
-                                        <span className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-gray-400 border border-white/5 uppercase tracking-wide">
-                                            {subject.stat}
-                                        </span>
+                                        <div className="flex flex-col gap-1.5 pt-0.5">
+                                            <div className="px-2.5 py-0.5 bg-white/5 rounded-full text-[9px] font-bold text-gray-400 border border-white/5 uppercase tracking-wide w-fit backdrop-blur-md">
+                                                {subject.stat}
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-colors">
+                                    <h3 className="text-lg font-bold text-white mb-0.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-colors line-clamp-1">
                                         {subject.title}
                                     </h3>
-                                    <p className="text-white mb-8 leading-relaxed text-sm flex-grow">
+                                    <p className="text-white mb-3 leading-relaxed text-xs line-clamp-3 min-h-[2.2rem]">
                                         {subject.description}
                                     </p>
 

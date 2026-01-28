@@ -595,7 +595,7 @@ export default function JuegosClient() {
                                             </motion.h3>
                                         )}
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                             {sub.games.map((game, idx) => (
                                                 <motion.div
                                                     key={game.id}
@@ -608,14 +608,14 @@ export default function JuegosClient() {
                                                         rotateY: -2,
                                                         transition: { duration: 0.3 }
                                                     }}
-                                                    className="perspective-1000"
+                                                    className="perspective-1000 h-full"
                                                 >
                                                     <Link href={game.href} className="group relative block h-full preserve-3d">
                                                         {/* 3D Shadow/Glow Background */}
                                                         <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-[2rem] blur-3xl -z-10`} />
 
                                                         <div className={cn(
-                                                            "h-full border border-white/10 p-8 rounded-[2rem] transition-all duration-500 transform-gpu relative overflow-hidden flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)] group-hover:border-white/25",
+                                                            "h-full border border-white/10 py-4 px-5 rounded-3xl transition-all duration-500 transform-gpu relative overflow-hidden flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)] group-hover:border-white/25",
                                                             "bg-slate-950",
                                                             game.color.includes('emerald') && "bg-emerald-950/70",
                                                             game.color.includes('blue') && "bg-blue-950/70",
@@ -630,53 +630,55 @@ export default function JuegosClient() {
                                                             {/* Floating Radial Highlight */}
                                                             <div className={`absolute -right-20 -top-20 w-64 h-64 bg-gradient-to-br ${game.color} opacity-20 rounded-full blur-3xl group-hover:opacity-30 transition-opacity pointer-events-none`} />
 
-                                                            <div className="mb-6">
-                                                                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300`}>
-                                                                    <game.icon className="w-10 h-10 text-white" weight="duotone" />
+                                                            <div className="mb-3 flex items-start gap-3">
+                                                                <div className={`w-10 h-10 flex-shrink-0 rounded-lg bg-gradient-to-br ${game.color} flex items-center justify-center shadow-lg shadow-black/20 group-hover:scale-110 transition-transform duration-300`}>
+                                                                    <game.icon className="w-6 h-6 text-white" weight="duotone" />
                                                                 </div>
 
-                                                                <div className="absolute top-6 right-6 flex flex-col items-end gap-1.5 pointer-events-none text-right">
+                                                                <div className="flex flex-col gap-1.5 pt-0.5">
                                                                     {game.gameType && (
                                                                         <div className={cn(
-                                                                            "px-3 py-1 rounded-full text-[9px] font-medium border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-[92px] justify-start backdrop-blur-md whitespace-nowrap truncate",
+                                                                            "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
                                                                             "bg-white/5 text-white/40 border-white/10"
                                                                         )}>
                                                                             {(() => {
-                                                                                if (game.gameType === t.gamesPage.gameTypes.map) return <MapTrifold className="w-3.5 h-3.5" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.puzzle) return <PuzzlePiece className="w-3.5 h-3.5" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.quiz) return <Brain className="w-3.5 h-3.5" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.math) return <Calculator className="w-3.5 h-3.5" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.verbs) return <Translate className="w-3.5 h-3.5" weight="regular" />;
-                                                                                return <MapTrifold className="w-3.5 h-3.5" weight="regular" />;
+                                                                                if (game.gameType === t.gamesPage.gameTypes.map) return <MapTrifold className="w-3 h-3" weight="regular" />;
+                                                                                if (game.gameType === t.gamesPage.gameTypes.puzzle) return <PuzzlePiece className="w-3 h-3" weight="regular" />;
+                                                                                if (game.gameType === t.gamesPage.gameTypes.quiz) return <Brain className="w-3 h-3" weight="regular" />;
+                                                                                if (game.gameType === t.gamesPage.gameTypes.math) return <Calculator className="w-3 h-3" weight="regular" />;
+                                                                                if (game.gameType === t.gamesPage.gameTypes.verbs) return <Translate className="w-3 h-3" weight="regular" />;
+                                                                                return <MapTrifold className="w-3 h-3" weight="regular" />;
                                                                             })()}
                                                                             {game.gameType}
                                                                         </div>
                                                                     )}
 
-                                                                    <div className={cn(
-                                                                        "px-3 py-1 rounded-full text-[9px] font-medium border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-[92px] justify-start backdrop-blur-md whitespace-nowrap truncate",
-                                                                        "bg-white/5 text-white/40 border-white/10"
-                                                                    )}>
-                                                                        <Student className="w-3.5 h-3.5" weight="regular" />
-                                                                        {game.grade}
-                                                                    </div>
-
-                                                                    {game.region && (
+                                                                    <div className="flex gap-1.5">
                                                                         <div className={cn(
-                                                                            "px-3 py-1 rounded-full text-[9px] font-medium border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-[92px] justify-start backdrop-blur-md whitespace-nowrap truncate",
+                                                                            "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
                                                                             "bg-white/5 text-white/40 border-white/10"
                                                                         )}>
-                                                                            <GlobeHemisphereWest className="w-3.5 h-3.5" weight="regular" />
-                                                                            {game.region}
+                                                                            <Student className="w-3 h-3" weight="regular" />
+                                                                            {game.grade}
                                                                         </div>
-                                                                    )}
+
+                                                                        {game.region && (
+                                                                            <div className={cn(
+                                                                                "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
+                                                                                "bg-white/5 text-white/40 border-white/10"
+                                                                            )}>
+                                                                                <GlobeHemisphereWest className="w-3 h-3" weight="regular" />
+                                                                                {game.region}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
                                                             </div>
 
-                                                            <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-100 transition-colors drop-shadow-md">
+                                                            <h3 className="text-lg font-bold text-white mb-0.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-100 transition-colors drop-shadow-md line-clamp-2 min-h-[2.4rem]">
                                                                 {game.title}
                                                             </h3>
-                                                            <p className="text-gray-400 mb-8 leading-relaxed">
+                                                            <p className="text-gray-400 mb-3 leading-relaxed text-xs line-clamp-3 min-h-[2.8rem]">
                                                                 {game.description}
                                                             </p>
 

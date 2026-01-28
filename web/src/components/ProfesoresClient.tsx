@@ -205,22 +205,23 @@ export default function ProfesoresClient() {
                                 Ver todas las categorías <ArrowRight className="w-5 h-5 ml-2" />
                             </button>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                             {filteredCategories.map((cat, idx) => (
                                 <motion.div
                                     key={cat.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.1 * idx + 0.4 }}
+                                    className="h-full"
                                 >
                                     <Link href={`/profesores/${cat.id}`} className="block h-full group">
-                                        <div className="bg-white/30 backdrop-blur-md border border-white/40 p-6 rounded-3xl h-full transition-all duration-300 group-hover:bg-white/40 group-hover:scale-105 group-hover:border-white/40 flex flex-col items-center text-center shadow-2xl relative overflow-hidden">
+                                        <div className="bg-white/30 backdrop-blur-md border border-white/40 py-4 px-5 rounded-3xl h-full transition-all duration-300 group-hover:bg-white/40 group-hover:scale-105 group-hover:border-white/40 flex flex-col items-center text-center shadow-2xl relative overflow-hidden">
                                             <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
-                                            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${cat.color} p-3 mb-4 shadow-lg group-hover:rotate-6 transition-transform`}>
+                                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} p-2 mb-1.5 shadow-lg group-hover:rotate-6 transition-transform`}>
                                                 <img src={cat.iconSrc} alt={cat.title} className="w-full h-full object-contain" />
                                             </div>
-                                            <h4 className="font-bold text-lg mb-2 text-white drop-shadow-md">{cat.title}</h4>
-                                            <p className="text-white text-sm mb-4">{cat.description}</p>
+                                            <h4 className="font-bold text-sm mb-0.5 text-white drop-shadow-md line-clamp-1">{cat.title}</h4>
+                                            <p className="text-white text-[11px] mb-2 line-clamp-3 min-h-[2.2rem]">{cat.description}</p>
                                             <span className="mt-auto inline-block text-xs font-bold text-teal-400 bg-teal-400/10 px-3 py-1 rounded-full border border-teal-400/20">
                                                 {cat.count}
                                             </span>

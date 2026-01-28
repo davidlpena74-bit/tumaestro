@@ -116,7 +116,7 @@ export default function RegionGame() {
 
         setTargetId(randomKey);
         setClickedId(null);
-        speak(`${t.common.find} ${REGION_DISPLAY_NAMES[randomKey] || randomKey}`);
+        speak(`${t.common.find} ${REGION_DISPLAY_NAMES[randomKey] || randomKey}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleRegionClick = (id: string) => {

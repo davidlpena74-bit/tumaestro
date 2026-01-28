@@ -33,7 +33,7 @@ delete (GAME_PROVINCE_NAMES as any)['santacruz'];
 delete (GAME_PROVINCE_NAMES as any)['laspalmas'];
 
 export default function MapGame() {
-    const { t } = useLanguage();
+    const { language, t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -101,7 +101,7 @@ export default function MapGame() {
 
         setTargetId(randomKey);
         setClickedId(null);
-        speak(`${t.common.find} ${GAME_PROVINCE_NAMES[randomKey]}`);
+        speak(`${t.common.find} ${GAME_PROVINCE_NAMES[randomKey]}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleRegionClick = (id: string) => {

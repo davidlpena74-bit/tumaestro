@@ -67,15 +67,15 @@ export default function CarouselAutoScroll() {
     return (
         <div
             ref={scrollRef}
-            className="flex gap-6 overflow-x-hidden pb-8 whitespace-nowrap"
+            className="flex gap-4 overflow-x-hidden pb-8 whitespace-nowrap"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
             {displayCourses.map((course, index) => (
-                <div key={`${course.id}-${index}`} className="min-w-[240px] w-[240px] inline-block bg-white/30 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-xl transition group overflow-hidden border border-white/40 hover:bg-white/40 whitespace-normal text-left">
-                    <div className="h-24 bg-white/30 flex items-center justify-center relative group-hover:bg-teal-900/10 transition duration-500">
+                <div key={`${course.id}-${index}`} className="min-w-[190px] w-[190px] inline-block bg-white/30 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-xl transition group overflow-hidden border border-white/40 hover:bg-white/40 whitespace-normal text-left">
+                    <div className="h-16 bg-white/30 flex items-center justify-center relative group-hover:bg-teal-900/10 transition duration-500">
                         {/* Avatar por Iniciales */}
-                        <div className="w-14 h-14 rounded-full bg-teal-600 flex items-center justify-center text-white text-xl font-bold shadow-lg transform group-hover:scale-110 transition duration-500 border-2 border-white/30">
+                        <div className="w-12 h-12 rounded-full bg-teal-600 flex items-center justify-center text-white text-lg font-bold shadow-lg transform group-hover:scale-110 transition duration-500 border-2 border-white/30">
                             {course.teacher?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'TM'}
                         </div>
 
@@ -88,17 +88,17 @@ export default function CarouselAutoScroll() {
                             {<div className="scale-75 origin-top-right">{getSubjectIcon(course.subject?.name)}</div>}
                         </div>
                     </div>
-                    <div className="p-3">
-                        <h3 className="font-bold text-md text-gray-900 mb-0.5 drop-shadow-sm truncate">{course.teacher?.full_name}</h3>
+                    <div className="py-2 px-2.5">
+                        <h3 className="font-bold text-sm text-gray-900 mb-0.5 drop-shadow-sm truncate">{course.teacher?.full_name}</h3>
                         {/* Estrellas Mock */}
-                        <div className="flex items-center gap-1 mb-2">
-                            <span className="text-yellow-400 text-xs drop-shadow-sm">★★★★★</span>
-                            <span className="text-gray-800 text-[10px] font-bold">({t.home.trending})</span>
+                        <div className="flex items-center gap-1 mb-1">
+                            <span className="text-yellow-400 text-[10px] drop-shadow-sm">★★★★★</span>
+                            <span className="text-gray-800 text-[9px] font-bold">({t.home.trending})</span>
                         </div>
-                        <p className="text-gray-800 text-xs line-clamp-2 mb-2 font-medium leading-tight h-8">{course.title}</p>
-                        <div className="flex justify-between items-center pt-2 border-t border-gray-900/10">
-                            <span className="font-bold text-lg text-gray-900">{course.price_per_hour}€</span>
-                            <button className="text-teal-900 font-bold text-xs bg-white/50 px-2.5 py-1 rounded-lg hover:bg-white/80 transition border border-white/40 shadow-sm">{t.common.profile}</button>
+                        <p className="text-gray-800 text-[11px] line-clamp-2 mb-1.5 font-medium leading-tight h-6">{course.title}</p>
+                        <div className="flex justify-between items-center pt-1.5 border-t border-gray-900/10">
+                            <span className="font-bold text-base text-gray-900">{course.price_per_hour}€</span>
+                            <button className="text-teal-900 font-bold text-[10px] bg-white/50 px-2 py-0.5 rounded-lg hover:bg-white/80 transition border border-white/40 shadow-sm">{t.common.profile}</button>
                         </div>
                     </div>
                 </div>

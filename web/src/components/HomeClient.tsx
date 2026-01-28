@@ -88,17 +88,17 @@ export default function HomeClient() {
                             hover: { scale: 1.05, y: -6 }
                         }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="group bg-white/20 backdrop-blur-xl border border-white/30 p-8 rounded-[2rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-4 px-5 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
                     >
                         {/* Interactive Background Glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                        <div className="relative z-10 mb-6 drop-shadow-[0_0_30px_rgba(45,212,191,0.2)]">
-                            <PremiumTeacherIcon className="w-44 h-44" />
+                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(45,212,191,0.2)]">
+                            <PremiumTeacherIcon className="w-32 h-32" />
                         </div>
 
-                        <h2 className="relative z-10 text-2xl font-black text-white group-hover:text-teal-300 mb-2 transition-colors duration-300">{t.home.findTeacher}</h2>
-                        <p className="relative z-10 text-slate-200 text-sm mb-6 max-w-xs group-hover:text-white transition-colors duration-300">
+                        <h2 className="relative z-10 text-lg font-black text-white group-hover:text-teal-300 mb-0.5 transition-colors duration-300">{t.home.findTeacher}</h2>
+                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300">
                             {t.home.findTeacherDesc}
                         </p>
                         <button className="relative z-10 bg-white text-slate-950 px-8 py-3 rounded-2xl font-bold text-sm w-full max-w-[220px] group-hover:bg-teal-400 transition-all duration-300 shadow-xl">
@@ -116,16 +116,16 @@ export default function HomeClient() {
                             hover: { scale: 1.05, y: -6 }
                         }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="group bg-white/20 backdrop-blur-xl border border-white/30 p-8 rounded-[2rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-5 px-6 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                        <div className="relative z-10 mb-6 drop-shadow-[0_0_30px_rgba(251,146,60,0.2)]">
-                            <PremiumResourcesIcon className="w-44 h-44" />
+                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(251,146,60,0.2)]">
+                            <PremiumResourcesIcon className="w-32 h-32" />
                         </div>
 
-                        <h2 className="relative z-10 text-2xl font-black text-white group-hover:text-orange-300 mb-2 transition-colors duration-300">{t.home.resources}</h2>
-                        <p className="relative z-10 text-slate-200 text-sm mb-6 max-w-xs group-hover:text-white transition-colors duration-300">
+                        <h2 className="relative z-10 text-lg font-black text-white group-hover:text-orange-300 mb-0.5 transition-colors duration-300">{t.home.resources}</h2>
+                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300">
                             {t.home.resourcesDesc}
                         </p>
                         <button className="relative z-10 bg-white text-slate-950 px-8 py-3 rounded-2xl font-bold text-sm w-full max-w-[220px] group-hover:bg-orange-400 transition-all duration-300 shadow-xl">
@@ -143,16 +143,16 @@ export default function HomeClient() {
                             hover: { scale: 1.05, y: -6 }
                         }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="group bg-white/20 backdrop-blur-xl border border-white/30 p-8 rounded-[2rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-5 px-6 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                        <div className="relative z-10 mb-6 drop-shadow-[0_0_30px_rgba(139,92,246,0.2)]">
-                            <PremiumGamesIcon className="w-44 h-44" />
+                        <div className="relative z-10 mb-3 drop-shadow-[0_0_30px_rgba(139,92,246,0.2)]">
+                            <PremiumGamesIcon className="w-36 h-36" />
                         </div>
 
-                        <h2 className="relative z-10 text-2xl font-black text-white group-hover:text-purple-300 mb-2 transition-colors duration-300">{t.home.learnPlaying}</h2>
-                        <p className="relative z-10 text-slate-200 text-sm mb-6 max-w-xs group-hover:text-white transition-colors duration-300">
+                        <h2 className="relative z-10 text-lg font-black text-white group-hover:text-purple-300 mb-0.5 transition-colors duration-300">{t.home.learnPlaying}</h2>
+                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300">
                             {t.home.learnPlayingDesc}
                         </p>
                         <button className="relative z-10 bg-white text-slate-950 px-8 py-3 rounded-2xl font-bold text-sm w-full max-w-[220px] group-hover:bg-purple-400 transition-all duration-300 shadow-xl">

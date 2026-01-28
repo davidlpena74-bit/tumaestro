@@ -17,7 +17,7 @@ function cn(...inputs: ClassValue[]) {
 const QUESTIONS_PER_GAME = 10;
 
 export default function QuizGame() {
-    const { t } = useLanguage();
+    const { language, t } = useLanguage();
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -37,9 +37,9 @@ export default function QuizGame() {
 
     useEffect(() => {
         if (gameState === 'playing' && currentQuestion) {
-            speak(currentQuestion.question);
+            speak(currentQuestion.question, language === 'es' ? 'es-ES' : 'en-US');
         }
-    }, [currentQuestionIdx, gameState, currentQuestion]);
+    }, [currentQuestionIdx, gameState, currentQuestion, language]);
 
     const handleStart = () => {
         setGameState('playing');

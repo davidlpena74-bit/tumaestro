@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, RefreshCw, Timer, MapPin, Trophy } from 'lucide-react';
 import { EU_MEMBERS_LIST, EUROPE_CAPITALS, EU_MEMBERS_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
 import { useLanguage } from '@/context/LanguageContext';
+import { speak } from '@/lib/speech-utils';
 
 type MatchItem = {
     country: string;
@@ -180,11 +181,14 @@ export default function CapitalMatchingGame() {
             const newMatches = { ...matches, [targetCountryId]: capitalId };
             setMatches(newMatches);
 
+            speak(language === 'es' ? '¡Correcto!' : 'Correct!', language === 'es' ? 'es-ES' : 'en-US');
+
             if (Object.keys(newMatches).length === countries.length) {
                 setGameState('won');
             }
         } else {
             setErrors(e => e + 1);
+            speak(language === 'es' ? '¡Incorrecto!' : 'Incorrect!', language === 'es' ? 'es-ES' : 'en-US');
         }
     };
 

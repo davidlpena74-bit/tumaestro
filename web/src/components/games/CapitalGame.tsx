@@ -11,6 +11,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
+import { calculatePathCentroid } from '@/lib/svg-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -20,10 +21,18 @@ interface CapitalGameProps {
     paths: Record<string, string>; // Map paths (English Key -> SVG Path)
     targetList?: string[]; // Optional list of Spanish country names to include in the game (e.g. only EU members)
     title: string;
+    initialZoom?: number;
+    initialPan?: { x: number; y: number };
 }
 
-export default function CapitalGame({ paths, targetList, title }: CapitalGameProps) {
-    const { t } = useLanguage();
+export default function CapitalGame({
+    paths,
+    targetList,
+    title,
+    initialZoom = 1.5,
+    initialPan = { x: 0, y: 0 }
+}: CapitalGameProps) {
+    const { language, t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -43,8 +52,8 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
     const [failedCountries, setFailedCountries] = useState<string[]>([]);
 
     // Zoom state
-    const [zoom, setZoom] = useState(1);
-    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(initialZoom);
+    const [pan, setPan] = useState(initialPan);
     const [isDragging, setIsDragging] = useState(false);
     const dragStart = useRef({ x: 0, y: 0 });
 
@@ -101,7 +110,7 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
         setCurrentCountryName(nextCountry);
         setTargetCapital(nextCap);
         setAttempts(0);
-        speak(`${t.common.find} ${nextCap}`);
+        speak(`${t.common.find} ${nextCap}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleCountryClick = (engName: string) => {
@@ -144,6 +153,8 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
 
     const resetGame = () => {
         hookResetGame();
+        setZoom(initialZoom);
+        setPan(initialPan);
         setAttempts(0);
         setFailedCountries([]);
         setTargetCapital('');
@@ -298,27 +309,47 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
                                     const isTarget = spanishName === currentCountryName;
                                     const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                     const isFailed = failedCountries.includes(spanishName || '');
-
                                     const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
+                                    const centroid = calculatePathCentroid(pathD);
 
                                     return (
-                                        <motion.path
-                                            key={engName}
-                                            d={pathD}
-                                            className={`stroke-[0.5px] pointer-events-auto transition-colors duration-150 ${isInTargetList ? `cursor-pointer stroke-slate-900/30 hover:stroke-slate-900 hover:stroke-[1px] ${!isCompleted ? 'hover:fill-teal-100' : ''}` : 'fill-slate-800/30 stroke-slate-800/50'}`}
-                                            initial={false}
-                                            animate={{
-                                                fill: isCompleted
-                                                    ? (isFailed ? '#ef4444' : '#10b981')
-                                                    : (isInTargetList ? '#ffffff' : '#1e293b'),
-                                                opacity: isInTargetList ? 1 : 0.4
-                                            }}
-                                            onClick={(e: any) => {
-                                                e.stopPropagation();
-                                                if (isInTargetList) handleCountryClick(engName);
-                                            }}
-                                            style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
-                                        />
+                                        <g key={engName}>
+                                            <motion.path
+                                                d={pathD}
+                                                className={`stroke-[0.5px] pointer-events-auto transition-colors duration-150 ${isInTargetList ? `cursor-pointer stroke-slate-900/30 hover:stroke-slate-900 hover:stroke-[1px] ${!isCompleted ? 'hover:fill-teal-100' : ''}` : 'fill-slate-800/30 stroke-slate-800/50'}`}
+                                                initial={false}
+                                                animate={{
+                                                    fill: isCompleted
+                                                        ? (isFailed ? '#ef4444' : '#10b981')
+                                                        : (isInTargetList ? '#ffffff' : '#1e293b'),
+                                                    opacity: isInTargetList ? 1 : 0.4
+                                                }}
+                                                onClick={(e: any) => {
+                                                    e.stopPropagation();
+                                                    if (isInTargetList) handleCountryClick(engName);
+                                                }}
+                                                style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
+                                            />
+                                            {isInTargetList && centroid && (
+                                                <motion.circle
+                                                    cx={centroid.x}
+                                                    cy={centroid.y}
+                                                    r={isCompleted ? 2.5 : 2}
+                                                    className="pointer-events-none"
+                                                    initial={false}
+                                                    animate={{
+                                                        fill: isCompleted
+                                                            ? (isFailed ? '#ffffff' : '#ffffff')
+                                                            : '#0ea5e9',
+                                                        opacity: 0.8,
+                                                        scale: isTarget ? [1, 1.5, 1] : 1
+                                                    }}
+                                                    transition={{
+                                                        scale: isTarget ? { repeat: Infinity, duration: 2 } : {}
+                                                    }}
+                                                />
+                                            )}
+                                        </g>
                                     );
                                 })}
                             </g>

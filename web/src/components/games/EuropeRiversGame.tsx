@@ -20,7 +20,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export default function EuropeRiversGame() {
-    const { t } = useLanguage();
+    const { language, t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
@@ -96,7 +96,7 @@ export default function EuropeRiversGame() {
         const next = currentRemaining[randomIndex];
         setTargetRiver(next);
         setAttempts(0);
-        speak(`${t.common.find} ${next}`);
+        speak(`${t.common.find} ${next}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleRiverClick = (name: string, e: React.MouseEvent) => {
