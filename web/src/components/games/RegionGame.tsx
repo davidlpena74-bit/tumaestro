@@ -9,6 +9,7 @@ import { SPANISH_COMMUNITIES_PATHS } from './spanish-communities-paths';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
+import { speak } from '@/lib/speech-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -115,6 +116,7 @@ export default function RegionGame() {
 
         setTargetId(randomKey);
         setClickedId(null);
+        speak(`${t.common.find} ${REGION_DISPLAY_NAMES[randomKey] || randomKey}`);
     };
 
     const handleRegionClick = (id: string) => {

@@ -11,6 +11,7 @@ import confetti from 'canvas-confetti';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
+import { speak } from '@/lib/speech-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -100,6 +101,7 @@ export default function MapGame() {
 
         setTargetId(randomKey);
         setClickedId(null);
+        speak(`${t.common.find} ${GAME_PROVINCE_NAMES[randomKey]}`);
     };
 
     const handleRegionClick = (id: string) => {

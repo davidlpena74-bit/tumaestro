@@ -15,6 +15,7 @@ export const TRANSLATIONS = {
             congrats: '¡Impresionante!',
             victoryMessage: 'Has completado el desafío con éxito.',
             back: 'Volver',
+            find: 'Busca',
             profile: 'Perfil',
             subjects: {
                 math: 'Matemáticas',
@@ -222,6 +223,7 @@ export const TRANSLATIONS = {
             congrats: 'Awesome!',
             victoryMessage: 'You have successfully completed the challenge.',
             back: 'Back',
+            find: 'Find',
             profile: 'Profile',
             subjects: {
                 math: 'Math',

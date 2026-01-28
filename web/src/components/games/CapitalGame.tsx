@@ -10,6 +10,7 @@ import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { speak } from '@/lib/speech-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -100,6 +101,7 @@ export default function CapitalGame({ paths, targetList, title }: CapitalGamePro
         setCurrentCountryName(nextCountry);
         setTargetCapital(nextCap);
         setAttempts(0);
+        speak(`${t.common.find} ${nextCap}`);
     };
 
     const handleCountryClick = (engName: string) => {

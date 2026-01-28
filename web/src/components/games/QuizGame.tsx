@@ -6,6 +6,7 @@ import { CheckCircle2, XCircle, ArrowRight, RefreshCcw, Trophy } from 'lucide-re
 import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { speak } from '@/lib/speech-utils';
 import { QUESTIONS, type Question } from './data/quiz-questions';
 
 // Utility for cleaner classes
@@ -33,6 +34,12 @@ export default function QuizGame() {
     }, [gameState]);
 
     const currentQuestion = gameQuestions[currentQuestionIdx];
+
+    useEffect(() => {
+        if (gameState === 'playing' && currentQuestion) {
+            speak(currentQuestion.question);
+        }
+    }, [currentQuestionIdx, gameState, currentQuestion]);
 
     const handleStart = () => {
         setGameState('playing');

@@ -12,6 +12,7 @@ import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { speak } from '@/lib/speech-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -104,6 +105,7 @@ export default function RiversGame() {
         const next = currentRemaining[randomIndex];
         setTargetRiver(next);
         setAttempts(0);
+        speak(`${t.common.find} ${next}`);
     };
 
     const handleRiverClick = (name: string, e: React.MouseEvent) => {
