@@ -12,7 +12,7 @@ const subjects = [
         description: 'Álgebra, geometría, cálculo y problemas lógicos.',
         href: '/recursos/matematicas',
         icon: Calculator,
-        color: 'from-blue-500 to-cyan-500',
+        color: 'from-orange-500 to-amber-600',
         stat: '150+ Recursos'
     },
     {
@@ -21,7 +21,7 @@ const subjects = [
         description: 'Gramática, sintaxis y análisis de textos clásicos.',
         href: '/recursos/lengua',
         icon: Quotes,
-        color: 'from-orange-500 to-red-500',
+        color: 'from-violet-500 to-indigo-600',
         stat: '120+ Recursos'
     },
     {
@@ -30,7 +30,7 @@ const subjects = [
         description: 'Vocabulario, listening y ejercicios de speaking.',
         href: '/recursos/ingles',
         icon: Translate,
-        color: 'from-pink-500 to-rose-500',
+        color: 'from-pink-500 to-rose-600',
         stat: '90+ Recursos'
     },
     {
@@ -39,7 +39,7 @@ const subjects = [
         description: 'Mapas interactivos, líneas de tiempo y documentos históricos.',
         href: '/recursos/geografia',
         icon: GlobeHemisphereWest,
-        color: 'from-emerald-500 to-teal-500',
+        color: 'from-emerald-500 to-teal-600',
         stat: '85+ Recursos'
     },
     {
@@ -48,7 +48,7 @@ const subjects = [
         description: 'Inglés, francés y otros idiomas. Gramática y vocabulario.',
         href: '/recursos/idiomas',
         icon: Translate,
-        color: 'from-pink-500 to-rose-500',
+        color: 'from-pink-500 to-rose-600',
         stat: 'Nuevo'
     },
     {
@@ -57,7 +57,7 @@ const subjects = [
         description: 'Experimentos, fórmulas y tabla periódica.',
         href: '/recursos/fisica',
         icon: Atom,
-        color: 'from-violet-500 to-purple-500',
+        color: 'from-blue-500 to-cyan-600',
         stat: 'Coming Soon'
     }
 ];

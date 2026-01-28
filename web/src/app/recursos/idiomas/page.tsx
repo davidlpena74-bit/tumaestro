@@ -7,12 +7,12 @@ export default function IdiomasPage() {
     return (
         <main className="min-h-screen bg-slate-950 text-white p-4 md:p-8">
             <div className="max-w-5xl mx-auto">
-                <Link href="/recursos" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors mb-8">
+                <Link href="/recursos" className="inline-flex items-center gap-2 text-pink-400 hover:text-pink-300 transition-colors mb-8">
                     <ArrowLeft className="w-4 h-4" /> Volver a Biblioteca
                 </Link>
 
                 <header className="mb-12">
-                    <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-rose-500 mb-4">
+                    <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-rose-600 mb-4">
                         Inglés
                     </h1>
                     <p className="text-xl text-gray-400">Recursos de gramática, vocabulario y verbos irregulares.</p>
