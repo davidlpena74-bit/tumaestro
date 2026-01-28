@@ -68,8 +68,8 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
   icons: {
-    icon: '/icon.svg',
-    apple: '/icon.svg',
+    icon: '/icon.svg?v=2',
+    apple: '/icon.svg?v=2',
   },
   category: 'education',
 };

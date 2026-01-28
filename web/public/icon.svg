@@ -1,3 +1,36 @@
-<svg width="32" height="32" viewBox="0 0 24 24" fill="#2dd4bf" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 2L1 8l11 6 9-4.91V17h2V9L12 2zm0 2.18l7.27 3.96L12 12.13 4.73 8.16 12 4.18zM3.82 10.36l1.45.8v4.91c0 1.99 3.03 3.6 6.73 3.6s6.73-1.61 6.73-3.6v-4.91l1.45-.8V16c0 2.87-3.9 5-8.18 5s-8.18-2.13-8.18-5v-5.64z"/>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definición de Gradientes y Efectos -->
+  <defs>
+    <linearGradient id="capGradient" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06b6d4" /> <!-- Cyan-500 -->
+      <stop offset="100%" stop-color="#10b981" /> <!-- Emerald-500 -->
+    </linearGradient>
+    
+    <linearGradient id="glassEffect" x1="16" y1="6" x2="16" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="white" stop-opacity="0.05" />
+    </linearGradient>
+
+    <filter id="glow" x="-2" y="-2" width="36" height="36" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="1" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Parte Inferior (Base) -->
+  <path d="M7 16V20C7 22.2091 11.0294 24 16 24C20.9706 24 25 22.2091 25 20V16" stroke="url(#capGradient)" stroke-width="2.5" stroke-linecap="round" />
+  
+  <!-- Sombra de la base -->
+  <path d="M8 17V19.5C8 20.8807 11.5817 22 16 22C20.4183 22 24 20.8807 24 19.5V17" stroke="#0f172a" stroke-opacity="0.1" stroke-width="1.5" />
+
+  <!-- Parte Superior (Diamante) -->
+  <path d="M16 5L28 12L16 19L4 12L16 5Z" fill="url(#capGradient)" />
+  <path d="M16 6L26.5 12L16 18L5.5 12L16 6Z" fill="url(#glassEffect)" />
+  
+  <!-- Borde de Brillo -->
+  <path d="M16 5L28 12L16 19L4 12L16 5Z" stroke="white" stroke-opacity="0.2" stroke-width="0.5" />
+
+  <!-- La Borla (Tassel) -->
+  <path d="M28 12V19" stroke="url(#capGradient)" stroke-width="2" stroke-linecap="round" />
+  <circle cx="28" cy="20" r="1.5" fill="url(#capGradient)" filter="url(#glow)" />
 </svg>
