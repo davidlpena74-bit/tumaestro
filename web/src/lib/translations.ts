@@ -204,8 +204,7 @@ export const TRANSLATIONS = {
                 cervix: 'Cuello Uterino',
                 vagina: 'Vagina',
                 endometrium: 'Endometrio',
-                myometrium: 'Miometrio',
-                fimbriae: 'Fimbrias'
+                vulva: 'Vulva'
             }
         }
     },
@@ -412,8 +411,7 @@ export const TRANSLATIONS = {
                 cervix: 'Cervix',
                 vagina: 'Vagina',
                 endometrium: 'Endometrium',
-                myometrium: 'Myometrium',
-                fimbriae: 'Fimbriae'
+                vulva: 'Vulva'
             }
         }
     }

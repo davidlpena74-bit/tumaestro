@@ -351,7 +351,7 @@ export default function AnimalCellGame() {
                                     `}
                                 >
                                     <div className="flex items-center gap-2">
-                                        <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-700' : 'text-white'}`}>
+                                        <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-900' : 'text-white'}`}>
                                             {(t.gamesPage.cellParts as any)[item.nameKey]}
                                         </span>
                                     </div>

@@ -405,14 +405,14 @@ export default function HumanMusclesGame() {
                                     className={`
                                         w-full h-full rounded-xl flex items-center justify-center px-4 text-center cursor-grab active:cursor-grabbing transition-all duration-300 shadow-xl border
                                         ${matches[item.id]
-                                            ? 'bg-transparent border-emerald-500/50 text-slate-700 pointer-events-none shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                                            ? 'bg-transparent border-emerald-500/50 text-slate-900 pointer-events-none shadow-[0_0_15px_rgba(16,185,129,0.1)]'
                                             : 'bg-slate-800/90 border-white/20 hover:border-blue-500/50 hover:bg-slate-800 text-white'
                                         }
                                     `}
                                 >
                                     <div className="flex items-center gap-2">
                                         {matches[item.id] && <CheckCircle className="w-4 h-4 text-emerald-500" weight="fill" />}
-                                        <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-700' : 'text-white'}`}>
+                                        <span className={`text-xs font-bold uppercase tracking-wide ${matches[item.id] ? 'text-slate-900' : 'text-white'}`}>
                                             {(t.gamesPage.muscles as any)[item.nameKey]}
                                         </span>
                                     </div>

@@ -24,16 +24,16 @@ type ReproductivePart = {
 
 // Calibrated coordinates matching the sagittal diagram (relative to viewBox -200 0 1200 1000)
 const REPRODUCTIVE_PARTS: ReproductivePart[] = [
-    { id: 'bladder', nameKey: 'bladder', x: 423, y: 310, lx: 700, ly: 310 },
-    { id: 'seminalVesicle', nameKey: 'seminalVesicle', x: 615, y: 395, lx: 700, ly: 395 },
-    { id: 'vasDeferens', nameKey: 'vasDeferens', x: 580, y: 260, lx: 700, ly: 260 },
-    { id: 'prostate', nameKey: 'prostate', x: 450, y: 440, lx: 700, ly: 440 },
-    { id: 'urethra', nameKey: 'urethra', x: 485, y: 565, lx: 700, ly: 565 },
-    { id: 'penis', nameKey: 'penis', x: 740, y: 600, lx: 700, ly: 600 },
-    { id: 'glans', nameKey: 'glans', x: 810, y: 730, lx: 700, ly: 730 },
-    { id: 'testicle', nameKey: 'testicle', x: 638, y: 755, lx: 700, ly: 755 },
-    { id: 'scrotum', nameKey: 'scrotum', x: 630, y: 840, lx: 700, ly: 840 },
-    { id: 'epididymis', nameKey: 'epididymis', x: 620, y: 660, lx: 700, ly: 660 },
+    { id: 'bladder', nameKey: 'bladder', x: 371, y: 321, lx: 700, ly: 310 },
+    { id: 'seminalVesicle', nameKey: 'seminalVesicle', x: 310, y: 372, lx: 700, ly: 395 },
+    { id: 'vasDeferens', nameKey: 'vasDeferens', x: 468, y: 514, lx: 700, ly: 260 },
+    { id: 'prostate', nameKey: 'prostate', x: 359, y: 417, lx: 700, ly: 440 },
+    { id: 'urethra', nameKey: 'urethra', x: 592, y: 537, lx: 700, ly: 565 },
+    { id: 'penis', nameKey: 'penis', x: 585, y: 445, lx: 700, ly: 600 },
+    { id: 'glans', nameKey: 'glans', x: 636, y: 629, lx: 700, ly: 730 },
+    { id: 'testicle', nameKey: 'testicle', x: 502, y: 650, lx: 700, ly: 755 },
+    { id: 'scrotum', nameKey: 'scrotum', x: 469, y: 718, lx: 700, ly: 840 },
+    { id: 'epididymis', nameKey: 'epididymis', x: 460, y: 589, lx: 700, ly: 660 },
 ];
 
 export default function MaleReproductiveGame() {
@@ -369,7 +369,7 @@ export default function MaleReproductiveGame() {
                                     <text
                                         x="100" y="32"
                                         textAnchor="middle"
-                                        className={`text-sm font-bold uppercase tracking-wider select-none ${isMatched ? "fill-green-400" : "fill-white"}`}
+                                        className={`text-sm font-bold uppercase tracking-wider select-none ${isMatched ? "fill-slate-900" : "fill-white"}`}
                                     >
                                         {(t.gamesPage.reproductive as any)[label.nameKey]}
                                     </text>

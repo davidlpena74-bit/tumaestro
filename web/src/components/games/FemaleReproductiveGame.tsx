@@ -20,16 +20,15 @@ type SciencePart = {
     y: number;
 };
 
-// Initial calibrated coordinates for the frontal female system
+// Calibrated coordinates for the frontal female system
 const FEMALE_PARTS: SciencePart[] = [
-    { id: 'ovary', nameKey: 'ovary', x: 200, y: 325 },
-    { id: 'fallopianTube', nameKey: 'fallopianTube', x: 280, y: 180 },
-    { id: 'uterus', nameKey: 'uterus', x: 500, y: 350 },
-    { id: 'cervix', nameKey: 'cervix', x: 500, y: 580 },
-    { id: 'vagina', nameKey: 'vagina', x: 500, y: 780 },
-    { id: 'endometrium', nameKey: 'endometrium', x: 500, y: 440 },
-    { id: 'myometrium', nameKey: 'myometrium', x: 620, y: 400 },
-    { id: 'fimbriae', nameKey: 'fimbriae', x: 115, y: 340 },
+    { id: 'ovary', nameKey: 'ovary', x: 613, y: 267 },
+    { id: 'fallopianTube', nameKey: 'fallopianTube', x: 151, y: 157 },
+    { id: 'uterus', nameKey: 'uterus', x: 400, y: 279 },
+    { id: 'cervix', nameKey: 'cervix', x: 401, y: 416 },
+    { id: 'vagina', nameKey: 'vagina', x: 404, y: 536 },
+    { id: 'endometrium', nameKey: 'endometrium', x: 397, y: 352 },
+    { id: 'vulva', nameKey: 'vulva', x: 373, y: 671 },
 ];
 
 export default function FemaleReproductiveGame() {
@@ -255,7 +254,7 @@ export default function FemaleReproductiveGame() {
                     </AnimatePresence>
 
                     <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
-                        <div className="relative w-[700px] h-full overflow-hidden -translate-y-10">
+                        <div className="relative w-[700px] h-full overflow-hidden -translate-y-23">
                             <img
                                 src="/images/games/female-reproductive-system.png"
                                 alt="Female Reproductive Anatomy"
@@ -357,7 +356,7 @@ export default function FemaleReproductiveGame() {
                                     <text
                                         x="100" y="32"
                                         textAnchor="middle"
-                                        className={`text-sm font-bold uppercase tracking-wider select-none ${isMatched ? "fill-green-400" : "fill-white"}`}
+                                        className={`text-sm font-bold uppercase tracking-wider select-none ${isMatched ? "fill-slate-900" : "fill-white"}`}
                                     >
                                         {(t.gamesPage.femaleReproductive as any)[label.nameKey]}
                                     </text>

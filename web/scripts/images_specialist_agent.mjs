@@ -9,8 +9,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Configuration map
 const IMAGES_TO_PROCESS = [
     {
-        src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/plant_cell_diagram_hq_1769551234725.png",
-        dest: "plant-cell-hq.png"
+        src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/male_reproductive_system_diagram_1769544225230.png",
+        dest: "male-reproductive-system.png"
     }
 ];
 

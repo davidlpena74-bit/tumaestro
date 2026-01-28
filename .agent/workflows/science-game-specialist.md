@@ -17,6 +17,7 @@ Usa `web/src/components/games/AnimalCellGame.tsx` como **Template Absoluto**.
     2.  `img` fuera del `svg`: El modelo exitoso usa un `div` absoluto con la imagen y el `svg` encima con `viewBox="-200 0 1200 1000"`.
     3.  **Splash Screen**: Debe usar el mismo overlay oscuro con desenfoque de fondo.
     4.  **Resultados**: Debe mostrar el desglose de "Tiempo" y "Errores".
+    5.  **Estilo de Acierto**: Cuando una etiqueta es conectada correctamente, la fuente dentro de la caja debe cambiar a **negro** (`text-slate-900` o `fill-slate-900`) para garantizar un contraste premium sobre el fondo de acierto.
 
 ### 3. Creación de la Página (Layout)
 Usa `web/src/app/juegos/celula-animal/page.tsx` como **Template de Layout**.
