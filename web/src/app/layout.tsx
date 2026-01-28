@@ -67,10 +67,7 @@ export const metadata: Metadata = {
     description: 'Profesores, recursos y juegos interactivos en una sola plataforma.',
     images: ['/og-image.jpg'],
   },
-  icons: {
-    icon: '/favicon-brand.svg',
-    apple: '/favicon-brand.svg',
-  },
+
   category: 'education',
 };
 
