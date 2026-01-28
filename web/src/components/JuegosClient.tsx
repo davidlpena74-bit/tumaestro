@@ -64,7 +64,7 @@ export default function JuegosClient() {
             colorTheme: 'from-emerald-600 to-teal-800',
             subsections: [
                 {
-                    title: 'España',
+                    title: t.gamesPage.regions.spain,
                     games: [
                         {
                             id: 'region',
@@ -102,7 +102,7 @@ export default function JuegosClient() {
                     ]
                 },
                 {
-                    title: 'Europa',
+                    title: t.gamesPage.regions.europe,
                     games: [
                         {
                             id: 'europe',
@@ -173,7 +173,7 @@ export default function JuegosClient() {
                     ]
                 },
                 {
-                    title: 'América',
+                    title: t.gamesPage.regions.america,
                     games: [
                         {
                             id: 'mapa-norteamerica',
@@ -222,33 +222,33 @@ export default function JuegosClient() {
                     ]
                 },
                 {
-                    title: 'África',
+                    title: t.gamesPage.regions.africa,
                     games: [
                         {
                             id: 'mapa-africa',
-                            title: 'Mapa de África',
-                            description: 'Explora y aprende la ubicación de las naciones del continente africano.',
+                            title: t.gamesPage.gameTitles.africaMap,
+                            description: t.gamesPage.gameTitles.africaMapDesc,
                             href: '/juegos/mapa-africa',
                             icon: MapTrifold,
                             color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
-                            region: 'África',
+                            region: t.gamesPage.regions.africa,
                             gameType: t.gamesPage.gameTypes.map
                         }
                     ]
                 },
                 {
-                    title: 'Asia y Oceanía',
+                    title: t.gamesPage.regions.asiaOceania,
                     games: [
                         {
                             id: 'mapa-asia-oceania',
-                            title: 'Mapa de Asia y Oceanía',
-                            description: 'Un gran reto: desde el gigante asiático hasta las islas del Pacífico.',
+                            title: t.gamesPage.gameTitles.asiaOceaniaMap,
+                            description: t.gamesPage.gameTitles.asiaOceaniaMapDesc,
                             href: '/juegos/mapa-asia-oceania',
                             icon: MapTrifold,
                             color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
-                            region: 'Asia/Oceanía',
+                            region: t.gamesPage.regions.asiaOceania,
                             gameType: t.gamesPage.gameTypes.map
                         }
                     ]
@@ -373,7 +373,7 @@ export default function JuegosClient() {
         },
         {
             id: 'idiomas',
-            title: 'Idiomas',
+            title: t.gamesPage.regions.languages,
             icon: Translate,
             colorTheme: 'from-pink-600 to-rose-800',
             subsections: [
@@ -381,8 +381,8 @@ export default function JuegosClient() {
                     games: [
                         {
                             id: 'verbos-irregulares',
-                            title: 'Verbos Irregulares',
-                            description: 'Practica lo formas de los verbos irregulares en inglés.',
+                            title: t.gamesPage.gameTitles.verbs,
+                            description: t.gamesPage.gameTitles.verbsDesc,
                             href: '/juegos/verbos-irregulares',
                             icon: Translate,
                             color: 'from-pink-500 to-rose-600',
@@ -524,7 +524,7 @@ export default function JuegosClient() {
                         >
                             <Funnel className="w-4 h-4 text-slate-400" weight="bold" />
                             <span className="flex-grow text-left">
-                                {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
+                                {selectedGrade === 'all' ? t.gamesPage.regions.allGrades : selectedGrade}
                             </span>
                             <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} weight="bold" />
                         </button>
@@ -544,7 +544,7 @@ export default function JuegosClient() {
                                             selectedGrade === 'all' && "bg-teal-50 text-teal-600"
                                         )}
                                     >
-                                        Todos los Cursos
+                                        {t.gamesPage.regions.allGrades}
                                     </button>
                                     {availableGrades.map((grade) => (
                                         <button
@@ -703,12 +703,12 @@ export default function JuegosClient() {
                         animate={{ opacity: 1 }}
                         className="py-20 text-center"
                     >
-                        <p className="text-slate-500 text-lg">No hay juegos disponibles para este curso todavía.</p>
+                        <p className="text-slate-500 text-lg">{t.gamesPage.regions.noGames}</p>
                         <button
                             onClick={() => { setSelectedGrade('all'); setSelectedSubject(null); }}
                             className="mt-4 text-teal-600 font-bold hover:underline"
                         >
-                            Ver todos los juegos
+                            {t.gamesPage.regions.viewAll}
                         </button>
                     </motion.div>
                 )}

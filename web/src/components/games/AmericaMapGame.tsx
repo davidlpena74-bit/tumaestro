@@ -9,8 +9,8 @@ export default function AmericaMapGame() {
     const { t } = useLanguage();
     return (
         <CountryGameBase
-            title="Mapa de América"
-            regionName="América"
+            title={t.gamesPage.gameTitles.americaMap}
+            regionName={t.gamesPage.regions.america}
             pathData={AMERICA_PATHS}
             nameMapping={AMERICA_MAPPING}
             colorTheme="emerald"

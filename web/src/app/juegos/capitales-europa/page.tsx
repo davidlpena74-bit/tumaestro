@@ -34,6 +34,8 @@ export default function EuropeCapitalsMapPage() {
                     <CapitalGame
                         paths={EUROPE_PATHS}
                         title="Capitales de Europa"
+                        initialPan={{ x: 40, y: -170 }}
+                        initialZoom={2.0}
                     />
                 </div>
             </main>

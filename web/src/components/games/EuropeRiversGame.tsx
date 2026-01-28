@@ -205,7 +205,7 @@ export default function EuropeRiversGame() {
                 {/* MAP CONTAINER */}
                 <div
                     className={cn(
-                        "relative w-full bg-transparent rounded-3xl overflow-hidden border border-white/5 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center group cursor-move",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}

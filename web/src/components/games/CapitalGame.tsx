@@ -51,6 +51,8 @@ export default function CapitalGame({
     const [attempts, setAttempts] = useState(0);
     const [failedCountries, setFailedCountries] = useState<string[]>([]);
 
+    const [clickedId, setClickedId] = useState<string | null>(null);
+
     // Zoom state
     const [zoom, setZoom] = useState(initialZoom);
     const [pan, setPan] = useState(initialPan);
@@ -82,6 +84,7 @@ export default function CapitalGame({
         hookStartGame();
         setAttempts(0);
         setFailedCountries([]);
+        setClickedId(null);
         setTargetCapital('');
         setCurrentCountryName('');
 
@@ -110,12 +113,15 @@ export default function CapitalGame({
         setCurrentCountryName(nextCountry);
         setTargetCapital(nextCap);
         setAttempts(0);
+        setClickedId(null);
         speak(`${t.common.find} ${nextCap}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleCountryClick = (engName: string) => {
         if (gameState !== 'playing') return;
         if (Math.abs(pan.x - dragStart.current.x) > 5 || Math.abs(pan.y - dragStart.current.y) > 5) return;
+
+        setClickedId(engName); // Mark as clicked for visual feedback
 
         const clickedCountry = PATH_TO_SPANISH_NAME[engName];
         if (!clickedCountry) return;
@@ -157,6 +163,7 @@ export default function CapitalGame({
         setPan(initialPan);
         setAttempts(0);
         setFailedCountries([]);
+        setClickedId(null);
         setTargetCapital('');
         setCurrentCountryName('');
 
@@ -242,7 +249,7 @@ export default function CapitalGame({
 
                 <div
                     className={cn(
-                        "relative w-full bg-transparent rounded-3xl overflow-hidden border border-white/5 shadow-2xl aspect-[4/3] md:aspect-video flex items-center justify-center group cursor-move",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center group cursor-move",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}
@@ -311,12 +318,13 @@ export default function CapitalGame({
                                     const isFailed = failedCountries.includes(spanishName || '');
                                     const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
                                     const centroid = calculatePathCentroid(pathD);
+                                    const isClicked = clickedId === engName;
 
                                     return (
                                         <g key={engName}>
                                             <motion.path
                                                 d={pathD}
-                                                className={`stroke-[0.5px] pointer-events-auto transition-colors duration-150 ${isInTargetList ? `cursor-pointer stroke-slate-900/30 hover:stroke-slate-900 hover:stroke-[1px] ${!isCompleted ? 'hover:fill-teal-100' : ''}` : 'fill-slate-800/30 stroke-slate-800/50'}`}
+                                                className={`stroke-[0.5px] transition-colors duration-150 ${isInTargetList ? 'stroke-slate-900/20' : 'fill-slate-800/30 stroke-slate-800/50'}`}
                                                 initial={false}
                                                 animate={{
                                                     fill: isCompleted
@@ -324,30 +332,46 @@ export default function CapitalGame({
                                                         : (isInTargetList ? '#ffffff' : '#1e293b'),
                                                     opacity: isInTargetList ? 1 : 0.4
                                                 }}
-                                                onClick={(e: any) => {
-                                                    e.stopPropagation();
-                                                    if (isInTargetList) handleCountryClick(engName);
-                                                }}
                                                 style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
                                             />
                                             {isInTargetList && centroid && (
-                                                <motion.circle
-                                                    cx={centroid.x}
-                                                    cy={centroid.y}
-                                                    r={isCompleted ? 2.5 : 2}
-                                                    className="pointer-events-none"
-                                                    initial={false}
-                                                    animate={{
-                                                        fill: isCompleted
-                                                            ? (isFailed ? '#ffffff' : '#ffffff')
-                                                            : '#0ea5e9',
-                                                        opacity: 0.8,
-                                                        scale: isTarget ? [1, 1.5, 1] : 1
+                                                <g
+                                                    className="cursor-pointer hover:scale-125 transition-transform"
+                                                    onClick={(e: any) => {
+                                                        e.stopPropagation();
+                                                        handleCountryClick(engName);
                                                     }}
-                                                    transition={{
-                                                        scale: isTarget ? { repeat: Infinity, duration: 2 } : {}
-                                                    }}
-                                                />
+                                                >
+                                                    {/* Hit Area (Invisible but larger) */}
+                                                    <circle
+                                                        cx={centroid.x}
+                                                        cy={centroid.y}
+                                                        r={8}
+                                                        fill="transparent"
+                                                    />
+                                                    {/* Visual Dot */}
+                                                    <motion.circle
+                                                        cx={centroid.x}
+                                                        cy={centroid.y}
+                                                        r={isCompleted ? 3 : 2.5}
+                                                        className="pointer-events-none"
+                                                        initial={false}
+                                                        animate={{
+                                                            fill: isCompleted
+                                                                ? '#ffffff'
+                                                                : (isClicked && !isCompleted ? '#ef4444' : '#0ea5e9'),
+                                                            // Logic: 
+                                                            // - Completed: White (Correct)
+                                                            // - Clicked but NOT completed (Errors): Red
+                                                            // - Default: Blue
+                                                            opacity: 0.8,
+                                                            stroke: "white",
+                                                            strokeWidth: 0.5,
+                                                            scale: isClicked ? 1.5 : 1 // Immediate scale feedback on click
+                                                        }}
+                                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                                    />
+                                                </g>
                                             )}
                                         </g>
                                     );

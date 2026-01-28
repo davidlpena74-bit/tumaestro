@@ -159,15 +159,15 @@ export default function DivisionGame() {
                     <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30">
                         <Pizza className="w-16 h-16 text-orange-500" />
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">División de Pizzas</h2>
+                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.divisionGame.title}</h2>
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                        ¡Arrastra las pizzas para repartirlas entre los amigos! Aprende a dividir jugando.
+                        {t.gamesPage.divisionGame.description}
                     </p>
                     <button
                         onClick={startGame}
                         className="group relative px-8 py-4 bg-orange-500 hover:bg-orange-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1"
                     >
-                        <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                        <span className="relative z-10 flex items-center gap-2">{t.gamesPage.divisionGame.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
                     </button>
                 </div>
             )}
@@ -183,7 +183,7 @@ export default function DivisionGame() {
                             {points} <span className="text-sm font-normal text-orange-300">pts</span>
                         </h2>
                         <div className="flex gap-3 text-xs font-bold mt-1 text-orange-300 uppercase tracking-wider">
-                            <span>Nivel {level}</span>
+                            <span>{t.gamesPage.divisionGame.level} {level}</span>
                             <span>•</span>
                             <span>{t.gamesPage.gameTypes.math}</span>
                         </div>
@@ -193,7 +193,7 @@ export default function DivisionGame() {
                 <div className="flex items-center gap-6 w-full md:w-auto justify-end">
                     <div className="flex flex-col items-end">
                         <span className="text-orange-400 font-black text-xl leading-none">x{streak}</span>
-                        <span className="text-orange-400/60 text-[10px] uppercase font-bold tracking-widest">Racha</span>
+                        <span className="text-orange-400/60 text-[10px] uppercase font-bold tracking-widest">{t.gamesPage.divisionGame.streak}</span>
                     </div>
                 </div>
             </div>
@@ -204,10 +204,12 @@ export default function DivisionGame() {
                 {/* VISUAL INTERACTION AREA */}
                 <div className="bg-transparent border border-white/10 rounded-3xl p-6 min-h-[500px] flex flex-col relative overflow-hidden shadow-2xl">
                     <h3 className="text-white text-center mb-2 font-bold text-lg">
-                        Reparte {problem.dividend} Pizzas entre {problem.divisor} Amigos
+                        {t.gamesPage.divisionGame.task
+                            .replace('{dividend}', problem.dividend.toString())
+                            .replace('{divisor}', problem.divisor.toString())}
                     </h3>
                     <p className="text-white/40 text-center text-xs mb-6 flex items-center justify-center gap-2">
-                        <Hand className="w-4 h-4" /> Arrastra las pizzas hacia los amigos
+                        <Hand className="w-4 h-4" /> {t.gamesPage.divisionGame.dragHint}
                     </p>
 
                     {/* PIZZA SOURCE (DRAGGABLE) */}
@@ -231,7 +233,7 @@ export default function DivisionGame() {
                                 </motion.div>
                             ))}
                         </AnimatePresence>
-                        {itemsLeft === 0 && <span className="text-gray-500 text-sm self-center">¡Caja vacía!</span>}
+                        {itemsLeft === 0 && <span className="text-gray-500 text-sm self-center">{t.gamesPage.divisionGame.emptyBox}</span>}
                     </div>
 
                     {/* DROP TARGETS (FRIENDS) */}
@@ -267,13 +269,13 @@ export default function DivisionGame() {
                     {/* Reset/Auto Helpers */}
                     <div className="flex justify-center gap-2 mt-6 pt-4 border-t border-white/5">
                         <button onClick={distributeOneRound} disabled={itemsLeft < problem.divisor} className="text-xs bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-3 py-2 rounded-lg transition">
-                            Repartir 1 vuelta
+                            {t.gamesPage.divisionGame.distributeOne}
                         </button>
                         <button onClick={autoDistribute} disabled={itemsLeft < problem.divisor} className="text-xs bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-3 py-2 rounded-lg transition">
-                            Repartir Todo
+                            {t.gamesPage.divisionGame.distributeAll}
                         </button>
                         <button onClick={() => { setItemsLeft(problem.dividend); setDistributedCounts(new Array(problem.divisor).fill(0)); }} className="text-xs bg-white/5 hover:bg-white/10 text-red-300 hover:text-red-200 px-3 py-2 rounded-lg transition">
-                            <RefreshCw className="w-3 h-3 inline mr-1" /> Reiniciar
+                            <RefreshCw className="w-3 h-3 inline mr-1" /> {t.gamesPage.divisionGame.reset}
                         </button>
                     </div>
                 </div>
@@ -281,7 +283,7 @@ export default function DivisionGame() {
                 {/* MATH CONTROLS AREA */}
                 <div className="flex flex-col gap-6">
                     <div className="bg-transparent border border-white/20 p-8 rounded-3xl text-center shadow-2xl">
-                        <h2 className="text-2xl font-bold text-white mb-8">Escribe la División</h2>
+                        <h2 className="text-2xl font-bold text-white mb-8">{t.gamesPage.divisionGame.writeDivision}</h2>
 
                         <div className="flex flex-wrap items-center justify-center gap-4 text-3xl md:text-5xl font-black text-white mb-12 font-mono">
                             <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner min-w-[3ch] text-center">
@@ -312,7 +314,7 @@ export default function DivisionGame() {
                                     className="mb-8 p-4 bg-orange-500/10 rounded-xl border border-orange-500/30 inline-block mx-auto"
                                 >
                                     <label className="text-orange-300 text-sm font-bold block mb-2 uppercase tracking-wider">
-                                        ¿Sobró algo? (Resto)
+                                        {t.gamesPage.divisionGame.remainderQuestion}
                                     </label>
                                     <input
                                         type="number"
@@ -330,7 +332,7 @@ export default function DivisionGame() {
                             onClick={checkAnswer}
                             className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white text-xl font-black py-4 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2"
                         >
-                            Comprobar Respuesta <CheckCircle className="w-6 h-6" />
+                            {t.gamesPage.divisionGame.checkAnswer} <CheckCircle className="w-6 h-6" />
                         </button>
                     </div>
 
@@ -343,9 +345,9 @@ export default function DivisionGame() {
                                 exit={{ opacity: 0 }}
                                 className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-6 rounded-3xl text-center shadow-2xl border border-white/20"
                             >
-                                <h3 className="text-2xl font-black mb-4">¡Genial! 🎉</h3>
+                                <h3 className="text-2xl font-black mb-4">{t.gamesPage.divisionGame.greatJob}</h3>
                                 <div className="bg-black/20 rounded-xl p-4 mb-4">
-                                    <p className="text-lg mb-2 text-indigo-200 uppercase tracking-widest text-xs font-bold">Concepto Clave</p>
+                                    <p className="text-lg mb-2 text-indigo-200 uppercase tracking-widest text-xs font-bold">{t.gamesPage.divisionGame.keyConcept}</p>
                                     <p className="font-mono text-xl md:text-2xl font-bold">
                                         <span className="text-teal-300">{problem.quotient}</span> <span className="text-white/50">x</span> <span className="text-orange-300">{problem.divisor}</span>
                                         {problem.remainder > 0 && <span className="text-yellow-300"> + {problem.remainder}</span>}
@@ -353,8 +355,12 @@ export default function DivisionGame() {
                                     </p>
                                 </div>
                                 <p className="text-indigo-100 text-sm">
-                                    {problem.dividend} pizzas divididas entre {problem.divisor} amigos son {problem.quotient} pizzas para cada uno
-                                    {problem.remainder > 0 && ` y sobran ${problem.remainder}`}.
+                                    {t.gamesPage.divisionGame.explanation
+                                        .replace('{dividend}', problem.dividend.toString())
+                                        .replace('{divisor}', problem.divisor.toString())
+                                        .replace('{quotient}', problem.quotient.toString())}
+                                    {problem.remainder > 0 && t.gamesPage.divisionGame.remainder.replace('{remainder}', problem.remainder.toString())}
+                                    .
                                 </p>
                             </motion.div>
                         )}

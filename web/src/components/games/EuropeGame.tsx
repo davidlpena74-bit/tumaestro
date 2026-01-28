@@ -9,8 +9,8 @@ export default function EuropeGame() {
     const { t } = useLanguage();
     return (
         <CountryGameBase
-            title="Mapa de Europa"
-            regionName="Europa"
+            title={t.gamesPage.gameTitles.europeMap}
+            regionName={t.gamesPage.regions.europe}
             pathData={EUROPE_PATHS}
             nameMapping={EUROPE_MAPPING}
             colorTheme="emerald"

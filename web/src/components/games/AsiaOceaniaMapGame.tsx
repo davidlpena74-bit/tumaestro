@@ -9,8 +9,8 @@ export default function AsiaOceaniaMapGame() {
     const { t } = useLanguage();
     return (
         <CountryGameBase
-            title="Mapa de Asia y Oceanía"
-            regionName="Asia y Oceanía"
+            title={t.gamesPage.gameTitles.asiaOceaniaMap}
+            regionName={t.gamesPage.regions.asiaOceania}
             pathData={ASIA_OCEANIA_PATHS}
             nameMapping={ASIA_OCEANIA_MAPPING}
             colorTheme="emerald"

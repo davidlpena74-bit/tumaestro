@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Timer, MapPin, RefreshCw, XCircle, CheckCircle, HelpCircle, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { SPANISH_PROVINCES_PATHS, PROVINCE_NAMES } from './spanish-provinces';
+import { SPANISH_PROVINCES_PATHS, PROVINCE_NAMES, PROVINCE_NAMES_EN } from './spanish-provinces';
 
 import confetti from 'canvas-confetti';
 import GameHUD from './GameHUD';
@@ -17,10 +17,8 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-// Merged data for the game: join Canarias into 1 target
+// Basic paths data
 const GAME_PROVINCE_PATHS = { ...SPANISH_PROVINCES_PATHS };
-const GAME_PROVINCE_NAMES = { ...PROVINCE_NAMES };
-
 GAME_PROVINCE_PATHS['canarias'] = [
     ...(SPANISH_PROVINCES_PATHS['santacruz'] || []),
     ...(SPANISH_PROVINCES_PATHS['laspalmas'] || [])
@@ -28,12 +26,15 @@ GAME_PROVINCE_PATHS['canarias'] = [
 delete (GAME_PROVINCE_PATHS as any)['santacruz'];
 delete (GAME_PROVINCE_PATHS as any)['laspalmas'];
 
-GAME_PROVINCE_NAMES['canarias'] = "Canarias";
-delete (GAME_PROVINCE_NAMES as any)['santacruz'];
-delete (GAME_PROVINCE_NAMES as any)['laspalmas'];
-
 export default function MapGame() {
     const { language, t } = useLanguage();
+
+    // Localized names mapping
+    const baseNames = language === 'es' ? PROVINCE_NAMES : PROVINCE_NAMES_EN;
+    const GAME_PROVINCE_NAMES = { ...baseNames };
+    GAME_PROVINCE_NAMES['canarias'] = language === 'es' ? "Canarias" : "Canary Islands";
+    delete (GAME_PROVINCE_NAMES as any)['santacruz'];
+    delete (GAME_PROVINCE_NAMES as any)['laspalmas'];
     const {
         gameState, setGameState,
         score, addScore,
@@ -116,7 +117,7 @@ export default function MapGame() {
             addScore(10);
             setSolvedIds(prev => [...prev, id]); // Add to solved list
             setCorrectCount(prev => prev + 1);
-            setMessage(`¡Bien! Es ${GAME_PROVINCE_NAMES[id]}`);
+            setMessage(`${t.common.correct} ${GAME_PROVINCE_NAMES[id]}`);
             setTimeout(pickNewTarget, 600);
 
             // Celebration
@@ -125,7 +126,7 @@ export default function MapGame() {
             // Incorrect
             addScore(-30);
             addError();
-            setMessage('¡Ups! Esa no es.');
+            setMessage(language === 'es' ? '¡Ups! Esa no es.' : 'Oops! That is not the one.');
         }
     };
 
@@ -169,7 +170,7 @@ export default function MapGame() {
                 isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
             )}>
                 <GameHUD
-                    title="Desafío Provincial"
+                    title={t.gamesPage.gameTitles.provinces}
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
@@ -234,15 +235,17 @@ export default function MapGame() {
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <MapPin className="w-12 h-12 text-teal-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Desafío Provincial</h2>
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.gameTitles.provinces}</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                                Demuestra que conoces cada rincón del país. Tienes 90 segundos para ubicar todas las provincias posibles.
+                                {language === 'es'
+                                    ? 'Demuestra que conoces cada rincón del país. Tienes 90 segundos para ubicar todas las provincias posibles.'
+                                    : 'Show that you know every corner of the country. You have 90 seconds to locate as many provinces as possible.'}
                             </p>
                             <button
                                 onClick={startGame}
                                 className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
                             >
-                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                                <span className="relative z-10 flex items-center gap-2">{t.common.start} {t.gamesPage.gameTypes.map.toUpperCase()} <Timer className="w-5 h-5 opacity-50" /></span>
                             </button>
                         </div>
                     )}
@@ -253,17 +256,17 @@ export default function MapGame() {
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                             </div>
-                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                            <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
 
                             <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
+                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
                                 <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
                                     {score}
                                 </span>
                             </div>
 
                             <button onClick={startGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> Intentar de nuevo
+                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                             </button>
                         </div>
                     )}
@@ -407,7 +410,9 @@ export default function MapGame() {
 
                 <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
                     <HelpCircle className="w-3 h-3" />
-                    <span>Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.</span>
+                    <span>{language === 'es'
+                        ? 'Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.'
+                        : 'Use controls or mouse wheel to zoom. Drag to move the map.'}</span>
                 </p>
             </div>
         </div>

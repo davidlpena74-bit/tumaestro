@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Timer, MapPin, Map as MapIcon, RefreshCw, XCircle, CheckCircle, HelpCircle, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { SPANISH_COMMUNITIES_PATHS } from './spanish-communities-paths';
+import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES, REGION_DISPLAY_NAMES_EN } from './spanish-communities-paths';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
@@ -15,31 +15,12 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-// Nombres bonitos para mostrar
-const REGION_DISPLAY_NAMES: Record<string, string> = {
-    andalucia: 'Andalucía',
-    aragon: 'Aragón',
-    asturias: 'Principado de Asturias',
-    baleares: 'Islas Baleares',
-    canarias: 'Canarias',
-    cantabria: 'Cantabria',
-    castillalamancha: 'Castilla-La Mancha',
-    castillaleon: 'Castilla y León',
-    cataluna: 'Cataluña',
-    extremadura: 'Extremadura',
-    galicia: 'Galicia',
-    madrid: 'Comunidad de Madrid',
-    murcia: 'Región de Murcia',
-    navarra: 'Navarra',
-    paisvasco: 'País Vasco',
-    larioja: 'La Rioja',
-    valencia: 'Comunidad Valenciana',
-    ceuta: 'Ceuta',
-    melilla: 'Melilla'
-};
-
 export default function RegionGame() {
     const { language, t } = useLanguage();
+
+    // Localized names mapping
+    const baseNames = language === 'es' ? REGION_DISPLAY_NAMES : REGION_DISPLAY_NAMES_EN;
+    const NAMES = { ...baseNames };
     // Note: RegionGame usually has 60s for Regions (fewer targets).
     // Rivers has 120s. Let's use 60s here.
     const {
@@ -116,7 +97,7 @@ export default function RegionGame() {
 
         setTargetId(randomKey);
         setClickedId(null);
-        speak(`${t.common.find} ${REGION_DISPLAY_NAMES[randomKey] || randomKey}`, language === 'es' ? 'es-ES' : 'en-US');
+        speak(`${t.common.find} ${NAMES[randomKey] || randomKey}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleRegionClick = (id: string) => {
@@ -129,7 +110,7 @@ export default function RegionGame() {
             // Correct
             addScore(100);
             setSolvedIds(prev => [...prev, id]);
-            setMessage(`¡Correcto! Es ${REGION_DISPLAY_NAMES[id] || id}`);
+            setMessage(`${t.common.correct} ${NAMES[id] || id}`);
             setTimeout(pickNewTarget, 600);
         } else {
             // Incorrect
@@ -140,7 +121,7 @@ export default function RegionGame() {
             // "addScore(points)" -> setScore(s => s + points).
             // So we can do addScore(-20).
             addScore(-20);
-            setMessage('¡Esa no es! Intenta de nuevo.');
+            setMessage(language === 'es' ? '¡Esa no es! Intenta de nuevo.' : 'That is not the one! Try again.');
         }
     };
 
@@ -192,13 +173,13 @@ export default function RegionGame() {
                 isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
             )}>
                 <GameHUD
-                    title="Comunidades"
+                    title={t.gamesPage.gameTitles.region}
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
-                    totalTargets={Object.keys(REGION_DISPLAY_NAMES).length}
-                    remainingTargets={Object.keys(REGION_DISPLAY_NAMES).length - solvedIds.length}
-                    targetName={targetId ? (REGION_DISPLAY_NAMES[targetId] || targetId) : '...'}
+                    totalTargets={Object.keys(NAMES).length}
+                    remainingTargets={Object.keys(NAMES).length - solvedIds.length}
+                    targetName={targetId ? (NAMES[targetId] || targetId) : '...'}
                     region={t.gamesPage.regions.spain}
                     gameType={t.gamesPage.gameTypes.map}
                     message={message}
@@ -234,15 +215,17 @@ export default function RegionGame() {
                             <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                 <MapPin className="w-12 h-12 text-emerald-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Comunidades Autónomas</h2>
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.gameTitles.region}</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                                ¿Te sabes las 17 Comunidades y 2 Ciudades Autónomas de España?
+                                {language === 'es'
+                                    ? '¿Te sabes las 17 Comunidades y 2 Ciudades Autónomas de España?'
+                                    : 'Do you know the 17 Communities and 2 Autonomous Cities of Spain?'}
                             </p>
                             <button
                                 onClick={startGame}
                                 className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1"
                             >
-                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <MapPin className="w-5 h-5 opacity-50" /></span>
+                                <span className="relative z-10 flex items-center gap-2">{t.common.start} {t.gamesPage.gameTypes.map.toUpperCase()} <MapPin className="w-5 h-5 opacity-50" /></span>
                             </button>
                         </div>
                     )}
@@ -253,17 +236,17 @@ export default function RegionGame() {
                             <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                 <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                             </div>
-                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                            <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
 
                             <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
+                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
                                 <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
                                     {score}
                                 </span>
                             </div>
 
                             <button onClick={startGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> Jugar de nuevo
+                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                             </button>
                         </div>
                     )}
@@ -408,7 +391,9 @@ export default function RegionGame() {
 
                 <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
                     <HelpCircle className="w-3 h-3" />
-                    <span>Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.</span>
+                    <span>{language === 'es'
+                        ? 'Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.'
+                        : 'Use controls or mouse wheel to zoom. Drag to move the map.'}</span>
                 </p>
             </div>
         </div>

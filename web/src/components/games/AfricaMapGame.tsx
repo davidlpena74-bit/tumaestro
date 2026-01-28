@@ -9,8 +9,8 @@ export default function AfricaMapGame() {
     const { t } = useLanguage();
     return (
         <CountryGameBase
-            title="Mapa de África"
-            regionName="África"
+            title={t.gamesPage.gameTitles.africaMap}
+            regionName={t.gamesPage.regions.africa}
             pathData={AFRICA_PATHS}
             nameMapping={AFRICA_MAPPING}
             colorTheme="emerald"

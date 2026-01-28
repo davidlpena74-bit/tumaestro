@@ -105,15 +105,15 @@ export default function CountryGameBase({
     const handleCountryClick = (engName: string) => {
         if (gameState !== 'playing') return;
 
-        const spanishName = nameMapping[engName];
-        if (!spanishName) return;
+        const localizedName = nameMapping[engName];
+        if (!localizedName) return;
 
-        const isCompleted = spanishName && !remainingCountries.includes(spanishName);
+        const isCompleted = localizedName && !remainingCountries.includes(localizedName);
         if (isCompleted) return;
 
-        if (spanishName === targetCountry) {
+        if (localizedName === targetCountry) {
             addScore(100);
-            setMessage('¡Correcto! 🎉');
+            setMessage(`${t.common.correct} 🎉`);
             const newRemaining = remainingCountries.filter(c => c !== targetCountry);
             setRemainingCountries(newRemaining);
             nextTurn(newRemaining);
@@ -124,13 +124,17 @@ export default function CountryGameBase({
             setAttempts(newAttempts);
 
             if (newAttempts >= 3) {
-                setMessage(`¡Fallaste! Era ${targetCountry}. ❌`);
+                setMessage(language === 'es'
+                    ? `¡Fallaste! Era ${targetCountry}. ❌`
+                    : `Failed! It was ${targetCountry}. ❌`);
                 setFailedCountries(prev => [...prev, targetCountry]);
                 const newRemaining = remainingCountries.filter(c => c !== targetCountry);
                 setRemainingCountries(newRemaining);
                 setTimeout(() => nextTurn(newRemaining), 1500);
             } else {
-                setMessage(`¡No! Eso es ${spanishName} (${newAttempts}/3) ❌`);
+                setMessage(language === 'es'
+                    ? `¡No! Eso es ${localizedName} (${newAttempts}/3) ❌`
+                    : `No! That is ${localizedName} (${newAttempts}/3) ❌`);
             }
         }
     };
@@ -211,15 +215,17 @@ export default function CountryGameBase({
                                 <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                     <Globe className="w-12 h-12 text-emerald-400" />
                                 </div>
-                                <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">{title}</h2>
+                                <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
                                 <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed text-center">
-                                    Pon a prueba tus conocimientos de geografía en {regionName}. ¿Ubicarlos todos a tiempo?
+                                    {language === 'es'
+                                        ? `Pon a prueba tus conocimientos de geografía en ${regionName}. ¿Ubicarlos todos a tiempo?`
+                                        : `Test your geography knowledge in ${regionName}. Can you locate them all in time?`}
                                 </p>
                                 <button
                                     onClick={startGame}
                                     className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1"
                                 >
-                                    <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                                    <span className="relative z-10 flex items-center gap-2">{t.common.start.toUpperCase()} {t.gamesPage.gameTypes.map.toUpperCase()} <Timer className="w-5 h-5 opacity-50" /></span>
                                 </button>
                             </motion.div>
                         )}
@@ -233,15 +239,15 @@ export default function CountryGameBase({
                                 <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
                                     <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                                 </div>
-                                <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                                <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
                                 <div className="flex flex-col items-center gap-1 mb-8 text-center text-white">
-                                    <span className="text-gray-400 text-sm uppercase tracking-widest">Puntuación Final</span>
+                                    <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
                                     <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
                                         {score}
                                     </span>
                                 </div>
                                 <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                    <RefreshCw className="w-5 h-5" /> Jugar de nuevo
+                                    <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                                 </button>
                             </motion.div>
                         )}
@@ -275,11 +281,11 @@ export default function CountryGameBase({
                                 if (nameMapping[idB] === hoveredId) return -1;
                                 return 0;
                             }).map(([engName, pathD]) => {
-                                const spanishName = nameMapping[engName];
-                                const isCompleted = spanishName && !remainingCountries.includes(spanishName);
-                                const isFailed = failedCountries.includes(spanishName);
-                                const isHovered = hoveredId === spanishName;
-                                const isPlayable = !!spanishName;
+                                const localizedName = nameMapping[engName];
+                                const isCompleted = localizedName && !remainingCountries.includes(localizedName);
+                                const isFailed = failedCountries.includes(localizedName);
+                                const isHovered = hoveredId === localizedName;
+                                const isPlayable = !!localizedName;
 
                                 let fillClass = isPlayable ? "fill-white/90 hover:fill-slate-200" : "fill-slate-800/20";
                                 let strokeClass = "stroke-slate-900/30 stroke-[0.5px]";
@@ -291,7 +297,7 @@ export default function CountryGameBase({
                                 return (
                                     <g
                                         key={engName}
-                                        onMouseEnter={() => isPlayable && gameState === 'playing' && setHoveredId(spanishName)}
+                                        onMouseEnter={() => isPlayable && gameState === 'playing' && setHoveredId(localizedName)}
                                         onMouseLeave={() => setHoveredId(null)}
                                         onClick={(e) => {
                                             if (isClick.current) handleCountryClick(engName);
@@ -342,7 +348,9 @@ export default function CountryGameBase({
 
                 <p className="text-gray-500 text-xs mt-4 flex items-center gap-2 justify-center">
                     <HelpCircle className="w-3 h-3" />
-                    <span>Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.</span>
+                    <span>{language === 'es'
+                        ? 'Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.'
+                        : 'Use controls or mouse wheel to zoom. Drag to move the map.'}</span>
                 </p>
             </div>
         </div >
