@@ -1,7 +1,6 @@
-'use client';
-
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import {
     MapTrifold,
@@ -13,7 +12,9 @@ import {
     Translate,
     ArrowRight,
     Dna,
-    Plant
+    Plant,
+    CaretDown,
+    Funnel
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -49,6 +50,8 @@ type Category = {
 
 export default function JuegosClient() {
     const { t } = useLanguage();
+    const [selectedGrade, setSelectedGrade] = useState<string>('all');
+    const [filterOpen, setFilterOpen] = useState(false);
 
     const categories: Category[] = [
         {
@@ -389,10 +392,34 @@ export default function JuegosClient() {
         }
     ];
 
+    // Get unique grades available in all games for the filter
+    const availableGrades = useMemo(() => {
+        const grades = new Set<string>();
+        categories.forEach(cat => {
+            cat.subsections.forEach(sub => {
+                sub.games.forEach(game => grades.add(game.grade));
+            });
+        });
+        return Array.from(grades).sort();
+    }, [categories]);
+
+    // Filter categories and subsections based on selected grade
+    const filteredCategories = useMemo(() => {
+        if (selectedGrade === 'all') return categories;
+
+        return categories.map(cat => ({
+            ...cat,
+            subsections: cat.subsections.map(sub => ({
+                ...sub,
+                games: sub.games.filter(game => game.grade === selectedGrade)
+            })).filter(sub => sub.games.length > 0)
+        })).filter(cat => cat.subsections.length > 0);
+    }, [selectedGrade, categories]);
+
     return (
         <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto relative z-10">
-                <header className="mb-12 text-center">
+                <header className="mb-12 text-center relative">
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -409,6 +436,55 @@ export default function JuegosClient() {
                     >
                         {t.gamesPage.subtitle}
                     </motion.p>
+
+                    {/* GRADE FILTER DROPDOWN */}
+                    <div className="mt-12 flex justify-center">
+                        <div className="relative">
+                            <button
+                                onClick={() => setFilterOpen(!filterOpen)}
+                                className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
+                            >
+                                <Funnel className="w-4 h-4 text-slate-400" weight="bold" />
+                                <span className="flex-grow text-left">
+                                    {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
+                                </span>
+                                <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} weight="bold" />
+                            </button>
+
+                            <AnimatePresence>
+                                {filterOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-slate-700"
+                                    >
+                                        <button
+                                            onClick={() => { setSelectedGrade('all'); setFilterOpen(false); }}
+                                            className={cn(
+                                                "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                selectedGrade === 'all' && "bg-teal-50 text-teal-600"
+                                            )}
+                                        >
+                                            Todos los Cursos
+                                        </button>
+                                        {availableGrades.map((grade) => (
+                                            <button
+                                                key={grade}
+                                                onClick={() => { setSelectedGrade(grade); setFilterOpen(false); }}
+                                                className={cn(
+                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                    selectedGrade === grade && "bg-teal-50 text-teal-600"
+                                                )}
+                                            >
+                                                {grade}
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
                 </header>
 
                 {/* Subject Jump-Links (Chips) */}
@@ -418,7 +494,7 @@ export default function JuegosClient() {
                     transition={{ delay: 0.3 }}
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-20 px-4 relative z-20 w-full"
                 >
-                    {categories.map((category) => (
+                    {filteredCategories.map((category) => (
                         <motion.a
                             key={category.id}
                             href={`#${category.id}`}
@@ -470,7 +546,7 @@ export default function JuegosClient() {
                 </motion.div>
 
                 <div className="space-y-24">
-                    {categories.map((category, catIdx) => (
+                    {filteredCategories.map((category, catIdx) => (
                         <div key={category.id} id={category.id} className="scroll-mt-32">
                             {/* Main Category Title */}
                             <motion.div
@@ -600,6 +676,22 @@ export default function JuegosClient() {
                     ))}
                 </div>
 
+                {filteredCategories.length === 0 && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="py-20 text-center"
+                    >
+                        <p className="text-slate-500 text-lg">No hay juegos disponibles para este curso todavía.</p>
+                        <button
+                            onClick={() => setSelectedGrade('all')}
+                            className="mt-4 text-teal-600 font-bold hover:underline"
+                        >
+                            Ver todos los juegos
+                        </button>
+                    </motion.div>
+                )}
+
                 <motion.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
@@ -616,3 +708,4 @@ export default function JuegosClient() {
         </main>
     );
 }
+
