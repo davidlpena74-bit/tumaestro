@@ -24,16 +24,86 @@ type CellPart = {
 
 // Initial calibrated coordinates for Plant Cell
 const PLANT_CELL_PARTS: CellPart[] = [
-    { id: 'nucleus', nameKey: 'nucleus', x: 625, y: 468, lx: 750, ly: 468 },
-    { id: 'nucleolus', nameKey: 'nucleolus', x: 635, y: 468, lx: 750, ly: 300 },
-    { id: 'mitochondria', nameKey: 'mitochondria', x: 410, y: 700, lx: 750, ly: 700 },
-    { id: 'golgi', nameKey: 'golgi', x: 575, y: 645, lx: 750, ly: 645 },
-    { id: 'reticulum', nameKey: 'reticulum', x: 605, y: 555, lx: 750, ly: 555 },
-    { id: 'chloroplast', nameKey: 'chloroplast', x: 265, y: 310, lx: 750, ly: 310 },
-    { id: 'vacuole', nameKey: 'vacuole', x: 395, y: 435, lx: 750, ly: 435 },
-    { id: 'cellWall', nameKey: 'cellWall', x: 325, y: 840, lx: 750, ly: 840 },
-    { id: 'membrane', nameKey: 'membrane', x: 310, y: 795, lx: 750, ly: 795 },
-    { id: 'cytoplasm', nameKey: 'cytoplasm', x: 800, y: 565, lx: 750, ly: 565 },
+    {
+        "id": "nucleus",
+        "nameKey": "nucleus",
+        "x": 440,
+        "y": 409,
+        "lx": 750,
+        "ly": 468
+    },
+    {
+        "id": "nucleolus",
+        "nameKey": "nucleolus",
+        "x": 475,
+        "y": 431,
+        "lx": 750,
+        "ly": 300
+    },
+    {
+        "id": "mitochondria",
+        "nameKey": "mitochondria",
+        "x": 324,
+        "y": 248,
+        "lx": 750,
+        "ly": 700
+    },
+    {
+        "id": "golgi",
+        "nameKey": "golgi",
+        "x": 457,
+        "y": 561,
+        "lx": 750,
+        "ly": 645
+    },
+    {
+        "id": "reticulum",
+        "nameKey": "reticulum",
+        "x": 553,
+        "y": 501,
+        "lx": 750,
+        "ly": 555
+    },
+    {
+        "id": "chloroplast",
+        "nameKey": "chloroplast",
+        "x": 192,
+        "y": 468,
+        "lx": 750,
+        "ly": 310
+    },
+    {
+        "id": "vacuole",
+        "nameKey": "vacuole",
+        "x": 325,
+        "y": 392,
+        "lx": 750,
+        "ly": 435
+    },
+    {
+        "id": "cellWall",
+        "nameKey": "cellWall",
+        "x": 261,
+        "y": 206,
+        "lx": 750,
+        "ly": 840
+    },
+    {
+        "id": "membrane",
+        "nameKey": "membrane",
+        "x": 180,
+        "y": 369,
+        "lx": 750,
+        "ly": 795
+    },
+    {
+        "id": "cytoplasm",
+        "nameKey": "cytoplasm",
+        "x": 216,
+        "y": 396,
+        "lx": 750,
+        "ly": 565
+    }
 ];
 
 export default function PlantCellGame() {
@@ -58,6 +128,10 @@ export default function PlantCellGame() {
         currX: 0,
         currY: 0
     });
+
+
+
+
     const [time, setTime] = useState(0);
     const [errors, setErrors] = useState(0);
     const diagramRef = useRef<HTMLDivElement>(null);
@@ -278,6 +352,11 @@ export default function PlantCellGame() {
                         </div>
                     </div>
 
+
+
+
+
+
                     <svg
                         ref={svgRef}
                         viewBox="-200 0 1200 1000"
@@ -385,6 +464,10 @@ export default function PlantCellGame() {
                                 />
                             </g>
                         ))}
+
+
+
+
                     </svg>
                 </div>
             </div>
