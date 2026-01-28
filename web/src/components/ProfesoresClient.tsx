@@ -4,6 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ArrowRight } from 'lucide-react';
+import { Funnel, CaretDown, Student } from '@phosphor-icons/react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 import CarouselAutoScroll from '@/components/CarouselAutoScroll';
 
 const COMMON_SUBJECTS = [
@@ -17,7 +24,8 @@ const categories = [
         description: 'Expertos en Biología, Física, Química y Ciencias Naturales.',
         iconSrc: '/icons/math.svg',
         color: 'from-blue-500 to-cyan-600',
-        count: '45 Profesores'
+        count: '45 Profesores',
+        grades: ['Primaria', 'ESO', '1º ESO', '3º ESO']
     },
     {
         id: 'languages',
@@ -25,7 +33,8 @@ const categories = [
         description: 'Aprende Inglés, Francés, Alemán o Lengua con nativos.',
         iconSrc: '/icons/english.svg',
         color: 'from-pink-500 to-rose-600',
-        count: '32 Profesores'
+        count: '32 Profesores',
+        grades: ['Primaria', '5º Prim.', 'ESO', '1º ESO', '3º ESO']
     },
     {
         id: 'social-science',
@@ -33,7 +42,8 @@ const categories = [
         description: 'Historia, Geografía, Filosofía y Humanidades.',
         iconSrc: '/icons/language.svg',
         color: 'from-emerald-500 to-teal-600',
-        count: '28 Profesores'
+        count: '28 Profesores',
+        grades: ['Primaria', '5º Prim.', 'ESO']
     },
     {
         id: 'math',
@@ -41,13 +51,22 @@ const categories = [
         description: 'Refuerzo de Matemáticas, Álgebra, Cálculo y ESO.',
         iconSrc: '/icons/geography.svg',
         color: 'from-orange-500 to-amber-600',
-        count: '50 Profesores'
+        count: '50 Profesores',
+        grades: ['Primaria', '3º Prim.', '5º Prim.', 'ESO']
     }
 ];
 
 export default function ProfesoresClient() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [selectedGrade, setSelectedGrade] = useState<string>('all');
+    const [filterOpen, setFilterOpen] = useState(false);
+
+    const availableGrades = ['Primaria', '3º Prim.', '5º Prim.', 'ESO', '1º ESO', '3º ESO'].sort();
+
+    const filteredCategories = selectedGrade === 'all'
+        ? categories
+        : categories.filter(c => c.grades.includes(selectedGrade));
 
     const filteredSubjects = COMMON_SUBJECTS.filter(subject =>
         subject.toLowerCase().includes(searchTerm.toLowerCase())
@@ -122,6 +141,55 @@ export default function ProfesoresClient() {
                                 )}
                             </AnimatePresence>
                         </div>
+
+                        {/* GRADE FILTER DROPDOWN */}
+                        <div className="mt-8 flex justify-center pb-2">
+                            <div className="relative">
+                                <button
+                                    onClick={() => setFilterOpen(!filterOpen)}
+                                    className="flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/20 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-white transition-all shadow-sm min-w-[200px] backdrop-blur-md"
+                                >
+                                    <Funnel className="w-4 h-4 text-teal-400" />
+                                    <span className="flex-grow text-left">
+                                        {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
+                                    </span>
+                                    <CaretDown className={`w-4 h-4 text-white transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                <AnimatePresence>
+                                    {filterOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-white backdrop-blur-xl"
+                                        >
+                                            <button
+                                                onClick={() => { setSelectedGrade('all'); setFilterOpen(false); }}
+                                                className={cn(
+                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-white/10 transition-colors",
+                                                    selectedGrade === 'all' && "bg-teal-500/20 text-teal-400"
+                                                )}
+                                            >
+                                                Todos los Cursos
+                                            </button>
+                                            {availableGrades.map((grade) => (
+                                                <button
+                                                    key={grade}
+                                                    onClick={() => { setSelectedGrade(grade); setFilterOpen(false); }}
+                                                    className={cn(
+                                                        "w-full text-left px-5 py-3 text-sm font-medium hover:bg-white/10 transition-colors",
+                                                        selectedGrade === grade && "bg-teal-500/20 text-teal-400"
+                                                    )}
+                                                >
+                                                    {grade}
+                                                </button>
+                                            ))}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </div>
                     </motion.div>
                 </header>
 
@@ -138,7 +206,7 @@ export default function ProfesoresClient() {
                             </button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {categories.map((cat, idx) => (
+                            {filteredCategories.map((cat, idx) => (
                                 <motion.div
                                     key={cat.id}
                                     initial={{ opacity: 0, y: 20 }}
