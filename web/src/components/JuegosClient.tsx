@@ -270,7 +270,7 @@ export default function JuegosClient() {
                             href: '/juegos/celula-animal',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '1º ESO',
+                            grade: '5º Prim.',
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -280,7 +280,7 @@ export default function JuegosClient() {
                             href: '/juegos/celula-vegetal',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '1º ESO',
+                            grade: '5º Prim.',
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -290,7 +290,7 @@ export default function JuegosClient() {
                             href: '/juegos/sistema-reproductor-masculino',
                             icon: Dna,
                             color: 'from-blue-500 to-indigo-600',
-                            grade: '3º ESO',
+                            grade: '5º Prim.',
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -300,7 +300,7 @@ export default function JuegosClient() {
                             href: '/juegos/sistema-reproductor-femenino',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '3º ESO',
+                            grade: '5º Prim.',
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -310,7 +310,7 @@ export default function JuegosClient() {
                             href: '/juegos/musculos',
                             icon: Brain,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: 'Primaria',
+                            grade: '5º Prim.',
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -320,7 +320,7 @@ export default function JuegosClient() {
                             href: '/juegos/esqueleto',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: 'Primaria',
+                            grade: '5º Prim.',
                             gameType: t.gamesPage.gameTypes.map
                         }
                     ]
@@ -449,55 +449,6 @@ export default function JuegosClient() {
                     >
                         {t.gamesPage.subtitle}
                     </motion.p>
-
-                    {/* GRADE FILTER DROPDOWN */}
-                    <div className="mt-12 flex justify-center">
-                        <div className="relative">
-                            <button
-                                onClick={() => setFilterOpen(!filterOpen)}
-                                className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
-                            >
-                                <Funnel className="w-4 h-4 text-slate-400" weight="bold" />
-                                <span className="flex-grow text-left">
-                                    {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
-                                </span>
-                                <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} weight="bold" />
-                            </button>
-
-                            <AnimatePresence>
-                                {filterOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-slate-700"
-                                    >
-                                        <button
-                                            onClick={() => { setSelectedGrade('all'); setFilterOpen(false); }}
-                                            className={cn(
-                                                "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
-                                                selectedGrade === 'all' && "bg-teal-50 text-teal-600"
-                                            )}
-                                        >
-                                            Todos los Cursos
-                                        </button>
-                                        {availableGrades.map((grade) => (
-                                            <button
-                                                key={grade}
-                                                onClick={() => { setSelectedGrade(grade); setFilterOpen(false); }}
-                                                className={cn(
-                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
-                                                    selectedGrade === grade && "bg-teal-50 text-teal-600"
-                                                )}
-                                            >
-                                                {grade}
-                                            </button>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </div>
                 </header>
 
                 {/* Subject Jump-Links (Chips) */}
@@ -505,7 +456,7 @@ export default function JuegosClient() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-20 px-4 relative z-20 w-full"
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12 px-4 relative z-20 w-full"
                 >
                     {filteredCategories.map((category) => (
                         <motion.a
@@ -563,6 +514,55 @@ export default function JuegosClient() {
                         </motion.a>
                     ))}
                 </motion.div>
+
+                {/* GRADE FILTER DROPDOWN */}
+                <div className="mb-20 flex justify-center">
+                    <div className="relative">
+                        <button
+                            onClick={() => setFilterOpen(!filterOpen)}
+                            className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
+                        >
+                            <Funnel className="w-4 h-4 text-slate-400" weight="bold" />
+                            <span className="flex-grow text-left">
+                                {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
+                            </span>
+                            <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} weight="bold" />
+                        </button>
+
+                        <AnimatePresence>
+                            {filterOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-slate-700"
+                                >
+                                    <button
+                                        onClick={() => { setSelectedGrade('all'); setFilterOpen(false); }}
+                                        className={cn(
+                                            "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                            selectedGrade === 'all' && "bg-teal-50 text-teal-600"
+                                        )}
+                                    >
+                                        Todos los Cursos
+                                    </button>
+                                    {availableGrades.map((grade) => (
+                                        <button
+                                            key={grade}
+                                            onClick={() => { setSelectedGrade(grade); setFilterOpen(false); }}
+                                            className={cn(
+                                                "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                selectedGrade === grade && "bg-teal-50 text-teal-600"
+                                            )}
+                                        >
+                                            {grade}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </div>
 
                 <div className="space-y-24">
                     {filteredCategories.map((category, catIdx) => (
