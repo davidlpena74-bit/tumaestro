@@ -53,6 +53,7 @@ type Category = {
 export default function JuegosClient() {
     const { t } = useLanguage();
     const [selectedGrade, setSelectedGrade] = useState<string>('all');
+    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [filterOpen, setFilterOpen] = useState(false);
 
     const categories: Category[] = [
@@ -405,18 +406,28 @@ export default function JuegosClient() {
         return Array.from(grades).sort();
     }, [categories]);
 
-    // Filter categories and subsections based on selected grade
+    // Filter categories and subsections based on selected grade and selected subject
     const filteredCategories = useMemo(() => {
-        if (selectedGrade === 'all') return categories;
+        let result = categories;
 
-        return categories.map(cat => ({
-            ...cat,
-            subsections: cat.subsections.map(sub => ({
-                ...sub,
-                games: sub.games.filter(game => game.grade === selectedGrade)
-            })).filter(sub => sub.games.length > 0)
-        })).filter(cat => cat.subsections.length > 0);
-    }, [selectedGrade, categories]);
+        // 1. Filter by Grade (Course)
+        if (selectedGrade !== 'all') {
+            result = result.map(cat => ({
+                ...cat,
+                subsections: cat.subsections.map(sub => ({
+                    ...sub,
+                    games: sub.games.filter(game => game.grade === selectedGrade)
+                })).filter(sub => sub.games.length > 0)
+            })).filter(cat => cat.subsections.length > 0);
+        }
+
+        // 2. Filter by Subject (Category ID) if one is selected
+        if (selectedSubject) {
+            result = result.filter(cat => cat.id === selectedSubject);
+        }
+
+        return result;
+    }, [selectedGrade, selectedSubject, categories]);
 
     return (
         <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
@@ -502,7 +513,13 @@ export default function JuegosClient() {
                             href={`#${category.id}`}
                             onClick={(e) => {
                                 e.preventDefault();
-                                document.getElementById(category.id)?.scrollIntoView({ behavior: 'smooth' });
+                                // Toggle subject filter
+                                if (selectedSubject === category.id) {
+                                    setSelectedSubject(null);
+                                } else {
+                                    setSelectedSubject(category.id);
+                                    document.getElementById(category.id)?.scrollIntoView({ behavior: 'smooth' });
+                                }
                             }}
                             whileHover={{
                                 y: -8,
@@ -513,15 +530,15 @@ export default function JuegosClient() {
                             className="group relative block w-full perspective-1000"
                         >
                             <div className={cn(
-                                "relative w-full px-4 py-4 rounded-2xl border border-white/10 text-white font-bold text-sm transition-all duration-300",
+                                "relative w-full px-4 py-4 rounded-2xl border transition-all duration-300",
                                 "group-hover:border-white/30 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden",
                                 "flex flex-col items-center justify-center gap-3 preserve-3d",
-                                "bg-slate-950",
-                                category.id === 'geography' && "bg-emerald-950/60",
-                                category.id === 'biology' && "bg-blue-950/60",
-                                category.id === 'math' && "bg-orange-950/60",
-                                category.id === 'culture' && "bg-violet-950/60",
-                                category.id === 'idiomas' && "bg-pink-950/60"
+                                selectedSubject === category.id ? "bg-slate-900 border-white/40 ring-2 ring-white/20" : "bg-slate-950 border-white/10",
+                                category.id === 'geography' && (selectedSubject === 'geography' ? "bg-emerald-900/40" : "bg-emerald-950/60"),
+                                category.id === 'biology' && (selectedSubject === 'biology' ? "bg-blue-900/40" : "bg-blue-950/60"),
+                                category.id === 'math' && (selectedSubject === 'math' ? "bg-orange-900/40" : "bg-orange-950/60"),
+                                category.id === 'culture' && (selectedSubject === 'culture' ? "bg-violet-900/40" : "bg-violet-950/60"),
+                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "bg-pink-900/40" : "bg-pink-950/60")
                             )}>
                                 {/* Shine Effect */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -686,7 +703,7 @@ export default function JuegosClient() {
                     >
                         <p className="text-slate-500 text-lg">No hay juegos disponibles para este curso todavía.</p>
                         <button
-                            onClick={() => setSelectedGrade('all')}
+                            onClick={() => { setSelectedGrade('all'); setSelectedSubject(null); }}
                             className="mt-4 text-teal-600 font-bold hover:underline"
                         >
                             Ver todos los juegos
