@@ -26,7 +26,7 @@ const subjects = [
     },
     {
         id: 'ingles',
-        title: 'Inglés',
+        title: 'Languages (Inglés)',
         description: 'Vocabulario, listening y ejercicios de speaking.',
         href: '/recursos/ingles',
         icon: Translate,
@@ -34,31 +34,22 @@ const subjects = [
         stat: '90+ Recursos'
     },
     {
-        id: 'geografia',
-        title: 'Historia y Geografía',
-        description: 'Mapas interactivos, líneas de tiempo y documentos históricos.',
+        id: 'social-science',
+        title: 'Social Science',
+        description: 'Historia, Geografía y Mapas Interactivos del mundo.',
         href: '/recursos/geografia',
         icon: GlobeHemisphereWest,
         color: 'from-emerald-500 to-teal-600',
         stat: '85+ Recursos'
     },
     {
-        id: 'idiomas',
-        title: 'Idiomas',
-        description: 'Inglés, francés y otros idiomas. Gramática y vocabulario.',
-        href: '/recursos/idiomas',
-        icon: Translate,
-        color: 'from-pink-500 to-rose-600',
-        stat: 'Nuevo'
-    },
-    {
-        id: 'fisica',
-        title: 'Física y Química',
-        description: 'Experimentos, fórmulas y tabla periódica.',
+        id: 'natural-science',
+        title: 'Natural Science',
+        description: 'Biología, Geología, Física y Química.',
         href: '/recursos/fisica',
         icon: Atom,
         color: 'from-blue-500 to-cyan-600',
-        stat: 'Coming Soon'
+        stat: 'Nueva Sección'
     }
 ];
 

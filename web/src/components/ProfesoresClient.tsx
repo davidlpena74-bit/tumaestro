@@ -12,35 +12,35 @@ const COMMON_SUBJECTS = [
 
 const categories = [
     {
-        id: 'ciencias',
-        title: 'Ciencias y Matemáticas',
-        description: 'Encuentra expertos en Cálculo, Física, Química y Biología.',
+        id: 'natural-science',
+        title: 'Natural Science',
+        description: 'Expertos en Biología, Física, Química y Ciencias Naturales.',
         iconSrc: '/icons/math.svg',
-        color: 'from-blue-500 to-cyan-500',
+        color: 'from-blue-500 to-cyan-600',
         count: '45 Profesores'
     },
     {
-        id: 'idiomas',
-        title: 'Idiomas',
-        description: 'Aprende Inglés, Francés, Alemán o Chino con nativos.',
+        id: 'languages',
+        title: 'Languages',
+        description: 'Aprende Inglés, Francés, Alemán o Lengua con nativos.',
         iconSrc: '/icons/english.svg',
-        color: 'from-pink-500 to-rose-500',
+        color: 'from-pink-500 to-rose-600',
         count: '32 Profesores'
     },
     {
-        id: 'letras',
-        title: 'Letras y Humanidades',
-        description: 'Historia, Filosofía, Lengua y Literatura.',
+        id: 'social-science',
+        title: 'Social Science',
+        description: 'Historia, Geografía, Filosofía y Humanidades.',
         iconSrc: '/icons/language.svg',
-        color: 'from-orange-500 to-red-500',
+        color: 'from-emerald-500 to-teal-600',
         count: '28 Profesores'
     },
     {
-        id: 'primaria',
-        title: 'Apoyo Primaria/ESO',
-        description: 'Refuerzo general y técnicas de estudio para los más jóvenes.',
+        id: 'math',
+        title: 'Matemáticas',
+        description: 'Refuerzo de Matemáticas, Álgebra, Cálculo y ESO.',
         iconSrc: '/icons/geography.svg',
-        color: 'from-emerald-500 to-teal-500',
+        color: 'from-orange-500 to-amber-600',
         count: '50 Profesores'
     }
 ];
