@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { Play, Pause, ArrowLeft, Check, ArrowsClockwise, Gauge, Keyboard, BookOpen, GraduationCap, ArrowCounterClockwise } from '@phosphor-icons/react';
 import { DICTATIONS, Dictation } from './data/dictations';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import confetti from 'canvas-confetti';
+import { getBestVoice } from '@/lib/speech-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -50,9 +52,12 @@ export default function DictationTool() {
     const lastBoundaryTimeRef = useRef<number>(0);
     const lastBoundaryCharIndexRef = useRef<number>(0);
 
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             synthRef.current = window.speechSynthesis;
+            audioRef.current = new Audio();
         }
         return () => {
             cancelSpeech();
@@ -72,107 +77,86 @@ export default function DictationTool() {
     }, []);
 
     const cancelSpeech = () => {
+        // Cancelar TTS
         if (synthRef.current) {
             synthRef.current.cancel();
-            setIsPlaying(false);
-            setIsPaused(false);
-            setCharIndex(0);
-
-            // Stats Reset
-            progressRef.current = 0;
-            baseCharIndexRef.current = 0;
-            currentChunkIndexRef.current = 0;
-            isInPauseGapRef.current = false;
-
-            if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current);
-                animationFrameRef.current = null;
-            }
-            if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-        }
-    };
-
-    const getBestVoice = (lang: string) => {
-        if (!synthRef.current) return null;
-
-        const voices = synthRef.current.getVoices();
-
-        // Priority list specifically for female/soft voices
-        const femaleStoryVoices = [
-            'Google español',
-            'Microsoft Elena',
-            'Microsoft Laura',
-            'Microsoft Helena',
-            'Mónica',
-            'Paulina',
-            'Sabina', // Mexico
-            'Zira',
-            'Samantha'
-        ];
-
-        // 1. First pass: Search GLOBAL list for specific female names (ignoring exact locale connection if needed, but preferring it)
-        for (const name of femaleStoryVoices) {
-            // Try exact lang match first
-            let best = voices.find(v => v.name.includes(name) && v.lang === lang);
-            if (!best) {
-                // Try loose lang match (es-ES vs es-MX)
-                best = voices.find(v => v.name.includes(name) && v.lang.startsWith(lang.split('-')[0]));
-            }
-            if (best) return best;
         }
 
-        // 2. Second pass: 'Natural' voices (Microsoft/Edge usually)
-        const natural = voices.find(v => v.name.includes('Natural') && v.lang.startsWith(lang.split('-')[0]));
-        if (natural) return natural;
+        // Cancelar Audio MP3
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            audioRef.current.src = "";
+        }
 
-        // 3. Fallback: Any voice of the requested language
-        const exactLang = voices.filter(v => v.lang === lang);
-        if (exactLang.length > 0) return exactLang[0];
+        setIsPlaying(false);
+        setIsPaused(false);
+        setCharIndex(0);
 
-        return voices.find(v => v.lang.startsWith(lang.split('-')[0])) || null;
+        // Stats Reset
+        progressRef.current = 0;
+        baseCharIndexRef.current = 0;
+        currentChunkIndexRef.current = 0;
+        isInPauseGapRef.current = false;
+
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+        }
+        if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     };
+
+
 
     const togglePlayback = () => {
-        if (!selectedDictation || !synthRef.current) return;
+        if (!selectedDictation) return;
 
-        // PAUSE FLOW
+        // --- PAUSE LOGIC ---
         if (isPlaying && !isPaused) {
-            synthRef.current.pause(); // Pause TTS if active
+            // Pausar TTS
+            if (synthRef.current && synthRef.current.speaking) {
+                synthRef.current.pause();
+            }
+            // Pausar Audio
+            if (audioRef.current && !audioRef.current.paused) {
+                audioRef.current.pause();
+            }
+
             setIsPlaying(false);
             setIsPaused(true);
 
-            // If in gap, clear timeout but keep 'isInGap' true so we know to resume next chunk
             if (pauseTimeoutRef.current) {
                 clearTimeout(pauseTimeoutRef.current);
                 pauseTimeoutRef.current = null;
             }
-
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
             return;
         }
 
-        // RESUME FLOW
+        // --- RESUME LOGIC ---
         if (!isPlaying && isPaused) {
             setIsPlaying(true);
             setIsPaused(false);
-
-            // Force Ref Update for immediate loop access
             isPlayingRef.current = true;
             isPausedRef.current = false;
 
+            // Resume Audio MP3
+            if (selectedDictation.audioFile && audioRef.current && audioRef.current.src) {
+                audioRef.current.play();
+                lastTimeRef.current = performance.now();
+                requestProgressLoop(true); // true = modo audio
+                return;
+            }
+
+            // Resume TTS (Chunks)
             if (isInPauseGapRef.current) {
-                // If we were paused inside a gap, we just accelerate to the next chunk
                 playNextChunk();
             } else {
-                // Determine if browser TTS was mid-sentence
-                if (synthRef.current.paused) {
+                if (synthRef.current && synthRef.current.paused) {
                     synthRef.current.resume();
-                } else {
-                    // Weird state, safeguard restart? No, might lose place.
                 }
-
                 lastTimeRef.current = performance.now();
-                requestProgressLoop();
+                requestProgressLoop(false); // false = modo TTS
             }
             return;
         }
@@ -183,14 +167,54 @@ export default function DictationTool() {
     // --- MAIN ENGINE ---
 
     const startNewSpeech = () => {
-        if (!selectedDictation || !synthRef.current) return;
+        if (!selectedDictation) return;
 
         cancelSpeech();
 
+        setIsPlaying(true);
+        setIsPaused(false);
+        isPlayingRef.current = true;
+        isPausedRef.current = false;
+
+        // 1. MODO AUDIO (Si existe archivo pre-generado)
+        if (selectedDictation.audioFile && audioRef.current) {
+            const audio = audioRef.current;
+            audio.src = selectedDictation.audioFile;
+
+            // Velocidad
+            const isStory = selectedDictation.category === 'Cuentos';
+            // Los audios ya vienen con velocidad base, pero permitimos ajuste "Lento"
+            audio.playbackRate = isSlow ? 0.75 : 1.0;
+
+            audio.play().catch(e => {
+                console.error("Error playing audio, falling back to TTS", e);
+                // Fallback a TTS si falla la carga
+                // startTTSLogic(); // (Implementar si se desea robustez extrema)
+            });
+
+            // Loop visual basado en tiempo
+            lastTimeRef.current = performance.now();
+            requestProgressLoop(true);
+
+            audio.onended = () => {
+                setIsPlaying(false);
+                setIsPaused(false);
+                setCharIndex(selectedDictation.text.length);
+                if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+            };
+
+            return;
+        }
+
+        // 2. MODO TTS (Fallback original)
+        startTTSLogic();
+    };
+
+    const startTTSLogic = () => {
+        if (!selectedDictation || !synthRef.current) return;
+
         // SPLIT TEXT INTO SENTENCE CHUNKS
         const text = selectedDictation.text;
-        // Logic: Split by punctuation, but keep punctuation attached to preceding segment
-        // Regex finds: Any chars until a delimiter [.!?] then optionally spaces or end of line
         const rawChunks = text.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g) || [text];
         chunksRef.current = rawChunks;
 
@@ -198,19 +222,13 @@ export default function DictationTool() {
         currentChunkIndexRef.current = 0;
         baseCharIndexRef.current = 0;
         progressRef.current = 0;
-        currentSpeedRef.current = isSlow ? 0.010 : 0.014; // Base guess
-
-        setIsPlaying(true);
-        setIsPaused(false);
-        isPlayingRef.current = true;
-        isPausedRef.current = false;
+        currentSpeedRef.current = isSlow ? 0.010 : 0.014;
 
         playNextChunk();
     };
 
     const playNextChunk = () => {
         if (currentChunkIndexRef.current >= chunksRef.current.length) {
-            // FINISHED ALL
             setIsPlaying(false);
             setIsPaused(false);
             setCharIndex(selectedDictation?.text.length || 0);
@@ -221,34 +239,30 @@ export default function DictationTool() {
         isInPauseGapRef.current = false;
         progressRef.current = 0;
 
-        // Create Utterance
         const u = new SpeechSynthesisUtterance(chunkText);
         u.lang = selectedDictation!.lang;
 
-        // Slightly slower for stories to be more dramatic/clear
         const isStory = selectedDictation!.category === 'Cuentos';
         const categoryRate = isStory ? 0.85 : 0.95;
         u.rate = categoryRate * (isSlow ? 0.75 : 1);
 
         if (isStory) {
-            u.pitch = 1.1; // More engaging tone for kids
+            u.pitch = 1.05; // Tono más cálido/humano
         }
 
         const voice = getBestVoice(selectedDictation!.lang);
         if (voice) u.voice = voice;
 
-        // Start Visual Loop for this chunk
         lastTimeRef.current = performance.now();
         lastBoundaryTimeRef.current = performance.now();
         lastBoundaryCharIndexRef.current = 0;
-        requestProgressLoop();
+        requestProgressLoop(false);
 
         u.onboundary = (event) => {
             if (event.name === 'word' || event.name === 'sentence' || !event.name) {
                 const currentIndex = event.charIndex;
                 let currentLength = event.charLength;
 
-                // LEARNING SPEED
                 const now = performance.now();
                 const timeDiff = now - lastBoundaryTimeRef.current;
                 const charDiff = currentIndex - lastBoundaryCharIndexRef.current;
@@ -265,33 +279,24 @@ export default function DictationTool() {
                     currentLength = match ? match[0].length : 0;
                 }
 
-                // SNAP to confirmed position
                 progressRef.current = currentIndex + currentLength;
-
-                // Update Global (Base + Local)
                 setCharIndex(baseCharIndexRef.current + progressRef.current);
             }
         };
 
         u.onend = () => {
-            // Stop loop for this chunk
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
 
-            // Mark this chunk solidly done
             baseCharIndexRef.current += chunkText.length;
-            setCharIndex(baseCharIndexRef.current); // Force visual completion
+            setCharIndex(baseCharIndexRef.current);
 
-            // Prepare Pause
             isInPauseGapRef.current = true;
             currentChunkIndexRef.current++;
 
-            // VARIABLE PAUSE DURATION
-            // Stories get longer dramatic pauses
             const isStory = selectedDictation!.category === 'Cuentos';
             const pauseDuration = isStory ? 1200 : 600;
 
             pauseTimeoutRef.current = setTimeout(() => {
-                // Only verify state (if user paused during gap)
                 if (isPlayingRef.current && !isPausedRef.current) {
                     playNextChunk();
                 }
@@ -308,14 +313,35 @@ export default function DictationTool() {
         synthRef.current!.speak(u);
     };
 
-    const requestProgressLoop = () => {
+    const requestProgressLoop = (isAudioMode: boolean = false) => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
 
         lastTimeRef.current = performance.now();
 
         const loop = (time: number) => {
             if (!isPlayingRef.current && !isPausedRef.current) return;
-            if (isPausedRef.current || isInPauseGapRef.current) {
+            if (isPausedRef.current) {
+                lastTimeRef.current = time;
+                animationFrameRef.current = requestAnimationFrame(loop);
+                return;
+            }
+
+            // --- MODO AUDIO MP3 ---
+            if (isAudioMode && audioRef.current) {
+                const audio = audioRef.current;
+                if (audio.duration > 0 && selectedDictation) {
+                    const pct = audio.currentTime / audio.duration;
+                    const totalChars = selectedDictation.text.length;
+                    setCharIndex(Math.min(totalChars, Math.floor(pct * totalChars)));
+                } else {
+                    // Fallback visual si duración no disponible aún
+                }
+                animationFrameRef.current = requestAnimationFrame(loop);
+                return;
+            }
+
+            // --- MODO TTS TRADICIONAL ---
+            if (isInPauseGapRef.current) {
                 lastTimeRef.current = time;
                 animationFrameRef.current = requestAnimationFrame(loop);
                 return;
@@ -329,9 +355,7 @@ export default function DictationTool() {
 
             if (progressRef.current < currentChunkLen) {
                 progressRef.current += deltaTime * estimatedSpeed;
-                // Clamp
                 if (progressRef.current > currentChunkLen) progressRef.current = currentChunkLen;
-
                 setCharIndex(Math.floor(baseCharIndexRef.current + progressRef.current));
             }
 
@@ -390,8 +414,8 @@ export default function DictationTool() {
 
         return (
             <p className="text-xl md:text-2xl font-serif leading-relaxed transition-all">
-                <span className="text-emerald-400 font-medium transition-all duration-75 border-b-2 border-emerald-500/50">{readPart}</span>
-                <span className="text-white/30">{unreadPart}</span>
+                <span className="text-slate-900 font-medium transition-all duration-75">{readPart}</span>
+                <span className="text-slate-400 font-medium">{unreadPart}</span>
             </p>
         );
     };
@@ -399,9 +423,18 @@ export default function DictationTool() {
     if (!selectedDictation) {
         return (
             <div className="w-full max-w-6xl mx-auto p-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="mb-8">
+                    <Link
+                        href="/recursos"
+                        className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200"
+                    >
+                        <ArrowLeft weight="bold" /> Volver a Recursos
+                    </Link>
+                </div>
+
                 <header className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Dictados Interactivos</h2>
-                    <p className="text-xl text-white/60 max-w-2xl mx-auto">
+                    <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Dictados Interactivos</h2>
+                    <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
                         Mejora tu ortografía y comprensión auditiva. Escucha, escribe y corrige al instante.
                     </p>
                 </header>
@@ -412,32 +445,32 @@ export default function DictationTool() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setSelectedDictation(dictation)}
-                            className="bg-white/10 hover:bg-white/20 border border-white/10 p-6 rounded-3xl text-left transition-all group relative overflow-hidden backdrop-blur-md"
+                            className="bg-white/40 hover:bg-white/60 backdrop-blur-md border border-slate-200/50 p-6 rounded-3xl text-left transition-all group relative overflow-hidden shadow-lg hover:shadow-xl"
                         >
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Keyboard className="w-24 h-24 text-white" />
+                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <Keyboard className="w-24 h-24 text-slate-900" />
                             </div>
                             <div className="relative z-10">
                                 <div className="flex gap-2 mb-4">
                                     <span className={cn(
-                                        "px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border border-white/10",
-                                        dictation.level === 'Fácil' ? "bg-emerald-500/20 text-emerald-300" :
-                                            dictation.level === 'Medio' ? "bg-amber-500/20 text-amber-300" :
-                                                "bg-rose-500/20 text-rose-300"
+                                        "px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border border-slate-200/50",
+                                        dictation.level === 'Fácil' ? "bg-emerald-100/80 text-emerald-700" :
+                                            dictation.level === 'Medio' ? "bg-amber-100/80 text-amber-700" :
+                                                "bg-rose-100/80 text-rose-700"
                                     )}>
                                         {dictation.level}
                                     </span>
-                                    <span className="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 rounded-full text-[10px] font-bold uppercase tracking-wide border border-white/10">
+                                    <span className="px-2.5 py-0.5 bg-blue-100/80 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wide border border-slate-200/50">
                                         {dictation.category}
                                     </span>
                                     {dictation.lang === 'en-US' && (
-                                        <span className="px-2.5 py-0.5 bg-purple-500/20 text-purple-300 rounded-full text-[10px] font-bold uppercase tracking-wide border border-white/10">
+                                        <span className="px-2.5 py-0.5 bg-purple-100/80 text-purple-700 rounded-full text-[10px] font-bold uppercase tracking-wide border border-slate-200/50">
                                             English
                                         </span>
                                     )}
                                 </div>
-                                <h3 className="text-2xl font-bold text-white mb-2">{dictation.title}</h3>
-                                <p className="text-white/60 text-sm line-clamp-2">{dictation.text}</p>
+                                <h3 className="text-2xl font-bold text-slate-800 mb-2">{dictation.title}</h3>
+                                <p className="text-slate-600 font-medium text-sm line-clamp-2">{dictation.text}</p>
                             </div>
                         </motion.button>
                     ))}
@@ -461,7 +494,7 @@ export default function DictationTool() {
                 </div>
             </div>
 
-            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-2xl relative overflow-hidden">
+            <div className="bg-transparent border border-white/5 rounded-[2rem] p-6 md:p-8 shadow-2xl relative overflow-hidden">
                 <div className="flex flex-col items-center justify-center mb-8 gap-4">
                     <div className="bg-slate-800/50 p-1.5 rounded-full flex items-center gap-2 border border-white/10 shadow-inner">
                         <button

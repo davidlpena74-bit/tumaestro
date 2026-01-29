@@ -488,28 +488,29 @@ export default function JuegosClient() {
                         >
                             <div className={cn(
                                 "relative w-full px-4 py-4 rounded-2xl border transition-all duration-300",
-                                "group-hover:border-white/30 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden",
+                                "group-hover:border-slate-300 shadow-sm overflow-hidden",
                                 "flex flex-col items-center justify-center gap-3 preserve-3d",
-                                selectedSubject === category.id ? "bg-slate-900 border-white/40 ring-2 ring-white/20" : "bg-slate-950 border-white/10",
-                                category.id === 'geography' && (selectedSubject === 'geography' ? "bg-emerald-900/40" : "bg-emerald-950/60"),
-                                category.id === 'biology' && (selectedSubject === 'biology' ? "bg-blue-900/40" : "bg-blue-950/60"),
-                                category.id === 'math' && (selectedSubject === 'math' ? "bg-orange-900/40" : "bg-orange-950/60"),
-                                category.id === 'culture' && (selectedSubject === 'culture' ? "bg-violet-900/40" : "bg-violet-950/60"),
-                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "bg-pink-900/40" : "bg-pink-950/60")
+                                "text-slate-700 font-bold",
+                                selectedSubject === category.id ? "bg-white/70 border-slate-400 ring-2 ring-slate-400/10" : "bg-white/30 border-slate-200/60",
+                                category.id === 'geography' && (selectedSubject === 'geography' ? "bg-emerald-100/60" : "bg-emerald-50/40"),
+                                category.id === 'biology' && (selectedSubject === 'biology' ? "bg-blue-100/60" : "bg-blue-50/40"),
+                                category.id === 'math' && (selectedSubject === 'math' ? "bg-orange-100/60" : "bg-orange-50/40"),
+                                category.id === 'culture' && (selectedSubject === 'culture' ? "bg-violet-100/60" : "bg-violet-50/40"),
+                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "bg-pink-100/60" : "bg-pink-50/40")
                             )}>
                                 {/* Shine Effect */}
-                                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                                 {/* Theme Background Overlay (Subtle) */}
-                                <div className={`absolute inset-0 bg-gradient-to-br ${category.colorTheme} opacity-10 group-hover:opacity-20 transition-opacity duration-300`} />
+                                <div className={`absolute inset-0 bg-gradient-to-br ${category.colorTheme} opacity-5 group-hover:opacity-10 transition-opacity duration-300`} />
 
                                 {/* Icon */}
                                 <category.icon className={cn("w-6 h-6 mb-1 transition-transform duration-300 group-hover:scale-110",
-                                    category.id === 'geography' && "text-emerald-400",
-                                    category.id === 'biology' && "text-blue-400",
-                                    category.id === 'math' && "text-orange-400",
-                                    category.id === 'culture' && "text-violet-400",
-                                    category.id === 'idiomas' && "text-pink-400"
+                                    category.id === 'geography' && "text-emerald-600",
+                                    category.id === 'biology' && "text-blue-600",
+                                    category.id === 'math' && "text-orange-600",
+                                    category.id === 'culture' && "text-violet-600",
+                                    category.id === 'idiomas' && "text-pink-600"
                                 )} weight="duotone" />
 
                                 <span className="relative z-10 tracking-tight text-center whitespace-nowrap">{category.title}</span>
@@ -645,7 +646,7 @@ export default function JuegosClient() {
                                                                     {game.gameType && (
                                                                         <div className={cn(
                                                                             "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
-                                                                            "bg-white/5 text-white/40 border-white/10"
+                                                                            "bg-white/40 text-slate-700 border-white/20"
                                                                         )}>
                                                                             {(() => {
                                                                                 if (game.gameType === t.gamesPage.gameTypes.map) return <MapTrifold className="w-3 h-3" weight="regular" />;
@@ -662,7 +663,7 @@ export default function JuegosClient() {
                                                                     <div className="flex gap-1.5">
                                                                         <div className={cn(
                                                                             "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
-                                                                            "bg-white/5 text-white/40 border-white/10"
+                                                                            "bg-white/40 text-slate-700 border-white/20"
                                                                         )}>
                                                                             <Student className="w-3 h-3" weight="regular" />
                                                                             {game.grade}
@@ -671,7 +672,7 @@ export default function JuegosClient() {
                                                                         {game.region && (
                                                                             <div className={cn(
                                                                                 "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
-                                                                                "bg-white/5 text-white/40 border-white/10"
+                                                                                "bg-white/40 text-slate-700 border-white/20"
                                                                             )}>
                                                                                 <GlobeHemisphereWest className="w-3 h-3" weight="regular" />
                                                                                 {game.region}

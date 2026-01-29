@@ -1,3 +1,5 @@
+import { GENERATED_STORIES } from '../../../../scripts/story-finder/generated_stories';
+
 export interface Dictation {
     id: string;
     title: string;
@@ -6,6 +8,8 @@ export interface Dictation {
     category: 'Ortografía' | 'Cultura' | 'Literatura' | 'Cuentos';
     lang: 'es-ES' | 'en-US';
     image?: string;
+    audioFile?: string;
+    metadata?: any;
 }
 
 export const DICTATIONS: Dictation[] = [
@@ -16,7 +20,8 @@ export const DICTATIONS: Dictation[] = [
         level: 'Fácil',
         category: 'Cuentos',
         lang: 'es-ES',
-        image: '/story_forest.png'
+        image: '/story_forest.png',
+        audioFile: '/audios/stories/forest-magic.mp3'
     },
     {
         id: 'space-adventure',
@@ -25,7 +30,8 @@ export const DICTATIONS: Dictation[] = [
         level: 'Medio',
         category: 'Cuentos',
         lang: 'es-ES',
-        image: '/story_space.png'
+        image: '/story_space.png',
+        audioFile: '/audios/stories/space-adventure.mp3'
     },
     {
         id: 'cervantes',
@@ -33,7 +39,8 @@ export const DICTATIONS: Dictation[] = [
         text: "En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor.",
         level: 'Medio',
         category: 'Literatura',
-        lang: 'es-ES'
+        lang: 'es-ES',
+        audioFile: '/audios/stories/cervantes.mp3'
     },
     {
         id: 'b-v',
@@ -49,7 +56,8 @@ export const DICTATIONS: Dictation[] = [
         text: "Yesterday I went for a walk in the forest. The trees were tall and green. I saw a small squirrel climbing up an oak tree. It was a beautiful sunny day.",
         level: 'Fácil',
         category: 'Cultura',
-        lang: 'en-US'
+        lang: 'en-US',
+        audioFile: '/audios/stories/nature-en.mp3'
     },
     {
         id: 'ciencias',
@@ -66,5 +74,31 @@ export const DICTATIONS: Dictation[] = [
         level: 'Medio',
         category: 'Ortografía',
         lang: 'es-ES'
-    }
+    },
+    {
+        id: 'mitologia-griega',
+        title: 'Hércules y el León',
+        text: "Hércules era un héroe muy valiente. En su primera misión, tuvo que enfrentarse al temible león de Nemea. Con su fuerza increíble y astucia, logró vencer a la fiera y proteger a todo el pueblo.",
+        level: 'Medio',
+        category: 'Cultura',
+        lang: 'es-ES'
+    },
+    {
+        id: 'tres-cerditos',
+        title: 'Los Tres Cerditos',
+        text: "El cerdito mayor construyó su casa con ladrillos y cemento. Sabía que el lobo soplaba con mucha fuerza. Sus hermanos, agotados tras huir de la cabaña de paja y madera, buscaron refugio en su sólida vivienda.",
+        level: 'Fácil',
+        category: 'Cuentos',
+        lang: 'es-ES'
+    },
+    {
+        id: 'acentuacion-pro',
+        title: 'Reto de Tildes',
+        text: "El pájaro carpintero voló rápidamente hacia el árbol. Allá encontró una bellota deliciosa que guardó para el frío invierno. ¡Qué alegría sintió al ver que su nido estaba seguro y cálido!",
+        level: 'Difícil',
+        category: 'Ortografía',
+        lang: 'es-ES'
+    },
+    // Añadimos los cuentos generados por el agente
+    ...(GENERATED_STORIES as Dictation[])
 ];

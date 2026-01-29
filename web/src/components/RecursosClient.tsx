@@ -19,9 +19,19 @@ const subjects = [
         description: 'Mejora tu ortografía escuchando y escribiendo.',
         href: '/recursos/dictados',
         icon: Student,
-        color: 'from-fuchsia-500 to-purple-600',
+        color: 'from-fuchsia-100 to-purple-200',
         stat: 'Herramienta Online',
         grades: ['Primaria', '3º Prim.', '5º Prim.', 'ESO']
+    },
+    {
+        id: 'cuentacuentos',
+        title: 'El Cuenta Cuentos',
+        description: 'Lectura inmersiva y narración mágica de libros clásicos.',
+        href: '/recursos/cuentacuentos',
+        icon: BookOpen,
+        color: 'from-amber-100 to-orange-200',
+        stat: 'Nueva Herramienta',
+        grades: ['Infantil', 'Primaria', 'ESO']
     }
 ];
 
@@ -37,7 +47,7 @@ export default function RecursosClient() {
         : subjects.filter(s => s.grades.includes(selectedGrade));
 
     return (
-        <main className="min-h-screen text-white pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
+        <main className="min-h-screen pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
 
 
             <div className="max-w-7xl mx-auto relative z-10">
@@ -47,7 +57,7 @@ export default function RecursosClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-white pb-2"
+                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
                     >
                         Recursos por Materia
                     </motion.h1>
@@ -55,7 +65,7 @@ export default function RecursosClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-gray-400 max-w-2xl mx-auto mt-2"
+                        className="text-xl text-slate-700 font-medium max-w-2xl mx-auto mt-2"
                     >
                         Accede a miles de apuntes, ejercicios resueltos y guías de estudio organizadas por nuestros mejores profesores.
                     </motion.p>
@@ -65,13 +75,13 @@ export default function RecursosClient() {
                         <div className="relative">
                             <button
                                 onClick={() => setFilterOpen(!filterOpen)}
-                                className="flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/20 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-white transition-all shadow-sm min-w-[200px] backdrop-blur-md"
+                                className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
                             >
-                                <Funnel className="w-4 h-4 text-teal-400" weight="bold" />
+                                <Funnel className="w-4 h-4 text-slate-400" weight="bold" />
                                 <span className="flex-grow text-left">
                                     {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
                                 </span>
-                                <CaretDown className={`w-4 h-4 text-white transition-transform ${filterOpen ? 'rotate-180' : ''}`} weight="bold" />
+                                <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} weight="bold" />
                             </button>
 
                             <AnimatePresence>
@@ -80,13 +90,13 @@ export default function RecursosClient() {
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-white backdrop-blur-xl"
+                                        className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-slate-700"
                                     >
                                         <button
                                             onClick={() => { setSelectedGrade('all'); setFilterOpen(false); }}
                                             className={cn(
-                                                "w-full text-left px-5 py-3 text-sm font-medium hover:bg-white/10 transition-colors",
-                                                selectedGrade === 'all' && "bg-teal-500/20 text-teal-400"
+                                                "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                selectedGrade === 'all' && "bg-teal-50 text-teal-600"
                                             )}
                                         >
                                             Todos los Cursos
@@ -96,8 +106,8 @@ export default function RecursosClient() {
                                                 key={grade}
                                                 onClick={() => { setSelectedGrade(grade); setFilterOpen(false); }}
                                                 className={cn(
-                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-white/10 transition-colors",
-                                                    selectedGrade === grade && "bg-teal-500/20 text-teal-400"
+                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                    selectedGrade === grade && "bg-teal-50 text-teal-600"
                                                 )}
                                             >
                                                 {grade}
@@ -121,7 +131,7 @@ export default function RecursosClient() {
                         >
                             <Link href={subject.href} className="group relative block h-full">
                                 <div className={`absolute inset-0 bg-gradient-to-br ${subject.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-3xl blur-xl`} />
-                                <div className={`h-full bg-white/30 backdrop-blur-md border border-white/40 py-4 px-5 rounded-3xl transition-all duration-300 group-hover:bg-white/30 group-hover:border-white/40 group-hover:translate-y-[-5px] overflow-hidden relative flex flex-col shadow-2xl`}>
+                                <div className={`h-full bg-white/40 backdrop-blur-md border border-slate-200/50 py-4 px-5 rounded-3xl transition-all duration-300 group-hover:bg-white/60 group-hover:border-slate-300 shadow-lg hover:shadow-xl overflow-hidden relative flex flex-col`}>
 
                                     {/* Hover Glow */}
                                     <div className={`absolute -right-20 -top-20 w-64 h-64 bg-gradient-to-br ${subject.color} opacity-[0.05] rounded-full blur-3xl group-hover:opacity-10 transition-opacity`} />
@@ -131,20 +141,20 @@ export default function RecursosClient() {
                                             <subject.icon className="w-5 h-5 text-white" weight="duotone" />
                                         </div>
                                         <div className="flex flex-col gap-1.5 pt-0.5">
-                                            <div className="px-2.5 py-0.5 bg-white/5 rounded-full text-[9px] font-bold text-gray-400 border border-white/5 uppercase tracking-wide w-fit backdrop-blur-md">
+                                            <div className="px-2.5 py-0.5 bg-slate-100/80 rounded-full text-[9px] font-bold text-slate-500 border border-slate-200/40 uppercase tracking-wide w-fit backdrop-blur-sm">
                                                 {subject.stat}
                                             </div>
                                         </div>
                                     </div>
 
-                                    <h3 className="text-lg font-bold text-white mb-0.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-colors line-clamp-1">
+                                    <h3 className="text-lg font-bold text-slate-800 mb-0.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-slate-800 group-hover:to-slate-600 transition-colors line-clamp-1">
                                         {subject.title}
                                     </h3>
-                                    <p className="text-white mb-3 leading-relaxed text-xs line-clamp-3 min-h-[2.2rem]">
+                                    <p className="text-slate-600 font-medium mb-3 leading-relaxed text-xs line-clamp-3 min-h-[2.2rem]">
                                         {subject.description}
                                     </p>
 
-                                    <div className="flex items-center text-sm font-bold text-white/50 group-hover:text-white transition-colors mt-auto">
+                                    <div className="flex items-center text-sm font-bold text-slate-400 group-hover:text-slate-800 transition-colors mt-auto">
                                         VER RECURSOS <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                     </div>
                                 </div>
@@ -157,11 +167,11 @@ export default function RecursosClient() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.6 }}
-                        className="relative h-full min-h-[250px] flex flex-col items-center justify-center bg-white/5 border border-white/5 border-dashed rounded-3xl p-8 text-center text-gray-500 group cursor-default backdrop-blur-sm"
+                        className="relative h-full min-h-[250px] flex flex-col items-center justify-center bg-white/20 border border-slate-200/50 border-dashed rounded-3xl p-8 text-center text-slate-400 group cursor-default backdrop-blur-sm shadow-sm"
                     >
-                        <BookOpen className="w-10 h-10 mb-4 opacity-20 group-hover:opacity-40 transition-opacity" weight="duotone" />
-                        <h3 className="text-lg font-bold mb-1">Más Materias</h3>
-                        <p className="text-xs">Pronto añadiremos Economía, Biología y más.</p>
+                        <BookOpen className="w-10 h-10 mb-4 opacity-30 group-hover:opacity-60 transition-opacity" weight="duotone" />
+                        <h3 className="text-lg font-bold text-slate-700 mb-1">Más Materias</h3>
+                        <p className="text-xs text-slate-500 font-medium">Pronto añadiremos Economía, Biología y más.</p>
                     </motion.div>
 
                 </div>
