@@ -40,8 +40,8 @@ export default function EuropeRiversGame() {
     const [completedRivers, setCompletedRivers] = useState<string[]>([]);
 
     // Zoom state
-    const [zoom, setZoom] = useState(1);
-    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1.8);
+    const [pan, setPan] = useState({ x: -80, y: -170 });
     const [isDragging, setIsDragging] = useState(false);
     const dragStart = useRef({ x: 0, y: 0 });
     const clickStart = useRef({ x: 0, y: 0 });
@@ -205,7 +205,7 @@ export default function EuropeRiversGame() {
                 {/* MAP CONTAINER */}
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center group cursor-move",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center cursor-move",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}
@@ -316,9 +316,10 @@ export default function EuropeRiversGame() {
                                     const isFailed = failedRivers.includes(name);
 
                                     // Stroke Colors
-                                    let strokeColor = '#38bdf8'; // sky-400 (Default)
-                                    if (isCompleted) strokeColor = '#22c55e'; // green-500
-                                    if (isFailed) strokeColor = '#ef4444'; // red-500
+                                    // Stroke Colors - MATCH RIVERS GAME
+                                    let strokeColor = '#2563eb';
+                                    if (isCompleted) strokeColor = '#22c55e';
+                                    if (isFailed) strokeColor = '#ef4444';
 
                                     return (
                                         <g key={name} className="cursor-pointer group pointer-events-auto">
@@ -338,17 +339,17 @@ export default function EuropeRiversGame() {
                                                 onClick={(e) => handleRiverClick(name, e)}
                                                 d={d}
                                                 stroke={strokeColor}
-                                                strokeWidth={isTarget || isCompleted ? 5 : 3}
+                                                strokeWidth={isTarget || isCompleted ? 6 : 4}
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 fill="none"
-                                                className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-teal-400 group-hover:stroke-[6px]' : ''}`}
+                                                className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-teal-400 group-hover:stroke-[10px]' : ''}`}
                                                 style={{ filter: 'url(#river-glow)' }}
                                             />
                                             <path
                                                 d={d}
                                                 stroke="rgba(255,255,255,0.3)"
-                                                strokeWidth={(isTarget || isCompleted ? 5 : 3) / 2}
+                                                strokeWidth={(isTarget || isCompleted ? 6 : 4) / 2}
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 fill="none"
