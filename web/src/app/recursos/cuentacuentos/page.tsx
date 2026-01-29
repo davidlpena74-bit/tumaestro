@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import StorytellerTool from '@/components/resources/storyteller/StorytellerTool';
-import PageBackground from '@/components/PageBackground';
 
 export const metadata: Metadata = {
     title: 'El Cuenta Cuentos | Libros Infantiles Narrados Online',
@@ -11,8 +10,6 @@ export const metadata: Metadata = {
 export default function StorytellerPage() {
     return (
         <div className="min-h-screen relative overflow-hidden bg-transparent">
-            <PageBackground />
-
             {/* Main Content */}
             <div className="relative z-20 pt-32 pb-12">
                 <StorytellerTool />

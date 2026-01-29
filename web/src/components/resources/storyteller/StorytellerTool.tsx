@@ -58,6 +58,16 @@ export default function StorytellerTool() {
         };
     }, []);
 
+    useEffect(() => {
+        if (isPlaying && selectedBook) {
+            // Un pequeño retraso para que la animación de cambio de página se vea mejor
+            const timer = setTimeout(() => {
+                speakPage();
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [currentPage]);
+
     const requestProgressLoop = () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         lastTimeRef.current = performance.now();
@@ -68,7 +78,7 @@ export default function StorytellerTool() {
             const deltaTime = time - lastTimeRef.current;
             lastTimeRef.current = time;
 
-            const text = selectedBook?.content[currentPage] || "";
+            const text = selectedBook?.content[currentPage].text || "";
             if (progressRef.current < text.length) {
                 progressRef.current += deltaTime * currentSpeedRef.current;
                 setCharIndex(Math.min(text.length, Math.floor(progressRef.current)));
@@ -85,7 +95,8 @@ export default function StorytellerTool() {
         synthRef.current.cancel();
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
 
-        const text = selectedBook.content[currentPage];
+        const page = selectedBook.content[currentPage];
+        const text = page.text;
         const utterance = new SpeechSynthesisUtterance(text);
 
         // Reset progress states
@@ -136,9 +147,17 @@ export default function StorytellerTool() {
         };
 
         utterance.onend = () => {
-            setIsPlaying(false);
-            setCharIndex(text.length);
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+
+            if (currentPage < selectedBook.content.length - 1) {
+                // Avanzar página automáticamente
+                setCurrentPage(prev => prev + 1);
+                // No cambiamos isPlaying a false para que el useEffect dispare la siguiente página
+            } else {
+                setIsPlaying(false);
+                isPlayingRef.current = false;
+                setCharIndex(text.length);
+            }
         };
 
         utteranceRef.current = utterance;
@@ -255,7 +274,26 @@ export default function StorytellerTool() {
                     </div>
 
                     {/* Principal: Texto */}
-                    <div className="lg:col-span-8 min-h-[600px] flex flex-col">
+                    <div className="lg:col-span-8 min-h-[600px] flex flex-col gap-6">
+                        {/* Imagen de la Página (si existe) */}
+                        <AnimatePresence mode="wait">
+                            {selectedBook.content[currentPage].image && (
+                                <motion.div
+                                    key={`img-${currentPage}`}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
+                                >
+                                    <img
+                                        src={selectedBook.content[currentPage].image}
+                                        className="w-full h-full object-cover"
+                                        alt={`Ilustración página ${currentPage + 1}`}
+                                    />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl relative overflow-hidden">
                             <AnimatePresence mode="wait">
                                 <motion.div
@@ -271,10 +309,10 @@ export default function StorytellerTool() {
                                     </div>
                                     <div className="relative">
                                         <span className="text-slate-900 font-medium transition-all duration-75">
-                                            {selectedBook.content[currentPage].slice(0, charIndex)}
+                                            {selectedBook.content[currentPage].text.slice(0, charIndex)}
                                         </span>
                                         <span className="text-slate-400 font-medium">
-                                            {selectedBook.content[currentPage].slice(charIndex)}
+                                            {selectedBook.content[currentPage].text.slice(charIndex)}
                                         </span>
                                     </div>
                                 </motion.div>
