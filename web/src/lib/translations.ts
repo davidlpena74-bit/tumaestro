@@ -101,6 +101,15 @@ export const TRANSLATIONS = {
                 northAmericaMapDesc: 'Ubica los países de América del Norte y el Caribe.',
                 southAmericaMap: 'Sudamérica',
                 southAmericaMapDesc: 'Ubica las naciones del continente sudamericano.',
+                africaMap: 'Mapa de África',
+                africaMapDesc: 'Ubica las 54 naciones del continente africano.',
+                asiaOceaniaMap: 'Asia y Oceanía',
+
+                asiaOceaniaMapDesc: 'Explora desde las estepas asiáticas hasta las islas del Pacífico.',
+                asiaMap: 'Mapa de Asia',
+                asiaMapDesc: 'Explora el vasto continente asiático.',
+                oceaniaMap: 'Mapa de Oceanía',
+                oceaniaMapDesc: 'Descubre las islas del Pacífico y Australia.',
                 usaStatesMap: 'Estados de EE.UU.',
                 usaStatesMapDesc: '¿Conoces la ubicación de los 50 estados de la unión?',
                 riversSpain: 'Ríos de España',
@@ -127,8 +136,9 @@ export const TRANSLATIONS = {
                 maleReproductiveDesc: 'Identifica las partes y órganos del sistema reproductor masculino.',
                 femaleReproductive: 'Aparato Reproductor Femenino',
                 femaleReproductiveDesc: 'Identifica las partes y órganos del sistema reproductor femenino.',
+                verbs: 'Verbos Irregulares',
+                verbsDesc: 'Practica los verbos irregulares en inglés.',
 
-                usaStatesMap: 'Estados de EE.UU.'
             },
             divisionGame: {
                 title: 'División de Pizzas',
@@ -160,6 +170,8 @@ export const TRANSLATIONS = {
                 southAmerica: 'Sudamérica',
                 africa: 'África',
                 asiaOceania: 'Asia y Oceanía',
+                asia: 'Asia',
+                oceania: 'Oceanía',
                 usa: 'EE.UU.',
                 languages: 'Idiomas',
                 allGrades: 'Todos los Cursos',
@@ -337,6 +349,15 @@ export const TRANSLATIONS = {
                 northAmericaMapDesc: 'Locate countries in North America and the Caribbean.',
                 southAmericaMap: 'South America',
                 southAmericaMapDesc: 'Locate the nations of the South American continent.',
+                africaMap: 'Map of Africa',
+                africaMapDesc: 'Locate the 54 nations of the African continent.',
+
+                asiaOceaniaMap: 'Asia & Oceania',
+                asiaOceaniaMapDesc: 'Explore from the Asian steppes to the Pacific islands.',
+                asiaMap: 'Map of Asia',
+                asiaMapDesc: 'Explore the vast Asian continent.',
+                oceaniaMap: 'Map of Oceania',
+                oceaniaMapDesc: 'Discover the Pacific islands and Australia.',
                 usaStatesMap: 'US States',
                 usaStatesMapDesc: 'Do you know the location of all 50 states?',
                 riversSpain: 'Rivers of Spain',
@@ -363,8 +384,9 @@ export const TRANSLATIONS = {
                 maleReproductiveDesc: 'Identify the parts and organs of the male reproductive system.',
                 femaleReproductive: 'Female Reproductive System',
                 femaleReproductiveDesc: 'Identify the parts and organs of the female reproductive system.',
+                verbs: 'Irregular Verbs',
+                verbsDesc: 'Practice irregular verbs in English.',
 
-                usaStatesMap: 'US States'
             },
             divisionGame: {
                 title: 'Pizza Division',
@@ -396,6 +418,8 @@ export const TRANSLATIONS = {
                 southAmerica: 'South America',
                 africa: 'Africa',
                 asiaOceania: 'Asia and Oceania',
+                asia: 'Asia',
+                oceania: 'Oceania',
                 usa: 'USA',
                 languages: 'Languages',
                 allGrades: 'All Grades',

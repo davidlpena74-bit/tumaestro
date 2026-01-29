@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import CopiaJuego1 from '@/components/games/CopiaJuego1';
+import ProvinceGame from '@/components/games/ProvinceGame';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -34,7 +34,7 @@ export default function MapaProvinciasPage() {
                         </p>
                     </div>
 
-                    <CopiaJuego1 />
+                    <ProvinceGame />
                 </div>
             </main>
         </div>

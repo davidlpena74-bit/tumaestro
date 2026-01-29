@@ -97,7 +97,26 @@ export const AFRICA_MAPPING: Record<string, string> = {
     'eSwatini': 'Suazilandia'
 };
 
-export const ASIA_OCEANIA_MAPPING: Record<string, string> = {
+export const OCEANIA_MAPPING: Record<string, string> = {
+    'Australia': 'Australia',
+    'Fiji': 'Fiyi',
+    'Kiribati': 'Kiribati',
+    'Marshall Is.': 'Islas Marshall',
+    'Micronesia': 'Micronesia',
+    'Nauru': 'Nauru',
+    'New Zealand': 'Nueva Zelanda',
+    'Palau': 'Palaos',
+    'Papua New Guinea': 'Papúa Nueva Guinea',
+    'Samoa': 'Samoa',
+    'Solomon Is.': 'Islas Salomón',
+    'Tonga': 'Tonga',
+    'Tuvalu': 'Tuvalu',
+    'Vanuatu': 'Vanuatu',
+    'Cook Is.': 'Islas Cook',
+    'Niue': 'Niue'
+};
+
+export const ASIA_MAPPING: Record<string, string> = {
     'Afghanistan': 'Afganistán',
     'Armenia': 'Armenia',
     'Azerbaijan': 'Azerbaiyán',
@@ -149,21 +168,12 @@ export const ASIA_OCEANIA_MAPPING: Record<string, string> = {
     'United Arab Emirates': 'Emiratos Árabes',
     'Uzbekistan': 'Uzbekistán',
     'Vietnam': 'Vietnam',
-    'Yemen': 'Yemen',
-    'Australia': 'Australia',
-    'Fiji': 'Fiyi',
-    'Kiribati': 'Kiribati',
-    'Marshall Is.': 'Islas Marshall',
-    'Micronesia': 'Micronesia',
-    'Nauru': 'Nauru',
-    'New Zealand': 'Nueva Zelanda',
-    'Palau': 'Palaos',
-    'Papua New Guinea': 'Papúa Nueva Guinea',
-    'Samoa': 'Samoa',
-    'Solomon Is.': 'Islas Salomón',
-    'Tonga': 'Tonga',
-    'Tuvalu': 'Tuvalu',
-    'Vanuatu': 'Vanuatu'
+    'Yemen': 'Yemen'
+};
+
+export const ASIA_OCEANIA_MAPPING: Record<string, string> = {
+    ...ASIA_MAPPING,
+    ...OCEANIA_MAPPING
 };
 
 export const EUROPE_MAPPING: Record<string, string> = {

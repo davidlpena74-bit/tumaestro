@@ -1,20 +1,20 @@
 import { Metadata } from 'next';
+import AsiaMapGame from '@/components/games/AsiaMapGame';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import CapitalMatchingGame from '@/components/games/CapitalMatchingGame';
 
 export const metadata: Metadata = {
-    title: 'Puzzle: Capitales de la Unión Europea - Juego de Arrastrar | TuMaestro.es',
-    description: 'Relaciona cada país de la Unión Europea con su capital en este adictivo juego de arrastrar y soltar.',
+    title: 'Mapa de Asia - Juego de Geografía | TuMaestro.es',
+    description: 'Juego de geografía interactivo para aprender los países de Asia. Desktop y móvil.',
 };
 
-export default function CapitalMatchingPage() {
+export default function AsiaMapPage() {
     return (
         <div className="min-h-screen bg-transparent flex flex-col">
             <main className="flex-1 p-4 pt-24 pb-12 relative overflow-hidden">
                 <div className="absolute inset-0 z-0 pointer-events-none">
-                    <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[100px]" />
-                    <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[100px]" />
+                    <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[100px]" />
                 </div>
 
                 <div className="relative z-10 w-full max-w-7xl mx-auto">
@@ -23,14 +23,14 @@ export default function CapitalMatchingPage() {
                             <ArrowLeft className="w-4 h-4" /> Volver a Juegos
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
-                            Puzzle: Capitales UE 🧩
+                            Reto Asia 🌏
                         </h1>
                         <p className="text-slate-700 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
-                            ¿Sabes emparejar cada nación con su capital? Arrastra los nombres a sus países correspondientes en el mapa.
+                            Explora el continente más grande del mundo. Desde Oriente Medio hasta el Lejano Oriente.
                         </p>
                     </div>
 
-                    <CapitalMatchingGame />
+                    <AsiaMapGame />
                 </div>
             </main>
         </div>

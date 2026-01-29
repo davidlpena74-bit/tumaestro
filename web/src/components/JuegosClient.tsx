@@ -148,17 +148,7 @@ export default function JuegosClient() {
                             region: t.gamesPage.regions.europe,
                             gameType: t.gamesPage.gameTypes.map
                         },
-                        {
-                            id: 'capitals-ue-match',
-                            title: t.gamesPage.gameTitles.euCapitalsPuzzle,
-                            description: t.gamesPage.gameTitles.euCapitalsPuzzleDesc,
-                            href: '/juegos/capitales-ue-match',
-                            icon: PuzzlePiece,
-                            color: 'from-emerald-500 to-teal-600',
-                            grade: '5º Prim.',
-                            region: t.gamesPage.regions.europe,
-                            gameType: t.gamesPage.gameTypes.puzzle
-                        },
+
                         {
                             id: 'capitals-europe-match',
                             title: t.gamesPage.gameTitles.europeCapitalsPuzzle,
@@ -238,17 +228,33 @@ export default function JuegosClient() {
                     ]
                 },
                 {
-                    title: t.gamesPage.regions.asiaOceania,
+                    title: t.gamesPage.regions.asia,
                     games: [
                         {
-                            id: 'mapa-asia-oceania',
-                            title: t.gamesPage.gameTitles.asiaOceaniaMap,
-                            description: t.gamesPage.gameTitles.asiaOceaniaMapDesc,
-                            href: '/juegos/mapa-asia-oceania',
+                            id: 'mapa-asia',
+                            title: t.gamesPage.gameTitles.asiaMap,
+                            description: t.gamesPage.gameTitles.asiaMapDesc,
+                            href: '/juegos/mapa-asia',
                             icon: MapTrifold,
                             color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
-                            region: t.gamesPage.regions.asiaOceania,
+                            region: t.gamesPage.regions.asia,
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                },
+                {
+                    title: t.gamesPage.regions.oceania,
+                    games: [
+                        {
+                            id: 'mapa-oceania',
+                            title: t.gamesPage.gameTitles.oceaniaMap,
+                            description: t.gamesPage.gameTitles.oceaniaMapDesc,
+                            href: '/juegos/mapa-oceania',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.oceania,
                             gameType: t.gamesPage.gameTypes.map
                         }
                     ]
