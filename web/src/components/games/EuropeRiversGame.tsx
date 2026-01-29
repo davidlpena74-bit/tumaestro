@@ -7,6 +7,7 @@ import confetti from 'canvas-confetti';
 import { EUROPE_RIVERS_PATHS } from './data/europe-rivers-paths';
 import { EUROPE_PATHS } from './data/europe-paths'; // For Background
 import { EUROPE_MAPPING } from './data/country-translations';
+import { EUROPE_CAPITALS_COORDS } from './data/europe-capitals-coords';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
@@ -41,10 +42,23 @@ export default function EuropeRiversGame() {
 
     // Zoom state
     const [zoom, setZoom] = useState(1.8);
-    const [pan, setPan] = useState({ x: -80, y: -170 });
+    const [pan, setPan] = useState({ x: -160, y: -170 });
     const [isDragging, setIsDragging] = useState(false);
     const dragStart = useRef({ x: 0, y: 0 });
     const clickStart = useRef({ x: 0, y: 0 });
+
+    const [hoveredRiver, setHoveredRiver] = useState<string | null>(null);
+
+    // Sort rivers to ensure the hovered one is rendered last (on top)
+    const sortedRivers = useMemo(() => {
+        const entries = Object.entries(EUROPE_RIVERS_PATHS);
+        if (!hoveredRiver) return entries;
+        return [...entries].sort((a, b) => {
+            if (a[0] === hoveredRiver) return 1;
+            if (b[0] === hoveredRiver) return -1;
+            return 0;
+        });
+    }, [hoveredRiver]);
 
 
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -53,15 +67,35 @@ export default function EuropeRiversGame() {
     // Memoize country labels
     const countryLabels = useMemo(() => {
         return Object.entries(EUROPE_PATHS).map(([id, pathD]) => {
-            const centroid = calculatePathCentroid(pathD);
+            // Priority 1: Use Capital Coordinate (fixes Portugal/Norway issues with islands)
+            let coord = EUROPE_CAPITALS_COORDS[id];
+
+            // Priority 2: Fallback to path centroid
+            // Priority 2: Fallback to path centroid
+            if (!coord) {
+                const centroid = calculatePathCentroid(pathD);
+                if (centroid) coord = centroid;
+            }
+
+            // Manual Overrides for cosmetic perfection
+            if (id === 'Portugal') {
+                // Move Portugal label slightly west/north from Lisbon if needed, 
+                // but Lisbon coords (294, 498) are pretty good.
+                // Let's force it slightly more centered on land mass if needed.
+                // Lisbon is coastal. Let's keep capital coords as they are generally good anchors.
+                // Actually, let's nudge it slightly Right/Up to be more "centered" in the country shape visually if logic differs.
+                // But capital coords are usually the best anchor for "Name of Country".
+            }
+
             const spanishName = EUROPE_MAPPING[id];
 
-            if (!spanishName || !centroid) return null;
+            if (!spanishName || !coord) return null;
 
             return {
                 id,
                 name: spanishName,
-                ...centroid
+                x: coord.x,
+                y: coord.y
             };
         }).filter(Boolean) as { id: string; name: string; x: number; y: number }[];
     }, []);
@@ -272,8 +306,8 @@ export default function EuropeRiversGame() {
                                 <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
                                     <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
                                 </filter>
-                                <filter id="river-glow">
-                                    <feGaussianBlur stdDeviation="1" result="blur" />
+                                <filter id="river-glow" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur stdDeviation="0.5" result="blur" />
                                     <feComposite in="SourceGraphic" in2="blur" operator="over" />
                                 </filter>
                             </defs>
@@ -301,8 +335,8 @@ export default function EuropeRiversGame() {
                                             y={label.y}
                                             textAnchor="middle"
                                             dominantBaseline="middle"
-                                            className="text-[6px] fill-slate-500 font-semibold tracking-wide uppercase opacity-90"
-                                            style={{ fontSize: '6px' }} // Tiny font for Europe
+                                            className="text-[4px] fill-slate-400 font-medium tracking-wide uppercase opacity-70"
+                                            style={{ fontSize: '4px' }} // Smaller font for Europe background
                                         >
                                             {label.name}
                                         </text>
@@ -310,19 +344,24 @@ export default function EuropeRiversGame() {
                                 </g>
 
                                 {/* RIVERS LAYER */}
-                                {Object.entries(EUROPE_RIVERS_PATHS).map(([name, d]) => {
+                                {sortedRivers.map(([name, d]) => {
                                     const isTarget = name === targetRiver;
                                     const isCompleted = completedRivers.includes(name);
                                     const isFailed = failedRivers.includes(name);
+                                    const isHovered = name === hoveredRiver;
 
-                                    // Stroke Colors
                                     // Stroke Colors - MATCH RIVERS GAME
                                     let strokeColor = '#2563eb';
                                     if (isCompleted) strokeColor = '#22c55e';
                                     if (isFailed) strokeColor = '#ef4444';
 
                                     return (
-                                        <g key={name} className="cursor-pointer group pointer-events-auto">
+                                        <g
+                                            key={name}
+                                            className="cursor-pointer group pointer-events-auto"
+                                            onMouseEnter={() => setHoveredRiver(name)}
+                                            onMouseLeave={() => setHoveredRiver(null)}
+                                        >
                                             {/* Invisible thick path for click area */}
                                             <path
                                                 onClick={(e) => handleRiverClick(name, e)}
@@ -339,17 +378,17 @@ export default function EuropeRiversGame() {
                                                 onClick={(e) => handleRiverClick(name, e)}
                                                 d={d}
                                                 stroke={strokeColor}
-                                                strokeWidth={isTarget || isCompleted ? 6 : 4}
+                                                strokeWidth="3"
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 fill="none"
-                                                className={`transition-all duration-300 ${!isCompleted && !isFailed ? 'group-hover:stroke-teal-400 group-hover:stroke-[10px]' : ''}`}
+                                                className={`transition-all duration-300 ${!isCompleted && !isFailed && isHovered ? 'stroke-teal-400 stroke-[6px]' : ''}`}
                                                 style={{ filter: 'url(#river-glow)' }}
                                             />
                                             <path
                                                 d={d}
                                                 stroke="rgba(255,255,255,0.3)"
-                                                strokeWidth={(isTarget || isCompleted ? 6 : 4) / 2}
+                                                strokeWidth="1.5"
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 fill="none"
@@ -363,7 +402,7 @@ export default function EuropeRiversGame() {
                     )}
                 </div>
 
-                <p className="text-center text-slate-500 mt-6 text-sm">
+                <p className="text-center text-slate-300 mt-6 text-sm">
                     Encuentra el río correspondiente en el mapa de Europa.
                 </p>
             </div>
