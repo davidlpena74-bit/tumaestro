@@ -23,6 +23,7 @@ interface CapitalGameProps {
     title: string;
     initialZoom?: number;
     initialPan?: { x: number; y: number };
+    centroids?: Record<string, { x: number; y: number }>;
 }
 
 export default function CapitalGame({
@@ -30,7 +31,8 @@ export default function CapitalGame({
     targetList,
     title,
     initialZoom = 1.5,
-    initialPan = { x: 0, y: 0 }
+    initialPan = { x: 0, y: 0 },
+    centroids
 }: CapitalGameProps) {
     const { language, t } = useLanguage();
     const {
@@ -58,6 +60,9 @@ export default function CapitalGame({
     const [pan, setPan] = useState(initialPan);
     const [isDragging, setIsDragging] = useState(false);
     const dragStart = useRef({ x: 0, y: 0 });
+
+    // Hover state for points
+    const [hoveredCapital, setHoveredCapital] = useState<string | null>(null);
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -144,6 +149,9 @@ export default function CapitalGame({
             if (newAttempts >= 3) {
                 setMessage(`¡Fallaste! Era ${currentCountryName}. ❌`); // Reveal country
                 setFailedCountries(prev => [...prev, currentCountryName]);
+                // Mark this country as "completed" but failed, so it shows up in red or distinct style
+                // In this logic, we remove it from "remaining" so nextTurn picks something else.
+                // We need to visually indicate it was failed. Logic below handles `isFailed`.
 
                 // Move to next
                 const newRemaining = remainingCountries.filter(c => c !== currentCountryName);
@@ -152,7 +160,7 @@ export default function CapitalGame({
             } else {
                 // Show what they clicked
                 const clickedCapital = EUROPE_CAPITALS[clickedCountry] || 'Desconocida';
-                setMessage(`¡No! ${clickedCountry} (Capital: ${clickedCapital}) ❌`);
+                setMessage(`¡Incorrecto! Esa es ${clickedCapital} (${clickedCountry}). Intento ${newAttempts}/3. ❌`);
             }
         }
     };
@@ -311,68 +319,86 @@ export default function CapitalGame({
                     {(gameState === 'playing' || gameState === 'start') && (
                         <svg viewBox="0 0 800 600" className="w-full h-full pointer-events-none" style={{ background: 'transparent' }}>
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                                {/* Layer 1: Country Paths */}
+                                {Object.entries(paths).map(([engName, pathD]) => {
+                                    const spanishName = PATH_TO_SPANISH_NAME[engName];
+                                    const isCompleted = spanishName && !remainingCountries.includes(spanishName);
+                                    const isFailed = failedCountries.includes(spanishName || '');
+                                    const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
+
+                                    return (
+                                        <motion.path
+                                            key={`path-${engName}`}
+                                            d={pathD}
+                                            className={`stroke-[0.5px] transition-colors duration-150 pointer-events-auto cursor-pointer ${isInTargetList ? 'stroke-slate-900/20' : 'fill-slate-800/30 stroke-slate-800/50'}`}
+                                            initial={false}
+                                            onMouseEnter={() => isInTargetList && setHoveredCapital(engName)}
+                                            onMouseLeave={() => setHoveredCapital(null)}
+                                            onClick={(e: any) => {
+                                                e.stopPropagation();
+                                                handleCountryClick(engName);
+                                            }}
+                                            animate={{
+                                                fill: isCompleted
+                                                    ? (isFailed ? '#ef4444' : '#10b981')
+                                                    : (isInTargetList ? (hoveredCapital === engName ? '#334155' : '#ffffff') : '#1e293b'), // Slight darken on hover
+                                                opacity: isInTargetList ? 1 : 0.4
+                                            }}
+                                            style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
+                                        />
+                                    );
+                                })}
+
+                                {/* Layer 2: Capital Points (Always on top) */}
                                 {Object.entries(paths).map(([engName, pathD]) => {
                                     const spanishName = PATH_TO_SPANISH_NAME[engName];
                                     const isTarget = spanishName === currentCountryName;
                                     const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                     const isFailed = failedCountries.includes(spanishName || '');
                                     const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
-                                    const centroid = calculatePathCentroid(pathD);
+                                    const centroid = (centroids && centroids[engName])
+                                        ? centroids[engName]
+                                        : calculatePathCentroid(pathD);
                                     const isClicked = clickedId === engName;
 
+                                    if (!isInTargetList || !centroid) return null;
+
                                     return (
-                                        <g key={engName}>
-                                            <motion.path
-                                                d={pathD}
-                                                className={`stroke-[0.5px] transition-colors duration-150 ${isInTargetList ? 'stroke-slate-900/20' : 'fill-slate-800/30 stroke-slate-800/50'}`}
+                                        <g
+                                            key={`point-${engName}`}
+                                            className="cursor-pointer pointer-events-auto"
+                                            onMouseEnter={() => setHoveredCapital(engName)}
+                                            onMouseLeave={() => setHoveredCapital(null)}
+                                            onClick={(e: any) => {
+                                                e.stopPropagation();
+                                                handleCountryClick(engName);
+                                            }}
+                                        >
+                                            {/* Hit Area (Invisible but larger) */}
+                                            <circle
+                                                cx={centroid?.x || 0}
+                                                cy={centroid?.y || 0}
+                                                r={12} // Increased hit area
+                                                fill="transparent"
+                                            />
+                                            {/* Visual Dot */}
+                                            <motion.circle
+                                                cx={centroid?.x || 0}
+                                                cy={centroid?.y || 0}
+                                                r={hoveredCapital === engName ? 6 : 4} // React to hover
+                                                className="pointer-events-none"
                                                 initial={false}
                                                 animate={{
                                                     fill: isCompleted
-                                                        ? (isFailed ? '#ef4444' : '#10b981')
-                                                        : (isInTargetList ? '#ffffff' : '#1e293b'),
-                                                    opacity: isInTargetList ? 1 : 0.4
+                                                        ? (isFailed ? '#ef4444' : '#10b981') // Green if correct, Red if failed (after 3 tries)
+                                                        : (isClicked && !isCompleted ? '#ef4444' : (hoveredCapital === engName ? '#f59e0b' : '#0ea5e9')), // Red on instant error click, Amber on Hover, Blue default
+                                                    opacity: 1,
+                                                    stroke: "white",
+                                                    strokeWidth: hoveredCapital === engName ? 2 : 1, // Thicker stroke on hover
+                                                    scale: hoveredCapital === engName ? 1.2 : 1
                                                 }}
-                                                style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
+                                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                             />
-                                            {isInTargetList && centroid && (
-                                                <g
-                                                    className="cursor-pointer hover:scale-125 transition-transform"
-                                                    onClick={(e: any) => {
-                                                        e.stopPropagation();
-                                                        handleCountryClick(engName);
-                                                    }}
-                                                >
-                                                    {/* Hit Area (Invisible but larger) */}
-                                                    <circle
-                                                        cx={centroid.x}
-                                                        cy={centroid.y}
-                                                        r={8}
-                                                        fill="transparent"
-                                                    />
-                                                    {/* Visual Dot */}
-                                                    <motion.circle
-                                                        cx={centroid.x}
-                                                        cy={centroid.y}
-                                                        r={isCompleted ? 3 : 2.5}
-                                                        className="pointer-events-none"
-                                                        initial={false}
-                                                        animate={{
-                                                            fill: isCompleted
-                                                                ? '#ffffff'
-                                                                : (isClicked && !isCompleted ? '#ef4444' : '#0ea5e9'),
-                                                            // Logic: 
-                                                            // - Completed: White (Correct)
-                                                            // - Clicked but NOT completed (Errors): Red
-                                                            // - Default: Blue
-                                                            opacity: 0.8,
-                                                            stroke: "white",
-                                                            strokeWidth: 0.5,
-                                                            scale: isClicked ? 1.5 : 1 // Immediate scale feedback on click
-                                                        }}
-                                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                                    />
-                                                </g>
-                                            )}
                                         </g>
                                     );
                                 })}

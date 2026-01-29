@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import CapitalGame from '@/components/games/CapitalGame';
 import { EUROPE_PATHS } from '@/components/games/data/europe-paths';
+import { EUROPE_CAPITALS_COORDS } from '@/components/games/data/europe-capitals-coords';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -33,9 +34,10 @@ export default function EuropeCapitalsMapPage() {
 
                     <CapitalGame
                         paths={EUROPE_PATHS}
+                        centroids={EUROPE_CAPITALS_COORDS}
                         title="Capitales de Europa"
-                        initialPan={{ x: 40, y: -170 }}
-                        initialZoom={2.0}
+                        initialPan={{ x: -80, y: -170 }}
+                        initialZoom={1.8}
                     />
                 </div>
             </main>

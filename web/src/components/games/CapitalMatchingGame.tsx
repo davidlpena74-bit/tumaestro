@@ -4,7 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, RefreshCw, Timer, MapPin, Trophy } from 'lucide-react';
-import { EU_MEMBERS_LIST, EUROPE_CAPITALS, EU_MEMBERS_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
+import { EU_MEMBERS_LIST, EUROPE_CAPITALS, EU_MEMBERS_LIST_EN, EUROPE_CAPITALS_EN, PATH_TO_SPANISH_NAME, PATH_TO_ENGLISH_NAME } from './data/capitals-data';
+import { EU_PATHS } from './data/eu-paths';
+import { EU_CAPITALS_COORDS } from './data/eu-capitals-coords';
 import { useLanguage } from '@/context/LanguageContext';
 import { speak } from '@/lib/speech-utils';
 
@@ -12,7 +14,12 @@ type MatchItem = {
     country: string;
     capital: string;
     id: string;
+    pathKey?: string; // Key for the SVG path
 };
+
+// Map constants
+const MAP_WIDTH = 800;
+const MAP_HEIGHT = 600;
 
 export default function CapitalMatchingGame() {
     const { language, t } = useLanguage();
@@ -110,11 +117,35 @@ export default function CapitalMatchingGame() {
         const list = language === 'es' ? EU_MEMBERS_LIST : EU_MEMBERS_LIST_EN;
         const capitalsData = language === 'es' ? EUROPE_CAPITALS : EUROPE_CAPITALS_EN;
 
-        const pairs: MatchItem[] = list.map((country, idx) => ({
-            country,
-            capital: capitalsData[country] || 'Unknown',
-            id: `pair-${idx}`
-        }));
+        const pairs: MatchItem[] = list.map((country, idx) => {
+            // Find the key in the paths data that matches this country name
+            // Reverse lookup: finding which definition key maps to this localized name would be hard,
+            // so we rely on the implementation detail that `list` comes from `capitals-data` 
+            // and we might need to map back to the English key expected by `EU_PATHS` if `list` is Spanish.
+
+            // Actually, `EU_PATHS` keys are English (Natural Earth).
+            // We need to find which Key in `PATH_TO_SPANISH_NAME` has value === `country`
+            // OR if language is EN, `country` might match the key directly (or via `PATH_TO_ENGLISH_NAME`).
+
+            let pathKey = '';
+            if (language === 'es') {
+                const foundKey = Object.keys(PATH_TO_SPANISH_NAME).find(key => PATH_TO_SPANISH_NAME[key] === country);
+                if (foundKey) pathKey = foundKey;
+            } else {
+                // For EN, we check if it's a direct key or mapped
+                // In `EU_MEMBERS_LIST_EN`, "Czech Republic" is used, but key is "Czechia" in some maps?
+                // Let's reverse check PATH_TO_ENGLISH_NAME just in case
+                const foundKey = Object.keys(PATH_TO_ENGLISH_NAME).find(key => PATH_TO_ENGLISH_NAME[key] === country);
+                pathKey = foundKey || country;
+            }
+
+            return {
+                country,
+                capital: capitalsData[country] || 'Unknown',
+                id: `pair-${idx}`,
+                pathKey
+            };
+        });
 
         const sortedCountries = [...pairs].sort((a, b) => a.country.localeCompare(b.country));
         setCountries(sortedCountries);
@@ -325,39 +356,108 @@ export default function CapitalMatchingGame() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
                     {/* Left Column: Countries (Drop Targets) */}
-                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start">
-                        {sortedCountries.map((item) => {
-                            const isMatched = !!matches[item.id];
-                            return (
-                                <motion.div
-                                    layout
-                                    key={item.id}
-                                    onDragOver={!isMatched ? handleDragOver : undefined}
-                                    onDrop={!isMatched ? (e) => handleDrop(e, item.id) : undefined}
-                                    className={`
-                                        relative flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300
-                                        ${isMatched
-                                            ? 'bg-indigo-500/10 border-indigo-500/50 order-last opacity-60'
-                                            : 'bg-white/5 border-dashed border-white/10 hover:border-white/30'
-                                        }
-                                    `}
-                                >
-                                    <span className={`font-bold text-lg ${isMatched ? 'text-indigo-300' : 'text-white'}`}>
-                                        {item.country}
-                                    </span>
+                    {/* Left Column: Map or Countries List */}
+                    <div className="lg:col-span-2 relative">
+                        {/* MAP VIEW */}
+                        <div className="relative w-full aspect-[4/3] bg-slate-900/50 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                            <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} className="w-full h-full">
+                                {/* Defs for glow effects */}
+                                <defs>
+                                    <filter id="glow-country" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="3" result="blur" />
+                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                    </filter>
+                                </defs>
 
-                                    <div className={`
-                                        h-10 px-4 rounded-lg flex items-center justify-center min-w-[120px] text-sm transition-all duration-300
-                                        ${isMatched
-                                            ? 'bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-500/20'
-                                            : 'bg-black/20 text-white/20'
+                                {/* Render all EU countries first as background/context */}
+                                {Object.entries(EU_PATHS).map(([key, path]) => {
+                                    // Check if this country is part of the current game set
+                                    const matchItem = countries.find(c => c.pathKey === key);
+
+                                    // Determine styling
+                                    let fill = '#1e293b'; // Slate-800 for non-active
+                                    let stroke = '#334155'; // Slate-700
+                                    let opacity = 0.5;
+
+                                    if (matchItem) {
+                                        opacity = 1;
+                                        const isMatched = !!matches[matchItem.id];
+                                        if (isMatched) {
+                                            fill = '#4f46e5'; // Indigo-600
+                                            stroke = '#818cf8'; // Indigo-400
+                                        } else {
+                                            fill = '#334155'; // Slate-700
+                                            stroke = '#475569'; // Slate-600
                                         }
-                                    `}>
-                                        {isMatched ? item.capital : content.dragHere}
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
+                                    }
+
+                                    return (
+                                        <path
+                                            key={key}
+                                            d={path}
+                                            fill={fill}
+                                            stroke={stroke}
+                                            strokeWidth="1"
+                                            opacity={opacity}
+                                            style={{ transition: 'all 0.3s ease' }}
+                                        />
+                                    );
+                                })}
+
+                                {/* Render Drop Zones (Capitals) */}
+                                {countries.map((item) => {
+                                    if (!item.pathKey || !EU_CAPITALS_COORDS[item.pathKey]) return null;
+
+                                    const coords = EU_CAPITALS_COORDS[item.pathKey];
+                                    const isMatched = !!matches[item.id];
+                                    const isTargeted = draggedItem ? true : false; // Could refine to highlight only valid targets nearby
+
+                                    return (
+                                        <g
+                                            key={`zone-${item.id}`}
+                                            transform={`translate(${coords.x}, ${coords.y})`}
+                                            onDragOver={!isMatched ? handleDragOver : undefined}
+                                            onDrop={!isMatched ? (e) => handleDrop(e, item.id) : undefined}
+                                            className="cursor-pointer"
+                                        >
+                                            {/* Hit Area (Invisible but larger) */}
+                                            <circle r="15" fill="transparent" />
+
+                                            {/* Visible Indicator */}
+                                            <circle
+                                                r={isMatched ? "5" : "4"}
+                                                fill={isMatched ? "#4ade80" : "#fbbf24"}
+                                                className={`transition-all duration-300 ${!isMatched ? 'animate-pulse' : ''}`}
+                                            />
+
+                                            {/* Label when matched */}
+                                            {isMatched && (
+                                                <g transform="translate(0, -10)">
+                                                    <rect x="-40" y="-20" width="80" height="20" rx="4" fill="rgba(0,0,0,0.7)" />
+                                                    <text
+                                                        x="0"
+                                                        y="-6"
+                                                        textAnchor="middle"
+                                                        fill="white"
+                                                        fontSize="10"
+                                                        fontWeight="bold"
+                                                    >
+                                                        {item.capital}
+                                                    </text>
+                                                </g>
+                                            )}
+                                        </g>
+                                    );
+                                })}
+                            </svg>
+
+                            {/* Overlay instructions if needed */}
+                            <div className="absolute bottom-4 left-4 pointer-events-none">
+                                <div className="bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white/60">
+                                    {content.instruction}
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Right Column: Capitals (Draggables) */}
