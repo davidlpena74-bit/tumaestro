@@ -14,54 +14,14 @@ function cn(...inputs: ClassValue[]) {
 
 const subjects = [
     {
-        id: 'matematicas',
-        title: 'Matemáticas',
-        description: 'Álgebra, geometría, cálculo y problemas lógicos.',
-        href: '/recursos/matematicas',
-        icon: Calculator,
-        color: 'from-orange-500 to-amber-600',
-        stat: '150+ Recursos',
+        id: 'dictados',
+        title: 'Dictados Interactivos',
+        description: 'Mejora tu ortografía escuchando y escribiendo.',
+        href: '/recursos/dictados',
+        icon: Student,
+        color: 'from-fuchsia-500 to-purple-600',
+        stat: 'Herramienta Online',
         grades: ['Primaria', '3º Prim.', '5º Prim.', 'ESO']
-    },
-    {
-        id: 'lengua',
-        title: 'Lengua y Literatura',
-        description: 'Gramática, sintaxis y análisis de textos clásicos.',
-        href: '/recursos/lengua',
-        icon: Quotes,
-        color: 'from-violet-500 to-indigo-600',
-        stat: '120+ Recursos',
-        grades: ['Primaria', '5º Prim.', 'ESO']
-    },
-    {
-        id: 'ingles',
-        title: 'Languages (Inglés)',
-        description: 'Vocabulario, listening y ejercicios de speaking.',
-        href: '/recursos/ingles',
-        icon: Translate,
-        color: 'from-pink-500 to-rose-600',
-        stat: '90+ Recursos',
-        grades: ['Primaria', '5º Prim.', 'ESO', '1º ESO', '3º ESO']
-    },
-    {
-        id: 'social-science',
-        title: 'Social Science',
-        description: 'Historia, Geografía y Mapas Interactivos del mundo.',
-        href: '/recursos/geografia',
-        icon: GlobeHemisphereWest,
-        color: 'from-emerald-500 to-teal-600',
-        stat: '85+ Recursos',
-        grades: ['Primaria', '5º Prim.', 'ESO']
-    },
-    {
-        id: 'natural-science',
-        title: 'Natural Science',
-        description: 'Biología, Geología, Física y Química.',
-        href: '/recursos/fisica',
-        icon: Atom,
-        color: 'from-blue-500 to-cyan-600',
-        stat: 'Nueva Sección',
-        grades: ['ESO', '1º ESO', '3º ESO']
     }
 ];
 
