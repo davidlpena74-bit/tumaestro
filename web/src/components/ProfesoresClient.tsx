@@ -73,14 +73,14 @@ export default function ProfesoresClient() {
     );
 
     return (
-        <main className="min-h-screen text-white pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
+        <main className="min-h-screen pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto relative z-10">
                 <header className="mb-16 text-center">
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-white pb-2"
+                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
                     >
                         Encuentra a tu Profe Ideal
                     </motion.h1>
@@ -88,7 +88,7 @@ export default function ProfesoresClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-gray-400 max-w-2xl mx-auto mt-2"
+                        className="text-xl text-slate-700 font-medium max-w-2xl mx-auto mt-2"
                     >
                         Conecta con profesores expertos verificados. Elige la modalidad que prefieras: online o presencial.
                     </motion.p>
@@ -101,8 +101,8 @@ export default function ProfesoresClient() {
                     >
                         <div className="relative group">
                             <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full blur opacity-25 group-hover:opacity-40 transition duration-500" />
-                            <div className="relative flex items-center bg-white/20 backdrop-blur-xl border border-white/40 rounded-full px-6 py-4 shadow-2xl z-20">
-                                <Search className="w-5 h-5 text-gray-400 mr-4" />
+                            <div className="relative flex items-center bg-white/40 backdrop-blur-xl border border-slate-200/50 rounded-full px-6 py-4 shadow-2xl z-20">
+                                <Search className="w-5 h-5 text-slate-400 mr-4" />
                                 <input
                                     type="text"
                                     value={searchTerm || ''}
@@ -110,7 +110,7 @@ export default function ProfesoresClient() {
                                     onFocus={() => setShowSuggestions(true)}
                                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                     placeholder="¿Qué quieres aprender hoy?"
-                                    className="bg-transparent border-none outline-none text-white placeholder-gray-500 w-full text-lg"
+                                    className="bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 w-full text-lg font-medium"
                                 />
                             </div>
 
@@ -147,13 +147,13 @@ export default function ProfesoresClient() {
                             <div className="relative">
                                 <button
                                     onClick={() => setFilterOpen(!filterOpen)}
-                                    className="flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/20 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-white transition-all shadow-sm min-w-[200px] backdrop-blur-md"
+                                    className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
                                 >
-                                    <Funnel className="w-4 h-4 text-teal-400" />
+                                    <Funnel className="w-4 h-4 text-slate-400" />
                                     <span className="flex-grow text-left">
                                         {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
                                     </span>
-                                    <CaretDown className={`w-4 h-4 text-white transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
+                                    <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
                                 </button>
 
                                 <AnimatePresence>
@@ -162,13 +162,13 @@ export default function ProfesoresClient() {
                                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-white backdrop-blur-xl"
+                                            className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-slate-700"
                                         >
                                             <button
                                                 onClick={() => { setSelectedGrade('all'); setFilterOpen(false); }}
                                                 className={cn(
-                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-white/10 transition-colors",
-                                                    selectedGrade === 'all' && "bg-teal-500/20 text-teal-400"
+                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                    selectedGrade === 'all' && "bg-teal-50 text-teal-600"
                                                 )}
                                             >
                                                 Todos los Cursos
@@ -178,8 +178,8 @@ export default function ProfesoresClient() {
                                                     key={grade}
                                                     onClick={() => { setSelectedGrade(grade); setFilterOpen(false); }}
                                                     className={cn(
-                                                        "w-full text-left px-5 py-3 text-sm font-medium hover:bg-white/10 transition-colors",
-                                                        selectedGrade === grade && "bg-teal-500/20 text-teal-400"
+                                                        "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                        selectedGrade === grade && "bg-teal-50 text-teal-600"
                                                     )}
                                                 >
                                                     {grade}
@@ -193,13 +193,13 @@ export default function ProfesoresClient() {
                     </motion.div>
                 </header>
 
-                <div className="bg-white/30 backdrop-blur-md border border-white/40 shadow-2xl rounded-3xl p-8 md:p-12 relative overflow-hidden mb-20">
+                <div className="bg-white/40 backdrop-blur-md border border-slate-200/50 shadow-2xl rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden mb-20">
                     <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-transparent pointer-events-none" />
                     <div className="relative z-10">
                         <div className="flex flex-col md:flex-row justify-between items-end mb-8">
                             <div>
-                                <h2 className="text-3xl font-black mb-2">Explora por Categoría</h2>
-                                <p className="text-gray-400">Encuentra la materia que necesitas reforzar.</p>
+                                <h2 className="text-3xl font-black mb-2 text-slate-800">Explora por Categoría</h2>
+                                <p className="text-slate-600 font-medium">Encuentra la materia que necesitas reforzar.</p>
                             </div>
                             <button className="hidden md:flex items-center text-teal-400 font-bold hover:text-teal-300 transition mt-4 md:mt-0">
                                 Ver todas las categorías <ArrowRight className="w-5 h-5 ml-2" />
@@ -215,13 +215,13 @@ export default function ProfesoresClient() {
                                     className="h-full"
                                 >
                                     <Link href={`/profesores/${cat.id}`} className="block h-full group">
-                                        <div className="bg-white/30 backdrop-blur-md border border-white/40 py-4 px-5 rounded-3xl h-full transition-all duration-300 group-hover:bg-white/40 group-hover:scale-105 group-hover:border-white/40 flex flex-col items-center text-center shadow-2xl relative overflow-hidden">
+                                        <div className="bg-white/40 backdrop-blur-md border border-slate-200/60 py-4 px-5 rounded-3xl h-full transition-all duration-300 group-hover:bg-white/60 group-hover:scale-105 group-hover:border-slate-300 flex flex-col items-center text-center shadow-lg hover:shadow-2xl relative overflow-hidden">
                                             <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
                                             <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} p-2 mb-1.5 shadow-lg group-hover:rotate-6 transition-transform`}>
                                                 <img src={cat.iconSrc} alt={cat.title} className="w-full h-full object-contain" />
                                             </div>
-                                            <h4 className="font-bold text-sm mb-0.5 text-white drop-shadow-md line-clamp-1">{cat.title}</h4>
-                                            <p className="text-white text-[11px] mb-2 line-clamp-3 min-h-[2.2rem]">{cat.description}</p>
+                                            <h4 className="font-bold text-sm mb-0.5 text-slate-800 drop-shadow-sm line-clamp-1">{cat.title}</h4>
+                                            <p className="text-slate-600 text-[11px] mb-2 line-clamp-3 min-h-[2.2rem] font-medium">{cat.description}</p>
                                             <span className="mt-auto inline-block text-xs font-bold text-teal-400 bg-teal-400/10 px-3 py-1 rounded-full border border-teal-400/20">
                                                 {cat.count}
                                             </span>
@@ -233,12 +233,12 @@ export default function ProfesoresClient() {
                     </div>
                 </div>
 
-                <div className="bg-white/30 backdrop-blur-md border border-white/40 shadow-2xl rounded-3xl p-8 md:p-12 relative overflow-hidden">
+                <div className="bg-white/40 backdrop-blur-md border border-slate-200/50 shadow-2xl rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-transparent pointer-events-none" />
                     <div className="flex flex-col md:flex-row justify-between items-end mb-8 relative z-10">
                         <div>
-                            <h2 className="text-3xl font-black mb-2">Profesores Mejor Valorados</h2>
-                            <p className="text-gray-400">Basado en opiniones reales de alumnos.</p>
+                            <h2 className="text-3xl font-black mb-2 text-slate-800">Profesores Mejor Valorados</h2>
+                            <p className="text-slate-600 font-medium">Basado en opiniones reales de alumnos.</p>
                         </div>
                         <button className="hidden md:flex items-center text-teal-400 font-bold hover:text-teal-300 transition mt-4 md:mt-0">
                             Ver todos los profesores <ArrowRight className="w-5 h-5 ml-2" />
