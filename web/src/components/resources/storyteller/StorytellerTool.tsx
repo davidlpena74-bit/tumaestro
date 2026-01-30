@@ -111,9 +111,9 @@ export default function StorytellerTool() {
             utterance.voice = bestVoice;
         }
 
-        // Parámetros refinados para narración inmersiva
-        utterance.rate = speechRate * 0.9;
-        utterance.pitch = 1.05; // Tono más cálido y humano
+        // Parámetros refinados para narración fantástica e inmersiva
+        utterance.rate = speechRate * 0.88;
+        utterance.pitch = 1.08; // Un toque más de calidez y magia
         utterance.volume = 1.0;
 
         utterance.onstart = () => {
@@ -226,116 +226,102 @@ export default function StorytellerTool() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Lateral: Info & Controles */}
                     <div className="lg:col-span-4 space-y-6">
-                        <motion.div
-                            layoutId={`book-cover-${selectedBook.id}`}
-                            className="aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white relative group"
-                        >
-                            <img src={selectedBook.coverImage} className="w-full h-full object-cover" alt={selectedBook.title} />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                            <div className="absolute bottom-6 left-6 right-6">
-                                <h2 className="text-2xl font-black text-white leading-tight">{selectedBook.title}</h2>
-                                <p className="text-white/80 text-sm font-medium">{selectedBook.author}</p>
-                            </div>
-                        </motion.div>
-
                         <div className="bg-white/40 backdrop-blur-md rounded-3xl p-6 border border-slate-200/50 space-y-4 shadow-lg">
-                            <div className="flex items-center justify-center gap-4">
-                                <button onClick={prevPage} disabled={currentPage === 0} className="p-4 rounded-2xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
-                                    <SkipBack weight="fill" size={24} />
-                                </button>
-                                <button
-                                    onClick={togglePlay}
-                                    className="w-20 h-20 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-900/20"
-                                >
-                                    {isPlaying ? <Pause weight="fill" size={32} /> : <Play weight="fill" size={32} className="ml-1" />}
-                                </button>
-                                <button onClick={nextPage} disabled={currentPage === selectedBook.content.length - 1} className="p-4 rounded-2xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
-                                    <SkipForward weight="fill" size={24} />
-                                </button>
-                            </div>
+                            <button onClick={prevPage} disabled={currentPage === 0} className="p-4 rounded-2xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
+                                <SkipBack weight="fill" size={24} />
+                            </button>
+                            <button
+                                onClick={togglePlay}
+                                className="w-20 h-20 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-900/20"
+                            >
+                                {isPlaying ? <Pause weight="fill" size={32} /> : <Play weight="fill" size={32} className="ml-1" />}
+                            </button>
+                            <button onClick={nextPage} disabled={currentPage === selectedBook.content.length - 1} className="p-4 rounded-2xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
+                                <SkipForward weight="fill" size={24} />
+                            </button>
+                        </div>
 
-                            <div className="space-y-4 pt-4 border-t border-slate-200/50">
-                                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
-                                    <span>Velocidad de Lectura</span>
-                                    <span>{Math.round(speechRate * 100)}%</span>
-                                </div>
-                                <input
-                                    type="range" min="0.5" max="1.5" step="0.1"
-                                    value={speechRate}
-                                    onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-                                    className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
+                        <div className="space-y-4 pt-4 border-t border-slate-200/50">
+                            <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
+                                <span>Velocidad de Lectura</span>
+                                <span>{Math.round(speechRate * 100)}%</span>
+                            </div>
+                            <input
+                                type="range" min="0.5" max="1.5" step="0.1"
+                                value={speechRate}
+                                onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
+                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 justify-center">
+                            <Clock className="w-4 h-4" /> Página {currentPage + 1} de {selectedBook.content.length}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Principal: Texto */}
+                <div className="lg:col-span-8 min-h-[600px] flex flex-col gap-6">
+                    {/* Imagen de la Página (si existe) */}
+                    <AnimatePresence mode="wait">
+                        {selectedBook.content[currentPage].image && (
+                            <motion.div
+                                key={`img-${currentPage}`}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
+                            >
+                                <img
+                                    src={selectedBook.content[currentPage].image}
+                                    className="w-full h-full object-cover"
+                                    alt={`Ilustración página ${currentPage + 1}`}
                                 />
-                            </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                            <div className="flex items-center gap-2 text-xs font-bold text-slate-400 justify-center">
-                                <Clock className="w-4 h-4" /> Página {currentPage + 1} de {selectedBook.content.length}
-                            </div>
+                    <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl relative overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentPage}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="relative z-10 font-serif leading-relaxed text-slate-800"
+                                style={{ fontSize: `${fontSize}px` }}
+                            >
+                                <div className="mb-8 opacity-20">
+                                    <BookOpen className="w-12 h-12" weight="duotone" />
+                                </div>
+                                <div className="relative">
+                                    <span className="text-slate-900 font-medium transition-all duration-75">
+                                        {selectedBook.content[currentPage].text.slice(0, charIndex)}
+                                    </span>
+                                    <span className="text-slate-400 font-medium">
+                                        {selectedBook.content[currentPage].text.slice(charIndex)}
+                                    </span>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Decoración sutil */}
+                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                            <SpeakerHigh size={120} weight="thin" />
                         </div>
                     </div>
 
-                    {/* Principal: Texto */}
-                    <div className="lg:col-span-8 min-h-[600px] flex flex-col gap-6">
-                        {/* Imagen de la Página (si existe) */}
-                        <AnimatePresence mode="wait">
-                            {selectedBook.content[currentPage].image && (
-                                <motion.div
-                                    key={`img-${currentPage}`}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
-                                >
-                                    <img
-                                        src={selectedBook.content[currentPage].image}
-                                        className="w-full h-full object-cover"
-                                        alt={`Ilustración página ${currentPage + 1}`}
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl relative overflow-hidden">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={currentPage}
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    className="relative z-10 font-serif leading-relaxed text-slate-800"
-                                    style={{ fontSize: `${fontSize}px` }}
-                                >
-                                    <div className="mb-8 opacity-20">
-                                        <BookOpen className="w-12 h-12" weight="duotone" />
-                                    </div>
-                                    <div className="relative">
-                                        <span className="text-slate-900 font-medium transition-all duration-75">
-                                            {selectedBook.content[currentPage].text.slice(0, charIndex)}
-                                        </span>
-                                        <span className="text-slate-400 font-medium">
-                                            {selectedBook.content[currentPage].text.slice(charIndex)}
-                                        </span>
-                                    </div>
-                                </motion.div>
-                            </AnimatePresence>
-
-                            {/* Decoración sutil */}
-                            <div className="absolute top-0 right-0 p-8 opacity-5">
-                                <SpeakerHigh size={120} weight="thin" />
-                            </div>
-                        </div>
-
-                        {/* Progress Bar Inferior */}
-                        <div className="mt-6 flex gap-2">
-                            {selectedBook.content.map((_, i) => (
-                                <div
-                                    key={i}
-                                    className={cn(
-                                        "h-1.5 flex-grow rounded-full transition-all duration-500",
-                                        i <= currentPage ? "bg-slate-900" : "bg-slate-200"
-                                    )}
-                                />
-                            ))}
-                        </div>
+                    {/* Progress Bar Inferior */}
+                    <div className="mt-6 flex gap-2">
+                        {selectedBook.content.map((_, i) => (
+                            <div
+                                key={i}
+                                className={cn(
+                                    "h-1.5 flex-grow rounded-full transition-all duration-500",
+                                    i <= currentPage ? "bg-slate-900" : "bg-slate-200"
+                                )}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
@@ -354,13 +340,6 @@ export default function StorytellerTool() {
             </div>
 
             <header className="text-center mb-16">
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-2xl text-slate-600 font-bold text-sm mb-4 border border-slate-200 shadow-sm"
-                >
-                    <MusicNotes weight="fill" className="text-slate-500" /> NUEVA EXPERIENCIA
-                </motion.div>
                 <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">El Cuenta Cuentos</h2>
                 <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
                     Sumérgete en grandes historias narradas con voz mágica. Lectura inmersiva para pequeños y grandes soñadores.

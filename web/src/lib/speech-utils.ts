@@ -2,17 +2,13 @@
 
 export const FEMALE_STORY_VOICES = [
     'Microsoft Elsa Online (Natural)',
-    'Microsoft Elvira Online (Natural)',
     'Microsoft Dalia Online (Natural)',
+    'Microsoft Elvira Online (Natural)',
     'Microsoft Helena',
     'Microsoft Laura',
-    'Microsoft Elena',
     'Google español',
     'Mónica',
-    'Paulina',
-    'Sabina',
-    'Zira',
-    'Samantha'
+    'Paulina'
 ];
 
 export const MALE_VOICE_NAMES = [
@@ -23,27 +19,27 @@ export function getBestVoice(lang: string) {
     if (typeof window === 'undefined' || !window.speechSynthesis) return null;
 
     const allVoices = window.speechSynthesis.getVoices();
-    const voices = allVoices.filter(v => {
+
+    // Filtrar voces que coincidan con el idioma
+    const langVoices = allVoices.filter(v => v.lang.startsWith(lang.split('-')[0]));
+
+    // 1. Buscar específicamente las voces "Natural" de Microsoft que suelen ser las mejores
+    for (const name of FEMALE_STORY_VOICES) {
+        const found = langVoices.find(v => v.name.includes(name));
+        if (found) return found;
+    }
+
+    // 2. Buscar cualquier voz que contenga "Natural"
+    const natural = langVoices.find(v => v.name.includes('Natural'));
+    if (natural) return natural;
+
+    // 3. Buscar cualquier voz que NO sea masculina (por nombre)
+    const femaleVoices = langVoices.filter(v => {
         const name = v.name.toLowerCase();
         return !MALE_VOICE_NAMES.some(maleName => name.includes(maleName.toLowerCase()));
     });
 
-    // 1. Prioridad: Voces femeninas específicas y configuradas como naturales
-    for (const name of FEMALE_STORY_VOICES) {
-        let best = voices.find(v => v.name.includes(name) && v.lang === lang);
-        if (!best) {
-            best = voices.find(v => v.name.includes(name) && v.lang.startsWith(lang.split('-')[0]));
-        }
-        if (best) return best;
-    }
-
-    // 2. Voces 'Natural' (que no sean hombres)
-    const natural = voices.find(v => v.name.includes('Natural') && v.lang.startsWith(lang.split('-')[0]));
-    if (natural) return natural;
-
-    // 3. Fallback de idioma de la lista filtrada
-    const langMatch = voices.filter(v => v.lang.startsWith(lang.split('-')[0]));
-    return langMatch[0] || allVoices[0] || null;
+    return femaleVoices[0] || langVoices[0] || allVoices[0] || null;
 }
 
 export function speak(text: string, lang: string = 'es-ES', isStory: boolean = false) {
@@ -59,10 +55,10 @@ export function speak(text: string, lang: string = 'es-ES', isStory: boolean = f
 
         utterance.lang = lang;
 
-        // Parámetros de "Cuentacuentos Natural"
+        // Parámetros refinados para "Cuentacuentos Fantástico"
         if (isStory) {
-            utterance.rate = 0.85; // Más pausado y melódico
-            utterance.pitch = 1.05; // Ligeramente más cálido
+            utterance.rate = 0.88; // Un poco más lento para enfatizar palabras
+            utterance.pitch = 1.05; // Un tono ligeramente más alto y cálido
         } else {
             utterance.rate = 1.0;
             utterance.pitch = 1.0;
