@@ -8,13 +8,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Configuration map
 const IMAGES_TO_PROCESS = [
-    { src: path.join(__dirname, "../public/images/storyteller/character-patito.png"), dest: "character-patito.png" },
-    { src: path.join(__dirname, "../public/images/storyteller/character-caperucita.png"), dest: "character-caperucita.png" },
-    { src: path.join(__dirname, "../public/images/storyteller/character-gato.png"), dest: "character-gato.png" },
-    { src: path.join(__dirname, "../public/images/storyteller/character-pulgarcito.png"), dest: "character-pulgarcito.png" },
-    { src: path.join(__dirname, "../public/images/storyteller/character-hansel-gretel.png"), dest: "character-hansel-gretel.png" },
-    { src: path.join(__dirname, "../public/images/storyteller/character-sirenita.png"), dest: "character-sirenita.png" },
-    { src: path.join(__dirname, "../public/images/storyteller/character-soldadito.png"), dest: "character-soldadito.png" }
+    {
+        src: "C:/Users/david/.gemini/antigravity/brain/75b5e161-fd6f-4ee0-820d-e67d3eda8a6f/hansel_gretel_chip_1769848596229.png",
+        dest: "character-hansel-gretel.png"
+    }
 ];
 
 const OUTPUT_DIR = path.resolve(__dirname, '../public/images/storyteller');
