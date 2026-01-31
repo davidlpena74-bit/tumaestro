@@ -607,12 +607,12 @@ export default function StorytellerTool() {
                                 <h3 className="text-xl font-black text-slate-800 mb-1 transition-colors group-hover:text-slate-900 leading-tight">
                                     {book.title}
                                 </h3>
-                                <p className="text-slate-500 text-xs font-medium line-clamp-2 mb-3 flex-grow leading-snug">
+                                <p className="text-slate-500 text-sm font-medium line-clamp-2 mb-3 flex-grow leading-snug">
                                     {book.description}
                                 </p>
 
                                 <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
-                                    <span className="text-xs font-bold text-slate-400 flex items-center gap-2 italic">
+                                    <span className="text-sm font-bold text-slate-400 flex items-center gap-2 italic">
                                         Por {book.author}
                                     </span>
                                     <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
