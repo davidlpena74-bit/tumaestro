@@ -401,5 +401,78 @@ export const BOOKS: Book[] = [
                 text: "Juntos, el príncipe, Rapunzel y sus hijos regresaron al reino del príncipe, donde fueron recibidos con gran alegría. Vivieron felices para siempre, y el amor y la perseverancia de Rapunzel se convirtieron en leyenda, demostrando que incluso en la más oscura de las prisiones, la esperanza puede tejer un camino hacia la libertad."
             }
         ]
+    },
+    {
+        id: 'jack-y-las-habichuelas',
+        title: 'Jack y las Habichuelas Mágicas',
+        author: 'Tradicional',
+        description: 'La aventura de un niño que, impulsado por unas semillas mágicas, escala hasta el cielo para cambiar su destino.',
+        level: 'Medio',
+        age: '5+',
+        coverImage: '/images/storyteller/jack-y-las-habichuelas-cover.png',
+        chipImage: '/images/storyteller/character-jack.png',
+        genre: 'Fábula',
+        themeColor: 'from-green-700 to-emerald-900',
+        content: [
+            {
+                text: "Esta es la historia de Jack y las Habichuelas Mágicas, una crónica sobre la ambición, el coraje y cómo un acto de aparente locura puede cambiar el destino de una familia sumida en la miseria. En los márgenes de una aldea donde la tierra era tan pobre que apenas daba para alimentar a los gorriones, vivía una viuda con su único hijo, Jack. Eran tan humildes que su posesión más valiosa no era oro ni tierras, sino una vaca vieja y escuálida llamada Blanca Lechera. Pero llegó un invierno tan crudo que la vaca dejó de dar leche, y el hambre empezó a roer las paredes del estómago de Jack y su madre. Con lágrimas en los ojos, la mujer le pidió a su hijo que llevara al animal al mercado para venderlo: \"Hijo, asegúrate de traer una buena bolsa de monedas, o no sobreviviremos al mes\"."
+            },
+            {
+                text: "Jack se puso en camino, tirando de la soga de la vaca. No había avanzado mucho cuando se cruzó con un hombre de aspecto extraño, que vestía una capa hecha de retazos de colores y cuyos ojos brillaban con una luz inusual. El hombre se detuvo y, tras observar a la vaca, le hizo una oferta inaudita: —\"Muchacho, te daré estas cinco habichuelas por tu vaca. Pero no son semillas comunes; son habichuelas mágicas. Si las siembras esta noche, para mañana habrán llegado al cielo\". Jack, llevado por un impulso juvenil y la fascinación por lo sobrenatural, aceptó el trato. Al regresar a casa, su madre, al ver que traía semillas en lugar de oro, estalló en furia y llanto. Lanzó las habichuelas por la ventana hacia el jardín y mandó a Jack a la cama sin cenar."
+            },
+            {
+                text: "A la mañana siguiente, la habitación de Jack estaba sumida en una penumbra verdosa. Al asomarse, se quedó sin aliento: donde antes había tierra seca, ahora se alzaba una planta colosal, un tallo de habichuela tan grueso como un tronco de encina que se retorcía hacia arriba, atravesando las nubes hasta perderse de vista. Sin dudarlo, Jack comenzó a trepar. Escaló durante horas, sintiendo cómo el aire se volvía más puro y el mundo de abajo se transformaba en un juguete diminuto."
+            },
+            {
+                text: "Al llegar a la cima, se encontró en un país extraño, un desierto de nubes sólidas que conducía a un castillo de dimensiones ciclópeas. Jack, movido por el hambre, llamó a la puerta. Le abrió una mujer gigante que, al verlo tan pequeño, se apiadó de él y lo dejó entrar para darle un poco de pan y leche. \"Pero escóndete rápido\", le advirtió, \"que mi marido, el Ogro, está a punto de llegar, y nada le gusta más que el aroma de un niño asado\"."
+            },
+            {
+                text: "De pronto, la tierra tembló bajo pasos que sonaban como truenos. El Ogro entró olfateando el aire con su nariz ganchuda. —\"¡Fi-fai-fo-fum! Huelo la sangre de un hombre común. Esté vivo o esté muerto, moleré sus huesos para hacer mi pan\". La mujer lo distrajo con un enorme jabalí asado. Después de comer, el Ogro sacó una bolsa de monedas de oro y se puso a contarlas hasta que el sueño lo venció. Jack, saliendo de su escondite, tomó la bolsa de oro, bajó a toda prisa por la planta y entregó la fortuna a su madre."
+            },
+            {
+                text: "Durante un tiempo vivieron con holgura, pero la curiosidad y la audacia volvieron a llamar a la puerta de Jack. Trepó por segunda vez. En esta ocasión, vio al Ogro sacar una gallina mágica que, al ordenarle \"¡Pon!\", ponía un huevo de oro puro. Jack esperó a que el gigante roncara, robó la gallina y regresó a la tierra. Ahora eran ricos, pero el espíritu de aventura de Jack no descansaba."
+            },
+            {
+                text: "Subió una tercera vez. En el castillo, vio el tesoro más asombroso del gigante: un arpa de oro que tocaba música celestial por sí sola. Cuando el Ogro se durmió, Jack la tomó, pero el arpa era mágica y tenía voz propia. \"¡Amo, amo, que me roban!\", gritó el instrumento. El Ogro despertó con un rugido de furia y persiguió a Jack hacia el tallo."
+            },
+            {
+                text: "Jack descendía con la agilidad de un gato, mientras el gigante hacía crujir la planta con su peso monstruoso. Al tocar suelo, Jack gritó: \"¡Madre, el hacha, rápido!\". Con un golpe certero, cortó el tallo de la habichuela. El gigante cayó desde las alturas, abriendo un enorme foso en la tierra donde desapareció para siempre. Jack y su madre, ahora dueños de la gallina de los huevos de oro y del arpa maravillosa, vivieron en paz y abundancia, comprendiendo que, a veces, hay que trepar por encima de las nubes para encontrar lo que realmente necesitamos."
+            }
+        ]
+    },
+    {
+        id: 'flautista-hamelin',
+        title: 'El Flautista de Hamelín',
+        author: 'Hermanos Grimm',
+        description: 'La leyenda de una promesa rota y una melodía encantada que enseñó a una ciudad entera el valor de la honestidad.',
+        level: 'Medio',
+        age: '6+',
+        coverImage: '/images/storyteller/flautista-hamelin-cover.png',
+        chipImage: '/images/storyteller/character-flautista.png',
+        genre: 'Leyenda',
+        themeColor: 'from-yellow-700 to-amber-900',
+        content: [
+            {
+                text: "Esta es la historia de El Flautista de Hamelín, un relato que camina por la delgada línea entre la gratitud y la venganza, ambientado en una ciudad que aprendió por las malas el valor de una promesa cumplida. Hamelín era una ciudad próspera, de casas de madera tallada y mercados bulliciosos a orillas del río Weser. Sin embargo, un verano especialmente caluroso trajo consigo una plaga que ningún gato ni veneno podía detener. Las ratas, miles de ellas, surgieron de las alcantarillas y los sótanos. Eran ratas audaces que robaban la comida de los platos de los niños, se escondían en los zapatos de los caballeros y hacían nidos en los sombreros de las damas. La ciudad vivía en un estado de histeria; el chillido de los roedores era el único sonido que se escuchaba por las noches."
+            },
+            {
+                text: "El alcalde y los concejales, hombres gordos y pomposos, se reunieron en el ayuntamiento, pero sus mentes estaban tan vacías como sus soluciones. Fue entonces cuando apareció un extraño. Era un hombre alto y delgado, vestido con una chaqueta de tela de colores vivos y un sombrero con una pluma de faisán. Alrededor de su cuello colgaba una flauta de madera oscura y pulida. —\"Sé cómo librar a vuestra ciudad de esta plaga\", dijo el desconocido con una voz que sonaba como el viento entre los juncos. \"A cambio, pido mil monedas de oro\". Los concejales, desesperados, habrían prometido incluso el sol. \"¡Mil! ¡Te daremos cincuenta mil si nos libras de estos monstruos!\", exclamó el alcalde."
+            },
+            {
+                text: "El flautista salió a la plaza principal, se llevó el instrumento a los labios y comenzó a tocar una melodía extraña, una secuencia de notas que parecía vibrar en los huesos. Al instante, el silencio cayó sobre la ciudad, seguido por un estruendo de millones de patas diminutas. Las ratas salieron de todas partes: de los graneros, de las iglesias, de las camas y de los armarios. Formaron un río de pelaje gris que seguía al flautista mientras este caminaba hacia el río Weser. Sin dejar de tocar, el hombre entró en el agua, y las ratas, hipnotizadas por la música, se lanzaron tras él y fueron arrastradas por la corriente hasta desaparecer."
+            },
+            {
+                text: "La ciudad estalló en vítores. Se tocaron las campanas y se prepararon banquetes. Pero cuando el flautista regresó al ayuntamiento para reclamar su pago, la avaricia se había apoderado del corazón del alcalde. —\"¿Mil monedas por un rato de música?\", se mofó el alcalde. \"Toma estas cincuenta y date por satisfecho. Las ratas ya están muertas, no pueden volver\". El flautista no discutió. Sus ojos brillaron con una luz fría y peligrosa. \"Os arrepentiréis de romper vuestra palabra\", susurró antes de desaparecer entre las sombras de un callejón."
+            },
+            {
+                text: "Llegó el día de San Juan y San Pablo. Mientras los adultos estaban en la iglesia, el flautista regresó. Esta vez, la melodía de su flauta era diferente: dulce, mágica, como el susurro de un bosque encantado o el aroma de los pasteles recién horneados. Esta vez no fueron las ratas. De todas las casas salieron los niños, corriendo con risas y saltos de alegría. Seguían al flautista como si fueran mariposas tras una flor. Los padres, atrapados en la iglesia, solo pudieron observar con horror a través de las ventanas cómo sus hijos se alejaban."
+            },
+            {
+                text: "El flautista los guio fuera de la ciudad, hacia la montaña Koppelberg. Cuando llegaron a la ladera, una puerta de roca sólida se abrió mágicamente y todos, el flautista y los niños, entraron en el corazón de la montaña, que se cerró tras ellos para siempre. Solo tres niños quedaron atrás: uno que era cojo y no pudo correr lo suficiente, uno que era sordo y no pudo oír la música, y otro que era ciego y se perdió en el camino."
+            },
+            {
+                text: "Ellos contaron cómo el flautista había prometido llevarlos a un lugar donde los árboles siempre tenían frutos, los pájaros hablaban y nadie lloraba jamás. Hamelín se convirtió en una ciudad de silencio y luto, un lugar donde, desde aquel día, está prohibido tocar música en la calle por la que se fueron los niños, para que nunca se olvide el precio de una promesa rota."
+            }
+        ]
     }
 ];
