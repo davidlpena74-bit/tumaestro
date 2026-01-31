@@ -215,14 +215,15 @@ export default function RegisterPage() {
                                         </p>
                                     </div>
                                 </form>
-                        )}
                             </div>
+                        )}
+                    </div>
                 </div>
 
-                    {/* Footer */}
-                    <div className="text-center mt-8 text-slate-400 text-xs font-semibold">
-                        &copy; 2026 Tu Maestro v2.0
-                    </div>
+                {/* Footer */}
+                <div className="text-center mt-8 text-slate-400 text-xs font-semibold">
+                    &copy; 2026 Tu Maestro v2.0
+                </div>
             </motion.div>
         </div>
     );
