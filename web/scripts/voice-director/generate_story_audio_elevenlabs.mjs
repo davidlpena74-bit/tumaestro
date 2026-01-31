@@ -4,13 +4,26 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // --- CONFIGURATION ---
-const TARGET_BOOK_ID = 'caperucita-roja'; // Only processing this one for now
-const VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // "Bella" - Soft, Narration, suited for stories
+const TARGET_BOOK_ID = 'patito-feo'; // Now processing Patito Feo
+const VOICE_ID = 'XB0fDUnXU5powFXDhCwa'; // "Charlotte" - British origin (often maps to Castilian Spanish), elegant narration
 const MODEL_ID = 'eleven_multilingual_v2'; // Best for Spanish
+// Manual .env reader fallback
 // Manual .env reader fallback
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ENV_PATH = path.resolve(__dirname, '../../.env');
 let API_KEY = process.env.ELEVENLABS_API_KEY;
+
+if (!API_KEY && fs.existsSync(ENV_PATH)) {
+    console.log(`Loading .env from ${ENV_PATH}`);
+    // Use latin1 to avoid encoding issues with UTF-16LE if present
+    const envContent = fs.readFileSync(ENV_PATH, 'latin1');
+    // Remove null bytes if UTF-16LE
+    const cleanContent = envContent.replace(/\u0000/g, '');
+    const match = cleanContent.match(/(sk_[a-zA-Z0-9]+)/);
+    if (match) {
+        API_KEY = match[1];
+    }
+}
 
 const BOOKS_FILE_PATH = path.resolve(__dirname, '../../src/components/resources/storyteller/books-data.ts');
 const AUDIO_BASE_DIR = path.resolve(__dirname, '../../public/audio/storyteller');
