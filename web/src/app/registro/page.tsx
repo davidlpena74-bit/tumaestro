@@ -59,7 +59,7 @@ export default function RegisterPage() {
                 transition={{ duration: 0.5 }}
                 className="w-full max-w-md z-10 p-4"
             >
-                <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden relative">
+                <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden relative">
                     {/* Header Decoration */}
                     <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
 
