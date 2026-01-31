@@ -216,5 +216,55 @@ export const BOOKS: Book[] = [
                 text: "Gretel corrió a liberar a Hansel, y ambos se abrazaron llorando de alegría. Antes de marcharse, exploraron la casa y encontraron cofres repletos de perlas y piedras preciosas que la bruja había acumulado de sus víctimas. Llenaron sus bolsillos y emprendieron el regreso. Tras mucho caminar, llegaron a un gran río que no podían cruzar, pero un pato blanco, conmovido por su historia, los llevó uno a uno sobre su lomo hasta la otra orilla. Al final del sendero, divisaron su antigua casa. Su madrastra había muerto y su padre, consumido por el remordimiento, los recibió con lágrimas de perdón. Con las joyas de la bruja, la pobreza abandonó su hogar para siempre."
             }
         ]
+    },
+    {
+        id: 'sirenita',
+        title: 'La Sirenita',
+        author: 'Hans Christian Andersen',
+        description: 'La historia original de Hans Christian Andersen sobre una pequeña sirena que entrega su voz por amor y la búsqueda de un alma inmortal.',
+        level: 'Medio',
+        age: '7+',
+        coverImage: '/images/storyteller/sirenita-cover.png',
+        chipImage: '/images/storyteller/character-sirenita.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-blue-600 to-teal-400',
+        content: [
+            {
+                text: "En las profundidades más remotas del océano, donde el azul del agua es tan puro como el cristal más fino, se extendía el reino de los hombres del mar. Allí crecen árboles de un coral carmesí y plantas que se ondulan ante las corrientes. En el punto más profundo se alzaba el castillo del Rey del Mar: una estructura de coral con techos de conchas gigantes que se abren para dejar pasar las corrientes, y ventanas de ámbar transparente."
+            },
+            {
+                text: "El Rey tenía seis hijas, pero la menor era la más singular. Mientras sus hermanas decoraban sus jardines con restos de naufragios, ella solo quería una estatua de mármol de un joven apuesto y unas flores rojas que recordaban al sol. Su skin era delicada como un pétalo de rosa y sus ojos azules como el abismo, pero al igual que sus hermanas, no tenía pies; su cuerpo terminaba en una cola de pez cubierta de escamas plateadas."
+            },
+            {
+                text: "La tradición dictaba que, al cumplir quince años, cada princesa podía subir a la superficie. La sirenita escuchó durante años las historias de sus hermanas: barcos que pasaban como sombras y ciudades que brillaban como estrellas. Cuando llegó su turno, su abuela le colocó ocho ostras blancas en la cola para marcar su rango y le permitió ascender por primera vez al mundo de los hombres."
+            },
+            {
+                text: "Al emerger, el sol se ponía y una estrella parpadeaba sobre un gran barco de tres mástiles. A través de una ventana, vio a un joven príncipe de ojos negros que celebraba su cumpleaños. Pero de pronto, el cielo se oscureció y las olas se convirtieron en montañas. El barco se hundió en las entrañas del océano. Recordando que los humanos no pueden respirar bajo el agua, la sirenita buscó al príncipe entre los restos del naufragio."
+            },
+            {
+                text: "Lo encontró inconsciente y, sosteniendo su cabeza fuera de las olas, nadó con él hasta llegar a una costa desconocida. Lo dejó sobre la arena tibia y se escondió tras unas rocas. Vio cómo una joven lo encontraba y pedía ayuda. El príncipe despertó, pero nunca supo que una criatura del mar le había salvado la vida; pensó que su salvadora era la muchacha de aquel lugar."
+            },
+            {
+                text: "La sirenita regresó a su palacio, pero su corazón se quedó en la superficie. Desesperada por obtener un alma inmortal (pues los seres del mar al morir se convierten en espuma, mientras que las almas humanas ascienden a las estrellas), decidió visitar a la Bruja del Mar. El camino era aterrador, cruzando remolinos rugientes y campos de pólipos hambrientos que extendían sus tentáculos como serpientes."
+            },
+            {
+                text: "La bruja aceptó ayudarla, pero a un precio terrible. —'Te prepararé una pócima', dijo con risa sibilante. 'Sentirás como si una espada atravesara tu cuerpo al transformarte. Tendrás las piernas más bellas, pero cada paso será como caminar sobre cuchillos afilados. Y a cambio, me darás tu voz, la voz más dulce del océano'. La sirenita aceptó y la bruja le cortó la lengua, sumiéndola en el silencio."
+            },
+            {
+                text: "Frente al palacio del príncipe, la sirenita bebió el brebaje y se desmayó por el dolor. Cuando despertó, el príncipe estaba ante ella. Él la acogió fascinado por aquella criatura muda que bailaba con gracia celestial a pesar del dolor insoportable de sus pies. Ella se convirtió en su compañera constante, amándolo en silencio mientras él la trataba como a una niña querida, pero sin pensar en casarse con ella."
+            },
+            {
+                text: "Un día, el Rey ordenó que el príncipe se casara con la princesa vecina. Para horror de la sirenita, resultó ser la misma joven que lo encontró en la playa. El príncipe, creyendo que ella era su verdadera salvadora, se enamoró. Se celebró una boda fastuosa en un barco. La sirenita, vestida de seda, tuvo que sostener la cola de la novia, sabiendo que al salir el sol ella moriría y se convertiría en espuma."
+            },
+            {
+                text: "Mientras observaba el horizonte, sus hermanas emergieron con sus cabellos cortados. —'¡Hermana!', gritaron. 'Hemos dado nuestro cabello a la bruja por este puñal. Si atraviesas el corazón del príncipe antes del amanecer y dejas que su sangre caiga sobre tus pies, volverás a ser una sirena'. La sirenita entró en la tienda nupcial, pero al mirar el rostro sereno del príncipe, no pudo hacerlo."
+            },
+            {
+                text: "Lanzó el arma a las olas y se arrojó ella misma al mar al aparecer el sol. Sintió que su cuerpo se disolvía, pero no se convirtió en nada. Miles de criaturas transparentes la rodeaban. —'¿Quiénes sois?', preguntó con una voz espiritual. —'Somos las hijas del aire', respondieron. 'No tenemos alma, pero podemos ganarla con buenas acciones. Tú has sufrido y has amado, y ahora te unes a nosotras'."
+            },
+            {
+                text: "Y así, mientras el príncipe y su novia buscaban a la hermosa desconocida entre la espuma del mar, la sirenita, invisible, les dio un beso en la frente y se elevó hacia las nubes rosadas, dispuesta a comenzar su largo camino de trescientos años hacia las estrellas, donde finalmente obtendría su anhelada alma inmortal."
+            }
+        ]
     }
 ];
