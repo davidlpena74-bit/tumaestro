@@ -9,12 +9,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Configuration map
 const IMAGES_TO_PROCESS = [
     {
-        src: "C:/Users/david/.gemini/antigravity/brain/43b0b6f3-0cbc-4d44-9dbb-cf84173a2849/male_reproductive_system_diagram_1769544225230.png",
-        dest: "male-reproductive-system.png"
+        src: "C:/Users/david/.gemini/antigravity/brain/75b5e161-fd6f-4ee0-820d-e67d3eda8a6f/hansel_gretel_chip_1769848596229.png",
+        dest: "character-hansel-gretel.png"
     }
 ];
 
-const OUTPUT_DIR = path.resolve(__dirname, '../public/images/games');
+const OUTPUT_DIR = path.resolve(__dirname, '../public/images/storyteller');
 
 async function processImages() {
     console.log("🚀 Starting Images Specialist Agent...");

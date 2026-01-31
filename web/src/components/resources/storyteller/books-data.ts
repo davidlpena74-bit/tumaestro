@@ -189,8 +189,8 @@ export const BOOKS: Book[] = [
         description: 'Dos hermanos perdidos en el bosque descubren una casa hecha de dulces, pero pronto se enfrentan a un peligro mayor del que jamás imaginaron.',
         level: 'Medio',
         age: '6+',
-        coverImage: 'https://images.unsplash.com/photo-1510440842323-24159c447b94?auto=format&fit=crop&q=80&w=800',
-        chipImage: '/images/storyteller/character-hansel.png',
+        coverImage: '/images/storyteller/hansel-gretel-cover.png',
+        chipImage: '/images/storyteller/character-hansel-gretel.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-amber-600 to-brown-700',
         content: [
