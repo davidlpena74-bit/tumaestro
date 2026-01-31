@@ -121,10 +121,10 @@ export default function Header() {
                         </AnimatePresence>
                     </div>
 
-                    <button className="flex items-center gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full font-bold text-sm hover:from-white hover:to-white hover:text-teal-900 transition-all shadow-lg group">
+                    <Link href="/login" className="flex items-center gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full font-bold text-sm hover:from-white hover:to-white hover:text-teal-900 transition-all shadow-lg group">
                         <User className="w-4 h-4 group-hover:scale-110 transition-transform" weight="bold" />
                         <span>{t.header.login}</span>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </header>
