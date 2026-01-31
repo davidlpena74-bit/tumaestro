@@ -313,5 +313,93 @@ export const BOOKS: Book[] = [
                 text: "A la mañana siguiente, al limpiar las cenizas de la chimenea, la sirvienta encontró algo extraordinario: un pequeño corazón de plomo perfectamente fundido. En su interior, brillaba la minúscula lentejuela de plata que había adornado el cabello de la bailarina, ennegrecida pero aún reconoceribe. Los dos amantes habían desaparecido, pero en ese pequeño corazón de plomo, su historia de valentía perduraría para siempre."
             }
         ]
+    },
+    {
+        id: 'la-bella-y-la-bestia',
+        title: 'La Bella y la Bestia',
+        author: 'Tradicional',
+        description: 'Un cuento eterno sobre la redención a través del amor, donde la verdadera belleza se encuentra en el interior del corazón.',
+        level: 'Difícil',
+        age: '7+',
+        coverImage: '/images/storyteller/la-bella-y-la-bestia-cover.png',
+        chipImage: '/images/storyteller/character-la-bella-y-la-bestia.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-rose-900 to-amber-900',
+        content: [
+            {
+                text: "En una época en que los mercaderes medían su fortuna por el número de barcos que cruzaban los océanos, vivía un hombre inmensamente rico que tenía tres hijas. Las dos mayores eran vanidosas y egoístas, amantes de los bailes y las sedas finas. La menor, sin embargo, era tan bondadosa y hermosa que todos la llamaban simplemente Bella. Su belleza no residía solo en la armonía de sus rasgos, sino en la paz que transmitía al leer bajo los sauces o al cuidar el jardín de su padre."
+            },
+            {
+                text: "La fortuna es, empero, tan voluble como el viento. Una serie de naufragios dejó al mercader en la ruina, obligando a la familia a retirarse a una pequeña y humilde cabaña en el campo. Mientras las hermanas mayores se lamentaban y despreciaban las tareas del hogar, Bella se levantaba antes del alba para limpiar, cocinar y mantener la esperanza de su padre. Un día, llegó la noticia de que uno de los barcos perdidos había llegado a puerto. Antes de partir, el padre preguntó a sus hijas qué deseaban que les trajera. Las mayores pidieron joyas y vestidos de brocado; Bella, tras mucho insistir el padre, solo pidió una rosa, pues en aquella tierra árida no crecía ninguna."
+            },
+            {
+                text: "El viaje fue un fracaso: el barco había sido embargado y el padre regresaba más pobre que antes. Al cruzar un bosque bajo una tormenta de nieve, se perdió en un sendero desconocido que lo condujo a un palacio de una opulencia irreal. Las puertas se abrieron solas; mesas repletas de comida humeante lo esperaban, pero no había ni un alma a la vista. Tras pasar la noche, al salir por el jardín, vio un rosal de flores rojas como la sangre. Recordando el deseo de Bella, cortó una. En ese instante, un rugido espantoso hizo temblar la tierra y una criatura de aspecto aterrador, con colmillos de jabalí y pelaje espeso, apareció ante él."
+            },
+            {
+                text: "—\"¡Inagradecido!\", tronó la Bestia. \"Te he dado comida y techo, ¿y me pagas robando mis flores? Morirás por esto, a menos que una de tus hijas acepte morir en tu lugar\". El padre regresó a casa desolado. Bella, al conocer la historia, no permitió que su padre sufriera por su culpa. \"Yo iré\", dijo con una firmeza que no admitía réplica. Al llegar al palacio, la Bestia no la devoró. Por el contrario, la instaló en la habitación más lujosa y le dio libertad total, con una sola condición: cenar con él cada noche."
+            },
+            {
+                text: "Al principio, Bella sentía un terror paralizante cada vez que veía aquella figura deforme. Pero con el paso de los meses, las cenas se convirtieron en largas conversaciones. Descubrió que tras esa apariencia monstruosa se escondía un alma culta, sensible y profundamente solitaria. La Bestia le regaló una biblioteca inmensa y un espejo mágico que le permitía ver a su familia. A pesar de la fealdad externa, Bella empezó a apreciar la nobleza del corazón de su anfitrión. Sin embargo, cada noche, la Bestia le hacía la misma pregunta con voz trémula: —\"Bella, ¿te casarías conmigo?\". Y ella, con honestidad pero con tristeza, siempre respondía: \"No, Bestia\"."
+            },
+            {
+                text: "Un día, el espejo le mostró que su padre estaba gravemente enfermo. Bella suplicó que le permitiera visitarlo. La Bestia, cuyo amor por ella era ya superior a su propio deseo de compañía, aceptó: \"Ve, pero si no regresas en ocho días, moriré de dolor\". Le entregó un anillo que, al girarlo, la transportaría de regreso."
+            },
+            {
+                text: "Bella cuidó a su padre hasta que recuperó la salud, pero sus hermanas, celosas de su vida en el palacio, la engañaron para que se quedara más tiempo, esperando que la Bestia se enfureciera y la castigara. Al décimo día, Bella soñó que la Bestia yacía moribunda en el jardín de rosas. Despertó con un grito de angustia y, girando el anillo, regresó al palacio."
+            },
+            {
+                text: "Encontró a la criatura tendida sobre la hierba, con la respiración entrecortada y los ojos cerrados. Bella se arrojó sobre él, llorando amargamente. \"¡No mueras, por favor! He sido una ingrata. No importa tu aspecto, te amo y quiero ser tu esposa\"."
+            },
+            {
+                text: "Apenas pronunció estas palabras, un estallido de luz envolvió el lugar. La Bestia desapareció y, en su lugar, se hallaba un príncipe más apuesto que cualquier sueño. El hechizo de una malvada hada, que lo había transformado por ser soberbio y cruel, se había roto gracias a que una mujer había sido capaz de amar su interior. El palacio se llenó de luz y música, y Bella, que había encontrado la belleza donde nadie más sabía mirar, gobernó junto al príncipe en un reino donde se enseñaba que solo el corazón tiene el poder de ver la verdad."
+            }
+        ]
+    },
+    {
+        id: 'rapunzel',
+        title: 'Rapunzel',
+        author: 'Hermanos Grimm',
+        description: 'La historia de la joven de largos cabellos dorados encerrada en una torre, y cómo el amor vence incluso a la más poderosa hechicería.',
+        level: 'Medio',
+        age: '6+',
+        coverImage: '/images/storyteller/rapunzel-cover.png',
+        chipImage: '/images/storyteller/character-rapunzel.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-purple-800 to-indigo-900',
+        content: [
+            {
+                text: "Hace mucho tiempo, en una pequeña casa adosada a un jardín mágico, vivían un hombre y una mujer. El jardín, cercado por un muro altísimo, pertenecía a una hechicera temida en toda la comarca, a quien nadie se atrevía a desafiar. Un día, la mujer sintió un antojo irrefrenable, un deseo incontrolable por las rapunces, una especie de lechuga silvestre que crecía en aquel jardín encantado. Su anhelo era tan fuerte que languidecía, amenazando con morir si no las probaba. Su marido, desesperado por salvarla, decidió una noche escalar el muro y robar algunas rapunces."
+            },
+            {
+                text: "Al día siguiente, el antojo de la mujer volvió, más fuerte que nunca. El hombre, con el corazón encogido de miedo, regresó al jardín. Pero esta vez, al descender, se encontró cara a cara con la hechicera. Sus ojos lanzaban chispas de ira. —\"¡Cómo te atreves a entrar en mi jardín como un ladrón!\", bramó la hechicera, con una voz que helaba la sangre. \"¡Pagarás caro tu insolencia!\". El hombre suplicó clemencia, explicando la desesperación de su esposa. La hechicera, con una sonrisa malévola, aceptó dejarlo ir a cambio de una promesa terrible: el hijo que su esposa esperaba le sería entregado al nacer. El hombre, aterrado, aceptó."
+            },
+            {
+                text: "Cuando la niña nació, era la criatura más hermosa que se había visto. La hechicera apareció de inmediato, la tomó en brazos y la llamó Rapunzel, en honor a las lechugas que habían provocado su destino. Se la llevó a lo más profundo del bosque y la encerró en una torre altísima, sin puertas ni escaleras, con una sola ventana diminuta en la cima. Allí, Rapunzel creció aislada del mundo, con la hechicera como única compañía."
+            },
+            {
+                text: "Rapunzel tenía una voz melodiosa y el cabello más largo y hermoso que jamás se haya visto: una cascada dorada que caía hasta el suelo. Cuando la hechicera quería subir a la torre, se paraba al pie y gritaba: —\"¡Rapunzel, Rapunzel, suelta tu cabello!\". Y Rapunzel, con un suspiro, desenrollaba sus trenzas doradas y las dejaba caer por la ventana, formando una escalera que la hechicera escalaba con facilidad."
+            },
+            {
+                text: "Pasaron los años. Un día, un joven príncipe, que cabalgaba por el bosque, escuchó una voz tan hermosa que detuvo su caballo. Era Rapunzel, que cantaba para pasar sus largas horas de soledad. Fascinado, el príncipe buscó el origen de la voz y encontró la torre sin puertas. Intrigado, se escondió entre los arbustos y observó a la hechicera llamar a Rapunzel y subir por su cabello."
+            },
+            {
+                text: "Al día siguiente, el príncipe regresó y, imitando la voz de la hechicera, gritó: —\"¡Rapunzel, Rapunzel, suelta tu cabello!\". Las trenzas doradas cayeron, y el príncipe escaló hasta la cima. Al principio, Rapunzel se asustó terriblemente al ver a un hombre, pues nunca había visto a ninguno. Pero el príncipe, con palabras amables y una voz suave, le habló de su admiración por su canto y su belleza. Poco a poco, Rapunzel se sintió cómoda en su compañía. Se enamoraron."
+            },
+            {
+                text: "El príncipe la visitaba cada tarde, escalando por su cabello. Juntos, idearon un plan de escape: él le traería un ovillo de seda cada vez que fuera, y ella tejería una escalera con él. Cuando la escalera estuviera lista, ella descendería y escaparían juntos."
+            },
+            {
+                text: "Un día, sin embargo, Rapunzel cometió un error. Le preguntó a la hechicera con ingenuidad: \"Dime, madrina, ¿por qué mi príncipe sube tan rápido por tu pelo mientras que a ti te cuesta tanto?\". La hechicera, con una mirada de furia, comprendió la traición. Con un par de tijeras, cortó la larga cabellera dorada de Rapunzel, dejándola con el cabello corto. Luego, con un hechizo, la desterró a un desierto lejano, donde viviría en la miseria."
+            },
+            {
+                text: "Esa misma noche, la hechicera ató las trenzas cortadas a la ventana. Cuando el príncipe llegó y gritó, el cabello cayó, pero al subir, no encontró a su amada Rapunzel, sino el rostro furioso de la hechicera. —\"¡Jamás volverás a verla!\", gritó la hechicera con una risa cruel. \"¡El pájaro se ha ido, el nido está vacío!\". Desesperado, el príncipe se arrojó desde la torre. Sobrevivió a la caída, pero cayó sobre un lecho de espinas que le arrancaron los ojos. Ciego y desolado, vagó por el bosque durante años, alimentándose de raíces y bayas, llamando a Rapunzel en su sufrimiento."
+            },
+            {
+                text: "Un día, el príncipe ciego llegó a un desierto árido y desolado. Escuchó un canto familiar, una voz que reconocería entre mil. Era Rapunzel, que vivía allí con dos pequeños gemelos, fruto de su amor. Ella lo reconoció de inmediato y se arrojó a sus brazos, llorando de alegría. Dos de sus lágrimas cayeron sobre los ojos ciegos del príncipe. Milagrosamente, en ese instante, su vista regresó."
+            },
+            {
+                text: "Juntos, el príncipe, Rapunzel y sus hijos regresaron al reino del príncipe, donde fueron recibidos con gran alegría. Vivieron felices para siempre, y el amor y la perseverancia de Rapunzel se convirtieron en leyenda, demostrando que incluso en la más oscura de las prisiones, la esperanza puede tejer un camino hacia la libertad."
+            }
+        ]
     }
 ];

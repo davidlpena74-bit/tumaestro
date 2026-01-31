@@ -27,12 +27,12 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
 - **Theme Color**: Elige un gradiente de Tailwind que armonice con la ilustración (ej. `from-amber-600 to-brown-700`).
 
 ### 4. Generación de Voz
-1. **Script**: Usa el Voice Director para generar los audios si es posible.
+1. **Ejecución**: Usa el Voice Director. El script detectará automáticamente si tienes una key de ElevenLabs para usar voces Ultra-Premium. Si no, usará Edge TTS (Calidad Alta).
    ```bash
    cd web/scripts/voice-director
    node generate_story_audio.mjs
    ```
-2. **Fallback**: Si no hay MP3, el sistema usará automáticamente `SpeechSynthesis` con la lógica de robustez mejorada.
+2. **Fallback Automático**: El script ya incluye lógica de reintento. Si ElevenLabs falla, saltará a Edge TTS automáticamente para esa página.
 
 ## Verificación Final
 - La imagen del personaje debe verse completa en el círculo del reproductor.

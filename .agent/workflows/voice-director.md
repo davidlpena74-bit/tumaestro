@@ -3,9 +3,12 @@ description: Generación automática de narraciones de voz para los cuentos usan
 ---
 
 Este agente se encarga de dar voz a las historias.
+ 
+ ## Estrategia de Voz (Híbrida)
+ El sistema priorizará AUTOMÁTICAMENTE **ElevenLabs** (Voz: Charlotte/Premium) si encuentra una API Key válida. Si no, o si falla, usará **Microsoft Edge TTS** (Voz: ElviraNeural) como respaldo gratuito de alta calidad.
 
-## Prerrequisitos
-- Clave de API de OpenAI configurada en `.env` (`OPENAI_API_KEY`).
+ ## Prerrequisitos
+- Clave de API de ElevenLabs en `.env` (`ELEVENLABS_API_KEY`) para calidad premium.
 - Archivo de datos de libros en `src/components/resources/storyteller/books-data.ts`.
 
 ## Flujo de Trabajo
