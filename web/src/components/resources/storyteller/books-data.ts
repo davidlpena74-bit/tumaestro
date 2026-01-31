@@ -81,31 +81,34 @@ export const BOOKS: Book[] = [
         themeColor: 'from-red-600 to-amber-700',
         content: [
             {
-                text: "En tiempo del rey que rabió, vivía en una aldea una niña, la más linda de las aldeanas, tanto que loca de gozo estaba su madre y más aún su abuela, quien le había hecho una caperuza roja; y tan bien le estaba que por Caperucita Roja conocíanla todos. Un día su madre hizo tortas y le dijo: —Irás a casa de la abuela a informarte de su salud, pues me han dicho que está enferma. Llévale una torta y este tarrito lleno de manteca."
+                text: "En una aldea rodeada por un bosque tan espeso que la luz del sol apenas lograba besar el suelo, vivía una niña cuya bondad era conocida por todos los habitantes de la comarca. Su posesión más preciada era una capa de terciopelo de un rojo tan intenso como las amapolas en verano, un regalo de su abuela que la pequeña lucía con orgullo en cada estación. Por esta razón, el nombre con el que se le conocía en los valles y senderos no era otro que Caperucita Roja."
             },
             {
-                text: "Caperucita Roja salió enseguida en dirección a la casa de su abuela, que vivía en otra aldea. Al pasar por un bosque encontró al compadre lobo que tuvo ganas de comérsela, pero a ello no se atrevió porque había algunos leñadores. Preguntola a dónde iba, y la pobre niña, que no sabía fuese peligroso detenerse para dar oídos al lobo, le dijo: —Voy a ver a mi abuela y a llevarle esta torta con un tarrito de manteca que le envía mi madre."
+                text: "Una mañana, cuando el rocío aún brillaba sobre las telas de araña en los matorrales, su madre terminó de preparar una cesta de mimbre. El aroma del pan recién horneado y la miel fresca inundaba la pequeña cocina. Con gesto preocupado, la madre llamó a la niña y, mientras ajustaba el lazo de su capa, le dio instrucciones precisas. Su abuela, que vivía en una pequeña cabaña al otro lado del bosque, se encontraba postrada en cama por una fuerte fiebre, y aquellas provisiones eran vitales para su recuperación. 'No te apartes del sendero principal', le advirtió con voz firme, 'pues el bosque tiene ojos y las sombras pueden ser engañosas'."
             },
             {
-                text: "—¿Vive muy lejos? —preguntole el lobo. —Sí, —contestole Caperucita Roja— a la otra parte del molino que veis ahí; en la primera casa de la aldea. —Pues entonces —añadió el lobo—, yo también quiero visitarla. Iré a su casa por este camino y tú por aquel, a ver cuál de los dos llega antes."
+                text: "Caperucita, con la cesta colgada del brazo y el corazón lleno de buenas intenciones, se adentró en la espesura. El camino estaba flanqueado por pinos centenarios cuyas copas parecían susurrar secretos al viento. A medida que avanzaba, el silencio del bosque se volvía más denso, interrumpido solo por el crujir de las ramas bajo sus pies. Fue entonces cuando, de entre los troncos de los robles, emergió una figura imponente. Era un lobo de dimensiones extraordinarias, con un pelaje grisáceo salpicado de negro y unos ojos que destellaban con una mezcla de hambre y astucia."
             },
             {
-                text: "El lobo echó a correr tanto como pudo, tomando el camino más corto, y la niña fuese por el más largo entreteniéndose en coger avellanas, en correr detrás de las mariposas y en hacer ramilletes con las florecillas que hallaba a su paso. Poco tardó el lobo en llegar a la casa de la abuela. Llamó: ¡pam! ¡pam! —¿Quién va? —Soy vuestra nieta, Caperucita Roja —dijo el lobo imitando la voz de la niña—. Os traigo una torta y un tarrito de manteca que mi madre os envía."
+                text: "El animal no la atacó de inmediato; en su lugar, se acercó con una elegancia hipnótica, casi caballeresca. '¿A dónde se dirige tan temprano una joven tan encantadora?', preguntó el lobo, suavizando su ronca voz para no asustarla. Caperucita, cuya inocencia no le permitía ver la maldad tras los colmillos, omitió el consejo de su madre y explicó que se dirigía a la casa de su abuela, bajo los tres grandes robles. El lobo le sugirió: '¿No oyes el canto de los pájaros? Un ramo de esas flores curaría el alma de tu abuela incluso antes que el pan que llevas'."
             },
             {
-                text: "La buena de la abuela, que estaba en cama porque se sentía indispuesta, contestó gritando: —Tira del cordel y se abrirá el cancel. Así lo hizo el lobo y la puerta se abrió. Arrojose encima de la vieja y la devoró en un abrir y cerrar de ojos, pues hacía más de tres días que no había comido. Luego cerró la puerta y fue a acostarse en la cama de la abuela, esperando a Caperucita Roja."
+                text: "Seducida por la idea, la niña se desvió del camino. Mientras tanto, el lobo corrió hacia la cabaña de la anciana. Al llegar, llamó a la puerta con tres golpes secos. 'Soy yo, tu nieta Caperucita', mintió, agudizando la voz. La anciana le indicó cómo abrir y, en un instante, el lobo irrumpió y devoró a la mujer. Acto seguido, se vistió con su camisón, se colocó la cofia y se metió en la cama, cubriéndose hasta la nariz para ocultar su hocico."
             },
             {
-                text: "Algún tiempo después llamó a la puerta: ¡pam! ¡pam! —¿Quién va? Caperucita Roja, que oyó la ronca voz del lobo, tuvo miedo al principio, pero creyendo que su abuela estaba constipada, contestó: —Soy yo, vuestra nieta, Caperucita Roja, que os trae una torta y un tarrito de manteca que os envía mi madre. El lobo gritó procurando endulzar la voz: —Tira del cordel y se abrirá el cancel."
+                text: "Cuando Caperucita llegó finalmente a la cabaña, cargada de flores, encontró la puerta abierta de par en par. Un presentimiento extraño le oprimió el pecho, pero entró llamando a su abuela. La luz que se filtraba por las cortinas apenas iluminaba el rostro de la figura que yacía en el lecho. Al acercarse, notó que algo no encajaba; la fisonomía de su abuela parecía haber mutado bajo la fiebre."
             },
             {
-                text: "Caperucita Roja tiró del cordel y la puerta se abrió. Al verla entrar, el lobo le dijo, ocultándose debajo de la manta: —Deja la torta y el tarrito de manteca encima de la artesa y vente a acostar conmigo. Caperucita Roja lo hizo. Grande fue su sorpresa al ver el aspecto de su abuela, y le dijo: —Abuelita, tenéis los brazos muy largos. —Así te abrazaré mejor, hija mía. —Abuelita, tenéis las piernas muy largas. —Así correré más, hija mía."
+                text: "—'¡Oh, abuelita, qué orejas tan grandes tienes!', exclamó la niña con un susurro tembloroso. —'Son para oírte mejor, mi niña', respondió el lobo. —'¡Abuelita, qué ojos tan grandes tienes!'. —'Son para verte mejor en la penumbra'. —'¡Y qué manos tan grandes tienes!'. —'Son para abrazarte con más fuerza'. —'Pero abuelita... ¡qué boca tan terriblemente grande tienes!'. —'¡Es para comerte mejor!'."
             },
             {
-                text: "—Abuelita, tenéis las orejas muy grandes. —Así te oiré mejor, hija mía. —Abuelita, tenéis los ojos muy grandes. —Así te veré mejor, hija mía. —Abuelita, tenéis los dientes muy grandes. —Así te comeré mejor, hija mía. Y al decir estas palabras, el malvado lobo arrojose sobre Caperucita Roja y se la comió."
+                text: "El lobo saltó de la cama con una ferocidad salvaje y, antes de que Caperucita pudiera gritar, la engulló por completo. Saciado y exhausto por su propio festín, el animal volvió a la cama y cayó en un sueño profundo, roncando con tal fuerza que las paredes de la cabaña parecían temblar."
             },
             {
-                text: "MORALEJA DEL CUENTO: La niña bonita, La que no lo sea, Que a todas alcanza Esta moraleja, Mucho miedo, mucho, Al lobo le tenga, Que a veces es joven De buena presencia, De palabras dulces, De grandes promesas, Tan pronto olvidadas Como fueron hechas."
+                text: "Poco después, un cazador que patrullaba la zona escuchó aquellos ruidos antinaturales. Entró en la casa y se encontró con el lobo durmiendo plácidamente con la barriga hinchada. Comprendiendo la situación, tomó un par de tijeras de costura y, con cuidado, abrió el vientre de la bestia. De la oscuridad del estómago surgieron primero la capa roja y luego Caperucita, seguida de la abuela, ambas ilesas pero aterrorizadas por la asfixiante experiencia."
+            },
+            {
+                text: "La niña recogió grandes piedras del río, con las que rellenaron el cuerpo del lobo. Cuando el animal despertó e intentó huir, su peso era tal que cayó al suelo sin vida. La cabaña recuperó su paz, y mientras la abuela comía el pastel, Caperucita prometió que jamás volvería a abandonar el sendero seguro, pues había comprendido que la belleza de las flores no compensaba el peligro que acecha en las sombras de lo desconocido."
             }
         ]
     },
@@ -176,6 +179,47 @@ export const BOOKS: Book[] = [
             },
             {
                 text: "Con las botas puestas, Pulgarcito regresó a la casa del ogro y engañó a la mujer diciéndole que unos ladrones pedían todo su oro para liberar al marido. La mujer le dio todas sus riquezas. Pulgarcito volvió a casa cargado de oro, salvando a su familia de la miseria para siempre. Compró tierras para sus padres y hermanos, demostrando que el tamaño no importa cuando se tiene un gran corazón e inteligencia."
+            }
+        ]
+    },
+    {
+        id: 'hansel-y-gretel',
+        title: 'Hansel y Gretel',
+        author: 'Hermanos Grimm',
+        description: 'Dos hermanos perdidos en el bosque descubren una casa hecha de dulces, pero pronto se enfrentan a un peligro mayor del que jamás imaginaron.',
+        level: 'Medio',
+        age: '6+',
+        coverImage: 'https://images.unsplash.com/photo-1510440842323-24159c447b94?auto=format&fit=crop&q=80&w=800',
+        chipImage: '/images/storyteller/character-hansel.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-amber-600 to-brown-700',
+        content: [
+            {
+                text: "En la linde de un bosque tan vasto que parecía no tener fin, vivía un pobre leñador con su esposa y sus dos hijos; el niño se llamaba Hansel y la niña, Gretel. Eran tiempos de gran penuria, y el hambre acechaba en cada rincón de su humilde choza. Una noche, desesperada, la madrastra convenció al leñador de que la única forma de sobrevivir era llevar a los niños a lo más profundo del bosque y dejarlos allí a su suerte."
+            },
+            {
+                text: "Hansel, que había escuchado el plan desde su cama, salió sigilosamente a la luz de la luna y llenó sus bolsillos con guijarros blancos que brillaban como plata. Al día siguiente, mientras caminaban hacia el corazón de la espesura, Hansel dejaba caer una piedrecita de vez en cuando. Cuando el sol se puso y sus padres desaparecieron entre las sombras, los niños esperaron a que la luna se alzara y, siguiendo el rastro de plata, regresaron sanos y salvos a casa."
+            },
+            {
+                text: "Pero la escasez persistía y el plan se repitió. Esta vez, la puerta estaba cerrada y Hansel no pudo recoger piedras, así que usó migas de su único trozo de pan para marcar el camino. Sin embargo, cuando intentaron regresar, descubrieron con horror que los pájaros del bosque se habían comido cada rastro del pan. Estaban perdidos. Caminaron durante tres días, alimentándose de bayas silvestres, hasta que un pájaro de plumaje blanco como la nieve los guió hasta un claro del bosque."
+            },
+            {
+                text: "Allí, ante sus ojos asombrados, se alzaba una casita construida enteramente con delicias: las paredes eran de pan de especias, las ventanas de azúcar transparente y el tejado de chocolate reluciente. Hambrientos, los niños comenzaron a comer trozos de la dulce vivienda. De repente, una voz suave surgió del interior: '¿Quién mordisquea mi casita?'. Una anciana de aspecto frágil salió a recibirlos, invitándolos a pasar con promesas de manjares y camas blandas."
+            },
+            {
+                text: "Pero la bondad de la anciana era un disfraz; en realidad era una bruja malvada que construía casas de dulces para atraer y devorar a los niños. A la mañana siguiente, encerró a Hansel en una jaula de hierro y obligó a Gretel a trabajar sin descanso, preparando festines para engordar a su hermano. Cada día, la bruja pedía a Hansel que sacara un dedo para ver si ya estaba gordo, pero el niño, astuto, le ofrecía un huesecillo de pollo."
+            },
+            {
+                text: "Pasaron las semanas y la bruja, cuya vista era muy pobre, se impacientó al ver que el niño no engordaba. '¡Gorda o flaca, mañana me lo comeré!', exclamó con ferocidad. Ordenó a Gretel que encendiera el gran horno. Cuando las llamas rugían, la bruja intentó engañar a la niña para que entrara y comprobara la temperatura. Pero Gretel, adivinando sus intenciones, fingió no saber cómo hacerlo: 'No sé cómo debo entrar. ¿Podrías enseñarme?'"
+            },
+            {
+                text: "La bruja, refunfuñando por la torpeza de la niña, se asomó al horno para mostrarle. En ese preciso instante, Gretel reunió todas sus fuerzas y le dio un empujón soberbio, cerrando la pesada puerta de hierro tras ella. La bruja lanzó un grito aterrador mientras Gretel corría a liberar a su hermano. '¡Hansel, somos libres!', gritó mientras las lágrimas de alegría resbalaban por sus mejillas."
+            },
+            {
+                text: "Antes de marcharse, los niños exploraron la casa y encontraron arcones llenos de perlas y piedras preciosas. Llenaron sus bolsillos con los tesoros y emprendieron el camino de regreso. Tras cruzar un gran río con la ayuda de un pato blanco, el bosque comenzó a parecerles familiar. Finalmente, divisaron su hogar y corrieron a los brazos de su padre, quien nunca había dejado de lamentar haberlos abandonado."
+            },
+            {
+                text: "La madrastra había muerto, y con las riquezas que los niños trajeron del bosque, la familia jamás volvió a pasar hambre. Hansel y Gretel crecieron sabiendo que su ingenio y su valentía los habían salvado, y el recuerdo de la casita de chocolate se convirtió en una historia que contaban a la luz de la chimenea, recordando que incluso en la oscuridad más profunda, siempre hay un camino de regreso a casa para quienes se mantienen unidos."
             }
         ]
     }
