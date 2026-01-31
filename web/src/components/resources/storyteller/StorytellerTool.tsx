@@ -68,14 +68,29 @@ export default function StorytellerTool() {
     }, []);
 
     useEffect(() => {
+        if (selectedBook) {
+            setCurrentPage(0);
+            setIsPlaying(false);
+            isPlayingRef.current = false;
+            setCharIndex(0);
+            progressRef.current = 0;
+            if (synthRef.current) synthRef.current.cancel();
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
+        }
+    }, [selectedBook]);
+
+    useEffect(() => {
         if (isPlaying && selectedBook) {
             // Un pequeño retraso para que la animación de cambio de página se vea mejor
             const timer = setTimeout(() => {
                 speakPage();
-            }, 500);
+            }, 300); // Reduced delay for smoother feel
             return () => clearTimeout(timer);
         }
-    }, [currentPage]);
+    }, [currentPage, isPlaying]); // Added isPlaying as dependency to handle start-from-scratch correctly
 
     const requestProgressLoop = () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
@@ -151,13 +166,17 @@ export default function StorytellerTool() {
 
                 const onEnded = () => {
                     cleanupListeners();
-                    if (currentPage < selectedBook.content.length - 1) {
-                        setCurrentPage(prev => prev + 1);
-                    } else {
-                        setIsPlaying(false);
-                        isPlayingRef.current = false;
-                        setCharIndex(text.length);
-                    }
+                    // Use a more robust check for more pages
+                    setCurrentPage(prev => {
+                        if (prev < selectedBook.content.length - 1) {
+                            return prev + 1;
+                        } else {
+                            setIsPlaying(false);
+                            isPlayingRef.current = false;
+                            setCharIndex(text.length);
+                            return prev;
+                        }
+                    });
                 };
 
                 const cleanupListeners = () => {
@@ -228,15 +247,16 @@ export default function StorytellerTool() {
         utterance.onend = () => {
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
 
-            if (currentPage < selectedBook.content.length - 1) {
-                // Avanzar página automáticamente
-                setCurrentPage(prev => prev + 1);
-                // No cambiamos isPlaying a false para que el useEffect dispare la siguiente página
-            } else {
-                setIsPlaying(false);
-                isPlayingRef.current = false;
-                setCharIndex(text.length);
-            }
+            setCurrentPage(prev => {
+                if (prev < selectedBook.content.length - 1) {
+                    return prev + 1;
+                } else {
+                    setIsPlaying(false);
+                    isPlayingRef.current = false;
+                    setCharIndex(text.length);
+                    return prev;
+                }
+            });
         };
 
         utteranceRef.current = utterance;
@@ -261,7 +281,9 @@ export default function StorytellerTool() {
                 isPlayingRef.current = true;
                 requestProgressLoop();
             } else {
-                speakPage();
+                setIsPlaying(true);
+                // The useEffect at line 70 now handles calling speakPage() 
+                // because it has [isPlaying, currentPage] as dependencies.
             }
         }
     };
