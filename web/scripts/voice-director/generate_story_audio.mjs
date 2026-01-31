@@ -36,12 +36,12 @@ async function main() {
             fs.mkdirSync(bookAudioDir, { recursive: true });
         }
 
-        const pageRegex = /text:\s*['"`]([\s\S]*?)['"`]\s*[},]/g;
+        const pageRegex = /text:\s*(['"`])([\s\S]*?)\1\s*[},]/g;
         let pageMatch;
         let pageIndex = 0;
 
         while ((pageMatch = pageRegex.exec(contentBlock)) !== null) {
-            const text = pageMatch[1];
+            const text = pageMatch[2];
             const cleanText = text.replace(/\\"/g, '"').replace(/\n/g, ' ').trim();
 
             if (!cleanText) {
