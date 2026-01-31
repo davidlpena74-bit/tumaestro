@@ -53,15 +53,20 @@ export default function StorytellerTool() {
         isPlayingRef.current = isPlaying;
     }, [isPlaying]);
 
+    // Initialize synthesis
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && !synthRef.current) {
             synthRef.current = window.speechSynthesis;
         }
+    }, []);
+
+    // Cleanup on unmount
+    useEffect(() => {
         return () => {
             if (synthRef.current) synthRef.current.cancel();
             if (audioRef.current) {
                 audioRef.current.pause();
-                audioRef.current = null;
+                audioRef.current.src = "";
             }
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         };
@@ -113,6 +118,24 @@ export default function StorytellerTool() {
         animationFrameRef.current = requestAnimationFrame(loop);
     };
 
+    const handlePageFinished = () => {
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+        }
+
+        if (selectedBook && currentPage < selectedBook.content.length - 1) {
+            // Reset character index visually before moving to next page
+            setCharIndex(0);
+            progressRef.current = 0;
+            setCurrentPage(prev => prev + 1);
+            // isPlaying remains true, which triggers speakPage via useEffect
+        } else {
+            setIsPlaying(false);
+            isPlayingRef.current = false;
+        }
+    };
+
     const speakPage = async () => { // Made async
         if (!selectedBook || !synthRef.current) return;
 
@@ -144,55 +167,58 @@ export default function StorytellerTool() {
                 if (!audioRef.current) return resolve(false);
 
                 audioRef.current.src = audioPath;
-                audioRef.current.load(); // Load the audio to check if it exists
+                audioRef.current.load();
+
+                // Safety timeout for audio loading
+                const loadTimeout = setTimeout(() => {
+                    cleanupLoadingListeners();
+                    resolve(false);
+                }, 2000);
 
                 const onCanPlayThrough = () => {
-                    audioRef.current?.play();
+                    clearTimeout(loadTimeout);
+                    if (!audioRef.current) return resolve(false);
+
+                    audioRef.current.play().catch(() => {
+                        cleanupLoadingListeners();
+                        resolve(false);
+                    });
+
                     setIsPlaying(true);
                     isPlayingRef.current = true;
-                    // For MP3, we don't have word boundaries easily,
-                    // so we do a simple linear progress based on duration
-                    const duration = audioRef.current?.duration || 10; // Fallback duration
-                    currentSpeedRef.current = text.length / (duration * 1000); // chars per ms
+
+                    const duration = audioRef.current.duration || 10;
+                    currentSpeedRef.current = text.length / (duration * 1000);
                     requestProgressLoop();
-                    cleanupListeners();
+
+                    cleanupLoadingListeners();
                     resolve(true);
                 };
 
                 const onError = () => {
-                    cleanupListeners();
+                    clearTimeout(loadTimeout);
+                    cleanupLoadingListeners();
                     resolve(false);
                 };
 
                 const onEnded = () => {
-                    cleanupListeners();
-                    // Use a more robust check for more pages
-                    setCurrentPage(prev => {
-                        if (prev < selectedBook.content.length - 1) {
-                            return prev + 1;
-                        } else {
-                            setIsPlaying(false);
-                            isPlayingRef.current = false;
-                            setCharIndex(text.length);
-                            return prev;
-                        }
-                    });
+                    handlePageFinished();
                 };
 
-                const cleanupListeners = () => {
+                const cleanupLoadingListeners = () => {
                     if (audioRef.current) {
                         audioRef.current.removeEventListener('canplaythrough', onCanPlayThrough);
                         audioRef.current.removeEventListener('error', onError);
-                        audioRef.current.removeEventListener('ended', onEnded);
                     }
                 };
 
+                // Remove previous ended listener to avoid duplicates
+                audioRef.current.removeEventListener('ended', onEnded);
                 audioRef.current.addEventListener('canplaythrough', onCanPlayThrough, { once: true });
                 audioRef.current.addEventListener('error', onError, { once: true });
-                audioRef.current.addEventListener('ended', onEnded, { once: true });
+                audioRef.current.addEventListener('ended', onEnded);
 
-                // If audio is already loaded and ready, trigger canplaythrough manually
-                if (audioRef.current.readyState >= 3) { // HAVE_FUTURE_DATA or HAVE_ENOUGH_DATA
+                if (audioRef.current.readyState >= 3) {
                     onCanPlayThrough();
                 }
             });
@@ -245,18 +271,7 @@ export default function StorytellerTool() {
         };
 
         utterance.onend = () => {
-            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-
-            setCurrentPage(prev => {
-                if (prev < selectedBook.content.length - 1) {
-                    return prev + 1;
-                } else {
-                    setIsPlaying(false);
-                    isPlayingRef.current = false;
-                    setCharIndex(text.length);
-                    return prev;
-                }
-            });
+            handlePageFinished();
         };
 
         utteranceRef.current = utterance;
@@ -282,7 +297,7 @@ export default function StorytellerTool() {
                 requestProgressLoop();
             } else {
                 setIsPlaying(true);
-                // The useEffect at line 70 now handles calling speakPage() 
+                // The useEffect at line 83 now handles calling speakPage() 
                 // because it has [isPlaying, currentPage] as dependencies.
             }
         }
