@@ -39,6 +39,7 @@ export default function StorytellerTool() {
     const [isMaximized, setIsMaximized] = useState(false);
 
     const synthRef = useRef<SpeechSynthesis | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
     const animationFrameRef = useRef<number | null>(null);
     const lastTimeRef = useRef<number>(0);
@@ -58,6 +59,10 @@ export default function StorytellerTool() {
         }
         return () => {
             if (synthRef.current) synthRef.current.cancel();
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+            }
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         };
     }, []);
@@ -93,22 +98,92 @@ export default function StorytellerTool() {
         animationFrameRef.current = requestAnimationFrame(loop);
     };
 
-    const speakPage = () => {
+    const speakPage = async () => { // Made async
         if (!selectedBook || !synthRef.current) return;
 
+        // Cancel any ongoing speech synthesis or audio playback
         synthRef.current.cancel();
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
 
         const page = selectedBook.content[currentPage];
         const text = page.text;
-        const utterance = new SpeechSynthesisUtterance(text);
 
         // Reset progress states
         setCharIndex(0);
         progressRef.current = 0;
         currentSpeedRef.current = (speechRate || 1) * 0.012; // Base speed for es-ES
 
-        // Configuración para voz de "Cuentacuentos Natural" (Mujer)
+        // Try to play pre-recorded audio first
+        const audioPath = `/audio/storyteller/${selectedBook.id}/page_${currentPage}.mp3`;
+
+        if (!audioRef.current) {
+            audioRef.current = new Audio();
+        }
+
+        const playRecordedAudio = () => {
+            return new Promise<boolean>((resolve) => {
+                if (!audioRef.current) return resolve(false);
+
+                audioRef.current.src = audioPath;
+                audioRef.current.load(); // Load the audio to check if it exists
+
+                const onCanPlayThrough = () => {
+                    audioRef.current?.play();
+                    setIsPlaying(true);
+                    isPlayingRef.current = true;
+                    // For MP3, we don't have word boundaries easily,
+                    // so we do a simple linear progress based on duration
+                    const duration = audioRef.current?.duration || 10; // Fallback duration
+                    currentSpeedRef.current = text.length / (duration * 1000); // chars per ms
+                    requestProgressLoop();
+                    cleanupListeners();
+                    resolve(true);
+                };
+
+                const onError = () => {
+                    cleanupListeners();
+                    resolve(false);
+                };
+
+                const onEnded = () => {
+                    cleanupListeners();
+                    if (currentPage < selectedBook.content.length - 1) {
+                        setCurrentPage(prev => prev + 1);
+                    } else {
+                        setIsPlaying(false);
+                        isPlayingRef.current = false;
+                        setCharIndex(text.length);
+                    }
+                };
+
+                const cleanupListeners = () => {
+                    if (audioRef.current) {
+                        audioRef.current.removeEventListener('canplaythrough', onCanPlayThrough);
+                        audioRef.current.removeEventListener('error', onError);
+                        audioRef.current.removeEventListener('ended', onEnded);
+                    }
+                };
+
+                audioRef.current.addEventListener('canplaythrough', onCanPlayThrough, { once: true });
+                audioRef.current.addEventListener('error', onError, { once: true });
+                audioRef.current.addEventListener('ended', onEnded, { once: true });
+
+                // If audio is already loaded and ready, trigger canplaythrough manually
+                if (audioRef.current.readyState >= 3) { // HAVE_FUTURE_DATA or HAVE_ENOUGH_DATA
+                    onCanPlayThrough();
+                }
+            });
+        };
+
+        const hasMP3 = await playRecordedAudio();
+        if (hasMP3) return;
+
+        // Fallback to Synthesis
+        const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'es-ES';
         const bestVoice = getBestVoice('es-ES');
         if (bestVoice) {
@@ -171,10 +246,16 @@ export default function StorytellerTool() {
     const togglePlay = () => {
         if (isPlaying) {
             if (synthRef.current) synthRef.current.pause();
+            if (audioRef.current) audioRef.current.pause();
             setIsPlaying(false);
             isPlayingRef.current = false;
         } else {
-            if (synthRef.current?.paused) {
+            if (audioRef.current && audioRef.current.src && !audioRef.current.ended) {
+                audioRef.current.play();
+                setIsPlaying(true);
+                isPlayingRef.current = true;
+                requestProgressLoop();
+            } else if (synthRef.current?.paused) {
                 synthRef.current.resume();
                 setIsPlaying(true);
                 isPlayingRef.current = true;
