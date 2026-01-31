@@ -582,7 +582,7 @@ export default function StorytellerTool() {
                             {/* Portada */}
                             {/* Portada */}
                             <div
-                                className={`aspect-[4/3.3] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} group`}
+                                className={`aspect-[4/3.6] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} group`}
                             >
                                 <div
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
