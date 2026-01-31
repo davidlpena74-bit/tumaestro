@@ -404,7 +404,7 @@ export default function StorytellerTool() {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="flex justify-center mb-[-2rem] relative z-20"
                                 >
-                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden">
                                         <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
                                     </div>
                                 </motion.div>
