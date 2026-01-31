@@ -31,7 +31,7 @@ export default function StorytellerTool() {
     const [currentPage, setCurrentPage] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [speechRate, setSpeechRate] = useState(0.9);
-    const [fontSize, setFontSize] = useState(20);
+    const [fontSize, setFontSize] = useState(24);
     const [charIndex, setCharIndex] = useState(0);
 
     const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -213,55 +213,12 @@ export default function StorytellerTool() {
                         <ArrowLeft weight="bold" /> Volver a la Biblioteca
                     </button>
 
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center bg-white/40 rounded-2xl border border-slate-200 p-1">
-                            <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className="p-2 hover:bg-white/60 rounded-xl transition-colors"><TextT size={16} /></button>
-                            <span className="px-2 text-xs font-bold text-slate-500">{fontSize}px</span>
-                            <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className="p-2 hover:bg-white/60 rounded-xl transition-colors"><TextT size={24} /></button>
-                        </div>
-                    </div>
+
                 </div>
 
                 {/* Área de Lectura */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    {/* Lateral: Info & Controles */}
-                    <div className="lg:col-span-4 space-y-6">
-                        <div className="bg-white/40 backdrop-blur-md rounded-3xl p-6 border border-slate-200/50 space-y-4 shadow-lg">
-                            <button onClick={prevPage} disabled={currentPage === 0} className="p-4 rounded-2xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
-                                <SkipBack weight="fill" size={24} />
-                            </button>
-                            <button
-                                onClick={togglePlay}
-                                className="w-20 h-20 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-900/20"
-                            >
-                                {isPlaying ? <Pause weight="fill" size={32} /> : <Play weight="fill" size={32} className="ml-1" />}
-                            </button>
-                            <button onClick={nextPage} disabled={currentPage === selectedBook.content.length - 1} className="p-4 rounded-2xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
-                                <SkipForward weight="fill" size={24} />
-                            </button>
-                        </div>
-
-                        <div className="space-y-4 pt-4 border-t border-slate-200/50">
-                            <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
-                                <span>Velocidad de Lectura</span>
-                                <span>{Math.round(speechRate * 100)}%</span>
-                            </div>
-                            <input
-                                type="range" min="0.5" max="1.5" step="0.1"
-                                value={speechRate}
-                                onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 justify-center">
-                            <Clock className="w-4 h-4" /> Página {currentPage + 1} de {selectedBook.content.length}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Principal: Texto */}
-                <div className="lg:col-span-8 min-h-[600px] flex flex-col gap-6">
+                {/* Área de Lectura */}
+                <div className="w-full max-w-4xl mx-auto flex flex-col gap-8">
                     {/* Imagen de la Página (si existe) */}
                     <AnimatePresence mode="wait">
                         {selectedBook.content[currentPage].image && (
@@ -279,22 +236,33 @@ export default function StorytellerTool() {
                                 />
                             </motion.div>
                         )}
+                        {!selectedBook.content[currentPage].image && selectedBook.chipImage && (
+                            <motion.div
+                                key={`chip-${selectedBook.id}`}
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="flex justify-center mb-[-2rem] relative z-20"
+                            >
+                                <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                    <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
+                                </div>
+                            </motion.div>
+                        )}
                     </AnimatePresence>
 
-                    <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl relative overflow-hidden">
+                    {/* Texto Principal */}
+                    <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl relative overflow-hidden min-h-[400px]">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentPage}
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                className="relative z-10 font-serif leading-relaxed text-slate-800"
+                                className="relative z-10 font-serif leading-relaxed text-slate-800 text-center flex flex-col items-center justify-center h-full"
                                 style={{ fontSize: `${fontSize}px` }}
                             >
-                                <div className="mb-8 opacity-20">
-                                    <BookOpen className="w-12 h-12" weight="duotone" />
-                                </div>
-                                <div className="relative">
+
+                                <div className="relative max-w-2xl">
                                     <span className="text-slate-900 font-medium transition-all duration-75">
                                         {selectedBook.content[currentPage].text.slice(0, charIndex)}
                                     </span>
@@ -309,19 +277,63 @@ export default function StorytellerTool() {
                         <div className="absolute top-0 right-0 p-8 opacity-5">
                             <SpeakerHigh size={120} weight="thin" />
                         </div>
+
+                        <div className="absolute bottom-6 left-0 right-0 text-center text-xs font-bold text-slate-300 pointer-events-none">
+                            Página {currentPage + 1} de {selectedBook.content.length}
+                        </div>
                     </div>
 
-                    {/* Progress Bar Inferior */}
-                    <div className="mt-6 flex gap-2">
-                        {selectedBook.content.map((_, i) => (
-                            <div
-                                key={i}
-                                className={cn(
-                                    "h-1.5 flex-grow rounded-full transition-all duration-500",
-                                    i <= currentPage ? "bg-slate-900" : "bg-slate-200"
-                                )}
+                    {/* Progress Bar & Indicators */}
+                    <div className="flex flex-col gap-4">
+                        <div className="flex gap-2 px-4">
+                            {selectedBook.content.map((_, i) => (
+                                <div
+                                    key={i}
+                                    className={cn(
+                                        "h-1.5 flex-grow rounded-full transition-all duration-500",
+                                        i <= currentPage ? "bg-slate-900" : "bg-slate-200"
+                                    )}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Controls Footer */}
+                    <div className="bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg flex items-center justify-between gap-4 mb-6">
+                        {/* Speed Control (Minimizado) */}
+                        <div className="flex items-center gap-2 w-32">
+                            <Clock size={16} className="text-slate-500" />
+                            <input
+                                type="range" min="0.5" max="1.5" step="0.1"
+                                value={speechRate}
+                                onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
+                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
                             />
-                        ))}
+                        </div>
+
+                        {/* Main Controls */}
+                        <div className="flex items-center gap-4">
+                            <button onClick={prevPage} disabled={currentPage === 0} className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
+                                <SkipBack weight="fill" size={20} />
+                            </button>
+                            <button
+                                onClick={togglePlay}
+                                className="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-900/20"
+                            >
+                                {isPlaying ? <Pause weight="fill" size={24} /> : <Play weight="fill" size={24} className="ml-1" />}
+                            </button>
+                            <button onClick={nextPage} disabled={currentPage === selectedBook.content.length - 1} className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
+                                <SkipForward weight="fill" size={20} />
+                            </button>
+                        </div>
+
+                        {/* Placeholder para equilibrio visual o futura funcion */}
+                        <div className="w-32 flex justify-end">
+                            <div className="flex items-center bg-white/40 rounded-xl border border-slate-200 p-1">
+                                <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className="p-1.5 hover:bg-white/60 rounded-lg transition-colors"><TextT size={14} /></button>
+                                <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className="p-1.5 hover:bg-white/60 rounded-lg transition-colors"><TextT size={20} /></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -365,7 +377,7 @@ export default function StorytellerTool() {
                             >
                                 <div
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                    style={{ backgroundImage: `url(${book.coverImage})` }}
+                                    style={{ backgroundImage: `url(${book.chipImage || book.coverImage})` }}
                                 />
 
                                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-slate-900 flex items-center gap-1.5 shadow-xl border border-white/20 z-10">

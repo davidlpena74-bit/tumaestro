@@ -12,6 +12,7 @@ export interface Book {
     level: 'Fácil' | 'Medio' | 'Difícil';
     age: string;
     coverImage: string;
+    chipImage?: string;
     genre: string;
     themeColor: string;
 }
@@ -25,6 +26,7 @@ export const BOOKS: Book[] = [
         level: 'Fácil',
         age: '4+',
         coverImage: 'https://images.unsplash.com/photo-1550948537-130a1ce83314?auto=format&fit=crop&q=80&w=800',
+        chipImage: '/images/storyteller/character-patito.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-blue-400 to-cyan-300',
         content: [
@@ -74,6 +76,7 @@ export const BOOKS: Book[] = [
         level: 'Fácil',
         age: '3+',
         coverImage: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80&w=800', // Nueva imagen: Bosque misterioso con toque fantástico
+        chipImage: '/images/storyteller/character-caperucita.png',
         genre: 'Fábula',
         themeColor: 'from-red-600 to-amber-700',
         content: [
