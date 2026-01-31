@@ -15,7 +15,9 @@ import {
     BookmarkSimple,
     Clock,
     TextT,
-    Translate
+    Translate,
+    ArrowsOut,
+    ArrowsIn
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -32,7 +34,9 @@ export default function StorytellerTool() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [speechRate, setSpeechRate] = useState(0.9);
     const [fontSize, setFontSize] = useState(24);
+
     const [charIndex, setCharIndex] = useState(0);
+    const [isMaximized, setIsMaximized] = useState(false);
 
     const synthRef = useRef<SpeechSynthesis | null>(null);
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -214,59 +218,115 @@ export default function StorytellerTool() {
                     </button>
 
 
+
                 </div>
 
                 {/* Área de Lectura */}
-                {/* Área de Lectura */}
-                <div className="w-full max-w-4xl mx-auto flex flex-col gap-8">
-                    {/* Imagen de la Página (si existe) */}
-                    <AnimatePresence mode="wait">
-                        {selectedBook.content[currentPage].image && (
-                            <motion.div
-                                key={`img-${currentPage}`}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
-                            >
-                                <img
-                                    src={selectedBook.content[currentPage].image}
-                                    className="w-full h-full object-cover"
-                                    alt={`Ilustración página ${currentPage + 1}`}
-                                />
-                            </motion.div>
-                        )}
-                        {!selectedBook.content[currentPage].image && selectedBook.chipImage && (
-                            <motion.div
-                                key={`chip-${selectedBook.id}`}
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="flex justify-center mb-[-2rem] relative z-20"
-                            >
-                                <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
-                                    <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                <div className={cn(
+                    "w-full mx-auto flex flex-col transition-all duration-500",
+                    isMaximized
+                        ? "fixed inset-0 z-50 bg-slate-900 items-center justify-center p-8 lg:p-16 gap-0"
+                        : "max-w-4xl gap-8 relative"
+                )}>
+                    {/* Fondo Inmersivo */}
+                    {isMaximized && (
+                        <div className="absolute inset-0 z-0">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentPage}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="absolute inset-0"
+                                >
+                                    <img
+                                        src={selectedBook.content[currentPage].image || selectedBook.chipImage || selectedBook.coverImage}
+                                        className="w-full h-full object-cover blur-sm brightness-50 scale-105"
+                                        alt="Background"
+                                    />
+                                    <div className="absolute inset-0 bg-slate-900/30" />
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                    )}
+
+                    {/* Imagen de la Página (Normal Mode Only) */}
+                    {!isMaximized && (
+                        <AnimatePresence mode="wait">
+                            {selectedBook.content[currentPage].image && (
+                                <motion.div
+                                    key={`img-${currentPage}`}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
+                                >
+                                    <img
+                                        src={selectedBook.content[currentPage].image}
+                                        className="w-full h-full object-cover"
+                                        alt={`Ilustración página ${currentPage + 1}`}
+                                    />
+                                </motion.div>
+                            )}
+                            {!selectedBook.content[currentPage].image && selectedBook.chipImage && (
+                                <motion.div
+                                    key={`chip-${selectedBook.id}`}
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex justify-center mb-[-2rem] relative z-20"
+                                >
+                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    )}
+
+
 
                     {/* Texto Principal */}
-                    <div className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl relative overflow-hidden min-h-[400px]">
+                    <div className={cn(
+                        "transition-all duration-500 relative overflow-hidden flex flex-col justify-center",
+                        isMaximized
+                            ? "w-full max-w-5xl h-[90%] z-10 p-12 md:p-24 text-white"
+                            : "bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl min-h-[400px]"
+                    )}>
+                        {/* Glass Overlay for Immersive Mode */}
+                        {isMaximized && <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-[3rem] border border-white/20 shadow-2xl" />}
+
+                        {/* Maximize Toggle Button */}
+                        <div className="absolute top-6 right-6 z-50">
+                            <button
+                                onClick={() => setIsMaximized(!isMaximized)}
+                                className={cn(
+                                    "p-3 rounded-full transition-all hover:scale-110 active:scale-95 shadow-lg",
+                                    isMaximized
+                                        ? "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/20"
+                                        : "bg-white/50 hover:bg-white/80 text-slate-600 hover:text-slate-900 border border-slate-200/50"
+                                )}
+                                title={isMaximized ? "Salir de pantalla completa" : "Maximizar lectura"}
+                            >
+                                {isMaximized ? <ArrowsIn weight="bold" size={24} /> : <ArrowsOut weight="bold" size={20} />}
+                            </button>
+                        </div>
+
+
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentPage}
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                className="relative z-10 font-serif leading-relaxed text-slate-800 text-center flex flex-col items-center justify-center h-full"
-                                style={{ fontSize: `${fontSize}px` }}
+                                className="relative z-10 font-serif leading-relaxed text-center flex flex-col items-center justify-center h-full"
+                                style={{ fontSize: `${isMaximized ? fontSize + 4 : fontSize}px`, color: isMaximized ? 'white' : undefined }}
                             >
 
-                                <div className="relative max-w-2xl">
-                                    <span className="text-slate-900 font-medium transition-all duration-75">
+                                <div className="relative max-w-3xl">
+                                    <span className={cn("font-medium transition-all duration-75", isMaximized ? "text-white" : "text-slate-900")}>
                                         {selectedBook.content[currentPage].text.slice(0, charIndex)}
                                     </span>
-                                    <span className="text-slate-400 font-medium">
+                                    <span className={cn("font-medium", isMaximized ? "text-white/50" : "text-slate-400")}>
                                         {selectedBook.content[currentPage].text.slice(charIndex)}
                                     </span>
                                 </div>
@@ -278,65 +338,85 @@ export default function StorytellerTool() {
                             <SpeakerHigh size={120} weight="thin" />
                         </div>
 
-                        <div className="absolute bottom-6 left-0 right-0 text-center text-xs font-bold text-slate-300 pointer-events-none">
+                        <div className={cn(
+                            "absolute bottom-6 left-0 right-0 text-center text-xs font-bold pointer-events-none z-20",
+                            isMaximized ? "text-white/60" : "text-slate-300"
+                        )}>
                             Página {currentPage + 1} de {selectedBook.content.length}
                         </div>
                     </div>
 
-                    {/* Progress Bar & Indicators */}
-                    <div className="flex flex-col gap-4">
-                        <div className="flex gap-2 px-4">
-                            {selectedBook.content.map((_, i) => (
-                                <div
-                                    key={i}
-                                    className={cn(
-                                        "h-1.5 flex-grow rounded-full transition-all duration-500",
-                                        i <= currentPage ? "bg-slate-900" : "bg-slate-200"
-                                    )}
-                                />
-                            ))}
+                    {/* Progress Bar & Indicators (Normal Mode Only - Hidden in Immersive) */}
+                    {!isMaximized && (
+                        <div className="flex flex-col gap-4">
+                            <div className="flex gap-2 px-4">
+                                {selectedBook.content.map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className={cn(
+                                            "h-1.5 flex-grow rounded-full transition-all duration-500",
+                                            i <= currentPage ? "bg-slate-900" : "bg-slate-200"
+                                        )}
+                                    />
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Controls Footer */}
-                    <div className="bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg flex items-center justify-between gap-4 mb-6">
+                    <div className={cn(
+                        "flex items-center justify-between gap-4 transition-all duration-500 z-50",
+                        isMaximized
+                            ? "fixed bottom-12 left-1/2 -translate-x-1/2 w-full max-w-3xl px-8"
+                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6"
+                    )}>
                         {/* Speed Control (Minimizado) */}
-                        <div className="flex items-center gap-2 w-32">
-                            <Clock size={16} className="text-slate-500" />
+                        <div className={cn("flex items-center gap-2 w-32", isMaximized ? "bg-black/20 backdrop-blur-md rounded-xl p-2 border border-white/10" : "")}>
+                            <Clock size={16} className={isMaximized ? "text-white/70" : "text-slate-500"} />
                             <input
                                 type="range" min="0.5" max="1.5" step="0.1"
                                 value={speechRate}
                                 onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-                                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
+                                className={cn("w-full h-1.5 rounded-lg appearance-none cursor-pointer", isMaximized ? "bg-white/20 accent-white" : "bg-slate-200 accent-slate-900")}
                             />
                         </div>
 
                         {/* Main Controls */}
                         <div className="flex items-center gap-4">
-                            <button onClick={prevPage} disabled={currentPage === 0} className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
+                            <button onClick={prevPage} disabled={currentPage === 0}
+                                className={cn("p-3 rounded-xl transition-all",
+                                    isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
+                                )}>
                                 <SkipBack weight="fill" size={20} />
                             </button>
                             <button
                                 onClick={togglePlay}
-                                className="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-900/20"
+                                className={cn(
+                                    "w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl",
+                                    isMaximized ? "bg-white text-slate-900 shadow-white/20" : "bg-slate-900 text-white shadow-slate-900/20"
+                                )}
                             >
                                 {isPlaying ? <Pause weight="fill" size={24} /> : <Play weight="fill" size={24} className="ml-1" />}
                             </button>
-                            <button onClick={nextPage} disabled={currentPage === selectedBook.content.length - 1} className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 transition-all text-slate-700">
+                            <button onClick={nextPage} disabled={currentPage === selectedBook.content.length - 1}
+                                className={cn("p-3 rounded-xl transition-all",
+                                    isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
+                                )}>
                                 <SkipForward weight="fill" size={20} />
                             </button>
                         </div>
 
                         {/* Placeholder para equilibrio visual o futura funcion */}
+                        {/* Placeholder para equilibrio visual o futura funcion */}
                         <div className="w-32 flex justify-end">
-                            <div className="flex items-center bg-white/40 rounded-xl border border-slate-200 p-1">
-                                <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className="p-1.5 hover:bg-white/60 rounded-lg transition-colors"><TextT size={14} /></button>
-                                <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className="p-1.5 hover:bg-white/60 rounded-lg transition-colors"><TextT size={20} /></button>
+                            <div className={cn("flex items-center rounded-xl p-1", isMaximized ? "bg-black/20 backdrop-blur-md border border-white/10" : "bg-white/40 border border-slate-200")}>
+                                <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className={cn("p-1.5 rounded-lg transition-colors", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={14} /></button>
+                                <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className={cn("p-1.5 rounded-lg transition-colors", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={20} /></button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 
