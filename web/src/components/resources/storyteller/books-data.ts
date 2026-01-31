@@ -154,8 +154,8 @@ export const BOOKS: Book[] = [
         description: 'La valiente historia del pequeño Pulgarcito, quien con su ingenio y unas botas mágicas salva a sus siete hermanos de un temible ogro.',
         level: 'Medio',
         age: '6+',
-        coverImage: '/images/storyteller/pulgarcito-clasico.png',
-        chipImage: '/images/storyteller/pulgarcito-clasico.png',
+        coverImage: '/images/storyteller/hansel-gretel-bruja.jpg',
+        chipImage: '/images/storyteller/character-pulgarcito.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-emerald-500 to-teal-400',
         content: [
@@ -190,7 +190,7 @@ export const BOOKS: Book[] = [
         level: 'Medio',
         age: '6+',
         coverImage: '/images/storyteller/hansel-gretel-bruja.jpg',
-        chipImage: '/images/storyteller/hansel-gretel-bruja.jpg',
+        chipImage: '/images/storyteller/character-hansel-gretel.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-amber-600 to-brown-700',
         content: [
