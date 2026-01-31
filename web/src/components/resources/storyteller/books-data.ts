@@ -119,7 +119,7 @@ export const BOOKS: Book[] = [
         coverImage: '/images/storyteller/puss-in-boots-cover.png',
         chipImage: '/images/storyteller/character-gato.png',
         genre: 'Aventura',
-        themeColor: 'from-amber-500 to-orange-400',
+        themeColor: 'from-red-800 to-amber-700',
         content: [
             {
                 text: "Había una vez un viejo molinero que, al morir, dejó a sus tres hijos todo lo que tenía: un molino, un asno y un gato. Los hijos mayores se quedaron con el molino y el asno, mientras que al más joven solo le quedó el gato. El pobre joven se lamentaba: '¿Qué haré con un simple gato?'. Pero el gato, que le escuchaba, le dijo: 'No os preocupéis, mi señor. Solo dadme un saco y un par de botas, y os demostraré que vuestra fortuna no es tan mala'."
@@ -144,6 +144,41 @@ export const BOOKS: Book[] = [
             },
             {
                 text: "El Rey quedó maravillado por el castillo y las riquezas del joven marqués. Aquella misma tarde, se celebró un gran banquete y el Rey, viendo lo mucho que su hija y el joven se querían, ofreció al Marqués la mano de la princesa. El hijo del molinero aceptó encantado y se casaron ese mismo día. En cuanto al gato, se convirtió en un gran señor y ya nunca más tuvo que cazar ratones, excepto por pura diversión."
+            }
+        ]
+    },
+    {
+        id: 'pulgarcito',
+        title: 'Pulgarcito',
+        author: 'Charles Perrault',
+        description: 'La valiente historia del pequeño Pulgarcito, quien con su ingenio y unas botas mágicas salva a sus siete hermanos de un temible ogro.',
+        level: 'Medio',
+        age: '6+',
+        coverImage: '/images/storyteller/pulgarcito-cover.png',
+        chipImage: '/images/storyteller/character-pulgarcito.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-emerald-500 to-teal-400',
+        content: [
+            {
+                text: "Érase una vez un leñador y una leñadora que tenían siete hijos varones. Eran muy pobres y sus hijos una pesada carga. El menor de ellos era muy pequeñito y cuando llegó al mundo no era más gordo que un pulgar, por lo cual lo llamaron Pulgarcito. Aunque hablaba poco, era el más agudo de sus hermanos y escuchaba mucho todo lo que ocurría en casa."
+            },
+            {
+                text: "Sobrevino un año de hambruna y los padres, desesperados, decidieron dejar a los niños en el bosque. Pulgarcito oyó el plan escondido bajo el taburete de su padre. Sin decir nada, se levantó de madrugada y fue al riachuelo a llenarse los bolsillos de guijarros blancos. Cuando los llevaron al bosque y sus padres huyeron, Pulgarcito guió a sus hermanos de vuelta siguiendo el rastro de las piedras."
+            },
+            {
+                text: "Los padres se alegraron de verlos, pero pronto el dinero volvió a faltar y decidieron perderlos de nuevo, esta vez más lejos. Pulgarcito, que no pudo recoger piedras por estar la puerta cerrada, usó migas de pan para marcar el camino. Pero al intentar regresar, descubrió con horror que los pájaros se habían comido todas las migas. Estaban perdidos en lo más profundo y oscuro del bosque."
+            },
+            {
+                text: "Tras caminar mucho bajo la lluvia, Pulgarcito divisó una luz desde la cima de un árbol. Llegaron a una casa donde una mujer les advirtió: '¡Huid! Aquí vive un ogro que come niños'. Pulgarcito suplicó albergue, pues temían más a los lobos del bosque. La mujer los escondió bajo la cama, pero al llegar el ogro, este gritó: '¡Huelo a carne fresca!', y no tardó en descubrirlos."
+            },
+            {
+                text: "La ogresa convenció al ogro de esperar a la mañana para comérselos. Los mandó a dormir al cuarto donde estaban sus siete hijas, cada una con una corona de oro. Pulgarcito, temiendo un ataque nocturno, cambió las coronas de las niñas por los gorros de sus hermanos. En mitad de la noche, el ogro entró a oscuras y, al tocar los gorros, acabó con sus propias hijas por error. Los niños aprovecharon para huir."
+            },
+            {
+                text: "Al despertar y ver lo ocurrido, el ogro se puso sus botas de siete leguas para darles caza. Pulgarcito vio al gigante saltar de montaña en montaña y escondió a sus hermanos en una roca hueca. El ogro, cansado, se sentó a descansar sobre esa misma roca y se quedó profundamente dormido. Pulgarcito aprovechó para quitarle las botas mágicas, que se ajustaron perfectamente a sus pies al ser encantadas."
+            },
+            {
+                text: "Con las botas puestas, Pulgarcito regresó a la casa del ogro y engañó a la mujer diciéndole que unos ladrones pedían todo su oro para liberar al marido. La mujer le dio todas sus riquezas. Pulgarcito volvió a casa cargado de oro, salvando a su familia de la miseria para siempre. Compró tierras para sus padres y hermanos, demostrando que el tamaño no importa cuando se tiene un gran corazón e inteligencia."
             }
         ]
     }
