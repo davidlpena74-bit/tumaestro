@@ -266,5 +266,52 @@ export const BOOKS: Book[] = [
                 text: "Y así, mientras el príncipe y su novia buscaban a la hermosa desconocida entre la espuma del mar, la sirenita, invisible, les dio un beso en la frente y se elevó hacia las nubes rosadas, dispuesta a comenzar su largo camino de trescientos años hacia las estrellas, donde finalmente obtendría su anhelada alma inmortal."
             }
         ]
+    },
+    {
+        id: 'soldadito-plomo',
+        title: 'El Soldadito de Plomo',
+        author: 'Hans Christian Andersen',
+        description: 'La heroica y melancólica historia de un soldadito de una sola pierna que enfrenta tormentas, alcantarillas y abismos por el amor de una bailarina de papel.',
+        level: 'Medio',
+        age: '5+',
+        coverImage: '/images/storyteller/soldadito-cover.png',
+        chipImage: '/images/storyteller/character-soldadito.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-blue-700 to-slate-800',
+        content: [
+            {
+                text: "En el umbral de una habitación infantil, un universo en miniatura se desplegaba sobre una mesa de madera de pino. Allí destacaban veinticinco soldaditos de plomo, relucientes y orgullosos. Habían nacido todos de la misma cuchara de metal fundido, y cada uno vestía un uniforme impecable: casaca roja, pantalón azul y un fusil plateado. Todos eran idénticos, salvo uno, que por un capricho del destino había sido fundido con una sola pierna. Sin embargo, su espíritu no flaqueaba; se erguía con la misma determinación que sus hermanos."
+            },
+            {
+                text: "En el centro de este pequeño cosmos de juguetes, se alzaba un castillo de papel, tan alto y detallado que invitaba a la fantasía. Sus ventanas eran de mica brillante y un espejo ovalado simulaba un lago sereno. Pero lo que capturó la atención del soldadito fue una bailarina de papel, grácil y etérea. Llevaba un tutú rosa y una pequeña lentejuela de plata en su cabello. Para el soldadito, que también se apoyaba sobre una sola pierna, ella era el reflejo de su propia singularidad. '¡Esa sería una esposa para mí!', pensó con emoción."
+            },
+            {
+                text: "La noche cayó y los niños se durmieron. El mundo de los juguetes cobró vida. Las risas y los susurros resonaban en la mesa, pero de una vieja caja de tabaco emergió una figura oscura: un duende de madera con ojos diminutos. Se dirigió al soldadito con voz celosa: '¡Deja de mirar a la bailarina, soldadito! ¡No es para ti!'. El soldadito, firme en su puesto, lo ignoró, manteniendo su mirada fija en la figura de papel que seguía bailando bajo la luz de la luna."
+            },
+            {
+                text: "Al día siguiente, la ventana de la habitación se abrió de golpe. Una ráfaga de viento fría y repentina barrió la mesa de juguetes. El soldadito de plomo no pudo oponer resistencia. Cayó, dando volteretas, desde el tercer piso de la casa. Fue una caída larga y vertiginosa que terminó en el empedrado de la calle. Quedó aterrizando de cabeza, con su única pierna apuntando al cielo, clavado entre dos adoquines fríos."
+            },
+            {
+                text: "Comenzó a llover con fuerza. Las gotas se estrellaban contra su casco de hojalata. Dos niños traviesos que jugaban bajo la lluvia lo descubrieron. '¡Mira, un soldadito!', exclamaron. Sin pensarlo mucho, tomaron un viejo periódico y doblaron hábilmente un pequeño barco. Colocaron al soldadito en su interior y lo lanzaon a la corriente impetuosa que corría por la alcantarilla. El viaje del soldadito hacia lo desconocido acababa de comenzar."
+            },
+            {
+                text: "El barco de papel se precipitó por el oscuro canal. El agua rugía alrededor del soldadito, susurrando amenazas en la penumbra. De repente, un par de ojos rojos aparecieron: una rata de alcantarilla, grande y feroz, nadó hasta el barco. '¡Alto! ¿Tienes un peaje para cruzar mis dominios?'. El soldadito, con su fusil al hombro y la mirada estoica, se mantuvo firme sin pronunciar palabra. La rata, frustrada por su silencio, lo dejó pasar mientras el barco seguía su incierto camino."
+            },
+            {
+                text: "La corriente lo arrastró hasta una salida a un canal más grande. El papel del barco, ya débil por el agua, terminó por desintegrarse. El soldadito se hundió en las profundidades, sumergiéndose en un abismo oscuro. Cayó y cayó, hasta que una sombra gigantesca lo envolvió. En un instante, fue engullido por un enorme pez que nadaba por las aguas turbias. La oscuridad se hizo absoluta, pero el soldadito siguió impasible, su mente fija en la imagen de su amada bailarina."
+            },
+            {
+                text: "Pero el destino aún no había terminado con él. El pez fue capturado por un pescador y llevado al mercado, donde fue comprado por la misma cocinera de la casa donde el soldadito había nacido. En la cocina, mientras abría el pescado para prepararlo, la cocinera encontró al pequeño soldado. Con sorpresa, lo sacó y lo llevó de vuelta a la habitación con una exclamación. ¡El milagro había ocurrido: el soldadito estaba de regreso en su hogar!"
+            },
+            {
+                text: "¡Allí estaba todo de nuevo! La mesa de los juguetes, el castillo de papel y, lo más asombroso, su amada bailarina, que seguía posada sobre su única pierna con la misma gracia inmaculada. El soldadito sintió una alegría tan intensa que su corazón de plomo casi se derrite al verla. Las adversidades se habían disipado y volvía a estar cerca de su único amor, aunque el duende de la caja seguía observando desde las sombras."
+            },
+            {
+                text: "Sin embargo, la felicidad fue efímera. Uno de los niños tomó al soldadito y, sin motivo alguno, lo arrojó directamente a la chimenea encendida. El calor era sofocante y el plomo comenzó a deformarse. En ese instante, una ráfaga de viento abrió la ventana y la bailarina de papel voló grácilmente hacia las llamas, cayendo junto a su soldadito. El fuego los devoró a los dos, uniendo sus destinos en un final incandescente de luz y calor."
+            },
+            {
+                text: "A la mañana siguiente, al limpiar las cenizas de la chimenea, la sirvienta encontró algo extraordinario: un pequeño corazón de plomo perfectamente fundido. En su interior, brillaba la minúscula lentejuela de plata que había adornado el cabello de la bailarina, ennegrecida pero aún reconoceribe. Los dos amantes habían desaparecido, pero en ese pequeño corazón de plomo, su historia de valentía perduraría para siempre."
+            }
+        ]
     }
 ];

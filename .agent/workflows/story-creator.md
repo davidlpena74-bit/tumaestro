@@ -1,37 +1,40 @@
 ---
-description: Creación completa de un nuevo libro para el Cuenta Cuentos (Texto, Imágenes, Voz y Datos).
+description: Creación completa de un nuevo libro para el Cuenta Cuentos (Texto, Imágenes, Voz y Datos) siguiendo el estándar Premium.
 ---
 
-Este flujo de trabajo coordina a varios sub-agentes para crear un cuento desde cero con calidad premium.
+Este flujo de trabajo coordina la creación de un nuevo cuento asegurando que cumpla con los estándares de diseño "Vintage/Classic" y la lógica de reproducción automática mejorada.
 
-## Pasos para crear un nuevo libro
+## Estándar de Calidad Premium
 
-### 1. Preparación del Contenido
-- **Entrada**: Título, Autor y Texto completo del cuento.
-- **Acción**: El agente debe dividir el texto en páginas lógicas (aprox. 300-600 caracteres por página).
+### 1. Formato de Texto y Narrativa
+- **División**: El texto debe ser literario y detallado. Divide el cuento en **10-12 páginas**.
+- **Ritmo**: Cada página debe representar una escena o idea completa para mantener el ritmo de lectura.
 
-### 2. Generación Visual (Arte)
-- **Personaje (Chip)**:
-    1. Usar `generate_image` para crear un retrato del protagonista (estilo ilustración de cuento clásico, fondo simple).
-    2. Usar el comando de limpieza de fondos para crear el `chipImage`.
-- **Portada y Páginas**: 
-    1. Usar `generate_image` para crear la `coverImage` (formato 16:9 o 4:3).
-    2. (Opcional) Generar ilustraciones específicas para páginas clave.
+### 2. Identidad Visual (Estilo Arthur Rackham Ornato)
+Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de la biblioteca:
 
-### 3. Registro de Datos
-- **Acción**: Añadir el nuevo objeto `Book` al array `BOOKS` en `src/components/resources/storyteller/books-data.ts`.
-- **Formato**: Asegurarse de asignar un `id` único, `themeColor`, `genre`, y las rutas a las imágenes generadas.
+- **Retrato del Personaje (chipImage)**:
+    - **Prompt**: `Portrait of [Character], classic antique storybook illustration style of Arthur Rackham. Inside a highly decorative and ornate circular frame with [Motifs related to the story]. Muted colors, detailed pen and ink line work with watercolor wash, vintage paper texture. Serene expression. High resolution, public domain aesthetic. No text.`
+    - **Ubicación**: `web/public/images/storyteller/character-[id].png`
 
-### 4. Generación de Voz Premium
-- **Acción**: Ejecutar el script de Voice Director para generar los archivos MP3 gratuitos.
-    ```bash
-    cd web/scripts/voice-director
-    node generate_story_audio.mjs
-    ```
+- **Imagen de Portada (coverImage)**:
+    - **Prompt**: `Wide landscape scene of [Key Scene], classic antique storybook illustration style of Arthur Rackham and Edmund Dulac. Muted colors, detailed scenery, vintage engraved texture. Ethereal and atmospheric. No text. High resolution.`
+    - **Ubicación**: `web/public/images/storyteller/[id]-cover.png`
 
-### 5. Verificación
-- Comprobar que el cuento aparece en la biblioteca.
-- Verificar el Modo Inmersivo y la calidad del audio.
+### 3. Registro y Lógica Técnica
+- **Fichero**: `src/components/resources/storyteller/books-data.ts`.
+- **Auto-Advance**: No es necesario tocar el código para esto, pero asegúrate de que el objeto `Book` tenga todas las páginas en el array `content`. El componente `StorytellerTool.tsx` gestionará automáticamente el paso de página al terminar el audio (MP3 o Voz Sintetizada).
+- **Theme Color**: Elige un gradiente de Tailwind que armonice con la ilustración (ej. `from-amber-600 to-brown-700`).
 
-## Comandos Rápidos
-- **/story-create**: Inicia el proceso de creación de un nuevo libro (Pide el texto al usuario).
+### 4. Generación de Voz
+1. **Script**: Usa el Voice Director para generar los audios si es posible.
+   ```bash
+   cd web/scripts/voice-director
+   node generate_story_audio.mjs
+   ```
+2. **Fallback**: Si no hay MP3, el sistema usará automáticamente `SpeechSynthesis` con la lógica de robustez mejorada.
+
+## Verificación Final
+- La imagen del personaje debe verse completa en el círculo del reproductor.
+- El cuento debe avanzar automáticamente a la siguiente página tras el audio.
+- El despliegue debe incluir un incremento de versión en `package.json` y el uso del flujo `/deploy`.
