@@ -112,38 +112,35 @@ export const BOOKS: Book[] = [
     {
         id: 'gato-con-botas',
         title: 'El Gato con Botas',
-        author: 'Charles Perrault',
-        description: 'La asombrosa historia de un gato muy astuto que, con un par de botas y mucha inteligencia, logra convertir a su humilde amo en el gran Marqués de Carabás.',
+        author: 'Hermanos Grimm',
+        description: 'La clásica versión de los Hermanos Grimm sobre el gato más astuto de la historia, capaz de convertir a un humilde molinero en todo un rey.',
         level: 'Medio',
         age: '5+',
         coverImage: '/images/storyteller/puss-in-boots-cover.png',
         chipImage: '/images/storyteller/character-gato.png',
-        genre: 'Aventura',
-        themeColor: 'from-red-800 to-amber-700',
+        genre: 'Fábula',
+        themeColor: 'from-amber-500 to-orange-400',
         content: [
             {
-                text: "Había una vez un viejo molinero que, al morir, dejó a sus tres hijos todo lo que tenía: un molino, un asno y un gato. Los hijos mayores se quedaron con el molino y el asno, mientras que al más joven solo le quedó el gato. El pobre joven se lamentaba: '¿Qué haré con un simple gato?'. Pero el gato, que le escuchaba, le dijo: 'No os preocupéis, mi señor. Solo dadme un saco y un par de botas, y os demostraré que vuestra fortuna no es tan mala'."
+                text: "Érase una vez un molinero que tenía tres hijos, su molino, un asno y un gato. Los hijos tenían que moler, el asno tenía que llevar el grano y el gato tenía que cazar ratones. Cuando el molinero murió, los hijos se repartieron la herencia: el mayor el molino, el segundo el asno y al tercero le tocó el gato. El joven se entristeció: '¿Qué voy a hacer yo con un gato? Si me hago unos guantes con su piel, no me quedará nada'."
             },
             {
-                text: "El joven, aunque sorprendido, le consiguió lo que pedía. El gato se calzó sus nuevas botas, se echó el saco al hombro y se dirigió al bosque. Allí, usando su astucia, cazó un hermoso conejo y lo metió en el saco. Con paso firme y aire elegante, se dirigió al palacio del Rey. Al llegar, hizo una gran reverencia y dijo: 'Majestad, os traigo este regalo de parte de mi señor, el Marqués de Carabás', pues así decidió llamar a su amo."
+                text: "-Escucha -dijo el gato, que lo había entendido todo-, no debes matarme. Encarga que me hagan un par de botas para que pueda salir y que la gente me vea, y pronto obtendrás ayuda. El joven se asombró de que el gato hablara, pero llamó al zapatero para que le tomara medidas. Cuando estuvieron listas, el gato se las calzó, tomó un saco con grano y salió por la puerta andando sobre dos patas como si fuera una persona."
             },
             {
-                text: "Durante meses, el gato continuó llevando regalos al Rey en nombre del Marqués. Un día, supo que el Rey pasearía con su hija, la princesa más bella del mundo, por la orilla del río. Corrió hacia su amo y le dijo: '¡Rápido! Desnúdate y métete en el agua'. El joven obedeció sin entender. Cuando la carroza real pasaba por allí, el gato empezó a gritar: '¡Socorro! ¡Socorro! ¡El Marqués de Carabás se está ahogando! ¡Unos ladrones se han llevado su ropa!'"
+                text: "Llegó al bosque, esparció el grano en el saco y se escondió. Pronto capturó varias perdices, el manjar favorito del Rey, que nadie podía atrapar. Se fue al palacio y dijo: 'Mi señor el conde presenta sus respetos al rey y le envía estas perdices'. El Rey, encantado con el regalo, mandó llenar el saco del gato con todo el oro que pudiera cargar. El gato regresó y esparció el oro ante su amo: 'Aquí tienes algo a cambio de las botas'."
             },
             {
-                text: "El Rey, reconociendo al gato que tantos regalos le había llevado, ordenó detener la carroza. Sus guardias sacaron al joven del río y le trajeron los trajes más lujosos del palacio. Al vestirse con tales galas, el joven parecía realmente un noble, y la princesa quedó encantada al verlo. El Rey invitó al flamante Marqués a subir a la carroza. Mientras tanto, el astuto gato corrió por delante de ellos."
+                text: "El gato continuó llevando regalos al palacio cada día, y el Rey llegó a apreciarlo mucho. Un día, supo que el Rey y la Princesa irían al lago. Corrió a casa y dijo a su amo: 'Si quieres ser rico, vente al lago y báñate'. Mientras el joven se bañaba, el gato escondió su ropa. Cuando el Rey pasó, el gato gritó: '¡Socorro! ¡Al señor conde le han robado la ropa!'. El Rey ordenó traer sus mejores galas para vestir al joven."
             },
             {
-                text: "El gato llegó a unos grandes campos de trigo y dijo a los campesinos: 'Si el Rey os pregunta de quién son estas tierras, decid que pertenecen al Marqués de Carabás, u os pasará algo terrible'. Cuando el Rey pasó y preguntó, todos respondieron: 'Son del Marqués de Carabás, Majestad'. El Rey estaba asombrado por la enorme riqueza del joven. El gato seguía corriendo por delante, llegando finalmente a un majestuoso castillo."
+                text: "Vestido con ropas reales, el joven parecía un noble y la Princesa quedó encantada. El Rey lo invitó a la carroza. El gato se adelantó y ordenó a todos los campesinos: 'Si el Rey pregunta, decid que estos prados y campos de trigo pertenecen al conde, ¡o moriréis!'. Al pasar el Rey y preguntar, todos respondieron: '¡Son del señor conde!'. El Rey estaba asombrado: 'Grandes y bonitas tierras tienes, conde'."
             },
             {
-                text: "Aquel castillo pertenecía a un temible ogro, el más rico del mundo, dueño de todas las tierras por las que habían pasado. El gato entró y, con mucha cortesía, dijo al ogro: 'Me han dicho que sois capaz de convertiros en cualquier animal'. El ogro, orgulloso, se transformó en un enorme león. El gato, fingiendo miedo, dijo: '¡Increíble! Pero... ¿podríais convertiros en algo muy pequeño? ¿Acaso en un ratón?'."
+                text: "El gato llegó finalmente al palacio de un gran mago capaz de transformarse en cualquier animal. Entró con descaro y le dijo: 'He oído que puedes transformarte en elefante o león, pero seguro que no puedes convertirte en algo tan pequeño como un ratón'. El mago, herido en su orgullo, se transformó de inmediato en un ratón. ¡Era lo que el gato esperaba! De un salto lo atrapó y se lo comió de un bocado."
             },
             {
-                text: "El ogro soltó una carcajada y, para demostrar su poder, se transformó de inmediato en un pequeño ratón que empezó a correr por el suelo. ¡Ese era el momento que el gato esperaba! De un solo salto, lo atrapó y se lo comió. En ese instante, la carroza del Rey llegaba a las puertas del castillo. El gato salió a recibirlos y dijo con orgullo: '¡Bienvenidos al castillo de mi señor, el Marqués de Carabás!'."
-            },
-            {
-                text: "El Rey quedó maravillado por el castillo y las riquezas del joven marqués. Aquella misma tarde, se celebró un gran banquete y el Rey, viendo lo mucho que su hija y el joven se querían, ofreció al Marqués la mano de la princesa. El hijo del molinero aceptó encantado y se casaron ese mismo día. En cuanto al gato, se convirtió en un gran señor y ya nunca más tuvo que cazar ratones, excepto por pura diversión."
+                text: "Cuando la carroza real llegó al castillo, el gato salió a recibirlos: '¡Bienvenidos al palacio de mi señor el conde!'. El Rey se maravilló del magnífico edificio, que era más hermoso que su propio palacio. Aquel día, el Rey prometió la mano de su hija al joven. Cuando el monarca murió, el conde se convirtió en Rey y el gato con botas en su Primer Ministro, viviendo felices para siempre."
             }
         ]
     },
