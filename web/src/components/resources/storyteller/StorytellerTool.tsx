@@ -393,8 +393,8 @@ export default function StorytellerTool() {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="flex justify-center mb-[-2rem] relative z-20"
                                 >
-                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white p-1">
-                                        <img src={selectedBook.chipImage} className="w-full h-full object-contain" alt="Character" />
+                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
                                     </div>
                                 </motion.div>
                             )}
@@ -574,10 +574,7 @@ export default function StorytellerTool() {
                                 className={`aspect-[4/3] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} group`}
                             >
                                 <div
-                                    className={cn(
-                                        "absolute inset-0 transition-transform duration-700 group-hover:scale-110",
-                                        book.chipImage ? "bg-contain bg-no-repeat bg-center m-4" : "bg-cover bg-center"
-                                    )}
+                                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                                     style={{ backgroundImage: `url(${book.chipImage || book.coverImage})` }}
                                 />
 
