@@ -108,5 +108,43 @@ export const BOOKS: Book[] = [
                 text: "MORALEJA DEL CUENTO: La niña bonita, La que no lo sea, Que a todas alcanza Esta moraleja, Mucho miedo, mucho, Al lobo le tenga, Que a veces es joven De buena presencia, De palabras dulces, De grandes promesas, Tan pronto olvidadas Como fueron hechas."
             }
         ]
+    },
+    {
+        id: 'gato-con-botas',
+        title: 'El Gato con Botas',
+        author: 'Charles Perrault',
+        description: 'La asombrosa historia de un gato muy astuto que, con un par de botas y mucha inteligencia, logra convertir a su humilde amo en el gran Marqués de Carabás.',
+        level: 'Medio',
+        age: '5+',
+        coverImage: '/images/storyteller/puss-in-boots-cover.png',
+        chipImage: '/images/storyteller/character-gato.png',
+        genre: 'Aventura',
+        themeColor: 'from-amber-500 to-orange-400',
+        content: [
+            {
+                text: "Había una vez un viejo molinero que, al morir, dejó a sus tres hijos todo lo que tenía: un molino, un asno y un gato. Los hijos mayores se quedaron con el molino y el asno, mientras que al más joven solo le quedó el gato. El pobre joven se lamentaba: '¿Qué haré con un simple gato?'. Pero el gato, que le escuchaba, le dijo: 'No os preocupéis, mi señor. Solo dadme un saco y un par de botas, y os demostraré que vuestra fortuna no es tan mala'."
+            },
+            {
+                text: "El joven, aunque sorprendido, le consiguió lo que pedía. El gato se calzó sus nuevas botas, se echó el saco al hombro y se dirigió al bosque. Allí, usando su astucia, cazó un hermoso conejo y lo metió en el saco. Con paso firme y aire elegante, se dirigió al palacio del Rey. Al llegar, hizo una gran reverencia y dijo: 'Majestad, os traigo este regalo de parte de mi señor, el Marqués de Carabás', pues así decidió llamar a su amo."
+            },
+            {
+                text: "Durante meses, el gato continuó llevando regalos al Rey en nombre del Marqués. Un día, supo que el Rey pasearía con su hija, la princesa más bella del mundo, por la orilla del río. Corrió hacia su amo y le dijo: '¡Rápido! Desnúdate y métete en el agua'. El joven obedeció sin entender. Cuando la carroza real pasaba por allí, el gato empezó a gritar: '¡Socorro! ¡Socorro! ¡El Marqués de Carabás se está ahogando! ¡Unos ladrones se han llevado su ropa!'"
+            },
+            {
+                text: "El Rey, reconociendo al gato que tantos regalos le había llevado, ordenó detener la carroza. Sus guardias sacaron al joven del río y le trajeron los trajes más lujosos del palacio. Al vestirse con tales galas, el joven parecía realmente un noble, y la princesa quedó encantada al verlo. El Rey invitó al flamante Marqués a subir a la carroza. Mientras tanto, el astuto gato corrió por delante de ellos."
+            },
+            {
+                text: "El gato llegó a unos grandes campos de trigo y dijo a los campesinos: 'Si el Rey os pregunta de quién son estas tierras, decid que pertenecen al Marqués de Carabás, u os pasará algo terrible'. Cuando el Rey pasó y preguntó, todos respondieron: 'Son del Marqués de Carabás, Majestad'. El Rey estaba asombrado por la enorme riqueza del joven. El gato seguía corriendo por delante, llegando finalmente a un majestuoso castillo."
+            },
+            {
+                text: "Aquel castillo pertenecía a un temible ogro, el más rico del mundo, dueño de todas las tierras por las que habían pasado. El gato entró y, con mucha cortesía, dijo al ogro: 'Me han dicho que sois capaz de convertiros en cualquier animal'. El ogro, orgulloso, se transformó en un enorme león. El gato, fingiendo miedo, dijo: '¡Increíble! Pero... ¿podríais convertiros en algo muy pequeño? ¿Acaso en un ratón?'."
+            },
+            {
+                text: "El ogro soltó una carcajada y, para demostrar su poder, se transformó de inmediato en un pequeño ratón que empezó a correr por el suelo. ¡Ese era el momento que el gato esperaba! De un solo salto, lo atrapó y se lo comió. En ese instante, la carroza del Rey llegaba a las puertas del castillo. El gato salió a recibirlos y dijo con orgullo: '¡Bienvenidos al castillo de mi señor, el Marqués de Carabás!'."
+            },
+            {
+                text: "El Rey quedó maravillado por el castillo y las riquezas del joven marqués. Aquella misma tarde, se celebró un gran banquete y el Rey, viendo lo mucho que su hija y el joven se querían, ofreció al Marqués la mano de la princesa. El hijo del molinero aceptó encantado y se casaron ese mismo día. En cuanto al gato, se convirtió en un gran señor y ya nunca más tuvo que cazar ratones, excepto por pura diversión."
+            }
+        ]
     }
 ];
