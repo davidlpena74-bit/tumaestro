@@ -595,8 +595,8 @@ export default function StorytellerTool() {
                             </div>
 
                             {/* Contenido */}
-                            <div className="p-8 flex flex-col flex-grow">
-                                <div className="flex gap-2 mb-4">
+                            <div className="p-7 flex flex-col flex-grow">
+                                <div className="flex gap-2 mb-3">
                                     <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50">
                                         {book.level}
                                     </span>
@@ -604,10 +604,10 @@ export default function StorytellerTool() {
                                         {book.age}
                                     </span>
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-800 mb-2 transition-colors group-hover:text-slate-900">
+                                <h3 className="text-2xl font-black text-slate-800 mb-1 transition-colors group-hover:text-slate-900">
                                     {book.title}
                                 </h3>
-                                <p className="text-slate-500 text-sm font-medium line-clamp-3 mb-6 flex-grow leading-relaxed">
+                                <p className="text-slate-500 text-sm font-medium line-clamp-3 mb-5 flex-grow leading-relaxed">
                                     {book.description}
                                 </p>
 
