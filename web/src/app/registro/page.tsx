@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Envelope, Lock, ArrowRight, WarningCircle, CircleNotch, GoogleLogo } from '@phosphor-icons/react';
+import { Envelope, Lock, ArrowRight, WarningCircle, CircleNotch } from '@phosphor-icons/react';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function RegisterPage() {
