@@ -402,10 +402,10 @@ export default function StorytellerTool() {
                                     key={`chip-${selectedBook.id}`}
                                     initial={{ opacity: 0, y: -20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="flex justify-center mb-[-2.5rem] relative z-20"
+                                    className="flex justify-center mb-[-2rem] relative z-20"
                                 >
-                                    <div className="w-28 h-28 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white/80 backdrop-blur-sm">
-                                        <img src={selectedBook.chipImage} className="w-full h-full object-contain p-2" alt="Character" />
+                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
                                     </div>
                                 </motion.div>
                             )}
@@ -582,15 +582,11 @@ export default function StorytellerTool() {
                             {/* Portada */}
                             {/* Portada */}
                             <div
-                                className={`aspect-[4/3] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} group flex items-center justify-center`}
+                                className={`aspect-[4/3] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} group`}
                             >
-                                <img
-                                    src={book.chipImage || book.coverImage}
-                                    className={cn(
-                                        "w-full h-full transition-transform duration-700 group-hover:scale-110",
-                                        book.chipImage ? "object-contain p-4" : "object-cover"
-                                    )}
-                                    alt={book.title}
+                                <div
+                                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                    style={{ backgroundImage: `url(${book.chipImage || book.coverImage})` }}
                                 />
 
                                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-slate-900 flex items-center gap-1.5 shadow-xl border border-white/20 z-10">
