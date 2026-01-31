@@ -612,7 +612,7 @@ export default function StorytellerTool() {
                                 </p>
 
                                 <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
-                                    <span className="text-base font-bold text-slate-400 flex items-center gap-2 italic">
+                                    <span className="text-base font-bold text-slate-600 flex items-center gap-2 italic">
                                         Por {book.author}
                                     </span>
                                     <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
