@@ -1,10 +1,10 @@
 {
   "name": "app",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/generate-sitemap.mjs && next build",
     "start": "next start",
     "lint": "eslint"
   },
