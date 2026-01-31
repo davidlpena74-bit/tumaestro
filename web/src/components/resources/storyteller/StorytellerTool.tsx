@@ -109,7 +109,18 @@ export default function StorytellerTool() {
 
             const text = selectedBook?.content[currentPage].text || "";
             if (progressRef.current < text.length) {
-                progressRef.current += deltaTime * currentSpeedRef.current;
+                const char = text[Math.floor(progressRef.current)];
+                let speedMultiplier = 1;
+
+                // Si estamos en un signo de puntuación, reducimos la velocidad drásticamente
+                // para simular la pausa del SSML (800ms para puntos, 300ms para comas)
+                if (char === '.' || char === '?' || char === '!' || char === ':') {
+                    speedMultiplier = 0.15; // Ralentizar mucho más para representar la pausa de 800ms
+                } else if (char === ',') {
+                    speedMultiplier = 0.4; // Ralentizar para la pausa de 300ms
+                }
+
+                progressRef.current += deltaTime * currentSpeedRef.current * speedMultiplier;
                 setCharIndex(Math.min(text.length, Math.floor(progressRef.current)));
             }
 

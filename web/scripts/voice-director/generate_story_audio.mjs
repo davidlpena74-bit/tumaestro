@@ -6,10 +6,10 @@ const BOOKS_FILE_PATH = '../../src/components/resources/storyteller/books-data.t
 const AUDIO_BASE_DIR = '../../public/audio/storyteller';
 
 async function main() {
-    console.log('🎙️ Voice Director (Free Edition - Microsoft Edge) started...');
+    console.log('🎙️ Premium Voice Director (SSML + Enhancements) started...');
 
     const tts = new MsEdgeTTS();
-    // Default voice: Elvira (Spanish Spain) - Human sounding and warm
+    // es-ES-ElviraNeural: warm and storytelling voice
     await tts.setMetadata('es-ES-ElviraNeural', OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
 
     // 1. Read books data
@@ -52,27 +52,39 @@ async function main() {
             const fileName = `page_${pageIndex}.mp3`;
             const filePath = path.join(bookAudioDir, fileName);
 
-            if (fs.existsSync(filePath)) {
-                console.log(`  ✅ Skipped Page ${pageIndex} (Audio exists)`);
-            } else {
-                console.log(`  🎙️ Generating Audio for Page ${pageIndex}...`);
-                try {
-                    const { audioStream } = await tts.toStream(cleanText);
-                    await new Promise((resolve, reject) => {
-                        const writable = fs.createWriteStream(filePath);
-                        audioStream.pipe(writable);
-                        writable.on('finish', resolve);
-                        writable.on('error', reject);
-                    });
-                    console.log(`     ✨ Saved: ${fileName}`);
-                } catch (error) {
-                    console.error(`     ❌ Failed to generate audio for page ${pageIndex}: ${error.message}`);
-                }
+            // Re-generate if force flag is present or if we want premium quality
+            console.log(`  🎙️ Generating Enhanced Audio for Page ${pageIndex}...`);
+
+            // SSML Enhancement
+            const ssmlText = `
+                <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="es-ES">
+                    <voice name="es-ES-ElviraNeural">
+                        <prosody rate="-15%" pitch="+0Hz">
+                            ${cleanText.replace(/\. /g, '. <break time="800ms"/>')
+                    .replace(/, /g, ', <break time="300ms"/>')
+                    .replace(/\? /g, '? <break time="800ms"/>')
+                    .replace(/! /g, '! <break time="800ms"/>')}
+                        </prosody>
+                    </voice>
+                </speak>
+            `.trim();
+
+            try {
+                const { audioStream } = await tts.toStream(ssmlText);
+                await new Promise((resolve, reject) => {
+                    const writable = fs.createWriteStream(filePath);
+                    audioStream.pipe(writable);
+                    writable.on('finish', resolve);
+                    writable.on('error', reject);
+                });
+                console.log(`     ✨ Saved: ${fileName}`);
+            } catch (error) {
+                console.error(`     ❌ Failed to generate audio for page ${pageIndex}: ${error.message}`);
             }
             pageIndex++;
         }
     }
-    console.log('\n✅ Voice generation finished!');
+    console.log('\n✅ Premium Voice generation finished!');
 }
 
 main();
