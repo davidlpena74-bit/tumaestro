@@ -10,6 +10,8 @@ export interface Book {
     description: string;
     content: BookPage[];
     contentEn?: BookPage[];
+    contentFr?: BookPage[];
+    contentDe?: BookPage[];
     level: 'Fácil' | 'Medio' | 'Difícil';
     age: string;
     coverImage: string;
@@ -143,7 +145,71 @@ export const BOOKS: Book[] = [
             {
                 text: "The girl collected large stones from the river, with which they filled the wolf's body. When the animal woke up and tried to flee, its weight was such that it fell to the ground lifeless. The cabin recovered its peace, and while the grandmother ate the cake, Little Red Riding Hood promised that she would never again leave the safe path, for she had understood that the beauty of the flowers did not compensate for the danger lurking in the shadows of the unknown."
             }
-        ]
+        ],
+        contentFr: [
+            {
+                text: "Dans un village entouré d'une forêt si épaisse que la lumière du soleil touchait à peine le sol, vivait une fille dont la bonté était connue de tous les habitants de la région. Son bien le plus précieux était une cape en velours d'un rouge aussi intense que les coquelicots en été, un cadeau de sa grand-mère que la petite fille portait avec fierté en toute saison. C'est pourquoi le nom sous lequel elle était connue dans les vallées et les sentiers n'était autre que le Petit Chaperon Rouge."
+            },
+            {
+                text: "Un matin, alors que la rosée brillait encore sur les toiles d'araignée dans les buissons, sa mère termina de préparer un panier en osier. L'arôme du pain fraîchement cuit et du miel frais remplissait la petite cuisine. L'air inquiet, la mère appela la fille et, tout en ajustant le nœud de sa cape, lui donna des instructions précises. Sa grand-mère, qui vivait dans une petite cabane de l'autre côté de la forêt, était alitée avec une forte fièvre, et ces provisions étaient vitales pour son rétablissement. « Ne t'éloigne pas du chemin principal », avertit-elle fermement, « car la forêt a des yeux et les ombres peuvent être trompeuses »."
+            },
+            {
+                text: "Le Petit Chaperon Rouge, le panier au bras et le cœur plein de bonnes intentions, s'enfonça dans le fourré. Le chemin était flanqué de pins centenaires dont les cimes semblaient chuchoter des secrets au vent. À mesure qu'elle avançait, le silence de la forêt devenait plus dense, interrompu seulement par le craquement des branches sous ses pieds. C'est alors que, d'entre les troncs des chênes, surgit une silhouette imposante. C'était un loup aux dimensions extraordinaires, au pelage grisâtre tacheté de noir et aux yeux qui brillaient d'un mélange de faim et de ruse."
+            },
+            {
+                text: "L'animal ne l'attaqua pas immédiatement ; au lieu de cela, il s'approcha avec une élégance hypnotique, presque chevaleresque. « Où va une si charmante demoiselle si tôt ? », demanda le loup, adoucissant sa voix rauque pour ne pas l'effrayer. Le Petit Chaperon Rouge, dont l'innocence ne lui permettait pas de voir le mal derrière les crocs, omit le conseil de sa mère et expliqua qu'elle se rendait chez sa grand-mère, sous les trois grands chênes. Le loup suggéra : « N'entends-tu pas les oiseaux chanter ? Un bouquet de ces fleurs guérirait l'âme de ta grand-mère avant même le pain que tu apportes »."
+            },
+            {
+                text: "Séduite par l'idée, la jeune fille s'écarta du chemin. Pendant ce temps, le loup courut vers la cabane de la vieille femme. En arrivant, il frappa à la porte trois coups secs. « C'est moi, ta petite-fille Chaperon Rouge », mentit-il en élevant la voix. La vieille femme lui indiqua comment ouvrir et, en un instant, le loup fit irruption et dévora la femme. Juste après, il enfila sa chemise de nuit, mit son bonnet et se glissa dans le lit, se couvrant jusqu'au nez pour cacher son museau."
+            },
+            {
+                text: "Lorsque le Petit Chaperon Rouge arriva enfin à la cabane, chargée de fleurs, elle trouva la porte grande ouverte. Un étrange pressentiment lui oppressa la poitrine, mais elle entra en appelant sa grand-mère. La lumière qui filtrait à travers les rideaux éclairait à peine le visage de la silhouette allongée dans le lit. En s'approchant, elle remarqua que quelque chose ne collait pas ; les traits de sa grand-mère semblaient avoir changé sous l'effet de la fièvre."
+            },
+            {
+                text: "— « Oh, grand-mère, comme tu as de grandes oreilles ! », s'exclama la fille dans un murmure tremblant. — « C'est pour mieux t'entendre, mon enfant », répondit le loup. — « Grand-mère, comme tu as de grands yeux ! ». — « C'est pour mieux te voir dans la pénombre ». — « Et comme tu as de grandes mains ! ». — « C'est pour mieux t'embrasser ». — « Mais grand-mère... quelle bouche terriblement grande tu as ! ». — « C'est pour mieux te manger ! »."
+            },
+            {
+                text: "Le loup bondit du lit avec une férocité sauvage et, avant que le Petit Chaperon Rouge ne puisse crier, il l'avala tout entière. Rassasié et épuisé par son propre festin, l'animal retourna au lit et tomba dans un sommeil profond, ronflant si fort que les murs de la cabane semblaient trembler."
+            },
+            {
+                text: "Peu après, un chasseur qui patrouillait dans la zone entendit ces bruits anormaux. Il entra dans la maison et trouva le loup dormant paisiblement avec un ventre gonflé. Comprenant la situation, il prit une paire de ciseaux de couture et ouvrit avec précaution le ventre de la bête. De l'obscurité de l'estomac surgirent d'abord la cape rouge puis le Petit Chaperon Rouge, suivie de la grand-mère, toutes deux indemnes mais terrifiées par l'expérience étouffante."
+            },
+            {
+                text: "La petite fille ramassa de grosses pierres de la rivière, avec lesquelles ils remplirent le corps du loup. Lorsque l'animal se réveilla et essaya de fuir, son poids était tel qu'il tomba au sol sans vie. La cabane retrouva sa paix, et tandis que la grand-mère mangeait le gâteau, le Petit Chaperon Rouge promit qu'elle ne quitterait plus jamais le sentier sûr, car elle avait compris que la beauté des fleurs ne compensait pas le danger qui guette dans les ombres de l'inconnu."
+            }
+        ],
+        contentDe: [
+            {
+                text: "In einem Dorf, umgeben von einem Wald, so dicht, dass das Sonnenlicht den Boden kaum berührte, lebte ein Mädchen, dessen Güte allen Bewohnern der Gegend bekannt war. Ihr kostbarster Besitz war ein Umhang aus Samt, so rot wie Mohnblumen im Sommer, ein Geschenk ihrer Großmutter, das das kleine Mädchen stolz zu jeder Jahreszeit trug. Aus diesem Grund war der Name, unter dem sie in den Tälern und auf den Pfaden bekannt war, kein anderer als Rotkäppchen."
+            },
+            {
+                text: "Eines Morgens, als der Tau noch auf den Spinnweben in den Büschen glitzerte, beendete ihre Mutter das Packen eines Weidenkorbes. Der Duft von frisch gebackenem Brot und frischem Honig erfüllte die kleine Küche. Mit besorgtem Gesichtsausdruck rief die Mutter das Mädchen und gab ihm, während sie die Schleife seines Umhangs zurechtrückte, genaue Anweisungen. Ihre Großmutter, die in einer kleinen Hütte auf der anderen Seite des Waldes lebte, lag mit hohem Fieber im Bett, und diese Vorräte waren für ihre Genesung lebenswichtig. „Weiche nicht vom Hauptpfad ab“, warnte sie streng, „denn der Wald hat Augen und die Schatten können trügerisch sein.“"
+            },
+            {
+                text: "Rotkäppchen, mit dem Korb am Arm und einem Herzen voller guter Absichten, betrat das Dickicht. Der Weg war flankiert von jahrhundertealten Kiefern, deren Wipfel dem Wind Geheimnisse zuzuflüstern schienen. Je weiter sie ging, desto dichter wurde die Stille des Waldes, nur unterbrochen vom Knacken der Zweige unter ihren Füßen. Da tauchte zwischen den Stämmen der Eichen eine imposante Gestalt auf. Es war ein Wolf von außergewöhnlichen Ausmaßen, mit gräulichem, schwarz gesprenkeltem Fell und Augen, die in einer Mischung aus Hunger und List blitzten."
+            },
+            {
+                text: "Das Tier griff sie nicht sofort an; stattdessen näherte es sich mit hypnotischer, fast ritterlicher Eleganz. „Wohin geht ein so bezauberndes junges Fräulein so früh?“, fragte der Wolf und milderte seine raue Stimme, um sie nicht zu erschrecken. Rotkäppchen, dessen Unschuld es ihm nicht erlaubte, das Böse hinter den Reißzähnen zu sehen, vergaß den Rat ihrer Mutter und erklärte, dass sie zum Haus ihrer Großmutter unter den drei großen Eichen unterwegs sei. Der Wolf schlug vor: „Hörst du nicht die Vögel singen? Ein Strauß dieser Blumen würde die Seele deiner Großmutter noch vor dem Brot, das du bringst, heilen.“"
+            },
+            {
+                text: "Verführt von der Idee, wich das Mädchen vom Weg ab. Währenddessen rannte der Wolf zur Hütte der alten Frau. Als er ankam, klopfte er mit drei kurzen Schlägen an die Tür. „Ich bin es, deine Enkelin Rotkäppchen“, log er und verstellte seine Stimme. Die alte Frau erklärte ihm, wie man öffnet, und im Nu stürmte der Wolf herein und verschlang die Frau. Sofort danach zog er ihr Nachthemd an, setzte ihre Haube auf und legte sich ins Bett, wobei er sich bis zur Nase zudeckte, um seine Schnauze zu verbergen."
+            },
+            {
+                text: "Als Rotkäppchen endlich an der Hütte ankam, beladen mit Blumen, fand sie die Tür weit offen. Eine seltsame Vorahnung bedrückte ihre Brust, aber sie trat ein und rief nach ihrer Großmutter. Das Licht, das durch die Vorhänge fiel, beleuchtete kaum das Gesicht der Gestalt, die im Bett lag. Als sie näher kam, bemerkte sie, dass etwas nicht stimmte; die Züge ihrer Großmutter schienen sich im Fieber verändert zu haben."
+            },
+            {
+                text: "– „Oh, Großmutter, was hast du für große Ohren!“, rief das Mädchen mit zitterndem Flüstern. – „Damit ich dich besser hören kann, mein Kind“, antwortete der Wolf. – „Großmutter, was hast du für große Augen!“. – „Damit ich dich im Halbdunkel besser sehen kann“. – „Und was hast du für große Hände!“. – „Damit ich dich fester umarmen kann“. – „Aber Großmutter... was hast du für einen schrecklich großen Mund!“. – „Damit ich dich besser fressen kann!“"
+            },
+            {
+                text: "Der Wolf sprang mit wilder Grausamkeit aus dem Bett und verschlang Rotkäppchen ganz, bevor es schreien konnte. Gesättigt und erschöpft von seinem eigenen Festmahl, kehrte das Tier ins Bett zurück und fiel in einen tiefen Schlaf, wobei es so laut schnarchte, dass die Wände der Hütte zu beben schienen."
+            },
+            {
+                text: "Kurz darauf hörte ein Jäger, der in der Gegend patrouillierte, diese unnatürlichen Geräusche. Er betrat das Haus und fand den Wolf friedlich mit geschwollenem Bauch schlafend vor. Er begriff die Situation, nahm eine Nähschere und öffnete vorsichtig den Bauch der Bestie. Aus der Dunkelheit des Magens kamen zuerst der rote Umhang und dann Rotkäppchen zum Vorschein, gefolgt von der Großmutter, beide unverletzt, aber verängstigt durch die erstickende Erfahrung."
+            },
+            {
+                text: "Das Mädchen sammelte große Steine aus dem Fluss, mit denen sie den Körper des Wolfes füllten. Als das Tier aufwachte und zu fliehen versuchte, war sein Gewicht so groß, dass es leblos zu Boden fiel. In der Hütte kehrte Frieden ein, und während die Großmutter den Kuchen aß, versprach Rotkäppchen, dass sie nie wieder den sicheren Pfad verlassen würde, denn sie hatte begriffen, dass die Schönheit der Blumen nicht die Gefahr aufwiegt, die in den Schatten des Unbekannten lauert."
+            }
+        ],
     },
     {
         id: 'gato-con-botas',

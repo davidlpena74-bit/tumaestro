@@ -7,7 +7,8 @@ Este flujo de trabajo coordina la creación de un nuevo cuento asegurando que cu
 ## Estándar de Calidad Premium
 
 ### 1. Formato de Texto y Narrativa
-- **Idioma**: Español (Castellano/Neutro). El reproductor asume ES por defecto y el selector de idioma refleja esto.
+- **Idiomas**: Español (Obligatorio) e Inglés (Muy Recomendado).
+- **Estructura**: El reproductor soporta ahora dos flujos de contenido: `content` (Español) y `contentEn` (Inglés).
 - **División**: El texto debe ser literario y detallado. Divide el cuento en **10-12 páginas**.
 - **Ritmo**: Cada página debe representar una escena o idea completa para mantener el ritmo de lectura.
 
@@ -24,6 +25,7 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
 
 ### 3. Registro y Lógica Técnica
 - **Fichero**: `src/components/resources/storyteller/books-data.ts`.
+- **Estructura de Datos**: A parte de rellenar `content` para el español, añade la propiedad `contentEn` con la traducción al inglés de cada página.
 - **Auto-Advance**: No es necesario tocar el código para esto, pero asegúrate de que el objeto `Book` tenga todas las páginas en el array `content`. El componente `StorytellerTool.tsx` gestionará automáticamente el paso de página al terminar el audio (MP3 o Voz Sintetizada).
 - **Theme Color**: Elige un gradiente de Tailwind que armonice con la ilustración (ej. `from-amber-600 to-brown-700`).
 
@@ -34,9 +36,11 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
    node generate_story_audio.mjs
    ```
 2. **Fallback Automático**: El script ya incluye lógica de reintento. Si ElevenLabs falla, saltará a Edge TTS automáticamente para esa página.
+3. **Audio Inglés**: De momento el sistema usará TTS nativo del navegador para inglés, no es necesario generar MP3s para EN todavía.
 
 ## Verificación Final
 - La imagen del personaje debe verse completa en el círculo del reproductor.
 - El cuento debe avanzar automáticamente a la siguiente página tras el audio.
-- El selector de idioma (Bandera ES) debe aparecer correctamente entre los botones de avance y tamaño de fuente.
+- Comprueba que aparecen las **banderas de idioma** (España y UK si hay inglés) en la tarjeta del libro.
+- El selector de idioma debe permitir cambiar entre Español e Inglés durante la lectura.
 - El despliegue debe incluir un incremento de versión en `package.json` y el uso del flujo `/deploy`.

@@ -37,7 +37,7 @@ export default function StorytellerTool() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [speechRate, setSpeechRate] = useState(0.9);
     const [fontSize, setFontSize] = useState(24);
-    const [audioLanguage, setAudioLanguage] = useState<'es' | 'en'>('es');
+    const [audioLanguage, setAudioLanguage] = useState<'es' | 'en' | 'fr' | 'de'>('es');
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
     const [charIndex, setCharIndex] = useState(0);
@@ -62,6 +62,12 @@ export default function StorytellerTool() {
         if (!selectedBook) return [];
         if (audioLanguage === 'en' && selectedBook.contentEn) {
             return selectedBook.contentEn;
+        }
+        if (audioLanguage === 'fr' && selectedBook.contentFr) {
+            return selectedBook.contentFr;
+        }
+        if (audioLanguage === 'de' && selectedBook.contentDe) {
+            return selectedBook.contentDe;
         }
         return selectedBook.content;
     }, [selectedBook, audioLanguage]);
@@ -258,6 +264,16 @@ export default function StorytellerTool() {
             const voices = synthRef.current.getVoices();
             const preferredVoice = voices.find(v => v.name.includes("Google US English") || v.name.includes("Zira") || v.lang.startsWith('en'));
             if (preferredVoice) utterance.voice = preferredVoice;
+        } else if (audioLanguage === 'fr') {
+            utterance.lang = 'fr-FR';
+            const voices = synthRef.current.getVoices();
+            const preferredVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes("Canada")); // Prefer FR-FR
+            if (preferredVoice) utterance.voice = preferredVoice;
+        } else if (audioLanguage === 'de') {
+            utterance.lang = 'de-DE';
+            const voices = synthRef.current.getVoices();
+            const preferredVoice = voices.find(v => v.lang.startsWith('de'));
+            if (preferredVoice) utterance.voice = preferredVoice;
         } else {
             utterance.lang = 'es-ES';
             const bestVoice = getBestVoice('es-ES');
@@ -267,7 +283,7 @@ export default function StorytellerTool() {
         }
 
         // Parámetros refinados
-        utterance.rate = speechRate * (audioLanguage === 'en' ? 0.9 : 0.88); // Slight adjustment for EN
+        utterance.rate = speechRate * (audioLanguage === 'en' ? 0.9 : 0.88); // Slight adjustment for EN/Others
         utterance.pitch = 1.08;
         utterance.volume = 1.0;
 
@@ -571,8 +587,13 @@ export default function StorytellerTool() {
                                     )}
                                 >
                                     <img
-                                        src={audioLanguage === 'es' ? "/images/flags/es.svg" : "/images/flags/gb.svg"}
-                                        alt={audioLanguage === 'es' ? "Español" : "English"}
+                                        src={
+                                            audioLanguage === 'es' ? "/images/flags/es.svg" :
+                                                audioLanguage === 'en' ? "/images/flags/gb.svg" :
+                                                    audioLanguage === 'fr' ? "/images/flags/fr.svg" :
+                                                        "/images/flags/de.svg"
+                                        }
+                                        alt={audioLanguage.toUpperCase()}
                                         className="w-5 h-auto rounded-[2px] shadow-sm"
                                     />
                                     <span className="text-xs font-bold">{audioLanguage.toUpperCase()}</span>
@@ -596,6 +617,7 @@ export default function StorytellerTool() {
                                             <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
                                                 Idioma Audio
                                             </div>
+                                            {/* Logic to show available languages based on book content */}
                                             <button
                                                 type="button"
                                                 onClick={(e) => {
@@ -612,22 +634,63 @@ export default function StorytellerTool() {
                                                 <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
                                                 <span className="text-sm font-medium">Español</span>
                                             </button>
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setAudioLanguage('en');
-                                                    setIsLangMenuOpen(false);
-                                                }}
-                                                className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                    isMaximized
-                                                        ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                        : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                )}
-                                            >
-                                                <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
-                                                <span className="text-sm font-medium">English</span>
-                                            </button>
+
+                                            {selectedBook?.contentEn && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setAudioLanguage('en');
+                                                        setIsLangMenuOpen(false);
+                                                    }}
+                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                        isMaximized
+                                                            ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                            : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    )}
+                                                >
+                                                    <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
+                                                    <span className="text-sm font-medium">English</span>
+                                                </button>
+                                            )}
+
+                                            {selectedBook?.contentFr && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setAudioLanguage('fr');
+                                                        setIsLangMenuOpen(false);
+                                                    }}
+                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                        isMaximized
+                                                            ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                            : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    )}
+                                                >
+                                                    <img src="/images/flags/fr.svg" alt="Français" className="w-5 h-auto rounded-[2px]" />
+                                                    <span className="text-sm font-medium">Français</span>
+                                                </button>
+                                            )}
+
+                                            {selectedBook?.contentDe && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setAudioLanguage('de');
+                                                        setIsLangMenuOpen(false);
+                                                    }}
+                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                        isMaximized
+                                                            ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                            : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    )}
+                                                >
+                                                    <img src="/images/flags/de.svg" alt="Deutsch" className="w-5 h-auto rounded-[2px]" />
+                                                    <span className="text-sm font-medium">Deutsch</span>
+                                                </button>
+                                            )}
                                         </div>
                                     </>
                                 )}
@@ -712,6 +775,16 @@ export default function StorytellerTool() {
                                         {book.contentEn && (
                                             <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="English">
                                                 <img src="/images/flags/gb.svg" alt="English" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                        {book.contentFr && (
+                                            <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Français">
+                                                <img src="/images/flags/fr.svg" alt="Français" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                        {book.contentDe && (
+                                            <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Deutsch">
+                                                <img src="/images/flags/de.svg" alt="Deutsch" className="w-full h-full object-cover" />
                                             </div>
                                         )}
                                     </div>
