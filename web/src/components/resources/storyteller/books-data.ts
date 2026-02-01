@@ -474,5 +474,187 @@ export const BOOKS: Book[] = [
                 text: "Ellos contaron cómo el flautista había prometido llevarlos a un lugar donde los árboles siempre tenían frutos, los pájaros hablaban y nadie lloraba jamás. Hamelín se convirtió en una ciudad de silencio y luto, un lugar donde, desde aquel día, está prohibido tocar música en la calle por la que se fueron los niños, para que nunca se olvide el precio de una promesa rota."
             }
         ]
+    },
+    {
+        id: 'pinocho',
+        title: 'Pinocho',
+        author: 'Carlo Collodi',
+        description: 'La inolvidable odisea de una marioneta traviesa que debe aprender sobre la verdad, la conciencia y el sacrificio para convertirse en un niño de verdad.',
+        level: 'Difícil',
+        age: '7+',
+        coverImage: '/images/storyteller/pinocho-cover.png',
+        chipImage: '/images/storyteller/character-pinocho.png',
+        genre: 'Novela',
+        themeColor: 'from-amber-700 to-orange-900',
+        content: [
+            {
+                text: "Esta es la historia de Pinocho, una crónica sobre la formación del alma, la lucha contra las tentaciones y el arduo camino que separa a un trozo de madera de un corazón humano. En un pequeño pueblo italiano de calles empedradas y talleres angostos, vivía un viejo carpintero llamado Geppetto. Era un hombre de manos nudosas y corazón solitario que, para aliviar su melancolía, decidió tallar una marioneta de madera de pino. Sin embargo, apenas comenzó a esculpir, sucedió algo extraordinario: la madera empezó a reírse de sus cosquillas y a protestar por los golpes del mazo. Geppetto, asombrado, terminó la figura de un niño al que llamó Pinocho. Pero antes de que pudiera enseñarle a caminar, el muñeco cobró vida propia, le dio una patada y huyó corriendo hacia la calle."
+            },
+            {
+                text: "Aquella marioneta era un torbellino de imprudencia. Geppetto, tratándolo como a un hijo, vendió su única chaqueta de abrigo, a pesar del crudo invierno, para comprarle un abecedario y enviarlo a la escuela. Pinocho, conmovido por un momento, prometió ser el mejor estudiante del mundo. Pero el camino a la escuela está lleno de distracciones para quien tiene la cabeza hecha de madera. Al oír el sonido de los platillos y los tambores, Pinocho olvidó su promesa y vendió su abecedario para comprar una entrada al Gran Teatro de Marionetas de Comefuego."
+            },
+            {
+                text: "Allí, tras casi ser quemado para cocinar un carnero, el dueño del teatro se apiadó de él y le regaló cinco monedas de oro para su padre. Pinocho regresaba a casa orgulloso, pero en el trayecto se topó con el Zorro y el Gato, dos estafadores que se hacían pasar por cojo y ciego. Con palabras melosas, convencieron al muñeco de que, si enterraba sus monedas en el \"Campo de los Milagros\", crecería un árbol cargado de oro. Pinocho, cegado por la codicia, los siguió, ignorando las advertencias del Espíritu del Grillo Parlante, a quien terminó por silenciar de un manotazo. Por supuesto, los malandros lo emboscaron, lo colgaron de una encina y le robaron sus tesoros."
+            },
+            {
+                text: "Fue entonces cuando apareció el Hada Azul, una criatura de cabellos color turquesa que vivía en una casa de cristal. Ella rescató a Pinocho y, al preguntarle dónde estaban las monedas, el muñeco mintió. En ese instante, su nariz comenzó a crecer y crecer, extendiéndose tanto que no podía moverse por la habitación. \"Las mentiras, Pinocho\", dijo el Hada con una sonrisa triste, \"tienen las piernas cortas o la nariz larga\". Solo tras muchas lágrimas y arrepentimiento, el Hada llamó a unos pájaros carpinteros para que le devolvieran la nariz a su tamaño original."
+            },
+            {
+                text: "Pero la naturaleza de Pinocho seguía siendo voluble. De camino a casa, se encontró con su amigo \"Mecha\", quien lo invitó al País de los Juguetes, un lugar donde no había libros, ni maestros, ni leyes, y donde los niños jugaban de la mañana a la noche. Pinocho pasó cinco meses de diversión desenfrenada, hasta que una mañana despertó con una sensación extraña: sus orejas se habían vuelto largas y peludas, y le había crecido una cola. El País de los Juguetes era en realidad una trampa para convertir a los niños perezosos en asnos y venderlos en el mercado."
+            },
+            {
+                text: "Convertido en burro, Pinocho fue maltratado y arrojado al mar, donde el hechizo se rompió y volvió a ser una marioneta. Pero su desgracia no terminó ahí, pues fue tragado por el Gran Tiburón, un monstruo marino de dimensiones colosales. En la oscuridad del vientre de la bestia, vio una luz lejana. Era Geppetto, que había salido a buscarlo al mar y había sido devorado tiempo atrás. El reencuentro fue puro llanto y alegría. Pinocho, demostrando por primera vez una valentía genuina, cargó a su padre sobre sus hombros de madera y aprovechó un bostezo del monstruo para escapar nadando hacia la orilla."
+            },
+            {
+                text: "A partir de ese día, Pinocho cambió por completo. Trabajó duro en una granja, cuidó de su padre enfermo y ahorró cada céntimo para ayudar al Hada Azul cuando supo que ella también pasaba penurias. Una noche, mientras dormía, el Hada lo visitó en sueños. Al despertar, Pinocho ya no sintió el tacto frío y rígido de la madera. Al mirarse en el espejo, vio a un niño de carne y hueso, con ojos brillantes y una sonrisa llena de vida. A su lado, Geppetto sonreía, y en un rincón de la habitación, el viejo cuerpo de madera de la marioneta descansaba como el capullo vacío de una mariposa que finalmente ha aprendido que ser humano no es una cuestión de forma, sino de amor y sacrificio."
+            }
+        ]
+    },
+    {
+        id: 'gigante-egoista',
+        title: 'El Gigante Egoísta',
+        author: 'Oscar Wilde',
+        description: 'Un conmovedor relato sobre cómo la inocencia de los niños puede derretir incluso el corazón más helado.',
+        level: 'Medio',
+        age: '6+',
+        coverImage: '/images/storyteller/gigante-egoista-cover.png',
+        chipImage: '/images/storyteller/character-gigante-egoista.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-sky-700 to-indigo-900',
+        content: [
+            {
+                text: "Esta es la historia de El Gigante Egoísta, un relato sobre cómo el hielo de la soledad y la dureza del corazón solo pueden ser derretidos por la calidez de la generosidad y la inocencia de la niñez. Todas las tardes, a la salida de la escuela, los niños de la aldea solían ir a jugar al jardín del Gigante. Era un jardín amplio y hermoso, tapizado de un césped suave y verde como el terciopelo. Por todas partes surgían flores brillantes como estrellas, y había doce melocotoneros que, en primavera, se cubrían de una delicada floración de color rosa y perla, y en otoño daban frutos dulces y jugosos. Los pájaros se posaban en las ramas y cantaban con tal dulzura que los niños solían detener sus juegos para escucharlos. —\"¡Qué felices somos aquí!\", se decían unos a otros."
+            },
+            {
+                text: "Pero un día, el Gigante regresó. Había estado fuera durante siete años visitando a su amigo, el ogro de Cornualles, y al volver, lo primero que vio fue a los niños jugando entre sus flores. —\"¿Qué hacéis aquí?\", gritó con una voz tan retumbante que los niños escaparon despavoridos. \"Mi jardín es mi jardín\", sentenció. \"No permitiré que nadie más que yo juegue en él\". Sin perder tiempo, construyó un muro altísimo alrededor de la propiedad y colgó un cartel que decía: PROHIBIDA LA ENTRADA. LOS TRANSGRESORES SERÁN CASTIGADOS. Era, en efecto, un Gigante muy egoísta."
+            },
+            {
+                text: "Llegó la primavera y toda la comarca se llenó de brotes y pajarillos. Sin embargo, en el jardín del Gigante Egoísta seguía siendo invierno. Los pájaros no querían cantar allí porque no había niños, y los árboles se olvidaron de florecer. Una vez, una hermosa flor asomó su cabeza sobre el césped, pero al ver el cartel de prohibición, sintió tanta lástima por los niños que volvió a meterse bajo tierra y se quedó dormida. Los únicos que se sentían a gusto allí eran la Nieve y la Escarcha. \"La primavera se ha olvidado de este jardín\", exclamaban, \"así que viviremos aquí todo el año\"."
+            },
+            {
+                text: "La Nieve cubrió el césped con su gran manto blanco y la Escarcha pintó de plata todos los árboles. Luego invitaron al Viento del Norte, quien llegó envuelto en pieles, rugiendo por el jardín y derribando las chimeneas. \"Este es un lugar delicioso\", dijo el Viento, \"deberíamos invitar también al Granizo\". Y así, el Granizo llegó, golpeando el tejado del castillo durante tres horas al día hasta romper casi todas las pizarras, corriendo luego alrededor del jardín tan rápido como podía."
+            },
+            {
+                text: "—\"No entiendo por qué la primavera tarda tanto en llegar\", decía el Gigante Egoísta mientras se asomaba a la ventana y contemplaba su jardín blanco y frío. \"Espero que el tiempo cambie pronto\". Pero la primavera no llegó nunca, ni tampoco el verano. El otoño dio frutos dorados a todos los jardines, pero al jardín del Gigante no le dio ninguno. \"Es demasiado egoísta\", decía el otoño. Así, el Invierno se instaló allí permanentemente, y el Viento del Norte, el Granizo, la Escarcha y la Nieve bailaban entre los árboles."
+            },
+            {
+                text: "Una mañana, el Gigante estaba acostado en su cama cuando escuchó una música deliciosa. Era tan dulce que pensó que debían ser los músicos del Rey que pasaban por allí. En realidad, era solo un jilguero que cantaba ante su ventana, pero hacía tanto tiempo que el Gigante no oía el canto de un pájaro que le pareció la melodía más bella del mundo. Entonces, el Granizo dejó de bailar sobre su cabeza, el Viento del Norte cesó sus rugidos y un perfume delicioso llegó hasta él a través de la ventana abierta. —\"¡Creo que la primavera ha llegado por fin!\", exclamó el Gigante, y saltó de la cama para mirar hacia afuera."
+            },
+            {
+                text: "¿Y qué fue lo que vio? Vio algo maravilloso. Por una brecha en el muro, los niños se habían colado y estaban sentados en las ramas de los árboles. En cada árbol que alcanzaba a ver había un niño, y los árboles estaban tan felices de tenerlos de vuelta que se habían cubierto de flores y balanceaban sus ramas suavemente sobre las cabezas de los pequeños. Los pájaros revoloteaban gorjeando de alegría y las flores se asomaban entre el césped riendo."
+            },
+            {
+                text: "Era un cuadro encantador, salvo en un rincón. En el rincón más apartado del jardín todavía era invierno. Allí se encontraba un niño muy pequeño, tan pequeño que no alcanzaba las ramas del árbol y daba vueltas a su alrededor llorando amargamente. El pobre árbol estaba todavía cubierto de escarcha y nieve, y el Viento del Norte soplaba y rugía sobre él. —\"¡Sube, pequeño!\", decía el árbol, y bajaba sus ramas todo lo que podía, pero el niño era demasiado menudo."
+            },
+            {
+                text: "El corazón del Gigante se derritió al mirar hacia afuera. \"¡Qué egoísta he sido!\", pensó. \"Ahora sé por qué la primavera no quería venir aquí. Subiré a ese pobre niño al árbol y luego derribaré el muro, y mi jardín será para siempre el campo de juegos de los niños\". Estaba verdaderamente arrepentido."
+            },
+            {
+                text: "Bajó las escaleras, abrió la puerta con sigilo y salió al jardín. Pero cuando los niños lo vieron, se asustaron tanto que todos huyeron y el invierno volvió al jardín. Solo el niño pequeño no escapó, porque sus ojos estaban tan llenos de lágrimas que no vio venir al Gigante. El Gigante se le acercó por detrás, lo tomó con delicadeza en su mano y lo subió al árbol. Al punto, el árbol floreció, los pájaros vinieron a cantar en él y el niño extendió sus brazos, rodeó el cuello del Gigante y lo besó."
+            },
+            {
+                text: "Los otros niños, al ver que el Gigante ya no era malo, regresaron corriendo, y con ellos volvió la primavera. —\"Desde ahora, este es vuestro jardín, pequeñuelos\", dijo el Gigante, y tomando un hacha enorme, derribó el muro."
+            },
+            {
+                text: "A las doce, cuando la gente iba al mercado, encontraron al Gigante jugando con los niños en el jardín más hermoso que se hubiera visto jamás. Jugaron durante todo el día, y al atardecer los niños fueron a despedirse del Gigante. —\"¿Pero dónde está vuestro pequeño compañero?\", preguntó él. \"El niño que subí al árbol\". El Gigante lo quería más que a los otros porque lo había besado. —\"No lo sabemos\", respondieron los niños, \"se ha ido\"."
+            },
+            {
+                text: "Pasaron los años y el Gigante se volvió viejo y débil. Ya no podía jugar, así que se sentaba en un gran sillón a ver jugar a los niños y admiraba su jardín. \"Tengo muchas flores bellas\", decía, \"pero los niños son las flores más bellas de todas\". Una mañana de invierno, mientras se vestía, miró por la ventana. Ya no odiaba el invierno, pues sabía que no era sino la primavera dormida. De pronto, se frotó los ojos con asombro y miró de nuevo. En el rincón más apartado del jardín había un árbol cubierto de flores blancas. Sus ramas eran de oro y de ellas colgaban frutos de plata, y debajo del árbol estaba el niño a quien él tanto había querido."
+            },
+            {
+                text: "El Gigante corrió hacia abajo con gran alegría. Pero al acercarse al niño, su rostro se puso rojo de cólera. —\"¿Quién se ha atrevido a herirte?\", gritó. Pues en las palmas de las manos del niño había señales de dos clavos, y las mismas señales estaban en sus pequeños pies. \"¿Quién se ha atrevido a herirte? ¡Dímelo para que tome mi espada y lo mate!\". —\"No\", respondió el niño con una voz de una dulzura celestial. \"Estas son las heridas del Amor\". El Gigante sintió un extraño temor y cayó de rodillas ante el pequeño. —\"¿Quién eres?\", le preguntó en un susurro. Y el niño sonrió al Gigante y le dijo: —\"Una vez me dejaste jugar en tu jardín; hoy vendrás conmigo a mi jardín, que es el Paraíso\". Cuando los niños llegaron esa tarde para jugar, encontraron al Gigante muerto bajo el árbol, todo cubierto de flores blancas."
+            }
+        ]
+    },
+    {
+        id: 'aladino',
+        title: 'Aladino y la Lámpara Maravillosa',
+        author: 'Las Mil y Una Noches',
+        description: 'La aventura mágica de un joven que, con la ayuda de un genio, descubre que su verdadero valor no reside en la riqueza, sino en su corazón.',
+        level: 'Medio',
+        age: '6+',
+        coverImage: '/images/storyteller/aladino-cover.png',
+        chipImage: '/images/storyteller/character-aladino.png',
+        genre: 'Cuento popular',
+        themeColor: 'from-amber-600 to-purple-800',
+        content: [
+            {
+                text: "En una de las ciudades más prósperas de la China ancestral, vivía un muchacho llamado Aladino. Era un joven desobediente y perezoso que prefería jugar en las plazas antes que aprender el oficio de su padre, un humilde sastre que había muerto de pena al ver la indolencia de su hijo. Aladino vivía solo con su madre, una mujer trabajadora que hilaba algodón día y noche para llevar un poco de pan a la mesa."
+            },
+            {
+                text: "Un día, mientras Aladino jugaba con otros muchachos, se le acercó un extraño de aspecto imponente. El hombre, que en realidad era un poderoso mago africano, fingió ser el hermano de su difunto padre. Con promesas de convertir a Aladino en un rico mercader, se ganó la confianza de la familia. Sin embargo, el mago no buscaba el bienestar del joven; necesitaba a alguien de corazón puro y mente simple para recuperar un objeto que ningún poder mágico podía alcanzar por sí solo."
+            },
+            {
+                text: "El mago condujo a Aladino a una montaña desértica y apartada. Tras encender una hoguera y pronunciar palabras arcanas en una lengua olvidada, la tierra se abrió, revelando una losa de mármol con una argolla de hierro. —\"Bajo esta losa hay un tesoro que solo tú puedes tocar\", dijo el mago. \"Entra en la cueva, atraviesa los salones llenos de oro y joyas, pero no toques nada. Al fondo, encontrarás una lámpara de aceite vieja y polvorienta. Tráemela de inmediato\". Antes de que el joven descendiera, el mago le entregó un anillo de oro con una piedra roja, asegurándole que lo protegería de todo mal."
+            },
+            {
+                text: "Aladino bajó a las profundidades. Vio árboles cuyas frutas eran diamantes, esmeraldas y rubíes, pero fiel a su promesa, solo buscó la lámpara. Una vez la tuvo en su poder, regresó a la entrada, pero el mago, en un ataque de impaciencia y maldad, exigió que le entregara la lámpara antes de ayudarlo a salir. Aladino, sospechando de su \"tío\", se negó. Furioso, el mago pronunció un conjuro, la losa se cerró y el joven quedó sepultado vivo en la oscuridad total."
+            },
+            {
+                text: "Pasaron dos días. Aladino, llorando de desesperación, juntó sus manos para rezar y, por accidente, frotó el anillo que el mago le había dado. De pronto, un genio colosal y de aspecto aterrador apareció ante él. —\"Soy el Genio del Anillo. ¿Qué deseas de mí?\". —\"¡Sácame de aquí!\", exclamó el muchacho. En un parpadeo, Aladino se encontró en la puerta de su casa. Le contó todo a su madre y, como tenían hambre, decidieron vender la vieja lámpara. La madre tomó un paño para limpiarla y, al frotarla, surgió un segundo genio, mucho más poderoso y grande que el anterior. —\"Soy el Genio de la Lámpara. Tus deseos son órdenes para mí\"."
+            },
+            {
+                text: "Desde aquel día, la vida de Aladino cambió. El genio les proveía de los manjares más exquisitos y de riquezas incalculables. Con el tiempo, Aladino se convirtió en un hombre generoso y sabio. Un día, vio pasar a la hija del Sultán, la princesa Badrulbudur, y quedó prendado de su belleza. Con la ayuda del genio, Aladino envió a su madre al palacio con cofres llenos de gemas tan grandes como huevos de paloma, superando cualquier dote que el Sultán hubiera visto jamás."
+            },
+            {
+                text: "Impresionado, el Sultán accedió al matrimonio, pero pidió una prueba final: un palacio magnífico construido en una sola noche. El Genio de la Lámpara cumplió la tarea, erigiendo una estructura de mármol y oro que dejaba en penumbra al propio palacio real. Aladino y la princesa se casaron y vivieron en una felicidad que parecía eterna."
+            },
+            {
+                text: "Sin embargo, el mago africano, a través de sus artes oscuras, supo que Aladino no solo estaba vivo, sino que poseía la lámpara. Viajó a la ciudad disfrazado de mercader y recorrió las calles gritando: \"¡Cambio lámparas viejas por lámparas nuevas!\". Una de las criadas de la princesa, ignorando el valor del objeto, entregó la lámpara mágica al mago a cambio de una reluciente."
+            },
+            {
+                text: "El mago frotó la lámpara y ordenó al genio trasladar el palacio de Aladino, con la princesa dentro, a lo más profundo de África. Cuando Aladino regresó y vio el desierto donde antes estaba su hogar, estuvo a punto de rendirse. Pero recordó el anillo que aún llevaba puesto. Frotó la piedra y el genio del anillo apareció. Aunque no tenía el poder de deshacer el hechizo del genio de la lámpara, pudo llevar a Aladino hasta donde se encontraba su esposa."
+            },
+            {
+                text: "Con astucia, la princesa engañó al mago y puso un narcótico en su vino. Mientras el malvado dormía, Aladino recuperó la lámpara, invocó a su genio y ordenó que el palacio regresara a su lugar original y que el mago fuera desterrado a una isla desierta donde nunca más pudiera dañar a nadie."
+            },
+            {
+                text: "Aladino y Badrulbudur regresaron triunfantes. Al morir el Sultán, Aladino ascendió al trono, gobernando con justicia y bondad. La lámpara fue guardada en un lugar secreto, no por avaricia, sino para recordar que la verdadera magia no reside en los objetos, sino en la valentía y el ingenio de quien sabe usarlos para el bien común."
+            }
+        ]
+    },
+    {
+        id: 'bella-durmiente',
+        title: 'La Bella Durmiente',
+        author: 'Hermanos Grimm / Perrault',
+        description: 'La leyenda de una princesa condenada a dormir cien años y del amor verdadero que desafía al tiempo y a las espinas.',
+        level: 'Medio',
+        age: '5+',
+        coverImage: '/images/storyteller/bella-durmiente-cover.png',
+        chipImage: '/images/storyteller/character-bella-durmiente.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-pink-700 to-rose-900',
+        content: [
+            {
+                text: "En un reino donde las montañas tocaban las nubes y los ríos cantaban melodías de cristal, vivían un Rey y una Reina que lo tenían todo, excepto lo que más deseaban: un hijo. Durante años, sus plegarias fueron en vano, hasta que un día, mientras la Reina descansaba a la orilla de un estanque, una rana saltó del agua y le profetizó que antes de que pasara un año, sus deseos se cumplirían. La profecía se hizo realidad y nació una niña tan hermosa que el Rey, loco de alegría, decidió celebrar el banquete más grandioso de la historia."
+            },
+            {
+                text: "En aquel reino vivían trece hadas sabias. Sin embargo, el Rey solo poseía doce platos de oro para el banquete, por lo que decidió invitar solo a doce de ellas, dejando a la decimotercera fuera del festejo. Al terminar la cena, las hadas comenzaron a otorgar sus dones mágicos a la pequeña: una le dio la virtud, otra la belleza, la tercera la riqueza, y así hasta llegar a la undécima."
+            },
+            {
+                text: "De pronto, la puerta del gran salón se abrió con un estruendo y apareció la decimotercera hada. Su rostro estaba encendido por la humillación y la ira. Sin saludar a nadie, gritó con voz de trueno: —\"¡A los quince años, la hija del Rey se pinchará con el huso de una rueca y caerá muerta!\". Dicho esto, desapareció en una ráfaga de humo negro. El horror se apoderó de los invitados, pero entonces dio un paso al frente la duodécima hada, que aún no había dado su don. Aunque no podía deshacer la maldición, podía mitigarla: —\"No será una muerte real\", sentenció, \"sino un sueño profundo que durará cien años\"."
+            },
+            {
+                text: "El Rey, desesperado por proteger a su única hija, ordenó que todas las ruecas del reino fueran quemadas en una hoguera gigante. Los años pasaron y la princesa creció dotada de todos los dones que las hadas le habían dado: era tan graciosa, inteligente y bondadosa que nadie podía evitar amarla."
+            },
+            {
+                text: "El día de su decimoquinto cumpleaños, mientras sus padres estaban fuera, la joven decidió explorar cada rincón del palacio. Subió por una antigua escalera de caracol que conducía a una torre olvidada. Al abrir la puerta, encontró a una anciana hilando lino con una rueca. La princesa, que nunca había visto una, se acercó fascinada. —\"¿Qué es esa cosa que salta tan alegremente?\", preguntó curiosa. Apenas extendió la mano para tocar el huso, la maldición se cumplió. La punta afilada pinchó su dedo y, en ese mismo instante, la joven cayó sobre una cama que allí había, sumida en un sueño profundo."
+            },
+            {
+                text: "Pero el sueño no fue solo para ella. Una magia silenciosa se extendió por todo el castillo: el Rey y la Reina, que acababan de llegar, se quedaron dormidos en el salón; los caballos en el establo, los perros en el patio, las palomas en el tejado y hasta el fuego de la cocina se detuvo. El asado dejó de chisporrotear y el cocinero, que estaba a punto de reprender al ayudante, se quedó inmóvil con la mano levantada. Alrededor del palacio comenzó a crecer un seto de espinas que cada año se hacía más alto y espeso, hasta que el castillo quedó oculto a la vista del mundo."
+            },
+            {
+                text: "Con el tiempo, la leyenda de la \"Bella Durmiente del Bosque\" se extendió por otros reinos. Muchos príncipes intentaron atravesar el muro de espinas, pero las ramas se cerraban como garras y los jóvenes quedaban atrapados, pereciendo en el intento."
+            },
+            {
+                text: "Pasados los cien años, un nuevo príncipe llegó a la región. Un anciano le contó la historia de la torre y la hermosa princesa dormida. A pesar de las advertencias, el príncipe sintió un impulso irresistible. Ese día se cumplía el siglo exacto del hechizo; cuando el joven se acercó al seto, las espinas se convirtieron en flores hermosas que se abrían para dejarlo pasar."
+            },
+            {
+                text: "El príncipe recorrió el castillo sumido en un silencio sagrado. Vio a los guardias durmiendo con sus lanzas y a los cortesanos inmóviles. Finalmente, subió a la torre y encontró a la princesa. Su belleza era tan radiante que no pudo evitar arrodillarse y besarla suavemente."
+            },
+            {
+                text: "En ese momento, el hechizo se rompió. La princesa abrió los ojos y lo miró con dulzura. En todo el castillo, la vida despertó como si solo hubiera pasado un segundo: los caballos relincharon, los perros ladraron, el fuego volvió a arder y el cocinero terminó de darle el tirón de orejas al ayudante. El Rey y la Reina celebraron la boda de la princesa y el príncipe con una fiesta que duró días. El muro de espinas desapareció para siempre, y se dice que vivieron felices y en paz, recordando siempre que ni el tiempo más largo ni la magia más oscura pueden derrotar a un destino escrito con amor."
+            }
+        ]
     }
 ];
