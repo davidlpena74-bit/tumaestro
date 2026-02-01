@@ -1,50 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
-import { BOOKS } from '@/components/resources/storyteller/books-data';
 import BookCarousel from '@/components/BookCarousel';
 import GamesCarousel from '@/components/GamesCarousel';
 import CarouselAutoScroll from '@/components/CarouselAutoScroll';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import {
-    Student,
-    Books,
-    GameController,
-    Quotes,
-    Calculator,
-    Translate,
-    GlobeHemisphereWest,
-    MapTrifold,
-    Brain,
-    Trophy,
     ArrowRight,
     CaretDown
 } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
-import {
-    PremiumTeacherIcon,
-    PremiumResourcesIcon,
-    PremiumGamesIcon,
-    PremiumMathIcon,
-    PremiumQuizIcon,
-    PremiumMapIcon
-} from './icons/PremiumIcons';
 
 export default function HomeClient() {
     const router = useRouter();
     const { t } = useLanguage();
-    const [courses, setCourses] = useState<any[]>([]);
-
-    useEffect(() => {
-        async function fetch() {
-            const { data } = await supabase.from('courses').select(`*, teacher:profiles(*), subject:subjects(*)`).eq('is_active', true);
-            if (data) setCourses(data);
-        }
-        fetch();
-    }, []);
 
     const scrollTo = (id: string) => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
