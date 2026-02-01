@@ -846,7 +846,7 @@ export const BOOKS: Book[] = [
         level: 'Medio',
         age: '5+',
         coverImage: '/images/storyteller/blancanieves-cover.png',
-        chipImage: '/images/storyteller/character-blancanieves.png',
+        chipImage: '/images/storyteller/character-blancanieves.png?v=4',
         genre: 'Cuento de hadas',
         themeColor: 'from-red-600 to-indigo-900',
         content: [
