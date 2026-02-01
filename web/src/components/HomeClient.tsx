@@ -233,7 +233,7 @@ export default function HomeClient() {
                                     href="/juegos"
                                     className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
                                 >
-                                    {t.home.exploreGames || t.home.playNow}
+                                    {t.home.exploreGames}
                                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" weight="bold" />
                                 </a>
                             </div>

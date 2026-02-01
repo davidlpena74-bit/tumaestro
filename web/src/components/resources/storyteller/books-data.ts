@@ -9,6 +9,7 @@ export interface Book {
     author: string;
     description: string;
     content: BookPage[];
+    contentEn?: BookPage[];
     level: 'Fácil' | 'Medio' | 'Difícil';
     age: string;
     coverImage: string;
@@ -109,6 +110,38 @@ export const BOOKS: Book[] = [
             },
             {
                 text: "La niña recogió grandes piedras del río, con las que rellenaron el cuerpo del lobo. Cuando el animal despertó e intentó huir, su peso era tal que cayó al suelo sin vida. La cabaña recuperó su paz, y mientras la abuela comía el pastel, Caperucita prometió que jamás volvería a abandonar el sendero seguro, pues había comprendido que la belleza de las flores no compensaba el peligro que acecha en las sombras de lo desconocido."
+            }
+        ],
+        contentEn: [
+            {
+                text: "In a village surrounded by a forest so thick that the sunlight barely touched the ground, lived a girl whose kindness was known to all the inhabitants of the region. Her most prized possession was a velvet cloak of a red as intense as poppies in summer, a gift from her grandmother that the little girl wore with pride in every season. For this reason, the name by which she was known in the valleys and paths was none other than Little Red Riding Hood."
+            },
+            {
+                text: "One morning, while the dew still glistened on the spider webs in the bushes, her mother finished preparing a wicker basket. The aroma of freshly baked bread and fresh honey filled the small kitchen. With a worried expression, the mother called the girl and, while adjusting the bow of her cloak, gave her precise instructions. Her grandmother, who lived in a small cabin on the other side of the forest, was bedridden with a high fever, and those provisions were vital for her recovery. 'Do not stray from the main path,' she warned firmly, 'for the forest has eyes and the shadows can be deceptive.'"
+            },
+            {
+                text: "Little Red Riding Hood, with the basket hanging from her arm and a heart full of good intentions, entered the thicket. The path was flanked by centuries-old pines whose tops seemed to whisper secrets to the wind. As she advanced, the silence of the forest became denser, interrupted only by the cracking of branches under her feet. It was then that, from among the trunks of the oaks, an imposing figure emerged. It was a wolf of extraordinary dimensions, with grayish fur speckled with black and eyes that flashed with a mixture of hunger and cunning."
+            },
+            {
+                text: "The animal did not attack her immediately; instead, he approached with a hypnotic, almost chivalrous elegance. 'Where is such a charming young lady going so early?', asked the wolf, softening his hoarse voice so as not to frighten her. Little Red Riding Hood, whose innocence did not allow her to see the evil behind the fangs, omitted her mother's advice and explained that she was going to her grandmother's house, under the three large oaks. The wolf suggested: 'Don't you hear the birds singing? A bouquet of those flowers would heal your grandmother's soul even before the bread you carry.'"
+            },
+            {
+                text: "Seduced by the idea, the girl strayed from the path. Meanwhile, the wolf ran towards the old woman's cabin. Upon arrival, he knocked on the door with three sharp blows. 'It's me, your granddaughter Little Red Riding Hood,' he lied, making his voice higher. The old woman told him how to open it and, in an instant, the wolf burst in and devoured the woman. Immediately afterwards, he put on her nightgown, put on her cap and got into bed, covering himself up to his nose to hide his snout."
+            },
+            {
+                text: "When Little Red Riding Hood finally arrived at the cabin, loaded with flowers, she found the door wide open. A strange foreboding oppressed her chest, but she entered calling her grandmother. The light filtering through the curtains barely illuminated the face of the figure lying in the bed. As she approached, she noticed that something did not fit; her grandmother's features seemed to have mutated under the fever."
+            },
+            {
+                text: "—'Oh, grandma, what big ears you have!', exclaimed the girl with a trembling whisper. —'All the better to hear you with, my child', replied the wolf. —'Grandma, what big eyes you have!'. —'All the better to see you with in the gloom'. —'And what big hands you have!'. —'All the better to hug you with stronger'. —'But grandma... what a terribly big mouth you have!'. —'All the better to eat you with!'"
+            },
+            {
+                text: "The wolf leaped from the bed with savage ferocity and, before Little Red Riding Hood could scream, he swallowed her whole. Satiated and exhausted by his own feast, the animal returned to bed and fell into a deep sleep, snoring so loudly that the walls of the cabin seemed to shake."
+            },
+            {
+                text: "Shortly after, a hunter patrolling the area heard those unnatural noises. He entered the house and found the wolf sleeping peacefully with a swollen belly. Understanding the situation, he took a pair of sewing scissors and, carefully, opened the beast's belly. From the darkness of the stomach emerged first the red cloak and then Little Red Riding Hood, followed by the grandmother, both unharmed but terrified by the suffocating experience."
+            },
+            {
+                text: "The girl collected large stones from the river, with which they filled the wolf's body. When the animal woke up and tried to flee, its weight was such that it fell to the ground lifeless. The cabin recovered its peace, and while the grandmother ate the cake, Little Red Riding Hood promised that she would never again leave the safe path, for she had understood that the beauty of the flowers did not compensate for the danger lurking in the shadows of the unknown."
             }
         ]
     },
