@@ -8,8 +8,8 @@ export default function BookCarousel() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isPaused, setIsPaused] = useState(false);
 
-    // Filter out hidden books (Cenicienta)
-    const carouselBooks = BOOKS.filter(b => b.id !== 'cenicienta');
+    // Use all books
+    const carouselBooks = BOOKS;
 
     // Triplicate for infinite loop
     const displayBooks = [...carouselBooks, ...carouselBooks, ...carouselBooks];
