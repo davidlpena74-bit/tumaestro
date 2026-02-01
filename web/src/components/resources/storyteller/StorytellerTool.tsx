@@ -17,7 +17,8 @@ import {
     TextT,
     Translate,
     ArrowsOut,
-    ArrowsIn
+    ArrowsIn,
+    CaretDown
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -502,7 +503,7 @@ export default function StorytellerTool() {
                             : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6"
                     )}>
                         {/* Speed Control (Minimizado) */}
-                        <div className={cn("flex items-center gap-2 w-32", isMaximized ? "bg-black/20 backdrop-blur-md rounded-xl p-2 border border-white/10" : "")}>
+                        <div className={cn("flex items-center gap-2 w-56", isMaximized ? "bg-black/20 backdrop-blur-md rounded-xl p-2 border border-white/10" : "")}>
                             <Clock size={16} className={isMaximized ? "text-white/70" : "text-slate-500"} />
                             <input
                                 type="range" min="0.5" max="1.5" step="0.1"
@@ -537,9 +538,43 @@ export default function StorytellerTool() {
                             </button>
                         </div>
 
-                        {/* Placeholder para equilibrio visual o futura funcion */}
-                        {/* Placeholder para equilibrio visual o futura funcion */}
-                        <div className="w-32 flex justify-end">
+                        {/* Right Group: Language & Font */}
+                        <div className="w-56 flex items-center justify-end gap-3">
+                            {/* Language Selector */}
+                            <div className="relative group">
+                                <button
+                                    className={cn(
+                                        "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all border",
+                                        isMaximized
+                                            ? "bg-black/20 hover:bg-black/30 border-white/10 text-white"
+                                            : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
+                                    )}
+                                >
+                                    <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px] shadow-sm" />
+                                    <span className="text-xs font-bold">ES</span>
+                                    <CaretDown size={12} weight="bold" className="opacity-50" />
+                                </button>
+
+                                {/* Dropdown */}
+                                <div className={cn(
+                                    "absolute bottom-full right-0 mb-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-bottom-right",
+                                    isMaximized ? "bg-slate-800 border-slate-700" : ""
+                                )}>
+                                    <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
+                                        Idioma Audio
+                                    </div>
+                                    <button className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors", isMaximized ? "hover:bg-slate-700 text-white" : "hover:bg-slate-50 text-slate-700")}>
+                                        <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
+                                        <span className="text-sm font-medium">Español</span>
+                                    </button>
+                                    <button className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors opacity-50 cursor-not-allowed", isMaximized ? "hover:bg-slate-700 text-white" : "hover:bg-slate-50 text-slate-700")} disabled>
+                                        <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
+                                        <span className="text-sm font-medium">English</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Font Size */}
                             <div className={cn("flex items-center rounded-xl p-1", isMaximized ? "bg-black/20 backdrop-blur-md border border-white/10" : "bg-white/40 border border-slate-200")}>
                                 <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className={cn("p-1.5 rounded-lg transition-colors", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={14} /></button>
                                 <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className={cn("p-1.5 rounded-lg transition-colors", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={20} /></button>

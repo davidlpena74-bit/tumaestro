@@ -738,5 +738,46 @@ export const BOOKS: Book[] = [
                 text: "Los ladrones nunca se atrevieron a volver, y los cuatro músicos de Bremen se sintieron tan a gusto en la casa que ya no quisieron marcharse de allí. Y se dice que todavía viven felices, ensayando sus canciones bajo la luz de la luna."
             }
         ]
+    },
+    {
+        id: 'blancanieves',
+        title: 'Blancanieves',
+        author: 'Hermanos Grimm',
+        description: 'La historia de una princesa de piel blanca como la nieve que, huyendo de una madrastra malvada, encuentra refugio y amistad en la casa de siete enanitos.',
+        level: 'Medio',
+        age: '5+',
+        coverImage: '/images/storyteller/blancanieves-cover.png',
+        chipImage: '/images/storyteller/character-blancanieves.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-red-600 to-indigo-900',
+        content: [
+            {
+                text: "En el corazón de un invierno profundo, mientras los copos de nieve caían como plumas del cielo, una reina cosía junto a una ventana de marco de ébano. Al pincharse el dedo con la aguja, tres gotas de sangre cayeron sobre la nieve blanca. El contraste era tan hermoso que la reina pensó: \"¡Ojalá tuviera una hija con la piel blanca como la nieve, los labios rojos como la sangre y el cabello negro como el ébano!\". Poco después, su deseo se cumplió y dio a luz a una niña a la que llamaron Blancanieves. Sin embargo, la alegría fue breve, pues la reina murió al poco tiempo."
+            },
+            {
+                text: "Un año más tarde, el rey contrajo nupcias con una mujer de una belleza asombrosa pero de un corazón altivo y cruel. Esta mujer poseía un objeto mágico: un espejo de cristal al que consultaba cada mañana. —\"Espejito, espejito mágico en la pared, ¿quién es la más hermosa de todo el reino?\", preguntaba. —\"Tú, mi reina, eres la más hermosa\", respondía siempre el espejo. Pero Blancanieves crecía en gracia y esplendor, y al cumplir los siete años, su belleza superaba a la de la propia reina. Cuando la madrastra volvió a interrogar a su espejo, este respondió con una voz que sonó como una sentencia: —\"Tú eres bella, majestad, es verdad; pero Blancanieves es mil veces más hermosa que tú\"."
+            },
+            {
+                text: "La envidia, como una raíz venenosa, comenzó a crecer en el pecho de la reina. Llamó a un cazador y le ordenó llevar a la niña al bosque para darle muerte. Como prueba de su tarea, debía traerle sus pulmones y su hígado. El cazador guio a la niña a la espesura, pero al ver su rostro inocente y sus lágrimas, no tuvo valor para alzar el puñal. \"Corre, pobre criatura\", dijo. Para engañar a la reina, mató a un joven jabalí y le entregó las vísceras al palacio, las cuales la malvada mujer devoró con placer macabro."
+            },
+            {
+                text: "Blancanieves vagó por el bosque, asustada por el crujir de las ramas y el aullido del viento. Al atardecer, divisó una pequeña casa. Al entrar, vio que todo era diminuto pero impecable: había una mesa con siete platitos, siete cucharitas y siete vasitos. Fatigada, comió un poco de cada plato, bebió un sorbo de cada vaso y se quedó dormida en la séptima camita."
+            },
+            {
+                text: "Al caer la noche, regresaron los dueños de la casa: siete enanitos que trabajaban en las minas de las montañas buscando oro. Al ver a la niña durmiendo, quedaron maravillados por su hermosura. Al despertar, Blancanieves les contó su triste historia. Los enanitos, conmovidos, le propusieron: \"Si cuidas nuestra casa, cocinas y lavas, puedes quedarte con nosotros y nada te faltará\"."
+            },
+            {
+                text: "Pero la paz duró poco. En el castillo, la reina volvió a consultar al espejo, quien le reveló que Blancanieves seguía viva en la casa de los siete enanitos. Furiosa, la reina se disfrazó de vieja mercadera y viajó a la montaña. Primero intentó matarla con una cinta para el talle que apretó tanto que la niña se desmayó; luego, con un peine envenenado. En ambas ocasiones, los enanitos regresaron a tiempo para salvarla."
+            },
+            {
+                text: "Finalmente, la reina preparó una manzana de apariencia exquisita: una mitad era blanca y la otra de un rojo vibrante. Solo la mitad roja contenía el veneno más potente del mundo. Disfrazada de campesina, convenció a Blancanieves de probarla. Al primer mordisco, la niña cayó al suelo sin respiración. Los enanitos, al regresar, intentaron todo para despertarla, pero esta vez no pudieron. Al ver que su cuerpo no se corrompía y conservaba su belleza, la colocaron en un ataúd de cristal con su nombre escrito en letras de oro y lo vigilaron día y noche."
+            },
+            {
+                text: "Pasó mucho tiempo, hasta que un príncipe que cabalgaba por el bosque vio el ataúd y se enamoró de la doncella que parecía dormir. Suplicó a los enanitos que le permitieran llevarse el ataúd a su castillo para honrarla por siempre. Mientras sus sirvientes cargaban con el pesado cristal, tropezaron con un matorral. El sacudón hizo que el trozo de manzana envenenada saltara de la garganta de Blancanieves. La joven abrió los ojos, se incorporó y preguntó: \"¿Dónde estoy?\"."
+            },
+            {
+                text: "El príncipe, loco de alegría, le declaró su amor y la llevó a su palacio para casarse con ella. A la boda fue invitada la reina malvada. Cuando el espejo le dijo que la nueva reina era más hermosa que ella, acudió llena de curiosidad y rabia. Pero al reconocer a Blancanieves, el terror se apoderó de ella. Como castigo por sus crímenes, el destino le impuso bailar con unos zapatos de hierro que habían sido calentados al fuego, hasta que cayó muerta. Blancanieves y su príncipe gobernaron con sabiduría, y los siete enanitos siempre fueron invitados de honor en su mesa de mármol."
+            }
+        ]
     }
 ];

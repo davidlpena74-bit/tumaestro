@@ -7,6 +7,7 @@ Este flujo de trabajo coordina la creación de un nuevo cuento asegurando que cu
 ## Estándar de Calidad Premium
 
 ### 1. Formato de Texto y Narrativa
+- **Idioma**: Español (Castellano/Neutro). El reproductor asume ES por defecto y el selector de idioma refleja esto.
 - **División**: El texto debe ser literario y detallado. Divide el cuento en **10-12 páginas**.
 - **Ritmo**: Cada página debe representar una escena o idea completa para mantener el ritmo de lectura.
 
@@ -37,4 +38,5 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
 ## Verificación Final
 - La imagen del personaje debe verse completa en el círculo del reproductor.
 - El cuento debe avanzar automáticamente a la siguiente página tras el audio.
+- El selector de idioma (Bandera ES) debe aparecer correctamente entre los botones de avance y tamaño de fuente.
 - El despliegue debe incluir un incremento de versión en `package.json` y el uso del flujo `/deploy`.
