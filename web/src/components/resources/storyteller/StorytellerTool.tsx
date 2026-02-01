@@ -578,16 +578,19 @@ export default function StorytellerTool() {
                         {/* Sombra Dinámica */}
                         <div className="absolute inset-x-8 -bottom-4 h-12 bg-slate-900/10 blur-2xl group-hover:bg-slate-900/20 transition-all rounded-full" />
 
-                        <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-slate-200/50 overflow-hidden relative shadow-lg hover:shadow-2xl transition-all h-full flex flex-col">
+                        <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-slate-200/50 overflow-hidden relative shadow-xl hover:shadow-2xl hover:shadow-slate-400/20 transition-all h-full flex flex-col">
                             {/* Portada */}
                             {/* Portada */}
                             <div
-                                className={`aspect-[4/3.8] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} group`}
+                                className={`aspect-[4/3.8] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} group shadow-inner`}
                             >
                                 <div
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                                     style={{ backgroundImage: `url(${book.chipImage || book.coverImage})` }}
-                                />
+                                >
+                                    {/* Inner Shadow Overlay */}
+                                    <div className="absolute inset-0 shadow-[inset_0_-20px_60px_-10px_rgba(0,0,0,0.3)]" />
+                                </div>
 
                                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-slate-900 flex items-center gap-1.5 shadow-xl border border-white/20 z-10">
                                     <BookmarkSimple weight="fill" className="text-orange-500" /> {book.genre.toUpperCase()}
@@ -595,12 +598,12 @@ export default function StorytellerTool() {
                             </div>
 
                             {/* Contenido */}
-                            <div className="p-5 flex flex-col flex-grow">
+                            <div className="p-5 flex flex-col flex-grow relative">
                                 <div className="flex gap-2 mb-2">
-                                    <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50">
+                                    <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50 shadow-sm">
                                         {book.level}
                                     </span>
-                                    <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-wider uppercase border border-slate-200/50">
+                                    <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-wider uppercase border border-slate-200/50 shadow-sm">
                                         {book.age}
                                     </span>
                                 </div>
