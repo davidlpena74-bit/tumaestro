@@ -3,7 +3,7 @@ import HomeClient from '@/components/HomeClient';
 
 export const metadata: Metadata = {
   title: 'TuMaestro.es | Clases Particulares, Apuntes y Juegos Educativos',
-  description: 'Encuentra profesores particulares verificados, descarga material didáctico gratuito y aprende con nuestros juegos interactivos de geografía, matemáticas y más.',
+  description: 'Plataforma educativa integral: Clases particulares, juegos interactivos y biblioteca de recursos con cuentacuentos y dictados para reforzar la lectura y escritura.',
   alternates: {
     canonical: 'https://tumaestro.es',
   },

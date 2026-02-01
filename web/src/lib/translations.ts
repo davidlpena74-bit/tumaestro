@@ -50,7 +50,7 @@ export const TRANSLATIONS = {
             featuredTeachersDesc: 'Clases particulares a tu medida',
             viewAll: 'Ver todos',
             resourceLibrary: 'Biblioteca de Recursos',
-            resourceLibraryDesc: 'Accede a una colección curada de apuntes, exámenes resueltos y guías de estudio. Todo organizado por materia y nivel educativo para maximizar tu rendimiento.',
+            resourceLibraryDesc: 'Herramientas de ayuda a la lectura como cuentacuentos o una herramienta para dictados específica para reforzar ciertas áreas de la capacidad de escritura y de comprensión del estudiante.',
             exploreLibrary: 'Explorar Biblioteca',
             featuredResources: {
                 language: 'Lengua',

@@ -3,7 +3,7 @@ import StorytellerTool from '@/components/resources/storyteller/StorytellerTool'
 
 export const metadata: Metadata = {
     title: 'El Cuenta Cuentos | Libros Infantiles Narrados Online',
-    description: 'Disfruta de una experiencia de lectura inmersiva con nuestra herramienta El Cuenta Cuentos. Libros clásicos narrados con voz mágica para niños de todas las edades.',
+    description: 'Descubre la magia de la lectura. Cuentos clásicos narrados y audiolibros inmersivos que despiertan la imaginación y mejoran la comprensión lectora.',
     keywords: ['cuentacuentos online', 'libros infantiles narrados', 'lectura inmersiva niños', 'cuentos gratis para niños', 'audiolibros infantiles']
 };
 

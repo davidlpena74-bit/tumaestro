@@ -4,7 +4,7 @@ import PageBackground from '@/components/PageBackground';
 
 export const metadata: Metadata = {
     title: 'Dictados Interactivos Online | Mejora tu Ortografía',
-    description: 'Practica ortografía y comprensión auditiva con nuestros dictados interactivos gratuitos. Varios niveles de dificultad para primaria y secundaria.',
+    description: 'Domina la ortografía escribiendo. Dictados interactivos con autocorrección para todos los niveles. La forma más eficaz de mejorar tu escritura.',
     keywords: ['dictados online', 'ejercicios ortografia', 'aprender a escribir', 'recursos lengua', 'practica dictado']
 };
 

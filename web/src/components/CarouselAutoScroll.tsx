@@ -44,16 +44,20 @@ export default function CarouselAutoScroll() {
         if (!container) return;
 
         let animationFrameId: number;
+        let scrollPos = container.scrollLeft;
 
         const scroll = () => {
             if (!isPaused && container) {
-                container.scrollLeft += 1; // Velocidad de scroll (0.5 o 1)
+                // Usamos una variable local para evitar problemas de redondeo con valores < 1
+                scrollPos += 0.46;
+                container.scrollLeft = scrollPos;
 
                 // Resetear cuando llega a la mitad (punto de loop)
-                // La lista es [A, B, C] repetida 3 veces. 
-                // Si llegamos al final del set 2, volvemos al inicio del set 2 para que sea imperceptible.
+                // Usamos >= con un pequeño margen para asegurar fluidez
                 if (container.scrollLeft >= (container.scrollWidth / 3) * 2) {
-                    container.scrollLeft = container.scrollWidth / 3;
+                    const oneThird = container.scrollWidth / 3;
+                    container.scrollLeft = oneThird;
+                    scrollPos = oneThird;
                 }
             }
             animationFrameId = requestAnimationFrame(scroll);

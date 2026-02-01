@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { BOOKS } from '@/components/resources/storyteller/books-data';
+import BookCarousel from '@/components/BookCarousel';
+import GamesCarousel from '@/components/GamesCarousel';
 import CarouselAutoScroll from '@/components/CarouselAutoScroll';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -193,58 +196,33 @@ export default function HomeClient() {
                     </section>
 
                     {/* SECCIÓN MATERIAL DIDÁCTICO (NUEVA) */}
-                    {/* RECURSOS SECTION (PREMIUM) */}
                     <section className="w-full max-w-6xl mx-auto mt-24 relative z-10 px-4 scroll-mt-32" id="material">
                         <div className="absolute inset-0 bg-gradient-to-l from-blue-500/10 to-orange-500/10 rounded-3xl blur-3xl -z-10" />
 
-                        <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 md:p-12 overflow-hidden relative">
-                            <div className="flex flex-col md:flex-row-reverse items-center justify-between gap-8">
-                                <div className="text-left md:text-right max-w-xl">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4 border border-blue-500/30 w-full md:w-auto md:justify-end">
+                        <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
+                            <div className="flex flex-col md:flex-row-reverse justify-between items-end mb-8 border-b border-white/20 pb-4 gap-4">
+                                <div className="text-right">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4 border border-blue-500/30 justify-end">
                                         <span className="relative flex h-2 w-2">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                                         </span>
                                         {t.home.updated}
                                     </div>
-                                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
-                                        {t.home.resourceLibrary}
-                                    </h2>
-                                    <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-                                        {t.home.resourceLibraryDesc}
-                                    </p>
-                                    <a
-                                        href="/recursos"
-                                        className="inline-flex items-center px-8 py-4 bg-gradient-to-l from-blue-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all group"
-                                    >
-                                        <ArrowRight className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform rotate-180" weight="bold" />
-                                        {t.home.exploreLibrary}
-                                    </a>
+                                    <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-2">{t.home.resourceLibrary}</h2>
+                                    <p className="text-gray-300 text-lg leading-relaxed">{t.home.resourceLibraryDesc}</p>
                                 </div>
-
-                                {/* Visual Decoration */}
-                                <div className="relative w-full max-w-xs md:max-w-sm aspect-square">
-                                    <div className="absolute inset-0 bg-gradient-to-bl from-blue-400 to-orange-500 rounded-full dark:opacity-20 opacity-30 blur-3xl animate-pulse" />
-                                    <div className="relative z-10 grid grid-cols-2 gap-4 -rotate-3 hover:rotate-0 transition-transform duration-500">
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                                            <Quotes className="w-12 h-12 text-orange-400 mb-2" weight="duotone" />
-                                            <span className="text-xs font-bold text-white">{t.home.featuredResources.language}</span>
-                                        </div>
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl mt-8">
-                                            <PremiumMathIcon className="w-12 h-12 mb-2" />
-                                            <span className="text-xs font-bold text-white">{t.home.featuredResources.math}</span>
-                                        </div>
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl -mt-8">
-                                            <Translate className="w-12 h-12 text-pink-400 mb-2" weight="duotone" />
-                                            <span className="text-xs font-bold text-white">{t.home.featuredResources.english}</span>
-                                        </div>
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                                            <GlobeHemisphereWest className="w-12 h-12 text-emerald-400 mb-2" weight="duotone" />
-                                            <span className="text-xs font-bold text-white">{t.home.featuredResources.geography}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a
+                                    href="/recursos"
+                                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
+                                >
+                                    <ArrowRight className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform rotate-180" weight="bold" />
+                                    {t.home.exploreLibrary}
+                                </a>
                             </div>
+
+                            {/* Carousel for all stories */}
+                            <BookCarousel />
                         </div>
                     </section>
 
@@ -253,9 +231,9 @@ export default function HomeClient() {
                     <section className="w-full max-w-6xl mx-auto mt-32 relative z-10 px-4">
                         <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-purple-500/10 rounded-3xl blur-3xl -z-10" />
 
-                        <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 md:p-12 overflow-hidden relative">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                                <div className="text-left max-w-xl">
+                        <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
+                            <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4 gap-4">
+                                <div className="text-left">
                                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold mb-4 border border-teal-500/30">
                                         <span className="relative flex h-2 w-2">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
@@ -263,44 +241,19 @@ export default function HomeClient() {
                                         </span>
                                         {t.home.trending}
                                     </div>
-                                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
-                                        {t.home.gamesHeroTitle}
-                                    </h2>
-                                    <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-                                        {t.home.gamesHeroDesc}
-                                    </p>
-                                    <a
-                                        href="/juegos"
-                                        className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 hover:-translate-y-1 transition-all group"
-                                    >
-                                        {t.home.exploreGames}
-                                        <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" weight="bold" />
-                                    </a>
+                                    <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-2">{t.home.gamesHeroTitle}</h2>
+                                    <p className="text-gray-300 text-lg leading-relaxed max-w-2xl">{t.home.gamesHeroDesc || t.home.learnPlayingDesc}</p>
                                 </div>
-
-                                {/* Visual Decoration */}
-                                <div className="relative w-full max-w-xs md:max-w-sm aspect-square">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-purple-500 rounded-full dark:opacity-20 opacity-30 blur-3xl animate-pulse" />
-                                    <div className="relative z-10 grid grid-cols-2 gap-4 rotate-3 hover:rotate-0 transition-transform duration-500">
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                                            <PremiumMapIcon className="w-12 h-12 mb-2" />
-                                            <span className="text-xs font-bold text-white">{t.home.gameVisuals.map}</span>
-                                        </div>
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl mt-8">
-                                            <PremiumQuizIcon className="w-12 h-12 mb-2" />
-                                            <span className="text-xs font-bold text-white">{t.home.gameVisuals.quiz}</span>
-                                        </div>
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl -mt-8">
-                                            <Trophy className="w-12 h-12 text-yellow-400 mb-2" weight="duotone" />
-                                            <span className="text-xs font-bold text-white">{t.home.gameVisuals.ranking}</span>
-                                        </div>
-                                        <div className="bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center aspect-square shadow-xl">
-                                            <GameController className="w-12 h-12 text-white mb-2" weight="duotone" />
-                                            <span className="text-xs font-bold text-white">{t.home.gameVisuals.play}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a
+                                    href="/juegos"
+                                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-500 to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
+                                >
+                                    {t.home.exploreGames || t.home.playNow}
+                                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" weight="bold" />
+                                </a>
                             </div>
+
+                            <GamesCarousel />
                         </div>
                     </section>
 
