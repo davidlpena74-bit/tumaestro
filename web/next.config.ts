@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  env: {
+    NEXT_PUBLIC_APP_VERSION: require('./package.json').version,
+  },
 };
 
 export default nextConfig;

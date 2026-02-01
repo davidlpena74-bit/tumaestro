@@ -267,6 +267,9 @@ export default function HomeClient() {
                             <a href="/terminos" className="text-white/40 hover:text-white transition">{t.home.footer.terms}</a>
                             <a href="/privacidad" className="text-white/40 hover:text-white transition">{t.home.footer.privacy}</a>
                         </div>
+                        <div className="mt-4 text-white/20 text-xs text-center font-mono">
+                            v{process.env.NEXT_PUBLIC_APP_VERSION}
+                        </div>
                     </footer>
 
                 </div>
