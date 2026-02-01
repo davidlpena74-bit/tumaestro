@@ -205,19 +205,22 @@ export default function HomeClient() {
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
                             <div className="flex flex-col md:flex-row-reverse justify-between items-end mb-8 border-b border-white/20 pb-4 gap-4">
                                 <div className="text-right">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4 border border-blue-500/30 justify-end">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold mb-4 border border-orange-500/30 justify-end">
                                         <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
                                         </span>
                                         {t.home.updated}
                                     </div>
-                                    <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-2">{t.home.resourceLibrary}</h2>
+                                    <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-2 flex items-center justify-end gap-4">
+                                        <img src="/images/icons/icon-resources-3d.png" alt="Recursos" className="w-28 h-28 md:w-32 md:h-32 object-contain drop-shadow-lg" />
+                                        {t.home.resourceLibrary}
+                                    </h2>
                                     <p className="text-gray-300 text-lg leading-relaxed">{t.home.resourceLibraryDesc}</p>
                                 </div>
                                 <a
                                     href="/recursos"
-                                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
+                                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
                                 >
                                     <ArrowRight className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform rotate-180" weight="bold" />
                                     {t.home.exploreLibrary}
@@ -237,19 +240,22 @@ export default function HomeClient() {
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
                             <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4 gap-4">
                                 <div className="text-left">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold mb-4 border border-teal-500/30">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold mb-4 border border-purple-500/30">
                                         <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                                         </span>
                                         {t.home.trending}
                                     </div>
-                                    <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-2">{t.home.gamesHeroTitle}</h2>
+                                    <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-2 flex items-center gap-4">
+                                        {t.home.gamesHeroTitle}
+                                        <img src="/images/icons/icon-games-3d.png" alt="Juegos" className="w-28 h-28 md:w-32 md:h-32 object-contain drop-shadow-lg" />
+                                    </h2>
                                     <p className="text-gray-300 text-lg leading-relaxed max-w-2xl">{t.home.gamesHeroDesc || t.home.learnPlayingDesc}</p>
                                 </div>
                                 <a
                                     href="/juegos"
-                                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-500 to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
+                                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
                                 >
                                     {t.home.exploreGames || t.home.playNow}
                                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" weight="bold" />
