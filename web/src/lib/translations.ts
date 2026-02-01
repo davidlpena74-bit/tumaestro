@@ -247,8 +247,44 @@ export const TRANSLATIONS = {
                 endometrium: 'Endometrio',
                 vulva: 'Vulva'
             }
+        },
+        storyteller: {
+            title: 'El Cuenta Cuentos',
+            subtitle: 'Sumérgete en grandes historias narradas con voz mágica. Lectura inmersiva para pequeños y grandes soñadores.',
+            backToLibrary: 'Volver a la Biblioteca',
+            backToResources: 'Volver a Recursos',
+            maximize: 'Maximizar lectura',
+            minimize: 'Salir de pantalla completa',
+            pageOf: 'Página {current} de {total}',
+            moreTitles: 'Más Títulos',
+            moreTitlesDesc: 'Estamos preparando clásicos como Harry Potter y El Hobbit.',
+            by: 'Por',
+            read: 'Leer'
+        },
+        dictation: {
+            title: 'Dictados Interactivos',
+            subtitle: 'Mejora tu ortografía y comprensión auditiva. Escucha, escribe y corrige al instante.',
+            backToResources: 'Volver a Recursos',
+            back: 'Volver',
+            restart: 'Reiniciar reproducción',
+            slowMode: 'Modo Lento',
+            slow: 'Lento',
+            pause: 'PAUSAR',
+            resume: 'REANUDAR',
+            start: 'EMPEZAR',
+            listenCarefully: 'Escucha atentamente el cuento...',
+            pressStart: 'Pulsa empezar para escuchar el dictado...',
+            placeholder: 'Escribe aquí lo que escuches...',
+            check: 'COMPROBAR',
+            accuracy: 'Precisión',
+            originalText: 'Texto Original',
+            yourAnswer: 'Tu Respuesta',
+            repeat: 'Repetir Dictado',
+            level: 'Nivel',
+            category: 'Categoría'
         }
-    },
+    }
+},
     en: {
         common: {
             start: 'START',
@@ -495,6 +531,41 @@ export const TRANSLATIONS = {
                 endometrium: 'Endometrium',
                 vulva: 'Vulva'
             }
+        },
+        storyteller: {
+            title: 'The Storyteller',
+            subtitle: 'Immerse yourself in great stories narrated with a magical voice. Immersive reading for little and big dreamers.',
+            backToLibrary: 'Back to Library',
+            backToResources: 'Back to Resources',
+            maximize: 'Maximize Reading',
+            minimize: 'Exit Full Screen',
+            pageOf: 'Page {current} of {total}',
+            moreTitles: 'More Titles',
+            moreTitlesDesc: 'We are preparing classics like Harry Potter and The Hobbit.',
+            by: 'By',
+            read: 'Read'
+        },
+        dictation: {
+            title: 'Interactive Dictations',
+            subtitle: 'Improve your spelling and listening comprehension. Listen, write, and correct instantly.',
+            backToResources: 'Back to Resources',
+            back: 'Back',
+            restart: 'Restart Playback',
+            slowMode: 'Slow Mode',
+            slow: 'Slow',
+            pause: 'PAUSE',
+            resume: 'RESUME',
+            start: 'START',
+            listenCarefully: 'Listen carefully to the story...',
+            pressStart: 'Press start to listen to the dictation...',
+            placeholder: 'Write here what you hear...',
+            check: 'CHECK',
+            accuracy: 'Accuracy',
+            originalText: 'Original Text',
+            yourAnswer: 'Your Answer',
+            repeat: 'Repeat Dictation',
+            level: 'Level',
+            category: 'Category'
         }
     }
 };

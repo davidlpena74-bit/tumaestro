@@ -9,12 +9,14 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import confetti from 'canvas-confetti';
 import { getBestVoice } from '@/lib/speech-utils';
+import { useLanguage } from '@/context/LanguageContext';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
 export default function DictationTool() {
+    const { t } = useLanguage();
     const [selectedDictation, setSelectedDictation] = useState<Dictation | null>(null);
     const [userText, setUserText] = useState('');
 
@@ -428,14 +430,14 @@ export default function DictationTool() {
                         href="/recursos"
                         className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200"
                     >
-                        <ArrowLeft weight="bold" /> Volver a Recursos
+                        <ArrowLeft weight="bold" /> {t.dictation.backToResources}
                     </Link>
                 </div>
 
                 <header className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Dictados Interactivos</h2>
+                    <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">{t.dictation.title}</h2>
                     <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
-                        Mejora tu ortografía y comprensión auditiva. Escucha, escribe y corrige al instante.
+                        {t.dictation.subtitle}
                     </p>
                 </header>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -486,7 +488,7 @@ export default function DictationTool() {
                     onClick={backToMenu}
                     className="flex items-center gap-2 text-white/60 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm"
                 >
-                    <ArrowLeft className="w-4 h-4" /> Volver
+                    <ArrowLeft className="w-4 h-4" /> {t.dictation.back}
                 </button>
                 <div className="text-right">
                     <h2 className="text-white font-bold text-xl">{selectedDictation.title}</h2>
@@ -500,7 +502,7 @@ export default function DictationTool() {
                         <button
                             onClick={reloadSpeech}
                             className="p-3 rounded-full text-white/40 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center"
-                            title="Reiniciar reproducción"
+                            title={t.dictation.restart}
                         >
                             <ArrowCounterClockwise className="w-5 h-5" weight="bold" />
                         </button>
@@ -511,10 +513,10 @@ export default function DictationTool() {
                                 "p-3 rounded-full transition-all flex items-center gap-2 text-sm font-bold",
                                 isSlow ? "bg-indigo-500 text-white shadow-lg" : "text-white/40 hover:text-white hover:bg-white/5"
                             )}
-                            title="Modo Lento"
+                            title={t.dictation.slowMode}
                         >
                             <Gauge className="w-5 h-5" weight={isSlow ? "fill" : "regular"} />
-                            <span className="hidden md:inline">Lento</span>
+                            <span className="hidden md:inline">{t.dictation.slow}</span>
                         </button>
                         <div className="w-px h-6 bg-white/10 mx-1" />
                         <button
@@ -527,11 +529,11 @@ export default function DictationTool() {
                             )}
                         >
                             {isPlaying ? (
-                                <><Pause className="w-5 h-5" weight="fill" /> PAUSAR</>
+                                <><Pause className="w-5 h-5" weight="fill" /> {t.dictation.pause}</>
                             ) : isPaused ? (
-                                <><Play className="w-5 h-5" weight="fill" /> RESUMIR</>
+                                <><Play className="w-5 h-5" weight="fill" /> {t.dictation.resume}</>
                             ) : (
-                                <><Play className="w-5 h-5" weight="fill" /> EMPEZAR</>
+                                <><Play className="w-5 h-5" weight="fill" /> {t.dictation.start}</>
                             )}
                         </button>
                     </div>
@@ -549,7 +551,7 @@ export default function DictationTool() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                                 <div className="absolute bottom-4 left-4 right-4 text-center">
                                     <p className="text-white/90 text-sm font-medium italic drop-shadow-md">
-                                        Escucha atentamente el cuento...
+                                        {t.dictation.listenCarefully}
                                     </p>
                                 </div>
                             </div>
@@ -559,7 +561,7 @@ export default function DictationTool() {
                             {(isPlaying || isPaused || charIndex > 0) ? (
                                 renderKaraokeText()
                             ) : (
-                                <p className="text-white/20 italic font-serif text-lg">Pulsa empezar para escuchar el dictado...</p>
+                                <p className="text-white/20 italic font-serif text-lg">{t.dictation.pressStart}</p>
                             )}
                         </div>
                     </div>
@@ -570,7 +572,7 @@ export default function DictationTool() {
                         <textarea
                             value={userText}
                             onChange={(e) => setUserText(e.target.value)}
-                            placeholder="Escribe aquí lo que escuches..."
+                            placeholder={t.dictation.placeholder}
                             className="w-full h-48 bg-black/20 text-white border border-white/10 rounded-2xl p-6 text-lg leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-white/20 font-serif"
                             spellCheck={false}
                         />
@@ -580,7 +582,7 @@ export default function DictationTool() {
                                 disabled={userText.length === 0}
                                 className="px-6 py-2 bg-teal-500 hover:bg-teal-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5 flex items-center gap-2"
                             >
-                                <Check className="w-5 h-5" weight="bold" /> COMPROBAR
+                                <Check className="w-5 h-5" weight="bold" /> {t.dictation.check}
                             </button>
                         </div>
                     </div>
@@ -599,12 +601,12 @@ export default function DictationTool() {
                                     {accuracy}%
                                 </span>
                             </div>
-                            <h3 className="text-white text-lg font-medium">Precisión</h3>
+                            <h3 className="text-white text-lg font-medium">{t.dictation.accuracy}</h3>
                         </div>
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5">
                                 <h4 className="text-emerald-400 font-bold mb-3 text-xs uppercase tracking-wider flex items-center gap-2">
-                                    <BookOpen className="w-4 h-4" /> Texto Original
+                                    <BookOpen className="w-4 h-4" /> {t.dictation.originalText}
                                 </h4>
                                 <p className="text-white/90 leading-relaxed font-serif text-lg">
                                     {selectedDictation.text}
@@ -612,7 +614,7 @@ export default function DictationTool() {
                             </div>
                             <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
                                 <h4 className="text-white/60 font-bold mb-3 text-xs uppercase tracking-wider flex items-center gap-2">
-                                    <GraduationCap className="w-4 h-4" /> Tu Respuesta
+                                    <GraduationCap className="w-4 h-4" /> {t.dictation.yourAnswer}
                                 </h4>
                                 <p className="text-white/90 leading-relaxed font-serif text-lg whitespace-pre-wrap">
                                     {userText}
@@ -624,7 +626,7 @@ export default function DictationTool() {
                                 onClick={reset}
                                 className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-full transition-all flex items-center gap-2"
                             >
-                                <ArrowsClockwise className="w-5 h-5" /> Repetir Dictado
+                                <ArrowsClockwise className="w-5 h-5" /> {t.dictation.repeat}
                             </button>
                         </div>
                     </div>

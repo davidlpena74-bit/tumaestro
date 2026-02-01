@@ -23,12 +23,14 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { BOOKS, Book } from './books-data';
 import { getBestVoice } from '@/lib/speech-utils';
+import { useLanguage } from '@/context/LanguageContext';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
 export default function StorytellerTool() {
+    const { t } = useLanguage();
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -343,7 +345,7 @@ export default function StorytellerTool() {
                         onClick={() => setSelectedBook(null)}
                         className="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200"
                     >
-                        <ArrowLeft weight="bold" /> Volver a la Biblioteca
+                        <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
                     </button>
 
 
@@ -434,7 +436,7 @@ export default function StorytellerTool() {
                                         ? "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/20"
                                         : "bg-white/50 hover:bg-white/80 text-slate-600 hover:text-slate-900 border border-slate-200/50"
                                 )}
-                                title={isMaximized ? "Salir de pantalla completa" : "Maximizar lectura"}
+                                title={isMaximized ? t.storyteller.minimize : t.storyteller.maximize}
                             >
                                 {isMaximized ? <ArrowsIn weight="bold" size={24} /> : <ArrowsOut weight="bold" size={20} />}
                             </button>
@@ -471,7 +473,7 @@ export default function StorytellerTool() {
                             "absolute bottom-6 left-0 right-0 text-center text-xs font-bold pointer-events-none z-20",
                             isMaximized ? "text-white/60" : "text-slate-300"
                         )}>
-                            Página {currentPage + 1} de {selectedBook.content.length}
+                            {t.storyteller.pageOf.replace('{current}', (currentPage + 1).toString()).replace('{total}', selectedBook.content.length.toString())}
                         </div>
                     </div>
 
@@ -556,14 +558,14 @@ export default function StorytellerTool() {
                     href="/recursos"
                     className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200"
                 >
-                    <ArrowLeft weight="bold" /> Volver a Recursos
+                    <ArrowLeft weight="bold" /> {t.storyteller.backToResources}
                 </Link>
             </div>
 
             <header className="text-center mb-16">
-                <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">El Cuenta Cuentos</h2>
+                <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
                 <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
-                    Sumérgete en grandes historias narradas con voz mágica. Lectura inmersiva para pequeños y grandes soñadores.
+                    {t.storyteller.subtitle}
                 </p>
             </header>
 
@@ -616,7 +618,7 @@ export default function StorytellerTool() {
 
                                 <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
                                     <span className="text-base font-bold text-slate-600 flex items-center gap-2 italic">
-                                        Por {book.author}
+                                        {t.storyteller.by} {book.author}
                                     </span>
                                     <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                                         <Play weight="fill" size={16} className="ml-1" />
@@ -632,8 +634,8 @@ export default function StorytellerTool() {
                     <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <BookOpen size={32} className="text-slate-300" weight="duotone" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-400 mb-2">Más Títulos</h3>
-                    <p className="text-xs text-slate-400 font-medium">Estamos preparando clásicos como Harry Potter y El Hobbit.</p>
+                    <h3 className="text-xl font-bold text-slate-400 mb-2">{t.storyteller.moreTitles}</h3>
+                    <p className="text-xs text-slate-400 font-medium">{t.storyteller.moreTitlesDesc}</p>
                 </div>
             </div>
         </div>
