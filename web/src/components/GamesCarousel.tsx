@@ -134,17 +134,17 @@ export default function GamesCarousel() {
                     href={game.href}
                     className="min-w-[200px] w-[200px] inline-block group relative aspect-video rounded-xl overflow-hidden shadow-lg border border-white/10 hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 hover:-translate-y-2 bg-slate-900"
                 >
-                    {/* Background */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-80 z-0 transition-opacity duration-300 group-hover:opacity-100`} />
+                    {/* Semi-transparent Glass Background */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-40 z-0 transition-all duration-300 group-hover:opacity-60 backdrop-blur-sm`} />
 
                     {/* Image if available */}
                     {game.image ? (
-                        <div className="absolute inset-0 z-0 p-2 opacity-60 group-hover:opacity-80 transition-opacity duration-500 mix-blend-overlay">
-                            <img src={game.image} alt={game.title} className="w-full h-full object-contain" />
+                        <div className="absolute inset-0 z-0 p-2 opacity-80 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay">
+                            <img src={game.image} alt={game.title} className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
                         </div>
                     ) : (
-                        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-20 rotate-12 scale-150">
-                            <game.icon className="w-24 h-24 text-white" weight="duotone" />
+                        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-40 rotate-12 scale-150 group-hover:scale-125 transition-transform duration-500">
+                            <game.icon className="w-24 h-24 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" weight="duotone" />
                         </div>
                     )}
 
