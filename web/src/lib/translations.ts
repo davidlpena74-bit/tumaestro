@@ -283,8 +283,7 @@ export const TRANSLATIONS = {
             level: 'Nivel',
             category: 'Categoría'
         }
-    }
-},
+    },
     en: {
         common: {
             start: 'START',
