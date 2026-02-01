@@ -694,5 +694,49 @@ export const BOOKS: Book[] = [
                 text: "El príncipe, que esperaba en el carruaje, la reconoció de inmediato. Cenicienta fue llevada al palacio, donde se celebró una boda de una magnificencia nunca vista. A pesar de todo el daño recibido, Cenicienta perdonó a sus hermanastras, demostrando que la verdadera nobleza no reside en el título, sino en la capacidad de amar incluso a quienes nos han hecho llorar."
             }
         ]
+    },
+    {
+        id: 'musicos-bremen',
+        title: 'Los Músicos de Bremen',
+        author: 'Hermanos Grimm',
+        description: 'La divertida aventura de cuatro animales que demuestran que nunca es tarde para encontrar un nuevo hogar.',
+        level: 'Fácil',
+        age: '4+',
+        coverImage: '/images/storyteller/musicos-bremen-cover.png',
+        chipImage: '/images/storyteller/character-musicos-bremen.png',
+        genre: 'Fábula',
+        themeColor: 'from-orange-600 to-amber-800',
+        content: [
+            {
+                text: "Había una vez un burro que, durante largos años, había transportado incansablemente sacos de trigo al molino de su amo. Pero el tiempo no perdona, y sus fuerzas comenzaron a flaquear. Al darse cuenta de que su amo planeaba deshacerse de él para no tener que alimentarlo más, el burro decidió tomar las riendas de su propio destino. \"Iré a Bremen\", pensó con optimismo, \"allí mi voz todavía es fuerte y podré convertirme en músico municipal\"."
+            },
+            {
+                text: "No había caminado mucho cuando encontró a un perro de caza tendido a la orilla del camino, jadeando como si hubiera corrido una maratón. —\"¿Por qué jadeas tanto, amigo?\", preguntó el burro. —\"¡Ay!\", respondió el perro con tristeza. \"Como ya soy viejo y no sirvo para la caza, mi amo quiso matarme. He huido, pero ¿cómo me ganaré la vida ahora?\". —\"Ven conmigo a Bremen\", propuso el burro. \"Yo tocaré el laúd y tú podrás tocar los timbales\". Al perro le pareció un plan excelente y ambos continuaron el viaje."
+            },
+            {
+                text: "Poco después, se toparon con un gato que tenía una cara tan larga como tres días de lluvia. —\"¿Qué te pasa, viejo cazador de ratones?\", preguntó el burro. —\"¿Quién puede estar alegre cuando su vida corre peligro?\", maulló el gato. \"Mis dientes ya no están afilados y prefiero estar junto al fuego antes que perseguir ratones. Por eso, mi ama intentó ahogarme. He escapado, pero no sé a dónde ir\". —\"Tú sabes mucho de serenatas nocturnas\", dijo el burro. \"Acompáñanos a Bremen y hazte músico con nosotros\". El gato aceptó y los tres siguieron adelante."
+            },
+            {
+                text: "Al pasar por una granja, vieron a un gallo posado sobre una verja, gritando con todas sus fuerzas. —\"Gritas como si te fuera la vida en ello\", observó el burro. —\"¡Es que me va!\", respondió el gallo. \"Mañana vienen invitados y la dueña le ha dicho a la cocinera que me quiere en la sopa. Estoy aprovechando mis últimos minutos de libertad\". —\"¡Qué tontería!\", exclamó el burro. \"Cualquier cosa es mejor que la muerte. Tienes una voz magnífica; ven con nosotros a Bremen\". El gallo se unió al grupo, y así, los cuatro nuevos amigos continuaron su marcha."
+            },
+            {
+                text: "Sin embargo, Bremen estaba lejos y no podían llegar en un solo día. Al caer la noche, se adentraron en un bosque espeso para dormir. El gallo, que se había posado en la copa más alta de un árbol para vigilar, divisó una luz a lo lejos. —\"¡Amigos! Hay una casa cerca\", gritó. Hambrientos y cansados, decidieron acercarse. Al asomarse por la ventana, el burro, que era el más alto, vio a una banda de ladrones sentados ante una mesa rebosante de manjares: pavo asado, vino y pan tierno."
+            },
+            {
+                text: "Necesitaban entrar, pero los ladrones eran peligrosos. Entonces, idearon un plan basado en su mayor talento: la música. El burro se apoyó con las patas delanteras en el alféizar de la ventana; el perro saltó sobre el lomo del burro; el gato trepó sobre el perro y, finalmente, el gallo voló hasta posarse sobre la cabeza del gato. A una señal dada, todos empezaron su \"concierto\": el burro rebuznó, el perro ladró, el gato maulló y el gallo cantó con tal estruendo que los cristales vibraron. Acto seguido, saltaron a través de la ventana rompiendo los vidrios con un estrépito aterrador."
+            },
+            {
+                text: "Los ladrones, convencidos de que un monstruo o un fantasma del bosque los atacaba, huyeron despavoridos hacia la espesura, dejando atrás el banquete. Los cuatro amigos cenaron como reyes y, exhaustos, buscaron un lugar para dormir: el burro sobre el estiércol, el perro tras la puerta, el gato junto a las cenizas del hogar y el gallo en una viga del techo."
+            },
+            {
+                text: "Más tarde, el jefe de los ladrones envió a uno de sus hombres a inspeccionar la casa. El ladrón entró en la oscuridad y, al ver los ojos brillantes del gato, pensó que eran brasas encendidas. Al acercar una cerilla, el gato le saltó a la cara bufando y arañando. Al intentar huir por la puerta, el perro le mordió la pierna; al pasar por el corral, el burro le propinó una coz monumental; y el gallo, despertado por el ruido, gritó desde arriba: \"¡Quiquiriquí!\"."
+            },
+            {
+                text: "El ladrón regresó con sus compañeros pálido de terror: —\"¡Es horrible!\", exclamó. \"En la casa vive una bruja que me ha arañado la cara; en la puerta hay un hombre con un cuchillo que me ha herido la pierna; en el patio hay un monstruo negro que me ha golpeado con un mazo, y en el tejado hay un juez que gritaba: '¡Traedme al ladron-aquí!'\"."
+            },
+            {
+                text: "Los ladrones nunca se atrevieron a volver, y los cuatro músicos de Bremen se sintieron tan a gusto en la casa que ya no quisieron marcharse de allí. Y se dice que todavía viven felices, ensayando sus canciones bajo la luz de la luna."
+            }
+        ]
     }
 ];
