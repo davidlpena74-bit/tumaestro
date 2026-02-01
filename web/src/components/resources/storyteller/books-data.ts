@@ -659,5 +659,40 @@ export const BOOKS: Book[] = [
                 text: "En ese momento, el hechizo se rompió. La princesa abrió los ojos y lo miró con dulzura. En todo el castillo, la vida despertó como si solo hubiera pasado un segundo: los caballos relincharon, los perros ladraron, el fuego volvió a arder y el cocinero terminó de darle el tirón de orejas al ayudante. El Rey y la Reina celebraron la boda de la princesa y el príncipe con una fiesta que duró días. El muro de espinas desapareció para siempre, y se dice que vivieron felices y en paz, recordando siempre que ni el tiempo más largo ni la magia más oscura pueden derrotar a un destino escrito con amor."
             }
         ]
+    },
+    {
+        id: 'cenicienta',
+        title: 'Cenicienta',
+        author: 'Hermanos Grimm / Perrault',
+        description: 'La clásica historia de bondad, magia y zapatos de cristal que demuestra que los sueños se hacen realidad.',
+        level: 'Medio',
+        age: '4+',
+        coverImage: '/images/storyteller/cenicienta-cover.png',
+        chipImage: '/images/storyteller/character-cenicienta.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-blue-600 to-indigo-800',
+        content: [
+            {
+                text: "En una mansión rodeada de prados verdes y jardines cuidados, vivía un hombre rico con su joven hija. La niña era el retrato de su madre fallecida: dulce, paciente y poseedora de una belleza que parecía emanar de su interior. Sin embargo, buscando un nuevo hogar para su hija, el hombre se casó con una mujer que traía consigo a dos hijas de su primer matrimonio. Bajo sus rostros bien parecidos, las tres ocultaban corazones áridos y mentes crueles. Tras la repentina muerte del padre, la verdadera naturaleza de la madrastra floreció como una mala hierba. Despojaron a la joven de sus vestidos de seda, la obligaron a dormir en el desván sobre un jergón de paja y la condenaron a las tareas más duras de la casa. Limpiaba las cenizas de la chimenea de sol a sol, y como siempre estaba manchada de polvo y hollín, sus hermanastras empezaron a llamarla con desprecio Cenicienta."
+            },
+            {
+                text: "A pesar de las burlas y el agotamiento, Cenicienta nunca perdió su dulzura. Encontraba consuelo hablando con los pájaros que anidaban en el alero y cuidando un avellano que había crecido junto a la tumba de su padre, regado con sus propias lágrimas."
+            },
+            {
+                text: "Un día, el palacio anunció un baile real que duraría tres noches, destinado a que el príncipe heredero eligiera esposa. Las hermanastras pasaron semanas preparándose, gritando órdenes a Cenicienta para que planchara sus encajes y peinara sus cabellos. Cuando la joven suplicó que la dejaran ir, la madrastra, con una risa gélida, arrojó un plato de lentejas a las cenizas: —\"Si eres capaz de recogerlas todas en dos horas, podrás venir\". Cenicienta llamó a sus amigos los pájaros: \"Palomitas, tortolitas, venid a ayudarme\". En menos de una hora, la tarea estaba hecha. Pero la madrastra, rompiendo su promesa, le dijo que no tenía vestidos dignos y que solo avergonzaría a la familia. Se marcharon al baile, dejando a la joven sumida en el llanto bajo su avellano."
+            },
+            {
+                text: "—\"¡Árbol pequeño, sacúdete y bate, de oro y plata vísteme!\", exclamó la joven. De entre las ramas apareció un espíritu protector, su hada madrina. Con un toque de su vara mágica, transformó una calabaza en un carruaje dorado, seis ratones en corceles de paso elegante y los harapos de Cenicienta en un vestido de tela de plata, adornado con joyas que brillaban como el rocío. Lo más asombroso eran sus zapatos, hechos del cristal más fino y resistente. —\"Recuerda una cosa\", advirtió el hada, \"la magia se desvanece al sonar la última campanada de la medianoche. Debes regresar antes\"."
+            },
+            {
+                text: "Al entrar en el salón, el silencio fue absoluto. El príncipe, hechizado por aquella desconocida que irradiaba una luz especial, no bailó con ninguna otra mujer. Cenicienta era feliz, pero al oír el primer tañido de las doce, huyó del palacio con tal prisa que perdió uno de sus zapatos de cristal en la escalinata. El príncipe lo recogió y juró que solo se casaría con la mujer cuyo pie encajara perfectamente en aquel calzado."
+            },
+            {
+                text: "Al día siguiente, los mensajeros reales recorrieron el reino. Llegaron a la mansión de la madrastra. La hermana mayor intentó calzarse el zapato, pero su pie era demasiado grande; la segunda lo intentó también, pero sus dedos no cabían. La madrastra, en su desesperación, incluso las instó a mutilarse los pies con tal de reinar, pero la sangre delató el engaño. —\"¿No hay nadie más aquí?\", preguntó el mensajero. —\"Solo una sucia fregona\", respondió la madrastra. Pero el mensajero insistió. Cenicienta salió de la cocina, se lavó la cara y las manos, y se sentó en el taburete. Deslizó su pie en el zapato de cristal y este encajó como si hubiera sido moldeado por los mismos ángeles. En ese momento, la joven sacó el otro zapato de su delantal."
+            },
+            {
+                text: "El príncipe, que esperaba en el carruaje, la reconoció de inmediato. Cenicienta fue llevada al palacio, donde se celebró una boda de una magnificencia nunca vista. A pesar de todo el daño recibido, Cenicienta perdonó a sus hermanastras, demostrando que la verdadera nobleza no reside en el título, sino en la capacidad de amar incluso a quienes nos han hecho llorar."
+            }
+        ]
     }
 ];
