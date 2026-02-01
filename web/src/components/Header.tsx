@@ -45,39 +45,16 @@ export default function Header() {
     // Close menu on click outside could be added here, but simple toggle is enough for now.
 
     return (
-        <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10 py-3' : 'bg-transparent py-5'}`}>
+        <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10 py-2' : 'bg-transparent py-4'}`}>
             <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
                 {/* LOGO */}
                 <Link href="/" className="relative flex items-center group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                    <div className="flex items-center gap-2">
-                        <div className="text-teal-300 transform -rotate-12 group-hover:rotate-0 transition-transform duration-300">
-                            <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="headerCapGradient" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-                                        <stop offset="0%" stopColor="#2dd4bf" />
-                                        <stop offset="100%" stopColor="#10b981" />
-                                    </linearGradient>
-                                    <linearGradient id="headerGlassEffect" x1="16" y1="6" x2="16" y2="18" gradientUnits="userSpaceOnUse">
-                                        <stop offset="0%" stopColor="white" stopOpacity="0.4" />
-                                        <stop offset="100%" stopColor="white" stopOpacity="0.05" />
-                                    </linearGradient>
-                                    <filter id="headerGlow" x="-2" y="-2" width="36" height="36" filterUnits="userSpaceOnUse">
-                                        <feGaussianBlur stdDeviation="1" result="blur" />
-                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                                    </filter>
-                                </defs>
-                                <path d="M7 16V20C7 22.2091 11.0294 24 16 24C20.9706 24 25 22.2091 25 20V16" stroke="url(#headerCapGradient)" strokeWidth="2.5" strokeLinecap="round" />
-                                <path d="M8 17V19.5C8 20.8807 11.5817 22 16 22C20.4183 22 24 20.8807 24 19.5V17" stroke="#0f172a" strokeOpacity="0.1" strokeWidth="1.5" />
-                                <path d="M16 5L28 12L16 19L4 12L16 5Z" fill="url(#headerCapGradient)" />
-                                <path d="M16 6L26.5 12L16 18L5.5 12L16 6Z" fill="url(#headerGlassEffect)" />
-                                <path d="M16 5L28 12L16 19L4 12L16 5Z" stroke="white" strokeOpacity="0.2" strokeWidth="0.5" />
-                                <path d="M28 12V19" stroke="url(#headerCapGradient)" strokeWidth="2" strokeLinecap="round" />
-                                <circle cx="28" cy="20" r="1.5" fill="url(#headerCapGradient)" filter="url(#headerGlow)" />
-                            </svg>
-                        </div>
-                        <div className="text-white font-bold text-2xl tracking-tighter drop-shadow-md">
-                            TuMaestro<span className="text-teal-300">.es</span>
-                        </div>
+                    <div className="relative">
+                        <img
+                            src="/images/icons/logo-text-brush.png"
+                            alt="TuMaestro.es"
+                            className="h-32 w-auto object-contain drop-shadow-md -my-10"
+                        />
                     </div>
                 </Link>
 

@@ -41,7 +41,14 @@ export default function HomeClient() {
             {/* 3. HERO: SPLIT GATEWAY */}
             <div className="relative z-10 flex flex-col items-center justify-center min-h-[100vh] px-4">
 
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 text-center drop-shadow-lg">
+                <div className="-mb-48 -mt-80 relative z-10">
+                    <img
+                        src="/images/icons/logo-text-brush.png"
+                        alt="TuMaestro.es"
+                        className="w-full max-w-[360px] md:max-w-[480px] h-auto object-contain drop-shadow-2xl mx-auto"
+                    />
+                </div>
+                <h1 className="sr-only">
                     {t.home.heroTitle}
                 </h1>
                 <p className="text-xl text-gray-100 mb-12 text-center max-w-2xl font-light drop-shadow-md">
