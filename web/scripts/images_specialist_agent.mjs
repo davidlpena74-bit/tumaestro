@@ -9,12 +9,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Configuration map
 const IMAGES_TO_PROCESS = [
     {
-        src: "C:/Users/david/.gemini/antigravity/brain/75b5e161-fd6f-4ee0-820d-e67d3eda8a6f/hansel_gretel_chip_1769848596229.png",
-        dest: "character-hansel-gretel.png"
+        src: "c:/Users/david/Desktop/Projects-Antigravity/Tu Maestro/web/public/images/icons/icon-teacher-3d.png",
+        dest: "icon-teacher-3d.png"
+    },
+    {
+        src: "c:/Users/david/Desktop/Projects-Antigravity/Tu Maestro/web/public/images/icons/icon-resources-3d.png",
+        dest: "icon-resources-3d.png"
+    },
+    {
+        src: "c:/Users/david/Desktop/Projects-Antigravity/Tu Maestro/web/public/images/icons/icon-games-3d.png",
+        dest: "icon-games-3d.png"
     }
 ];
 
-const OUTPUT_DIR = path.resolve(__dirname, '../public/images/storyteller');
+const OUTPUT_DIR = path.resolve(__dirname, '../public/images/icons');
 
 async function processImages() {
     console.log("🚀 Starting Images Specialist Agent...");

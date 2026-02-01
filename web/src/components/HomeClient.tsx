@@ -97,7 +97,7 @@ export default function HomeClient() {
                         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(45,212,191,0.2)]">
-                            <PremiumTeacherIcon className="w-32 h-32" />
+                            <img src="/images/icons/icon-teacher-3d.png" alt="Profesores" className="w-32 h-32 object-contain drop-shadow-2xl" />
                         </div>
 
                         <h2 className="relative z-10 text-lg font-black text-white group-hover:text-teal-300 mb-0.5 transition-colors duration-300">{t.home.findTeacher}</h2>
@@ -124,7 +124,7 @@ export default function HomeClient() {
                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(251,146,60,0.2)]">
-                            <PremiumResourcesIcon className="w-32 h-32" />
+                            <img src="/images/icons/icon-resources-3d.png" alt="Recursos" className="w-32 h-32 object-contain drop-shadow-2xl" />
                         </div>
 
                         <h2 className="relative z-10 text-lg font-black text-white group-hover:text-orange-300 mb-0.5 transition-colors duration-300">{t.home.resources}</h2>
@@ -151,7 +151,7 @@ export default function HomeClient() {
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         <div className="relative z-10 mb-3 drop-shadow-[0_0_30px_rgba(139,92,246,0.2)]">
-                            <PremiumGamesIcon className="w-36 h-36" />
+                            <img src="/images/icons/icon-games-3d.png" alt="Juegos" className="w-36 h-36 object-contain drop-shadow-2xl" />
                         </div>
 
                         <h2 className="relative z-10 text-lg font-black text-white group-hover:text-purple-300 mb-0.5 transition-colors duration-300">{t.home.learnPlaying}</h2>
