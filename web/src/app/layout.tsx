@@ -20,11 +20,11 @@ export const metadata: Metadata = {
     template: '%s | TuMaestro.es',
     default: 'TuMaestro.es | Encuentra Profesores Particulares y Recursos Educativos',
   },
-  description: "La plataforma educativa más completa: Profesores particulares verificados, material didáctico gratuito, juegos interactivos para primaria y secundaria, y apuntes de calidad para todas las materias.",
+  description: "La plataforma educativa más completa: Profesores particulares, material didáctico gratuito, juegos infantiles y cuentos narrados en 4 idiomas gratis para primaria y secundaria.",
   keywords: [
-    'clases particulares', 'profesores online', 'material didactico', 'apuntes gratis', 'juegos educativos',
-    'aprender jugando', 'recursos primaria', 'recursos secundaria', 'ejercicios resueltos', 'tumaestro',
-    'geografia interactiva', 'matematicas para niños', 'profesores españa'
+    'clases particulares', 'profesores online', 'material didactico', 'cuentos infantiles idiomas', 'juegos educativos gratis',
+    'aprender jugando', 'recursos primaria', 'dictados online gratis', 'ejercicios resueltos', 'tumaestro',
+    'geografia interactiva', 'cuentos narrados gratis', 'profesores españa'
   ],
   authors: [{ name: 'TuMaestro.es Team' }],
   creator: 'TuMaestro.es',
