@@ -2769,3 +2769,5 @@ export const BOOKS: Book[] = [
             { text: "El sastre llegó al palacio del Rey y se echó a dormir. La gente leyó su cinturón y avisó al Rey de que había llegado un gran guerrero. El Rey, queriendo probarlo, le mandó matar a dos gigantes que asolaban el bosque. El sastrecillo fue y, escondido en un árbol, tiró piedras a uno y a otro hasta hacer que se pelearan entre sí y se mataran mutuamente." },
             { text: "Luego capturó a un unicornio haciendo que clavara su cuerno en un árbol, y atrapó a un jabalí feroz encerrándolo en una capilla. El Rey, impresionado y obligado por su promesa, le dio la mitad del reino y la mano de su hija. Así fue como un pequeño sastre, gracias a su ingenio y valentía, se convirtió en Rey." }
         ]
+    }
+];
