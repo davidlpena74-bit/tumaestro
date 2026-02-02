@@ -18,6 +18,7 @@ export interface Book {
     chipImage?: string;
     genre: string;
     themeColor: string;
+    rating?: number;
 }
 
 export const BOOKS: Book[] = [
@@ -32,6 +33,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-patito.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-blue-400 to-cyan-300',
+        rating: 4.5,
         content: [
             {
                 text: "Era verano, y la región tenía su aspecto más amable del año. El trigo estaba dorado ya, la avena verde todavía. El heno había sido apilado en parvas sobre las fértiles praderas, por las que deambulaba la cigüeña con sus rojas patas, parloteando en egipcio, único idioma que su madre le había enseñado. En torno del campo y las praderas se veían grandes bosques, en cuyo centro había profundos lagos. Y en el lugar más desolado de la comarca se erguía una antigua mansión rodeada por un profundo foso."
@@ -82,6 +84,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-caperucita.png',
         genre: 'Fábula',
         themeColor: 'from-red-600 to-amber-700',
+        rating: 4.8,
         content: [
             {
                 text: "En una aldea rodeada por un bosque tan espeso que la luz del sol apenas lograba besar el suelo, vivía una niña cuya bondad era conocida por todos los habitantes de la comarca. Su posesión más preciada era una capa de terciopelo de un rojo tan intenso como las amapolas en verano, un regalo de su abuela que la pequeña lucía con orgullo en cada estación. Por esta razón, el nombre con el que se le conocía en los valles y senderos no era otro que Caperucita Roja."
@@ -222,6 +225,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-gato.png',
         genre: 'Fábula',
         themeColor: 'from-amber-500 to-orange-400',
+        rating: 4.2,
         content: [
             {
                 text: "Érase una vez un molinero que tenía tres hijos, su molino, un asno y un gato. Los hijos tenían que moler, el asno tenía que llevar el grano y el gato tenía que cazar ratones. Cuando el molinero murió, los hijos se repartieron la herencia: el mayor el molino, el segundo el asno y al tercero le tocó el gato. El joven se entristeció: '¿Qué voy a hacer yo con un gato? Si me hago unos guantes con su piel, no me quedará nada'."
@@ -257,6 +261,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-pulgarcito.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-emerald-500 to-teal-400',
+        rating: 4.0,
         content: [
             {
                 text: "Érase una vez un leñador y una leñadora que tenían siete hijos varones. Eran muy pobres y sus hijos una pesada carga. El menor de ellos era muy pequeñito y cuando llegó al mundo no era más gordo que un pulgar, por lo cual lo llamaron Pulgarcito. Aunque hablaba poco, era el más agudo de sus hermanos y escuchaba mucho todo lo que ocurría en casa."
@@ -292,6 +297,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-hansel-gretel.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-amber-600 to-brown-700',
+        rating: 4.7,
         content: [
             {
                 text: "En los márgenes de un bosque vasto y sombrío, donde los árboles parecen entrelazar sus ramas para ocultar el cielo, vivía un humilde leñador con su esposa y sus dos hijos: Hansel, un niño de mirada despierta, y Gretel, su hermana de corazón valiente. La pobreza se había asentado en su hogar como un polvo denso que no se podía sacudir. El hambre era una presencia constante que hacía rugir sus estómagos y nublaba el juicio de los adultos. Una noche, mientras la escasez apretaba más que nunca, la madrastra, con el corazón endurecido por la desesperación, susurró al oído del leñador un plan atroz: llevarían a los niños a lo más profundo de la maleza y los abandonarían allí."
@@ -327,6 +333,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-sirenita.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-blue-600 to-teal-400',
+        rating: 5.0,
         content: [
             {
                 text: "En las profundidades más remotas del océano, donde el azul del agua es tan puro como el cristal más fino, se extendía el reino de los hombres del mar. Allí crecen árboles de un coral carmesí y plantas que se ondulan ante las corrientes. En el punto más profundo se alzaba el castillo del Rey del Mar: una estructura de coral con techos de conchas gigantes que se abren para dejar pasar las corrientes, y ventanas de ámbar transparente."
@@ -377,6 +384,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-soldadito.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-blue-700 to-slate-800',
+        rating: 4.3,
         content: [
             {
                 text: "En el umbral de una habitación infantil, un universo en miniatura se desplegaba sobre una mesa de madera de pino. Allí destacaban veinticinco soldaditos de plomo, relucientes y orgullosos. Habían nacido todos de la misma cuchara de metal fundido, y cada uno vestía un uniforme impecable: casaca roja, pantalón azul y un fusil plateado. Todos eran idénticos, salvo uno, que por un capricho del destino había sido fundido con una sola pierna. Sin embargo, su espíritu no flaqueaba; se erguía con la misma determinación que sus hermanos."
@@ -424,6 +432,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-la-bella-y-la-bestia.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-rose-900 to-amber-900',
+        rating: 4.9,
         content: [
             {
                 text: "En una época en que los mercaderes medían su fortuna por el número de barcos que cruzaban los océanos, vivía un hombre inmensamente rico que tenía tres hijas. Las dos mayores eran vanidosas y egoístas, amantes de los bailes y las sedas finas. La menor, sin embargo, era tan bondadosa y hermosa que todos la llamaban simplemente Bella. Su belleza no residía solo en la armonía de sus rasgos, sino en la paz que transmitía al leer bajo los sauces o al cuidar el jardín de su padre."
@@ -465,6 +474,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-rapunzel.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-purple-800 to-indigo-900',
+        rating: 4.6,
         content: [
             {
                 text: "Hace mucho tiempo, en una pequeña casa adosada a un jardín mágico, vivían un hombre y una mujer. El jardín, cercado por un muro altísimo, pertenecía a una hechicera temida en toda la comarca, a quien nadie se atrevía a desafiar. Un día, la mujer sintió un antojo irrefrenable, un deseo incontrolable por las rapunces, una especie de lechuga silvestre que crecía en aquel jardín encantado. Su anhelo era tan fuerte que languidecía, amenazando con morir si no las probaba. Su marido, desesperado por salvarla, decidió una noche escalar el muro y robar algunas rapunces."
@@ -512,6 +522,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-jack.png',
         genre: 'Fábula',
         themeColor: 'from-green-700 to-emerald-900',
+        rating: 4.1,
         content: [
             {
                 text: "Esta es la historia de Jack y las Habichuelas Mágicas, una crónica sobre la ambición, el coraje y cómo un acto de aparente locura puede cambiar el destino de una familia sumida en la miseria. En los márgenes de una aldea donde la tierra era tan pobre que apenas daba para alimentar a los gorriones, vivía una viuda con su único hijo, Jack. Eran tan humildes que su posesión más valiosa no era oro ni tierras, sino una vaca vieja y escuálida llamada Blanca Lechera. Pero llegó un invierno tan crudo que la vaca dejó de dar leche, y el hambre empezó a roer las paredes del estómago de Jack y su madre. Con lágrimas en los ojos, la mujer le pidió a su hijo que llevara al animal al mercado para venderlo: \"Hijo, asegúrate de traer una buena bolsa de monedas, o no sobreviviremos al mes\"."
@@ -550,6 +561,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-flautista.png',
         genre: 'Leyenda',
         themeColor: 'from-yellow-700 to-amber-900',
+        rating: 3.8,
         content: [
             {
                 text: "Esta es la historia de El Flautista de Hamelín, un relato que camina por la delgada línea entre la gratitud y la venganza, ambientado en una ciudad que aprendió por las malas el valor de una promesa cumplida. Hamelín era una ciudad próspera, de casas de madera tallada y mercados bulliciosos a orillas del río Weser."
@@ -588,6 +600,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-pinocho.png',
         genre: 'Novela',
         themeColor: 'from-amber-700 to-orange-900',
+        rating: 4.4,
         content: [
             {
                 text: "Esta es la historia de Pinocho, una crónica sobre la formación del alma, la lucha contra las tentaciones y el arduo camino que separa a un trozo de madera de un corazón humano. En un pequeño pueblo italiano de calles empedradas y talleres angostos, vivía un viejo carpintero llamado Geppetto. Era un hombre de manos nudosas y corazón solitario que, para aliviar su melancolía, decidió tallar una marioneta de madera de pino. Sin embargo, apenas comenzó a esculpir, sucedió algo extraordinario: la madera empezó a reírse de sus cosquillas y a protestar por los golpes del mazo. Geppetto, asombrado, terminó la figura de un niño al que llamó Pinocho. Pero antes de que pudiera enseñarle a caminar, el muñeco cobró vida propia, le dio una patada y huyó corriendo hacia la calle."
@@ -623,6 +636,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-gigante-egoista.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-sky-700 to-indigo-900',
+        rating: 4.7,
         content: [
             {
                 text: "Esta es la historia de El Gigante Egoísta, un relato sobre cómo el hielo de la soledad y la dureza del corazón solo pueden ser derretidos por la calidez de la generosidad y la inocencia de la niñez. Todas las tardes, a la salida de la escuela, los niños de la aldea solían ir a jugar al jardín del Gigante. Era un jardín amplio y hermoso, tapizado de un césped suave y verde como el terciopelo. Por todas partes surgían flores brillantes como estrellas, y había doce melocotoneros que, en primavera, se cubrían de una delicada floración de color rosa y perla, y en otoño daban frutos dulces y jugosos. Los pájaros se posaban en las ramas y cantaban con tal dulzura que los niños solían detener sus juegos para escucharlos. —\"¡Qué felices somos aquí!\", se decían unos a otros."
@@ -679,6 +693,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-aladino.png',
         genre: 'Cuento popular',
         themeColor: 'from-amber-600 to-purple-800',
+        rating: 4.9,
         content: [
             {
                 text: "En una de las ciudades más prósperas de la China ancestral, vivía un muchacho llamado Aladino. Era un joven desobediente y perezoso que prefería jugar en las plazas antes que aprender el oficio de su padre, un humilde sastre que había muerto de pena al ver la indolencia de su hijo. Aladino vivía solo con su madre, una mujer trabajadora que hilaba algodón día y noche para llevar un poco de pan a la mesa."
@@ -726,6 +741,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-bella-durmiente.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-pink-700 to-rose-900',
+        rating: 4.5,
         content: [
             {
                 text: "En un reino donde las montañas tocaban las nubes y los ríos cantaban melodías de cristal, vivían un Rey y una Reina que lo tenían todo, excepto lo que más deseaban: un hijo. Durante años, sus plegarias fueron en vano, hasta que un día, mientras la Reina descansaba a la orilla de un estanque, una rana saltó del agua y le profetizó que antes de que pasara un año, sus deseos se cumplirían. La profecía se hizo realidad y nació una niña tan hermosa que el Rey, loco de alegría, decidió celebrar el banquete más grandioso de la historia."
@@ -770,6 +786,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-cenicienta.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-blue-600 to-indigo-800',
+        rating: 5.0,
         content: [
             {
                 text: "En una mansión rodeada de prados verdes y jardines cuidados, vivía un hombre rico con su joven hija. La niña era el retrato de su madre fallecida: dulce, paciente y poseedora de una belleza que parecía emanar de su interior. Sin embargo, buscando un nuevo hogar para su hija, el hombre se casó con una mujer que traía consigo a dos hijas de su primer matrimonio. Bajo sus rostros bien parecidos, las tres ocultaban corazones áridos y mentes crueles. Tras la repentina muerte del padre, la verdadera naturaleza de la madrastra floreció como una mala hierba. Despojaron a la joven de sus vestidos de seda, la obligaron a dormir en el desván sobre un jergón de paja y la condenaron a las tareas más duras de la casa. Limpiaba las cenizas de la chimenea de sol a sol, y como siempre estaba manchada de polvo y hollín, sus hermanastras empezaron a llamarla con desprecio Cenicienta."
@@ -805,6 +822,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-musicos-bremen.png',
         genre: 'Fábula',
         themeColor: 'from-orange-600 to-amber-800',
+        rating: 4.3,
         content: [
             {
                 text: "Había una vez un burro que, durante largos años, había transportado incansablemente sacos de trigo al molino de su amo. Pero el tiempo no perdona, y sus fuerzas comenzaron a flaquear. Al darse cuenta de que su amo planeaba deshacerse de él para no tener que alimentarlo más, el burro decidió tomar las riendas de su propio destino. \"Iré a Bremen\", pensó con optimismo, \"allí mi voz todavía es fuerte y podré convertirme en músico municipal\"."
@@ -849,6 +867,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-blancanieves.png?v=4',
         genre: 'Cuento de hadas',
         themeColor: 'from-red-600 to-indigo-900',
+        rating: 4.8,
         content: [
             {
                 text: "En el corazón de un invierno profundo, mientras los copos de nieve caían como plumas del cielo, una reina cosía junto a una ventana de marco de ébano. Al pincharse el dedo con la aguja, tres gotas de sangre cayeron sobre la nieve blanca. El contraste era tan hermoso que la reina pensó: \"¡Ojalá tuviera una hija con la piel blanca como la nieve, los labios rojos como la sangre y el cabello negro como el ébano!\". Poco después, su deseo se cumplió y dio a luz a una niña a la que llamaron Blancanieves. Sin embargo, la alegría fue breve, pues la reina murió al poco tiempo."
@@ -890,6 +909,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-sastrecillo-valiente.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-emerald-700 to-teal-900',
+        rating: 4.5,
         content: [
             {
                 text: "En una pequeña ciudad de casas con entramados de madera, vivía un joven sastre que trabajaba con gran dedicación en su taller. Un mediodía, mientras se preparaba una rebanada de pan con mermelada, unas moscas empezaron a revolotear sobre su comida. Molesto, el sastre tomó un trozo de tela y dio un golpe seco sobre la mesa. Al levantar el paño, contó con asombro que había matado a siete de un solo golpe."
@@ -934,6 +954,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-rumpelstiltskin.png',
         genre: 'Cuento de hadas',
         themeColor: 'from-amber-600 to-yellow-900',
+        rating: 4.6,
         content: [
             {
                 text: "Hace mucho tiempo, vivía un molinero que era pobre en caudales pero rico en jactancia. Tenía una hija de una belleza extraordinaria y un ingenio agudo, y en un rapto de vanidad, el hombre le dijo al Rey: —\"Majestad, mi hija es tan habilidosa que es capaz de hilar la paja y convertirla en oro puro\"."
@@ -1074,6 +1095,7 @@ export const BOOKS: Book[] = [
         chipImage: '/images/storyteller/character-alibaba.png',
         genre: 'Cuento popular',
         themeColor: 'from-orange-700 to-amber-900',
+        rating: 4.9,
         content: [
             {
                 text: "En una ciudad de Persia vivían dos hermanos: Cassim y Alí Babá. Cassim se había casado con una mujer rica y vivía en la opulencia, mientras que Alí Babá era un pobre leñador que apenas ganaba lo suficiente para alimentar a su esposa e hijos. Un día, mientras Alí Babá cortaba leña en un bosque espeso, vio una enorme nube de polvo que se acercaba. Temiendo que fueran bandidos, se ocultó entre las ramas de un árbol frondoso."

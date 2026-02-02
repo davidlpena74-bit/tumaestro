@@ -18,7 +18,9 @@ import {
     Translate,
     ArrowsOut,
     ArrowsIn,
-    CaretDown
+    CaretDown,
+    Star,
+    StarHalf
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -760,31 +762,55 @@ export default function StorytellerTool() {
 
                             {/* Contenido */}
                             <div className="p-5 flex flex-col flex-grow relative">
-                                <div className="flex gap-2 mb-2">
-                                    <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50 shadow-sm">
+                                <div className="flex gap-2 mb-2 items-start">
+                                    <span className="px-2.5 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50 shadow-sm">
                                         {book.level}
                                     </span>
-                                    <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-wider uppercase border border-slate-200/50 shadow-sm">
+                                    <span className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-wider uppercase border border-slate-200/50 shadow-sm">
                                         {book.age}
                                     </span>
 
-                                    <div className="flex gap-1 ml-auto">
-                                        <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Español">
-                                            <img src="/images/flags/es.svg" alt="Español" className="w-full h-full object-cover" />
+                                    <div className="flex flex-col items-end ml-auto gap-1">
+                                        <div className="flex gap-1">
+                                            <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Español">
+                                                <img src="/images/flags/es.svg" alt="Español" className="w-full h-full object-cover" />
+                                            </div>
+                                            {book.contentEn && (
+                                                <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="English">
+                                                    <img src="/images/flags/gb.svg" alt="English" className="w-full h-full object-cover" />
+                                                </div>
+                                            )}
+                                            {book.contentFr && (
+                                                <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Français">
+                                                    <img src="/images/flags/fr.svg" alt="Français" className="w-full h-full object-cover" />
+                                                </div>
+                                            )}
+                                            {book.contentDe && (
+                                                <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Deutsch">
+                                                    <img src="/images/flags/de.svg" alt="Deutsch" className="w-full h-full object-cover" />
+                                                </div>
+                                            )}
                                         </div>
-                                        {book.contentEn && (
-                                            <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="English">
-                                                <img src="/images/flags/gb.svg" alt="English" className="w-full h-full object-cover" />
-                                            </div>
-                                        )}
-                                        {book.contentFr && (
-                                            <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Français">
-                                                <img src="/images/flags/fr.svg" alt="Français" className="w-full h-full object-cover" />
-                                            </div>
-                                        )}
-                                        {book.contentDe && (
-                                            <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Deutsch">
-                                                <img src="/images/flags/de.svg" alt="Deutsch" className="w-full h-full object-cover" />
+
+                                        {/* Valoración Estrellas */}
+                                        {book.rating && (
+                                            <div className="flex items-center gap-0.5" title={`Puntuación: ${book.rating} / 5`}>
+                                                {[1, 2, 3, 4, 5].map((star) => {
+                                                    const isFull = book.rating! >= star;
+                                                    const isHalf = book.rating! >= star - 0.5 && book.rating! < star;
+                                                    return (
+                                                        <div key={star}>
+                                                            {isFull ? (
+                                                                <Star weight="fill" className="text-amber-400" size={13} />
+                                                            ) : isHalf ? (
+                                                                <StarHalf weight="fill" className="text-amber-400" size={13} />
+                                                            ) : (
+                                                                <Star weight="fill" className="text-slate-200" size={13} />
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                                <span className="text-[10px] font-bold text-slate-400 ml-1">{book.rating}</span>
                                             </div>
                                         )}
                                     </div>
