@@ -770,7 +770,7 @@ export default function StorytellerTool() {
                                         {book.age}
                                     </span>
 
-                                    <div className="flex flex-col items-end ml-auto gap-1">
+                                    <div className="flex flex-col items-end ml-auto gap-2">
                                         <div className="flex gap-1">
                                             <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Español">
                                                 <img src="/images/flags/es.svg" alt="Español" className="w-full h-full object-cover" />
