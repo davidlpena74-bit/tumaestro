@@ -878,5 +878,49 @@ export const BOOKS: Book[] = [
                 text: "El príncipe, loco de alegría, le declaró su amor y la llevó a su palacio para casarse con ella. A la boda fue invitada la reina malvada. Cuando el espejo le dijo que la nueva reina era más hermosa que ella, acudió llena de curiosidad y rabia. Pero al reconocer a Blancanieves, el terror se apoderó de ella. Como castigo por sus crímenes, el destino le impuso bailar con unos zapatos de hierro que habían sido calentados al fuego, hasta que cayó muerta. Blancanieves y su príncipe gobernaron con sabiduría, y los siete enanitos siempre fueron invitados de honor en su mesa de mármol."
             }
         ]
+    },
+    {
+        id: 'sastrecillo-valiente',
+        title: 'El Sastrecillo Valiente',
+        author: 'Hermanos Grimm',
+        description: 'Un relato que celebra la astucia por encima de la fuerza bruta y nos recuerda que la confianza en uno mismo es la herramienta más poderosa.',
+        level: 'Medio',
+        age: '5+',
+        coverImage: '/images/storyteller/sastrecillo-valiente-cover.png',
+        chipImage: '/images/storyteller/character-sastrecillo-valiente.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-emerald-700 to-teal-900',
+        content: [
+            {
+                text: "En una pequeña ciudad de casas con entramados de madera, vivía un joven sastre que trabajaba con gran dedicación en su taller. Un mediodía, mientras se preparaba una rebanada de pan con mermelada, unas moscas empezaron a revolotear sobre su comida. Molesto, el sastre tomó un trozo de tela y dio un golpe seco sobre la mesa. Al levantar el paño, contó con asombro que había matado a siete de un solo golpe."
+            },
+            {
+                text: "—\"¡Qué valiente soy!\", exclamó para sí mismo. \"El mundo entero debe enterarse de mi hazaña\". Cortó una banda de seda y bordó en ella con letras grandes y doradas: \"SIETE DE UN GOLPE\". Se ciñó la banda a la cintura y, con un trozo de queso viejo en el bolsillo y un pájaro que se había enredado en un matorral, salió a recorrer el mundo."
+            },
+            {
+                text: "Caminando por las montañas, se encontró con un Gigante colosal que bloqueaba el paso. El sastre, lejos de acobardarse, le mostró su banda. El gigante, pensando que se refería a siete hombres de un golpe, decidió poner a prueba su fuerza. Tomó una piedra y la apretó hasta que de ella brotaron gotas de agua. —\"¿Puedes hacer esto?\", rugió el gigante. —\"¡Eso no es nada!\", respondió el sastre. Sacó el queso viejo del bolsillo y lo apretó con tal fuerza que el suero salió disparado."
+            },
+            {
+                text: "El gigante quedó impresionado, pero no convencido. Tomó otra piedra y la lanzó tan alto que casi se perdió de vista. —\"¡Buen tiro!\", dijo el sastre. \"Pero la piedra acabó cayendo. Yo lanzaré una que no regresará jamás\". Sacó al pájaro de su bolsillo y lo soltó al aire; el ave, feliz de ser libre, voló hasta desaparecer en las nubes."
+            },
+            {
+                text: "El gigante, aunque furioso, invitó al sastre a pasar la noche en su cueva con otros de su especie. A medianoche, el gigante golpeó la cama del sastre con una barra de hierro, creyendo que lo mataría. Pero el joven, que había encontrado la cama demasiado grande y se había dormido en un rincón, salió ileso. Al verlo aparecer vivo por la mañana, los gigantes huyeron despavoridos, pensando que era un ser sobrenatural."
+            },
+            {
+                text: "El sastre llegó finalmente al palacio de un gran Rey. Los soldados, al leer su banda, informaron al monarca que un guerrero invencible había llegado. El Rey, temeroso pero astuto, le ofreció la mano de su hija y la mitad de su reino si era capaz de realizar tres tareas imposibles."
+            },
+            {
+                text: "La primera era derrotar a dos gigantes que aterrorizaban el bosque. El sastrecillo no los enfrentó con espada; esperó a que durmieran bajo un árbol y, trepado en las ramas, comenzó a lanzarles piedras pesadas. Los gigantes despertaron acusándose mutuamente de los golpes, hasta que se enzarzaron en una lucha tan feroz que ambos cayeron muertos."
+            },
+            {
+                text: "La segunda tarea consistía en capturar a un unicornio que destrozaba las cosechas. El sastre se paró frente a un árbol y esperó a que la bestia cargara contra él. En el último segundo, el joven saltó a un lado y el cuerno del unicornio quedó clavado profundamente en el tronco."
+            },
+            {
+                text: "La tercera prueba fue cazar a un jabalí salvaje. El sastre atrajo al animal hacia una pequeña capilla en el bosque; entró saltando por una ventana y, cuando el jabalí entró tras él, el joven volvió a saltar hacia afuera y cerró la puerta con llave."
+            },
+            {
+                text: "El Rey, sin más excusas, tuvo que cumplir su promesa. El sastrecillo valiente, que solo armado con una aguja, un hilo y mucha inteligencia había derrotado a monstruos y reyes, se casó con la princesa. Y cuentan las crónicas que gobernó con justicia, pues sabía mejor que nadie que para vencer las dificultades de la vida, a veces un buen ingenio corta más que la espada más afilada."
+            }
+        ]
     }
 ];
