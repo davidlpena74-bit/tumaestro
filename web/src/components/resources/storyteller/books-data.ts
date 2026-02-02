@@ -1062,5 +1062,145 @@ export const BOOKS: Book[] = [
                 text: "Der Kobold stieß einen Schrei der Wut aus, der so gewaltig war, dass die Erde bebte. — \"Das hat dir der Teufel gesagt! Das hat dir der Teufel gesagt!\", kreischte er außer sich. Vor Wut stampfte er mit dem rechten Fuß so tief in die Erde, dass er bis zum Leib einsank. Dann packte er in seiner Wut den linken Fuß mit beiden Händen und riss sich selbst mitten entzwei. Nie wieder hörte man von ihm, und die Königin lebte glücklich mit ihrem Sohn und hatte gelernt, dass das dunkelste Geheimnis seine Macht verliert, wenn man es beim Namen nennt."
             }
         ]
+    },
+    {
+        id: 'ali-baba',
+        title: 'Alí Babá y los cuarenta ladrones',
+        author: 'Las Mil y Una Noches',
+        description: 'Una crónica de las mil y una noches sobre la fortuna, la envidia fratricida y la astucia de una mujer que salvó a toda una familia.',
+        level: 'Difícil',
+        age: '7+',
+        coverImage: '/images/storyteller/alibaba-cover.png',
+        chipImage: '/images/storyteller/character-alibaba.png',
+        genre: 'Cuento popular',
+        themeColor: 'from-orange-700 to-amber-900',
+        content: [
+            {
+                text: "En una ciudad de Persia vivían dos hermanos: Cassim y Alí Babá. Cassim se había casado con una mujer rica y vivía en la opulencia, mientras que Alí Babá era un pobre leñador que apenas ganaba lo suficiente para alimentar a su esposa e hijos. Un día, mientras Alí Babá cortaba leña en un bosque espeso, vio una enorme nube de polvo que se acercaba. Temiendo que fueran bandidos, se ocultó entre las ramas de un árbol frondoso."
+            },
+            {
+                text: "Desde su escondite, vio a cuarenta hombres armados hasta los dientes que se detenían frente a una roca colosal. El jefe de la banda se adelantó y, con voz potente, exclamó las palabras mágicas: —\"¡Sésamo, ábrete!\". Para asombro de Alí Babá, la roca se partió en dos, revelando una cueva profunda. Los ladrones entraron y, tras un tiempo, salieron cargando sacos vacíos. El jefe gritó: \"¡Sésamo, ciérrate!\", y la montaña volvió a ser una pared de piedra sólida."
+            },
+            {
+                text: "Cuando los bandidos se alejaron, Alí Babá, movido por la curiosidad, se acercó a la roca y repitió las palabras. La cueva se abrió, revelando un tesoro capaz de cegar a cualquiera: montones de monedas de oro, lingotes de plata, sedas de China y perlas del tamaño de nueces. Alí Babá tomó solo lo que sus tres asnos podían cargar en sacos de monedas y regresó a casa."
+            },
+            {
+                text: "Su esposa, asustada por tanta riqueza, quiso contar las monedas, pero eran demasiadas. Fue entonces a casa de su cuñada a pedir prestada una medida de grano para calcular el tesoro. La esposa de Cassim, sospechando de la repentina fortuna, puso un poco de grasa en el fondo de la medida. Cuando Alí Babá devolvió el recipiente, una moneda de oro se había quedado pegada."
+            },
+            {
+                text: "Cassim, consumido por la envidia, obligó a su hermano a revelarle el secreto. A la mañana siguiente, Cassim partió con diez mulas hacia la cueva. Logró entrar gritando las palabras mágicas, pero una vez dentro, cegado por la codicia, olvidó la frase para salir. Probó con \"Cebada, ábrete\" y \"Trigo, ábrete\", pero la roca permaneció sellada. Cuando los ladrones regresaron, encontraron a Cassim y acabaron con su vida, dejando su cuerpo en la entrada como advertencia."
+            },
+            {
+                text: "Alí Babá encontró el cuerpo de su hermano y lo llevó a casa. Para evitar que se supiera que habían descubierto el tesoro, su esclava, una joven llamada Morgana, ideó un plan brillante. Fue a buscar a un viejo zapatero, le vendó los ojos y lo llevó a la casa para que cosiera el cuerpo de Cassim de modo que pareciera que había muerto de causas naturales."
+            },
+            {
+                text: "Sin embargo, los ladrones notaron que el cuerpo de su víctima había desaparecido y comprendieron que alguien más conocía el secreto. El jefe de los bandidos se disfrazó de mercader de aceite y llegó a casa de Alí Babá con treinta y ocho tinajas de cuero cargadas en mulas. En una tinaja había aceite, pero en las otras treinta y siete se escondían sus hombres, esperando la señal para salir y matar a todos."
+            },
+            {
+                text: "Morgana, necesitando aceite para su lámpara, fue al patio. Al acercarse a una tinaja, escuchó un susurro: \"¿Ya es hora?\". Con una presencia de ánimo asombrosa, respondió en voz baja: \"Todavía no\". Comprendiendo el peligro, calentó el aceite de la única tinaja llena y lo vertió hirviendo en las demás, eliminando a los bandidos uno a uno."
+            },
+            {
+                text: "Esa noche, durante la cena, el jefe de los ladrones intentó atacar a Alí Babá, pero Morgana, disfrazada de bailarina, realizó una danza con un puñal y, en un movimiento rápido, acabó con el criminal. Alí Babá, conmovido por la lealtad y el ingenio de la joven, le concedió la libertad y la casó con su hijo."
+            },
+            {
+                text: "Desde entonces, el secreto de la cueva quedó en manos de la familia, quienes usaron la riqueza con sabiduría y generosidad, asegurando que el nombre de Alí Babá fuera recordado no por su suerte, sino por su bondad."
+            }
+        ],
+        contentEn: [
+            {
+                text: "In a city of Persia lived two brothers: Cassim and Ali Baba. Cassim had married a rich woman and lived in opulence, while Ali Baba was a poor woodcutter who barely earned enough to feed his wife and children. One day, while Ali Baba was cutting wood in a thick forest, he saw a huge cloud of dust approaching. Fearing they were bandits, he hid among the branches of a leafy tree."
+            },
+            {
+                text: "From his hiding place, he saw forty men armed to the teeth stopping in front of a colossal rock. The leader of the gang stepped forward and, with a powerful voice, exclaimed the magic words: \"Open sesame!\" To Ali Baba's amazement, the rock split in two, revealing a deep cave. The thieves entered and, after a while, came out carrying empty sacks. The leader shouted: \"Close sesame!\", and the mountain became a solid stone wall again."
+            },
+            {
+                text: "When the bandits moved away, Ali Baba, moved by curiosity, approached the rock and repeated the words. The cave opened, revealing a treasure capable of blinding anyone: piles of gold coins, silver ingots, silks from China, and pearls the size of walnuts. Ali Baba took only what his three donkeys could carry in sacks of coins and returned home."
+            },
+            {
+                text: "His wife, frightened by such wealth, wanted to count the coins, but there were too many. So she went to her sister-in-law's house to borrow a grain measure to calculate the treasure. Cassim's wife, suspecting the sudden fortune, put a little grease at the bottom of the measure. When Ali Baba returned the container, a gold coin had stuck to it."
+            },
+            {
+                text: "Cassim, consumed by envy, forced his brother to reveal the secret. The next morning, Cassim set out with ten mules towards the cave. He managed to enter by shouting the magic words, but once inside, blinded by greed, he forgot the phrase to get out. He tried \"Open barley\" and \"Open wheat\", but the rock remained sealed. When the thieves returned, they found Cassim and ended his life, leaving his body at the entrance as a warning."
+            },
+            {
+                text: "Ali Baba found his brother's body and took it home. To prevent it from being known that they had discovered the treasure, his slave, a young woman named Morgiana, devised a brilliant plan. She went to find an old cobbler, blindfolded him, and took him to the house to sew Cassim's body so that it would look like he had died of natural causes."
+            },
+            {
+                text: "However, the thieves noticed that their victim's body had disappeared and understood that someone else knew the secret. The bandit leader disguised himself as an oil merchant and arrived at Ali Baba's house with thirty-eight leather jars loaded on mules. In one jar there was oil, but in the other thirty-seven his men were hiding, waiting for the signal to come out and kill everyone."
+            },
+            {
+                text: "Morgiana, needing oil for her lamp, went to the courtyard. As she approached a jar, she heard a whisper: \"Is it time yet?\" With amazing presence of mind, she replied in a low voice: \"Not yet.\" Understanding the danger, she heated the oil from the only full jar and poured it boiling into the others, eliminating the bandits one by one."
+            },
+            {
+                text: "That night, during dinner, the thief leader tried to attack Ali Baba, but Morgiana, disguised as a dancer, performed a dance with a dagger and, in a quick movement, ended the criminal. Ali Baba, moved by the young woman's loyalty and ingenuity, granted her freedom and married her to his son."
+            },
+            {
+                text: "Since then, the secret of the cave remained in the hands of the family, who used the wealth with wisdom and generosity, ensuring that Ali Baba's name was remembered not for his luck, but for his kindness."
+            }
+        ],
+        contentFr: [
+            {
+                text: "Dans une ville de Perse vivaient deux frères : Cassim et Ali Baba. Cassim avait épousé une femme riche et vivait dans l'opulence, tandis qu'Ali Baba était un pauvre bûcheron qui gagnait à peine de quoi nourrir sa femme et ses enfants. Un jour, alors qu'Ali Baba coupait du bois dans une forêt épaisse, il vit un énorme nuage de poussière s'approcher. Craignant que ce ne soient des bandits, il se cacha parmi les branches d'un arbre feuillu."
+            },
+            {
+                text: "De sa cachette, il vit quarante hommes armés jusqu'aux dents s'arrêter devant un rocher colossal. Le chef de la bande s'avança et, d'une voix puissante, s'exclama les mots magiques : — \"Sésame, ouvre-toi !\" À la stupeur d'Ali Baba, le rocher se fendit en deux, révélant une grotte profonde. Les voleurs entrèrent et, après un moment, sortirent en portant des sacs vides. Le chef cria : \"Sésame, ferme-toi !\", et la montagne redevint un mur de pierre solide."
+            },
+            {
+                text: "Lorsque les bandits s'éloignèrent, Ali Baba, poussé par la curiosité, s'approcha du rocher et répéta les mots. La grotte s'ouvrit, révélant un trésor capable d'aveugler n'importe qui : des tas de pièces d'or, des lingots d'argent, des soies de Chine et des perles de la taille de noix. Ali Baba ne prit que ce que ses trois ânes pouvaient porter dans des sacs de pièces et rentra chez lui."
+            },
+            {
+                text: "Sa femme, effrayée par tant de richesse, voulut compter les pièces, mais il y en avait trop. Elle alla donc chez sa belle-sœur pour emprunter une mesure à grain afin de calculer le trésor. La femme de Cassim, soupçonnant la soudaine fortune, mit un peu de graisse au fond de la mesure. Lorsqu'Ali Baba rendit le récipient, une pièce d'or y était restée collée."
+            },
+            {
+                text: "Cassim, rongé par l'envie, obligea son frère à lui révéler le secret. Le lendemain matin, Cassim partit avec dix mules vers la grotte. Il réussit à entrer en criant les mots magiques, mais une fois à l'intérieur, aveuglé par l'avidité, il oublia la phrase pour sortir. Il essaya \"Orge, ouvre-toi\" et \"Blé, ouvre-toi\", mais le rocher resta scellé. Lorsque les voleurs revinrent, ils trouvèrent Cassim et mirent fin à ses jours, laissant son corps à l'entrée comme avertissement."
+            },
+            {
+                text: "Ali Baba trouva le corps de son frère et le ramena chez lui. Pour éviter que l'on sache qu'ils avaient découvert le trésor, son esclave, une jeune femme nommée Morgiane, conçut un plan brillant. Elle alla chercher un vieux cordonnier, lui banda les yeux et l'emmena à la maison pour qu'il recouse le corps de Cassim afin qu'il semble être mort de causes naturelles."
+            },
+            {
+                text: "Cependant, les voleurs remarquèrent que le corps de leur victime avait disparu et comprirent que quelqu'un d'autre connaissait le secret. Le chef des bandits se déguisa en marchand d'huile et arriva chez Ali Baba avec trente-huit jarres en cuir chargées sur des mules. Dans une jarre il y avait de l'huile, mais dans les trente-sept autres se cachaient ses hommes, attendant le signal pour sortir et tuer tout le monde."
+            },
+            {
+                text: "Morgiane, ayant besoin d'huile pour sa lampe, alla dans la cour. En s'approchant d'une jarre, elle entendit un chuchotement : \"Est-ce l'heure ?\" Avec une présence d'esprit étonnante, elle répondit à voix basse : \"Pas encore.\" Comprenant le danger, elle fit chauffer l'huile de la seule jarre pleine et la versa bouillante dans les autres, éliminant les bandits un par un."
+            },
+            {
+                text: "Cette nuit-là, pendant le dîner, le chef des voleurs tenta d'attaquer Ali Baba, mais Morgiane, déguisée en danseuse, exécuta une danse avec un poignard et, dans un mouvement rapide, tua le criminel. Ali Baba, ému par la loyauté et l'ingéniosité de la jeune femme, lui accorda la liberté et la maria à son fils."
+            },
+            {
+                text: "Depuis lors, le secret de la grotte resta entre les mains de la famille, qui utilisa la richesse avec sagesse et générosité, veillant à ce que le nom d'Ali Baba soit rappelé non pour sa chance, mais pour sa bonté."
+            }
+        ],
+        contentDe: [
+            {
+                text: "In einer Stadt in Persien lebten zwei Brüder: Kasim und Ali Baba. Kasim hatte eine reiche Frau geheiratet und lebte in Opulenz, während Ali Baba ein armer Holzfäller war, der kaum genug verdiente, um seine Frau und Kinder zu ernähren. Eines Tages, als Ali Baba in einem dichten Wald Holz hackte, sah er eine riesige Staubwolke herankommen. Aus Angst, es könnten Banditen sein, versteckte er sich zwischen den Zweigen eines belaubten Baumes."
+            },
+            {
+                text: "Von seinem Versteck aus sah er vierzig bis an die Zähne bewaffnete Männer, die vor einem riesigen Felsen anhielten. Der Anführer der Bande trat vor und rief mit gewaltiger Stimme die magischen Worte: — \"Sesam, öffne dich!\" Zum Erstaunen von Ali Baba spaltete sich der Felsen in zwei Teile und enthüllte eine tiefe Höhle. Die Diebe gingen hinein und kamen nach einer Weile mit leeren Säcken heraus. Der Anführer rief: \"Sesam, schließe dich!\", und der Berg wurde wieder zu einer festen Steinwand."
+            },
+            {
+                text: "Als die Banditen wegzogen, näherte sich Ali Baba, getrieben von Neugier, dem Felsen und wiederholte die Worte. Die Höhle öffnete sich und enthüllte einen Schatz, der jeden blenden konnte: Haufen von Goldmünzen, Silberbarren, Seiden aus China und Perlen so groß wie Walnüsse. Ali Baba nahm nur das, was seine drei Esel in Münzsäcken tragen konnten, und kehrte nach Hause zurück."
+            },
+            {
+                text: "Seine Frau, erschrocken über so viel Reichtum, wollte die Münzen zählen, aber es waren zu viele. Also ging sie zum Haus ihrer Schwägerin, um ein Getreidemaß zu leihen, um den Schatz zu berechnen. Kasims Frau, die das plötzliche Vermögen ahnte, tat ein wenig Fett auf den Boden des Maßes. Als Ali Baba den Behälter zurückgab, blieb eine Goldmünze daran kleben."
+            },
+            {
+                text: "Kasim, verzehrt von Neid, zwang seinen Bruder, das Geheimnis zu verraten. Am nächsten Morgen machte sich Kasim mit zehn Maultieren auf den Weg zur Höhle. Es gelang ihm, durch Rufen der magischen Worte einzutreten, aber als er drinnen war, geblendet von Gier, vergaß er den Satz, um herauszukommen. Er versuchte \"Gerste, öffne dich\" und \"Weizen, öffne dich\", aber der Felsen blieb verschlossen. Als die Diebe zurückkehrten, fanden sie Kasim und beendeten sein Leben, indem sie seinen Körper als Warnung am Eingang zurückließen."
+            },
+            {
+                text: "Ali Baba fand den Körper seines Bruders und brachte ihn nach Hause. Um zu verhindern, dass bekannt wurde, dass sie den Schatz entdeckt hatten, entwarf seine Sklavin, eine junge Frau namens Morgiana, einen brillanten Plan. Sie suchte einen alten Schuster, verband ihm die Augen und brachte ihn zum Haus, damit er Kasims Körper nähte, sodass es aussah, als wäre er eines natürlichen Todes gestorben."
+            },
+            {
+                text: "Die Diebe bemerkten jedoch, dass der Körper ihres Opfers verschwunden war, und verstanden, dass jemand anderes das Geheimnis kannte. Der Banditenanführer verkleidete sich als Ölhändler und kam mit achtunddreißig auf Maultiere geladenen Lederkrügen zu Ali Babas Haus. In einem Krug war Öl, aber in den anderen siebenunddreißig versteckten sich seine Männer und warteten auf das Signal, herauszukommen und alle zu töten."
+            },
+            {
+                text: "Morgiana, die Öl für ihre Lampe brauchte, ging in den Hof. Als sie sich einem Krug näherte, hörte sie ein Flüstern: \"Ist es schon Zeit?\" Mit erstaunlicher Geistesgegenwart antwortete sie mit leiser Stimme: \"Noch nicht.\" Sie erkannte die Gefahr, erhitzte das Öl aus dem einzigen vollen Krug und goss es kochend in die anderen, wodurch die Banditen einer nach dem anderen beseitigt wurden."
+            },
+            {
+                text: "In dieser Nacht, während des Abendessens, versuchte der Räuberhauptmann, Ali Baba anzugreifen, aber Morgiana, als Tänzerin verkleidet, führte einen Tanz mit einem Dolch auf und beendete das Leben des Kriminellen mit einer schnellen Bewegung. Ali Baba, bewegt von der Loyalität und dem Einfallsreichtum der jungen Frau, schenkte ihr die Freiheit und verheiratete sie mit seinem Sohn."
+            },
+            {
+                text: "Seitdem blieb das Geheimnis der Höhle in den Händen der Familie, die den Reichtum mit Weisheit und Großzügigkeit nutzte und dafür sorgte, dass Ali Babas Name nicht wegen seines Glücks, sondern wegen seiner Güte in Erinnerung blieb."
+            }
+        ]
     }
 ];
