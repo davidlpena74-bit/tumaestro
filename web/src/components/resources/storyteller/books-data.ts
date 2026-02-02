@@ -922,5 +922,145 @@ export const BOOKS: Book[] = [
                 text: "El Rey, sin más excusas, tuvo que cumplir su promesa. El sastrecillo valiente, que solo armado con una aguja, un hilo y mucha inteligencia había derrotado a monstruos y reyes, se casó con la princesa. Y cuentan las crónicas que gobernó con justicia, pues sabía mejor que nadie que para vencer las dificultades de la vida, a veces un buen ingenio corta más que la espada más afilada."
             }
         ]
+    },
+    {
+        id: 'rumpelstiltskin',
+        title: 'Rumpelstiltskin',
+        author: 'Hermanos Grimm',
+        description: 'Un relato que advierte sobre los peligros de la vanidad y el extraño poder que reside en conocer el nombre verdadero de las cosas.',
+        level: 'Medio',
+        age: '6+',
+        coverImage: '/images/storyteller/rumpelstiltskin-cover.png',
+        chipImage: '/images/storyteller/character-rumpelstiltskin.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-amber-600 to-yellow-900',
+        content: [
+            {
+                text: "Hace mucho tiempo, vivía un molinero que era pobre en caudales pero rico en jactancia. Tenía una hija de una belleza extraordinaria y un ingenio agudo, y en un rapto de vanidad, el hombre le dijo al Rey: —\"Majestad, mi hija es tan habilidosa que es capaz de hilar la paja y convertirla en oro puro\"."
+            },
+            {
+                text: "El Rey, que amaba el oro por encima de todas las cosas, ordenó que llevaran a la joven al palacio de inmediato. La encerró en una habitación llena de paja, le entregó una rueca y un carrete, y sentenció: —\"Si para mañana al amanecer no has convertido toda esta paja en oro, morirás\"."
+            },
+            {
+                text: "La pobre muchacha, que no sabía nada de magia, rompió a llorar amargamente. De pronto, la puerta se abrió con un chasquido y apareció un hombrecillo de aspecto extravagante, con una nariz ganchuda y ropas de colores chillones. —\"¿Qué me darás si hilo la paja por ti?\", preguntó con una voz chillona. —\"Mi collar\", respondió la joven. El duende tomó el collar y, ñi-ñi-ñi, la rueca giró tres veces y el carrete se llenó de oro. Así siguió hasta que la habitación brillaba como el sol."
+            },
+            {
+                text: "Al día siguiente, el Rey quedó maravillado, pero su codicia no tenía fin. La llevó a una habitación aún más grande. El duende apareció de nuevo y aceptó el trabajo a cambio del anillo de la joven. Pero a la tercera noche, el Rey la llevó a un salón colosal. —\"Si logras esto\", dijo el Rey, \"te convertiré en mi esposa\"."
+            },
+            {
+                text: "Cuando el hombrecillo apareció, la joven ya no tenía nada que darle. —\"Prométeme que, si llegas a ser Reina, me entregarás a tu primer hijo\", exigió el duende. En su desesperación por sobrevivir, la joven aceptó. El duende hiló la paja, el Rey cumplió su palabra y la hija del molinero se convirtió en Reina."
+            },
+            {
+                text: "Un año después, nació un hermoso príncipe. La Reina, sumida en su felicidad, había olvidado por completo la promesa, hasta que el hombrecillo apareció repentinamente en su alcoba. —\"He venido por lo que es mío\", reclamó. La Reina, horrorizada, le ofreció todas las riquezas del reino a cambio del niño, pero el duende se negó. Ante sus llantos, finalmente cedió un poco: —\"Te daré tres días. Si logras adivinar mi nombre, te quedarás con tu hijo\"."
+            },
+            {
+                text: "La primera noche, la Reina enumeró todos los nombres comunes: \"Casper, Melchor, Baltasar\". El duende negaba con la cabeza. La segunda noche buscó nombres extraños: \"¿Pata de Palo?, ¿Barba de Chivo?, ¿Zanco Corto?\". Pero la respuesta siempre era: \"Ese no es mi nombre\"."
+            },
+            {
+                text: "Desesperada, la Reina envió a un mensajero por todo el país. Al tercer día, el mensajero regresó con una noticia curiosa: —\"No he encontrado nombres nuevos, pero al pasar por una montaña boscosa, vi una casita pequeña. Frente a ella ardía una hoguera, y un hombrecillo ridículo saltaba sobre una pierna gritando: 'Hoy hiervo, mañana amaso, y el hijo de la Reina me llevo al paso. ¡Qué suerte que nadie sepa mi fin, que mi nombre es Rumpelstiltskin!'\"."
+            },
+            {
+                text: "Cuando el duende apareció esa noche, la Reina fingió dudar. —\"¿Te llamas Juan?\". \"No\". \"¿Te llamas Pedro?\". \"No\". —\"Entonces... ¿no será tu nombre Rumpelstiltskin?\"."
+            },
+            {
+                text: "El duende soltó un grito de rabia tan potente que la tierra tembló. —\"¡El diablo te lo ha dicho! ¡El diablo te lo ha dicho!\", chilló fuera de sí. Preso de la furia, pateó el suelo con tanta fuerza que su pierna derecha se hundió hasta la cintura. Luego, en su intento de salir, se agarró la pierna izquierda con ambas manos y se partió por la mitad. Nunca más se supo de él, y la Reina vivió feliz con su hijo, habiendo aprendido que el secreto más oscuro pierde su poder cuando se le llama por su nombre."
+            }
+        ],
+        contentEn: [
+            {
+                text: "Long ago, there lived a miller who was poor in wealth but rich in boastfulness. He had a daughter of extraordinary beauty and sharp wit, and in a fit of vanity, the man told the King: \"Your Majesty, my daughter is so skillful that she can spin straw into pure gold.\""
+            },
+            {
+                text: "The King, who loved gold above all things, ordered the young woman to be brought to the palace immediately. He locked her in a room full of straw, gave her a spinning wheel and a reel, and sentenced: \"If by tomorrow at dawn you have not spun all this straw into gold, you will die.\""
+            },
+            {
+                text: "The poor girl, who knew nothing of magic, burst into bitter tears. Suddenly, the door opened with a click and an extravagant-looking little man appeared, with a hooked nose and gaudy clothes. \"What will you give me if I spin the straw for you?\" he asked in a shrill voice. \"My necklace,\" replied the girl. The goblin took the necklace and, whir-whir-whir, the spinning wheel turned three times and the reel was full of gold. So it went until the room shone like the sun."
+            },
+            {
+                text: "The next day, the King was amazed, but his greed knew no bounds. He took her to an even larger room. The goblin appeared again and accepted the job in exchange for the girl's ring. But on the third night, the King took her to a colossal hall. \"If you accomplish this,\" said the King, \"I will make you my wife.\""
+            },
+            {
+                text: "When the little man appeared, the girl had nothing left to give him. \"Promise me that, if you become Queen, you will give me your firstborn child,\" demanded the goblin. In her desperation to survive, the girl accepted. The goblin spun the straw, the King kept his word, and the miller's daughter became Queen."
+            },
+            {
+                text: "A year later, a beautiful prince was born. The Queen, immersed in her happiness, had gathered completely the promise, until the little man suddenly appeared in her bedroom. \"I have come for what is mine,\" he claimed. The Queen, horrified, offered him all the riches of the kingdom in exchange for the child, but the goblin refused. Faced with her weeping, he finally yielded a little: \"I will give you three days. If you manage to guess my name, you will keep your child.\""
+            },
+            {
+                text: "The first night, the Queen listed all the common names: \"Casper, Melchior, Balthasar.\" The goblin shook his head. The second night she looked for strange names: \"Pegleg? Goatbeard? Shortshanks?\" But the answer was always: \"That is not my name.\""
+            },
+            {
+                text: "Desperate, the Queen sent a messenger throughout the country. On the third day, the messenger returned with curious news: \"I have not found new names, but passing through a wooded mountain, I saw a small house. In front of it burned a bonfire, and a ridiculous little man jumped on one leg shouting: 'Today I brew, tomorrow I bake, and the Queen's child I'll take. What luck that no one knows my aim, that Rumpelstiltskin is my name!'\""
+            },
+            {
+                text: "When the goblin appeared that night, the Queen pretended to doubt. \"Is your name John?\" \"No.\" \"Is your name Peter?\" \"No.\" \"Then... could your name be Rumpelstiltskin?\""
+            },
+            {
+                text: "The goblin let out a scream of rage so powerful that the earth trembled. \"The devil told you! The devil told you!\" he shrieked beside himself. Seized by fury, he stomped the ground so hard that his right leg sank up to his waist. Then, in his attempt to get out, he grabbed his left leg with both hands and tore himself in half. He was never heard of again, and the Queen lived happily with her son, having learned that the darkest secret loses its power when it is called by its name."
+            }
+        ],
+        contentFr: [
+            {
+                text: "Il y a longtemps, vivait un meunier qui était pauvre en richesses mais riche en vantardise. Il avait une fille d'une beauté extraordinaire et à l'esprit vif, et dans un élan de vanité, l'homme dit au Roi : — \"Majesté, ma fille est si habile qu'elle est capable de filer la paille et de la transformer en or pur.\""
+            },
+            {
+                text: "Le Roi, qui aimait l'or par-dessus tout, ordonna que la jeune femme soit amenée au palais immédiatement. Il l'enferma dans une pièce remplie de paille, lui donna un rouet et une bobine, et déclara : — \"Si demain à l'aube tu n'as pas transformé toute cette paille en or, tu mourras.\""
+            },
+            {
+                text: "La pauvre fille, qui ne connaissait rien à la magie, éclata en sanglots amers. Soudain, la porte s'ouvrit avec un claquement et un petit homme à l'aspect extravagant apparut, avec un nez crochu et des vêtements aux couleurs criardes. — \"Que me donneras-tu si je file la paille pour toi ?\", demanda-t-il d'une voix perçante. — \"Mon collier\", répondit la jeune fille. Le lutin prit le collier et, ron-ron-ron, le rouet tourna trois fois et la bobine se remplit d'or. Cela continua ainsi jusqu'à ce que la pièce brille comme le soleil."
+            },
+            {
+                text: "Le lendemain, le Roi fut émerveillé, mais son avidité n'avait pas de fin. Il l'emmena dans une pièce encore plus grande. Le lutin apparut de nouveau et accepta le travail en échange de la bague de la jeune fille. Mais la troisième nuit, le Roi la conduisit dans une salle colossale. — \"Si tu réussis cela\", dit le Roi, \"je ferai de toi mon épouse.\""
+            },
+            {
+                text: "Lorsque le petit homme apparut, la jeune fille n'avait plus rien à lui donner. — \"Promets-moi que, si tu deviens Reine, tu me donneras ton premier enfant\", exigea le lutin. Dans son désespoir pour survivre, la jeune fille accepta. Le lutin fila la paille, le Roi tint sa parole et la fille du meunier devint Reine."
+            },
+            {
+                text: "Un an plus tard, naquit un beau prince. La Reine, plongée dans son bonheur, avait complètement oublié la promesse, jusqu'à ce que le petit homme apparaisse soudainement dans sa chambre. — \"Je suis venu chercher ce qui est à moi\", réclama-t-il. La Reine, horrifiée, lui offrit toutes les richesses du royaume en échange de l'enfant, mais le lutin refusa. Face à ses pleurs, il finit par céder un peu : — \"Je te donnerai trois jours. Si tu parviens à deviner mon nom, tu garderas ton fils.\""
+            },
+            {
+                text: "La première nuit, la Reine énuméra tous les noms communs : \"Gaspard, Melchior, Balthazar\". Le lutin secouait la tête. La deuxième nuit, elle chercha des noms étranges : \"Jambe-de-Bois ? Barbe-de-Bouc ? Courtes-Pattes ?\". Mais la réponse était toujours : \"Ce n'est pas mon nom.\""
+            },
+            {
+                text: "Désespérée, la Reine envoya un messager à travers tout le pays. Le troisième jour, le messager revint avec une nouvelle curieuse : — \"Je n'ai pas trouvé de nouveaux noms, mais en passant par une montagne boisée, j'ai vu une petite maison. Devant elle brûlait un feu de joie, et un petit homme ridicule sautait sur une jambe en criant : 'Aujourd'hui je cuis, demain je brasse, et l'enfant de la Reine je prends à la passe. Quelle chance que personne ne sache ma fin, que mon nom est Rumpelstiltskin !'\""
+            },
+            {
+                text: "Lorsque le lutin apparut cette nuit-là, la Reine fit semblant de douter. — \"T'appelles-tu Jean ?\". \"Non\". \"T'appelles-tu Pierre ?\". \"Non\". — \"Alors... ton nom ne serait-il pas Rumpelstiltskin ?\"."
+            },
+            {
+                text: "Le lutin poussa un cri de rage si puissant que la terre trembla. — \"C'est le diable qui te l'a dit ! C'est le diable qui te l'a dit !\", hurla-t-il hors de lui. Pris de fureur, il frappa le sol avec tant de force que sa jambe droite s'enfonça jusqu'à la taille. Ensuite, en essayant de sortir, il saisit sa jambe gauche à deux mains et se déchira en deux. On n'entendit plus jamais parler de lui, et la Reine vécut heureuse avec son fils, ayant appris que le secret le plus sombre perd son pouvoir lorsqu'on l'appelle par son nom."
+            }
+        ],
+        contentDe: [
+            {
+                text: "Vor langer Zeit lebte ein Müller, der arm an Geld, aber reich an Prahlerei war. Er hatte eine Tochter von außergewöhnlicher Schönheit und scharfem Verstand, und in einem Anfall von Eitelkeit sagte der Mann zum König: — \"Majestät, meine Tochter ist so geschickt, dass sie Stroh zu purem Gold spinnen kann.\""
+            },
+            {
+                text: "Der König, der Gold über alles liebte, befahl, das junge Mädchen sofort in den Palast zu bringen. Er sperrte sie in einen Raum voller Stroh, gab ihr ein Spinnrad und eine Spule und urteilte: — \"Wenn du bis morgen früh nicht all dieses Stroh zu Gold gesponnen hast, musst du sterben.\""
+            },
+            {
+                text: "Das arme Mädchen, das nichts von Magie wusste, brach in bittere Tränen aus. Plötzlich öffnete sich die Tür mit einem Klicken und ein extravagant aussehendes Männlein erschien, mit einer Hakennase und greller Kleidung. — \"Was gibst du mir, wenn ich das Stroh für dich spinne?\", fragte es mit schriller Stimme. — \"Mein Halsband\", antwortete das Mädchen. Der Kobold nahm das Halsband und, schnurr-schnurr-schnurr, drehte sich das Spinnrad dreimal und die Spule war voller Gold. So ging es weiter, bis der Raum wie die Sonne leuchtete."
+            },
+            {
+                text: "Am nächsten Tag war der König erstaunt, aber seine Gier kannte keine Grenzen. Er brachte sie in einen noch größeren Raum. Der Kobold erschien wieder und nahm die Arbeit im Tausch gegen den Ring des Mädchens an. Aber in der dritten Nacht brachte der König sie in einen riesigen Saal. — \"Wenn du das schaffst\", sagte der König, \"werde ich dich zu meiner Frau machen.\""
+            },
+            {
+                text: "Als das Männlein erschien, hatte das Mädchen nichts mehr, was es ihm geben konnte. — \"Versprich mir, dass du mir dein erstes Kind gibst, wenn du Königin wirst\", forderte der Kobold. In ihrer Verzweiflung, um zu überleben, willigte das Mädchen ein. Der Kobold spann das Stroh, der König hielt sein Wort und die Müllerstochter wurde Königin."
+            },
+            {
+                text: "Ein Jahr später wurde ein wunderschöner Prinz geboren. Die Königin, versunken in ihr Glück, hatte das Versprechen völlig vergessen, bis das Männlein plötzlich in ihrem Gemach erschien. — \"Ich bin gekommen, um zu holen, was mir gehört\", forderte es. Die Königin, entsetzt, bot ihm alle Reichtümer des Königreichs im Tausch gegen das Kind an, aber der Kobold lehnte ab. Angesichts ihres Weinens gab er schließlich ein wenig nach: — \"Ich gebe dir drei Tage. Wenn du meinen Namen erraten kannst, darfst du dein Kind behalten.\""
+            },
+            {
+                text: "In der ersten Nacht zählte die Königin alle gebräuchlichen Namen auf: \"Kaspar, Melchior, Balthasar\". Der Kobold schüttelte den Kopf. In der zweiten Nacht suchte sie nach seltsamen Namen: \"Rippenbiest? Hammelswade? Schnürbein?\" Aber die Antwort war immer: \"So heiße ich nicht.\""
+            },
+            {
+                text: "Verzweifelt schickte die Königin einen Boten durch das ganze Land. Am dritten Tag kehrte der Bote mit einer seltsamen Nachricht zurück: — \"Ich habe keine neuen Namen gefunden, aber als ich durch einen bewaldeten Berg kam, sah ich ein kleines Haus. Davor brannte ein Feuer, und ein lächerliches Männlein sprang auf einem Bein und rief: 'Heute back ich, morgen brau ich, übermorgen hol ich der Königin ihr Kind. Ach, wie gut, dass niemand weiß, dass ich Rumpelstilzchen heiß!'\""
+            },
+            {
+                text: "Als der Kobold in dieser Nacht erschien, tat die Königin so, als zweifle sie. — \"Heißt du Kunz?\". \"Nein\". \"Heißt du Heinz?\". \"Nein\". — \"Dann... heißt du vielleicht Rumpelstilzchen?\"."
+            },
+            {
+                text: "Der Kobold stieß einen Schrei der Wut aus, der so gewaltig war, dass die Erde bebte. — \"Das hat dir der Teufel gesagt! Das hat dir der Teufel gesagt!\", kreischte er außer sich. Vor Wut stampfte er mit dem rechten Fuß so tief in die Erde, dass er bis zum Leib einsank. Dann packte er in seiner Wut den linken Fuß mit beiden Händen und riss sich selbst mitten entzwei. Nie wieder hörte man von ihm, und die Königin lebte glücklich mit ihrem Sohn und hatte gelernt, dass das dunkelste Geheimnis seine Macht verliert, wenn man es beim Namen nennt."
+            }
+        ]
     }
 ];
