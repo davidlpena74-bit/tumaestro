@@ -72,26 +72,19 @@ async function generateWithEdgeTTS(text, outputPath) {
     const tts = new MsEdgeTTS();
     await tts.setMetadata(EDGE_VOICE_ID, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
 
-    // Minor SSML enhancement for Edge TTS to sound better
-    const ssmlText = `
-        <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="es-ES">
-            <voice name="${EDGE_VOICE_ID}">
-                <prosody rate="-10%" pitch="+0Hz">
-                    ${text.replace(/\. /g, '. <break time="600ms"/>')
-            .replace(/, /g, ', <break time="300ms"/>')
-            .replace(/\? /g, '? <break time="600ms"/>')
-            .replace(/! /g, '! <break time="600ms"/>')}
-                </prosody>
-            </voice>
-        </speak>
-    `.trim();
-
-    const { audioStream } = await tts.toStream(ssmlText);
+    const { audioStream } = await tts.toStream(text);
 
     return new Promise((resolve, reject) => {
         const writable = fs.createWriteStream(outputPath);
         audioStream.pipe(writable);
-        writable.on('finish', () => resolve(true));
+        writable.on('finish', () => {
+            const stats = fs.statSync(outputPath);
+            if (stats.size === 0) {
+                reject(new Error("Generated audio file is 0 bytes"));
+            } else {
+                resolve(true);
+            }
+        });
         writable.on('error', reject);
     });
 }
