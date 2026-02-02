@@ -119,7 +119,7 @@ async function main() {
 
     // 2. Parse books
     // Regex matches: id: "book-id", ... content: [ ... ]
-    const bookRegex = /id:\s*['"]([^'"]+)['"][\s\S]*?content:\s*\[([\s\S]*?)\]/g;
+    const bookRegex = /^\s+id:\s*['"]([^'"]+)['"][\s\S]*?^\s+content:\s*\[([\s\S]*?)\]/gm;
 
     let match;
     while ((match = bookRegex.exec(booksDataRaw)) !== null) {

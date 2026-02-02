@@ -28,6 +28,7 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
 - **Estructura de Datos**: Define SIEMPRE las propiedades `content` (ES), `contentEn` (EN), `contentFr` (FR) y `contentDe` (DE) con sus respectivas traducciones.
 - **Auto-Advance**: No es necesario tocar el código para esto, pero asegúrate de que el objeto `Book` tenga todas las páginas en el array `content`. El componente `StorytellerTool.tsx` gestionará automáticamente el paso de página al terminar el audio (MP3 o Voz Sintetizada).
 - **Theme Color**: Elige un gradiente de Tailwind que armonice con la ilustración (ej. `from-amber-600 to-brown-700`).
+- **Rating**: Añade un campo `rating` con un valor numérico (float) entre 4.0 y 5.0 (ej. `4.8`) para simular la valoración de los lectores.
 
 ### 4. Generación de Voz
 1. **Ejecución**: Usa el Voice Director. El script detectará automáticamente si tienes una key de ElevenLabs para usar voces Ultra-Premium. Si no, usará Edge TTS (Calidad Alta).
@@ -41,6 +42,6 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
 ## Verificación Final
 - La imagen del personaje debe verse completa en el círculo del reproductor.
 - El cuento debe avanzar automáticamente a la siguiente página tras el audio.
-- Comprueba que aparecen las **banderas de idioma** (ES, UK, FR, DE) en la tarjeta del libro.
+- Comprueba que aparecen las **banderas de idioma** (ES, UK, FR, DE) y las **estrellas de valoración** en la tarjeta del libro.
 - El selector de idioma debe permitir cambiar entre los 4 idiomas durante la lectura.
 - El despliegue debe incluir un incremento de versión en `package.json` y el uso del flujo `/deploy`.
