@@ -37,7 +37,14 @@ export default function StorytellerTool() {
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [speechRate, setSpeechRate] = useState(0.9);
+    const [speechRate, setSpeechRate] = useState(1.0);
+    const SPEED_OPTIONS = [
+        { key: 'slowest', value: 0.7 },
+        { key: 'slower', value: 0.85 },
+        { key: 'normal', value: 1.0 },
+        { key: 'faster', value: 1.15 },
+        { key: 'fastest', value: 1.3 }
+    ] as const;
     const [fontSize, setFontSize] = useState(24);
     const [audioLanguage, setAudioLanguage] = useState<'es' | 'en' | 'fr' | 'de'>('es');
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -54,6 +61,7 @@ export default function StorytellerTool() {
     const currentSpeedRef = useRef<number>(0.012);
     const lastBoundaryTimeRef = useRef<number>(0);
     const lastBoundaryCharIndexRef = useRef<number>(0);
+    const isUsingAudioRef = useRef(false);
     const isPlayingRef = useRef(false);
 
     useEffect(() => {
@@ -106,7 +114,7 @@ export default function StorytellerTool() {
                 audioRef.current.currentTime = 0;
             }
         }
-    }, [selectedBook, audioLanguage]);
+    }, [selectedBook, audioLanguage, isPlaying]); // Added isPlaying to refetch/restart if needed
 
     useEffect(() => {
         if (isPlaying && selectedBook) {
@@ -116,7 +124,7 @@ export default function StorytellerTool() {
             }, 300); // Reduced delay for smoother feel
             return () => clearTimeout(timer);
         }
-    }, [currentPage, isPlaying]); // Added isPlaying as dependency to handle start-from-scratch correctly
+    }, [currentPage, isPlaying, speechRate, audioLanguage]); // Added audioLanguage to restart audio on language change
 
     const requestProgressLoop = () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
@@ -129,16 +137,23 @@ export default function StorytellerTool() {
             lastTimeRef.current = time;
 
             const text = currentBookContent[currentPage]?.text || "";
-            if (progressRef.current < text.length) {
+
+            if (isUsingAudioRef.current && audioRef.current) {
+                // Perfect sync for MP3: use currentTime
+                const duration = audioRef.current.duration || 1;
+                const progress = (audioRef.current.currentTime / duration) * text.length;
+                progressRef.current = progress;
+                setCharIndex(Math.min(text.length, Math.floor(progress)));
+            } else if (progressRef.current < text.length) {
                 const char = text[Math.floor(progressRef.current)];
                 let speedMultiplier = 1;
 
                 // Si estamos en un signo de puntuación, reducimos la velocidad drásticamente
                 // para simular la pausa del SSML (800ms para puntos, 300ms para comas)
                 if (char === '.' || char === '?' || char === '!' || char === ':') {
-                    speedMultiplier = 0.15; // Ralentizar mucho más para representar la pausa de 800ms
+                    speedMultiplier = 0.12; // Adjusted for better feel
                 } else if (char === ',') {
-                    speedMultiplier = 0.4; // Ralentizar para la pausa de 300ms
+                    speedMultiplier = 0.35; // Adjusted for better feel
                 }
 
                 progressRef.current += deltaTime * currentSpeedRef.current * speedMultiplier;
@@ -185,80 +200,93 @@ export default function StorytellerTool() {
         // Reset progress states
         setCharIndex(0);
         progressRef.current = 0;
-        currentSpeedRef.current = (speechRate || 1) * 0.012;
+        // Adjust initial speed estimate based on language and rate
+        const langBase = audioLanguage === 'es' ? 0.015 : 0.014;
+        currentSpeedRef.current = (speechRate || 1) * langBase;
+        isUsingAudioRef.current = false;
 
-        // Try to play pre-recorded audio first (Only for ES currently)
-        const audioPath = `/audio/storyteller/${selectedBook.id}/page_${currentPage}.mp3`;
+        // Try to play pre-recorded audio first
+        // If language is 'es', we look in the root folder.
+        // For other languages, we look in a subfolder (e.g., /en/)
+        const langSubfolder = audioLanguage === 'es' ? "" : `/${audioLanguage}`;
+        const audioPath = `/audio/storyteller/${selectedBook.id}${langSubfolder}/page_${currentPage}.mp3`;
 
         let hasMP3 = false;
 
-        // Disable MP3s for English for now, as we probably don't have them
-        if (audioLanguage === 'es') {
-            const playRecordedAudio = () => {
-                return new Promise<boolean>((resolve) => {
-                    if (!audioRef.current) audioRef.current = new Audio();
-                    const audio = audioRef.current;
+        // Try to play MP3 regardless of language, if it exists
+        const playRecordedAudio = () => {
+            return new Promise<boolean>((resolve) => {
+                if (!audioRef.current) audioRef.current = new Audio();
+                const audio = audioRef.current;
 
-                    audio.src = audioPath;
-                    audio.load();
+                audio.src = audioPath;
+                audio.load();
 
-                    const loadTimeout = setTimeout(() => {
+                const loadTimeout = setTimeout(() => {
+                    cleanupLoadingListeners();
+                    resolve(false);
+                }, 2000);
+
+                const onCanPlayThrough = () => {
+                    clearTimeout(loadTimeout);
+                    audio.play().catch(() => {
                         cleanupLoadingListeners();
                         resolve(false);
-                    }, 2000);
+                    });
 
-                    const onCanPlayThrough = () => {
-                        clearTimeout(loadTimeout);
-                        audio.play().catch(() => {
-                            cleanupLoadingListeners();
-                            resolve(false);
-                        });
+                    setIsPlaying(true);
+                    isPlayingRef.current = true;
 
-                        setIsPlaying(true);
-                        isPlayingRef.current = true;
+                    const duration = audio.duration || 10;
+                    audio.playbackRate = speechRate;
+                    isUsingAudioRef.current = true;
+                    // For MP3, speedMultiplier in loop is ignored, we use currentTime
+                    requestProgressLoop();
 
-                        const duration = audio.duration || 10;
-                        currentSpeedRef.current = text.length / (duration * 1000);
-                        requestProgressLoop();
+                    cleanupLoadingListeners();
+                    resolve(true);
+                };
 
-                        cleanupLoadingListeners();
-                        resolve(true);
-                    };
+                const onError = () => {
+                    clearTimeout(loadTimeout);
+                    cleanupLoadingListeners();
+                    resolve(false);
+                };
 
-                    const onError = () => {
-                        clearTimeout(loadTimeout);
-                        cleanupLoadingListeners();
-                        resolve(false);
-                    };
+                const onEnded = () => {
+                    handlePageFinished();
+                };
 
-                    const onEnded = () => {
-                        handlePageFinished();
-                    };
-
-                    const cleanupLoadingListeners = () => {
-                        if (audio) {
-                            audio.removeEventListener('canplaythrough', onCanPlayThrough);
-                            audio.removeEventListener('error', onError);
-                        }
-                    };
-
-                    audio.removeEventListener('ended', onEnded);
-                    audio.addEventListener('canplaythrough', onCanPlayThrough, { once: true });
-                    audio.addEventListener('error', onError, { once: true });
-                    audio.addEventListener('ended', onEnded);
-
-                    if (audio.readyState >= 3) {
-                        onCanPlayThrough();
+                const cleanupLoadingListeners = () => {
+                    if (audio) {
+                        audio.removeEventListener('canplaythrough', onCanPlayThrough);
+                        audio.removeEventListener('error', onError);
                     }
-                });
-            };
+                };
 
-            hasMP3 = await playRecordedAudio();
-        }
+                audio.removeEventListener('ended', onEnded);
+                audio.addEventListener('canplaythrough', onCanPlayThrough, { once: true });
+                audio.addEventListener('error', onError, { once: true });
+                audio.addEventListener('ended', onEnded);
+
+                if (audio.readyState >= 3) {
+                    onCanPlayThrough();
+                }
+            });
+        };
+
+        hasMP3 = await playRecordedAudio();
+
 
         if (hasMP3) return;
 
-        // Fallback to Synthesis
+        // Fallback to Synthesis: Clear audio source to avoid "The element has no supported sources" errors
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.src = "";
+            audioRef.current.load(); // Forces clearing the buffer
+        }
+
         const utterance = new SpeechSynthesisUtterance(text);
 
         if (audioLanguage === 'en') {
@@ -536,15 +564,39 @@ export default function StorytellerTool() {
                             ? "fixed bottom-12 left-1/2 -translate-x-1/2 w-full max-w-3xl px-8"
                             : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6"
                     )}>
-                        {/* Speed Control (Minimizado) */}
-                        <div className={cn("flex items-center gap-2 w-56", isMaximized ? "bg-black/20 backdrop-blur-md rounded-xl p-2 border border-white/10" : "")}>
-                            <Clock size={16} className={isMaximized ? "text-white/70" : "text-slate-500"} />
-                            <input
-                                type="range" min="0.5" max="1.5" step="0.1"
-                                value={speechRate}
-                                onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-                                className={cn("w-full h-1.5 rounded-lg appearance-none cursor-pointer", isMaximized ? "bg-white/20 accent-white" : "bg-slate-200 accent-slate-900")}
-                            />
+                        {/* Speed Control (Discrete 5-step) */}
+                        <div className={cn("flex flex-col gap-1.5 w-64", isMaximized ? "bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/10" : "bg-white/40 p-2 rounded-xl border border-slate-200/50")}>
+                            <div className="flex justify-between items-center px-1">
+                                <div className="flex items-center gap-1.5">
+                                    <Clock size={14} className={isMaximized ? "text-white/70" : "text-slate-500"} />
+                                    <span className={cn("text-[10px] font-black uppercase tracking-wider", isMaximized ? "text-white/80" : "text-slate-600")}>
+                                        {t.storyteller.speeds[SPEED_OPTIONS.find(o => o.value === speechRate)?.key as keyof typeof t.storyteller.speeds] || t.storyteller.speeds.normal}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="flex gap-1.5 h-2">
+                                {SPEED_OPTIONS.map((opt) => (
+                                    <button
+                                        key={opt.key}
+                                        onClick={() => setSpeechRate(opt.value)}
+                                        className={cn(
+                                            "flex-grow h-full rounded-full transition-all duration-300 cursor-pointer relative group",
+                                            speechRate === opt.value
+                                                ? (isMaximized ? "bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]" : "bg-slate-900 shadow-lg shadow-slate-900/20")
+                                                : (isMaximized ? "bg-white/20 hover:bg-white/40" : "bg-slate-200 hover:bg-slate-300")
+                                        )}
+                                        title={t.storyteller.speeds[opt.key as keyof typeof t.storyteller.speeds]}
+                                    >
+                                        {speechRate === opt.value && (
+                                            <motion.div
+                                                layoutId="activeSpeed"
+                                                className="absolute inset-0 rounded-full"
+                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                            />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Main Controls */}

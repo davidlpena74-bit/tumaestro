@@ -278,7 +278,14 @@ export const TRANSLATIONS = {
             moreTitles: 'Más Títulos',
             moreTitlesDesc: 'Estamos preparando clásicos como Harry Potter y El Hobbit.',
             by: 'Por',
-            read: 'Leer'
+            read: 'Leer',
+            speeds: {
+                slowest: 'Muy Lento',
+                slower: 'Lento',
+                normal: 'Normal',
+                faster: 'Rápido',
+                fastest: 'Muy Rápido'
+            }
         },
         dictation: {
             title: 'Dictados Interactivos',
@@ -580,7 +587,14 @@ export const TRANSLATIONS = {
             moreTitles: 'More Titles',
             moreTitlesDesc: 'We are preparing classics like Harry Potter and The Hobbit.',
             by: 'By',
-            read: 'Read'
+            read: 'Read',
+            speeds: {
+                slowest: 'Slowest',
+                slower: 'Slower',
+                normal: 'Normal',
+                faster: 'Faster',
+                fastest: 'Fastest'
+            }
         },
         dictation: {
             title: 'Interactive Dictations',

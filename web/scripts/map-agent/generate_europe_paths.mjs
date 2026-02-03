@@ -16,7 +16,11 @@ const factory = new MapFactory();
 try {
     factory
         .loadTopoJSON('public/maps/world-countries-50m.json', 'countries')
-        .filter(f => EUROPE_COUNTRIES.includes(f.properties.name))
+        .filter(f => {
+            const name = f.properties.name;
+            if (name === 'Macedonia') return true;
+            return EUROPE_COUNTRIES.includes(name);
+        })
         .setProjection((collection, d3) => {
             const boundingBox = {
                 type: "Feature",
@@ -36,7 +40,11 @@ try {
                 .fitExtent([[40, 40], [760, 560]], boundingBox);
         });
 
-    const paths = factory.generateSVGPaths('name');
+    const paths = factory.generateSVGPaths(f => {
+        const name = f.properties.name;
+        if (name === 'Macedonia') return 'North Macedonia';
+        return name;
+    });
     factory.saveTypeScript('src/components/games/data/europe-paths.ts', 'EUROPE_PATHS', paths);
 
     console.log(`Successfully generated paths for ${Object.keys(paths).length} European countries (Fit with Padding).`);

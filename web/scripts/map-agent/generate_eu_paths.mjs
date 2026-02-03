@@ -75,7 +75,11 @@ const factory = new MapFactory();
 try {
     factory
         .loadTopoJSON('public/maps/world-countries-50m.json', 'countries')
-        .filter(f => ALL_EUROPE.includes(f.properties.name))
+        .filter(f => {
+            const name = f.properties.name;
+            if (name === 'Macedonia') return true;
+            return ALL_EUROPE.includes(name);
+        })
         .setProjection((collection, d3) => {
             // Same projection as standard Europe map for consistency
             const boundingBox = {
@@ -97,7 +101,11 @@ try {
         });
 
     // 1. Generate SVG Paths (Borders)
-    const paths = factory.generateSVGPaths('name');
+    const paths = factory.generateSVGPaths(f => {
+        const name = f.properties.name;
+        if (name === 'Macedonia') return 'North Macedonia';
+        return name;
+    });
     factory.saveTypeScript('src/components/games/data/eu-paths.ts', 'EU_PATHS', paths);
 
     // 2. Generate Accurate Capital Coordinates
