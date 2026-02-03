@@ -408,6 +408,38 @@ export default function JuegosClient() {
                     ]
                 }
             ]
+        },
+        {
+            id: 'intelligence',
+            title: t.gamesPage.categories.intelligence,
+            icon: Brain,
+            colorTheme: 'from-amber-500 to-yellow-700',
+            subsections: [
+                {
+                    games: [
+                        {
+                            id: 'riddles',
+                            title: t.gamesPage.gameTitles.riddles,
+                            description: t.gamesPage.gameTitles.riddlesDesc,
+                            href: '/juegos/riddles',
+                            icon: Brain,
+                            color: 'from-amber-400 to-yellow-600',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.logic
+                        },
+                        {
+                            id: 'logic-challenge',
+                            title: t.gamesPage.gameTitles.logic,
+                            description: t.gamesPage.gameTitles.logicDesc,
+                            href: '/juegos/logic',
+                            icon: Brain,
+                            color: 'from-amber-400 to-yellow-600',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.logic
+                        }
+                    ]
+                }
+            ]
         }
     ];
 
@@ -445,6 +477,16 @@ export default function JuegosClient() {
         return result;
     }, [selectedGrade, selectedSubject, categories]);
 
+    // Categories available for the current grade (used for chips)
+    const availableCategories = useMemo(() => {
+        if (selectedGrade === 'all') return categories;
+        return categories.filter(cat =>
+            cat.subsections.some(sub =>
+                sub.games.some(game => game.grade === selectedGrade || game.grade === 'Todo')
+            )
+        );
+    }, [selectedGrade, categories]);
+
     return (
         <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto relative z-10">
@@ -472,9 +514,9 @@ export default function JuegosClient() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12 px-4 relative z-20 w-full"
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12 px-4 relative z-20 w-full"
                 >
-                    {filteredCategories.map((category) => (
+                    {availableCategories.map((category) => (
                         <motion.a
                             key={category.id}
                             href={`#${category.id}`}
@@ -506,7 +548,8 @@ export default function JuegosClient() {
                                 category.id === 'biology' && (selectedSubject === 'biology' ? "bg-blue-100/60" : "bg-blue-50/40"),
                                 category.id === 'math' && (selectedSubject === 'math' ? "bg-orange-100/60" : "bg-orange-50/40"),
                                 category.id === 'culture' && (selectedSubject === 'culture' ? "bg-violet-100/60" : "bg-violet-50/40"),
-                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "bg-pink-100/60" : "bg-pink-50/40")
+                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "bg-pink-100/60" : "bg-pink-50/40"),
+                                category.id === 'intelligence' && (selectedSubject === 'intelligence' ? "bg-amber-100/60" : "bg-amber-50/40")
                             )}>
                                 {/* Shine Effect */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -520,7 +563,8 @@ export default function JuegosClient() {
                                     category.id === 'biology' && "text-blue-600",
                                     category.id === 'math' && "text-orange-600",
                                     category.id === 'culture' && "text-violet-600",
-                                    category.id === 'idiomas' && "text-pink-600"
+                                    category.id === 'idiomas' && "text-pink-600",
+                                    category.id === 'intelligence' && "text-amber-600"
                                 )} weight="duotone" />
 
                                 <span className="relative z-10 tracking-tight text-center whitespace-nowrap">{category.title}</span>
@@ -639,7 +683,9 @@ export default function JuegosClient() {
                                                             game.color.includes('orange') && "bg-orange-950/70",
                                                             game.color.includes('violet') && "bg-violet-950/70",
                                                             game.color.includes('pink') && "bg-pink-950/70",
-                                                            game.color.includes('rose') && "bg-rose-950/70"
+                                                            game.color.includes('rose') && "bg-rose-950/70",
+                                                            game.color.includes('amber') && "bg-amber-950/70",
+                                                            game.color.includes('yellow') && "bg-yellow-950/70"
                                                         )}>
                                                             {/* 3D Top Glare Effect */}
                                                             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -664,6 +710,7 @@ export default function JuegosClient() {
                                                                                 if (game.gameType === t.gamesPage.gameTypes.quiz) return <Brain className="w-3 h-3" weight="regular" />;
                                                                                 if (game.gameType === t.gamesPage.gameTypes.math) return <Calculator className="w-3 h-3" weight="regular" />;
                                                                                 if (game.gameType === t.gamesPage.gameTypes.verbs) return <Translate className="w-3 h-3" weight="regular" />;
+                                                                                if (game.gameType === t.gamesPage.gameTypes.logic) return <Brain className="w-3 h-3" weight="regular" />;
                                                                                 return <MapTrifold className="w-3 h-3" weight="regular" />;
                                                                             })()}
                                                                             {game.gameType}

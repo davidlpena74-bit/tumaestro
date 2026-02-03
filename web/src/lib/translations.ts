@@ -82,7 +82,8 @@ export const TRANSLATIONS = {
                 geography: 'Ciencias Sociales',
                 math: 'Matemáticas',
                 culture: 'Cultura General',
-                biology: 'Ciencias Naturales'
+                biology: 'Ciencias Naturales',
+                intelligence: 'Retos de Inteligencia'
             },
             gameTitles: {
                 region: 'Comunidades Autónomas',
@@ -140,6 +141,10 @@ export const TRANSLATIONS = {
                 verbsDesc: 'Practica los verbos irregulares en inglés.',
                 multiplication: 'Multiplicación Visual',
                 multiplicationDesc: 'Aprende a multiplicar dibujando líneas. ¡Es pura magia!',
+                riddles: 'Adivinanzas Mágicas',
+                riddlesDesc: 'Pon a prueba tu ingenio con acertijos y adivinanzas clásicas.',
+                logic: 'Desafío de Lógica',
+                logicDesc: 'Resuelve problemas de lógica y razonamiento espacial.'
             },
             divisionGame: {
                 title: 'División de Pizzas',
@@ -196,7 +201,8 @@ export const TRANSLATIONS = {
                 puzzle: 'Puzzle',
                 quiz: 'Quiz',
                 math: 'Cálculo',
-                verbs: 'Verbos'
+                verbs: 'Verbos',
+                logic: 'Lógica'
             },
             cellParts: {
                 nucleus: 'Núcleo',
@@ -378,7 +384,8 @@ export const TRANSLATIONS = {
                 geography: 'Social Science',
                 math: 'Mathematics',
                 culture: 'General Knowledge',
-                biology: 'Natural Science'
+                biology: 'Natural Science',
+                intelligence: 'Intelligence Challenges'
             },
             gameTitles: {
                 region: 'Autonomous Communities',
@@ -436,6 +443,10 @@ export const TRANSLATIONS = {
                 verbsDesc: 'Practice irregular verbs in English.',
                 multiplication: 'Visual Multiplication',
                 multiplicationDesc: 'Learn to multiply by drawing lines. It\'s pure magic!',
+                riddles: 'Magic Riddles',
+                riddlesDesc: 'Test your wit with classic puzzles and riddles.',
+                logic: 'Logic Challenge',
+                logicDesc: 'Solve logic problems and spatial reasoning tasks.'
             },
             divisionGame: {
                 title: 'Pizza Division',
@@ -492,7 +503,8 @@ export const TRANSLATIONS = {
                 puzzle: 'Puzzle',
                 quiz: 'Quiz',
                 math: 'Calculation',
-                verbs: 'Verbs'
+                verbs: 'Verbs',
+                logic: 'Logic'
             },
             cellParts: {
                 nucleus: 'Nucleus',
