@@ -350,6 +350,16 @@ export default function JuegosClient() {
                             color: 'from-orange-500 to-amber-600',
                             grade: '3º Prim.',
                             gameType: t.gamesPage.gameTypes.math
+                        },
+                        {
+                            id: 'multiplication',
+                            title: t.gamesPage.gameTitles.multiplication,
+                            description: t.gamesPage.gameTitles.multiplicationDesc,
+                            href: '/juegos/multiplicaciones',
+                            icon: Calculator,
+                            color: 'from-orange-500 to-amber-600',
+                            grade: '2º Prim.',
+                            gameType: t.gamesPage.gameTypes.math
                         }
                     ]
                 }

@@ -138,7 +138,8 @@ export const TRANSLATIONS = {
                 femaleReproductiveDesc: 'Identifica las partes y órganos del sistema reproductor femenino.',
                 verbs: 'Verbos Irregulares',
                 verbsDesc: 'Practica los verbos irregulares en inglés.',
-
+                multiplication: 'Multiplicación Visual',
+                multiplicationDesc: 'Aprende a multiplicar dibujando líneas. ¡Es pura magia!',
             },
             divisionGame: {
                 title: 'División de Pizzas',
@@ -159,6 +160,18 @@ export const TRANSLATIONS = {
                 keyConcept: 'Concepto Clave',
                 explanation: '{dividend} pizzas divididas entre {divisor} amigos son {quotient} pizzas para cada uno',
                 remainder: ' y sobran {remainder}'
+            },
+            multiplicationGame: {
+                title: 'Multiplicación Visual',
+                description: 'Aprende a multiplicar dibujando líneas. Una forma mágica de ver cómo se cruzan los números.',
+                startBtn: 'EMPEZAR JUEGO',
+                task: 'Multiplica {a} x {b} usando líneas',
+                countIntersections: 'Cuenta los puntos donde las líneas se cruzan',
+                checkAnswer: 'Comprobar Resultado',
+                greatJob: '¡Excelente! 🎉',
+                explanation: 'Al cruzar {a} líneas con {b} líneas, obtenemos {result} puntos de intersección.',
+                linesA: 'Líneas de {a}',
+                linesB: 'Líneas de {b}'
             },
             playBtn: 'JUGAR AHORA',
             comingSoon: 'Pronto añadiremos más asignaturas como Historia y Lengua',
@@ -421,7 +434,8 @@ export const TRANSLATIONS = {
                 femaleReproductiveDesc: 'Identify the parts and organs of the female reproductive system.',
                 verbs: 'Irregular Verbs',
                 verbsDesc: 'Practice irregular verbs in English.',
-
+                multiplication: 'Visual Multiplication',
+                multiplicationDesc: 'Learn to multiply by drawing lines. It\'s pure magic!',
             },
             divisionGame: {
                 title: 'Pizza Division',
@@ -442,6 +456,18 @@ export const TRANSLATIONS = {
                 keyConcept: 'Key Concept',
                 explanation: '{dividend} pizzas divided among {divisor} friends equals {quotient} pizzas each',
                 remainder: ' and {remainder} left over'
+            },
+            multiplicationGame: {
+                title: 'Visual Multiplication',
+                description: 'Learn to multiply by drawing lines. A magical way to see how numbers intersect.',
+                startBtn: 'START GAME',
+                task: 'Multiply {a} x {b} using lines',
+                countIntersections: 'Count the points where the lines cross',
+                checkAnswer: 'Check Result',
+                greatJob: 'Excellent! 🎉',
+                explanation: 'By crossing {a} lines with {b} lines, we get {result} intersection points.',
+                linesA: 'Lines for {a}',
+                linesB: 'Lines for {b}'
             },
             playBtn: 'PLAY NOW',
             comingSoon: 'Soon we will add more subjects like History and Language',

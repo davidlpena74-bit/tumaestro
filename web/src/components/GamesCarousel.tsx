@@ -65,6 +65,15 @@ const GAMES = [
         icon: Calculator
     },
     {
+        id: 'multiplicaciones',
+        title: 'Multiplicación Visual',
+        category: 'Matemáticas',
+        image: '/images/games/multiplication-hq.png',
+        href: '/juegos/multiplicaciones',
+        color: 'from-blue-500 to-indigo-600',
+        icon: Calculator
+    },
+    {
         id: 'quiz-cultura',
         title: 'Quiz de Cultura',
         category: 'Cultura General',

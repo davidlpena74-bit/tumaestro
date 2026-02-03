@@ -137,12 +137,15 @@ export default function MapGame() {
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
+        // Panning blocked by user request
+        /*
         if (!isDragging) return;
         e.preventDefault();
         setPan({
             x: e.clientX - dragStart.current.x,
             y: e.clientY - dragStart.current.y
         });
+        */
     };
 
     const handleMouseUp = () => {
@@ -188,7 +191,7 @@ export default function MapGame() {
                 {/* MAP CONTAINER - Made transparent */}
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl group cursor-move",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl group",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={(e) => {
@@ -411,8 +414,8 @@ export default function MapGame() {
                 <p className="text-gray-500 text-xs mt-4 flex items-center gap-2">
                     <HelpCircle className="w-3 h-3" />
                     <span>{language === 'es'
-                        ? 'Usa los controles o rueda del ratón para hacer zoom. Arrastra para mover el mapa.'
-                        : 'Use controls or mouse wheel to zoom. Drag to move the map.'}</span>
+                        ? 'Usa los controles o rueda del ratón para hacer zoom.'
+                        : 'Use controls or mouse wheel to zoom.'}</span>
                 </p>
             </div>
         </div>

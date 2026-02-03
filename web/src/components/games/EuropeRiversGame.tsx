@@ -199,11 +199,14 @@ export default function EuropeRiversGame() {
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
+        // Panning blocked by user request
+        /*
         if (!isDragging) return;
         setPan({
             x: e.clientX - dragStart.current.x,
             y: e.clientY - dragStart.current.y,
         });
+        */
     };
 
     const handleMouseUp = () => setIsDragging(false);
@@ -239,7 +242,7 @@ export default function EuropeRiversGame() {
                 {/* MAP CONTAINER */}
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center cursor-move",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}

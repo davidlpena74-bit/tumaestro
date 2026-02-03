@@ -43,15 +43,47 @@ export default function RecursosClient() {
                             <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
                                 <div className="w-full md:w-1/3 flex justify-center">
                                     <motion.div
-                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(251,146,60,0))' }}
-                                        whileHover={{ filter: 'drop-shadow(0 0 30px rgba(251,146,60,0.3))', scale: 1.05 }}
-                                        className="relative"
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(251,146,60,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(251,146,60,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
                                     >
+                                        <div className="absolute inset-0 bg-orange-500/20 rounded-3xl blur-2xl group-hover/img:bg-orange-500/30 transition-all -z-10" />
                                         <img
-                                            src="/images/icons/icon-resources-3d.png"
+                                            src="/images/storyteller/cuentacuentos-main.png"
                                             alt="Cuentacuentos"
-                                            className="w-48 h-48 md:w-64 md:h-64 object-contain"
+                                            className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform -rotate-3 group-hover/img:rotate-0 transition-all duration-500"
                                         />
+                                        {/* Floating Elements for "Multi-story" feel */}
+                                        <motion.div
+                                            animate={{ y: [0, -10, 0] }}
+                                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                            className="absolute -top-6 -right-6 w-16 h-16 bg-white rounded-2xl shadow-xl border border-orange-100 flex items-center justify-center p-2 rotate-12"
+                                        >
+                                            <img src="/images/storyteller/character-gato.png" alt="Gato" className="w-full h-full object-contain" />
+                                        </motion.div>
+                                        <motion.div
+                                            animate={{ y: [0, 10, 0] }}
+                                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                            className="absolute -bottom-6 -left-6 w-16 h-16 bg-white rounded-2xl shadow-xl border border-orange-100 flex items-center justify-center p-2 -rotate-12"
+                                        >
+                                            <img src="/images/storyteller/character-caperucita.png" alt="Caperucita" className="w-full h-full object-contain" />
+                                        </motion.div>
+                                        <motion.div
+                                            animate={{ x: [0, 8, 0], y: [0, -5, 0] }}
+                                            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                                            className="absolute top-1/2 -right-10 w-14 h-14 bg-white rounded-2xl shadow-xl border border-orange-100 flex items-center justify-center p-2 rotate-6"
+                                        >
+                                            <img src="/images/storyteller/character-sirenita.png" alt="Sirenita" className="w-full h-full object-contain" />
+                                        </motion.div>
+                                        <motion.div
+                                            animate={{ x: [0, -8, 0], y: [0, 5, 0] }}
+                                            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                            className="absolute top-1/4 -left-10 w-14 h-14 bg-white rounded-2xl shadow-xl border border-orange-100 flex items-center justify-center p-2 -rotate-6"
+                                        >
+                                            <img src="/images/storyteller/character-patito.png" alt="Patito Feo" className="w-full h-full object-contain" />
+                                        </motion.div>
                                     </motion.div>
                                 </div>
 
@@ -76,7 +108,7 @@ export default function RecursosClient() {
                                         className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
                                         EXPLORAR BIBLIOTECA
-                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" weight="bold" />
+                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
                             </div>
@@ -94,14 +126,17 @@ export default function RecursosClient() {
                             <div className="flex flex-col md:flex-row-reverse items-center gap-12 relative z-10">
                                 <div className="w-full md:w-1/3 flex justify-center">
                                     <motion.div
-                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(168,85,247,0))' }}
-                                        whileHover={{ filter: 'drop-shadow(0 0 30px rgba(168,85,247,0.3))', scale: 1.05 }}
-                                        className="relative"
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(168,85,247,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(168,85,247,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
                                     >
+                                        <div className="absolute inset-0 bg-purple-500/20 rounded-3xl blur-2xl group-hover/img:bg-purple-500/30 transition-all -z-10" />
                                         <img
-                                            src="/images/icons/icon-teacher-3d.png"
-                                            alt="Dictados"
-                                            className="w-48 h-48 md:w-64 md:h-64 object-contain"
+                                            src="/images/resources/dictados-main.png"
+                                            alt="Dictados Interactivos"
+                                            className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform rotate-3 group-hover/img:rotate-0 transition-all duration-500"
                                         />
                                     </motion.div>
                                 </div>
@@ -128,7 +163,7 @@ export default function RecursosClient() {
                                             className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black rounded-2xl shadow-xl shadow-purple-500/20 hover:shadow-purple-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                         >
                                             EMPEZAR A PRACTICAR
-                                            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" weight="bold" />
+                                            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                         </Link>
                                     </div>
                                 </div>
