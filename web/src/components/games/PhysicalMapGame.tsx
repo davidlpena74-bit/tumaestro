@@ -250,6 +250,19 @@ export default function PhysicalMapGame({
                                 <feGaussianBlur stdDeviation="1.5" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
+
+                            {/* Mountain Peak Marker */}
+                            <marker
+                                id="mountain-peak"
+                                viewBox="0 0 20 20"
+                                refX="10"
+                                refY="20"
+                                markerWidth="8"
+                                markerHeight="8"
+                                orient="auto-start-reverse"
+                            >
+                                <path d="M0 20 L10 0 L20 20 Z" fill="currentColor" />
+                            </marker>
                         </defs>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
@@ -298,11 +311,19 @@ export default function PhysicalMapGame({
                                         <motion.path
                                             d={d}
                                             stroke={color}
-                                            strokeWidth={itemType === 'line' ? (isHovered ? 8 : 4) : 1}
+                                            strokeWidth={itemType === 'line' ? (isHovered ? 6 : 3) : 1}
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            markerMid={itemType === 'line' ? "url(#mountain-peak)" : undefined}
+                                            markerStart={itemType === 'line' ? "url(#mountain-peak)" : undefined}
+                                            markerEnd={itemType === 'line' ? "url(#mountain-peak)" : undefined}
                                             fill={itemType === 'polygon' ? color : "none"}
                                             fillOpacity={itemType === 'polygon' ? 0.3 : 0}
                                             className="transition-all duration-300"
-                                            style={{ filter: isHovered || isCompleted ? 'url(#physical-glow)' : 'none' }}
+                                            style={{
+                                                filter: isHovered || isCompleted ? 'url(#physical-glow)' : 'none',
+                                                color: color // Pass color to marker via currentColor
+                                            }}
                                             animate={isHovered ? { scale: 1.02 } : { scale: 1 }}
                                         />
                                     </g>
