@@ -12,6 +12,7 @@ import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
 import { speak } from '@/lib/speech-utils';
+import { calculatePathCentroid } from '@/lib/svg-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -223,12 +224,12 @@ export default function MapGame() {
                     <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
                         <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer"><ZoomIn className="w-5 h-5" /></button>
                         <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.8))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer"><ZoomOut className="w-5 h-5" /></button>
+                        <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer" title="Reset View">
+                            <RefreshCw className="w-5 h-5" />
+                        </button>
                         <div className="h-2" />
                         <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer">
                             {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                        </button>
-                        <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer" title="Reset View">
-                            <RefreshCw className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -307,11 +308,14 @@ export default function MapGame() {
                                 strokeDasharray="4 4"
                             />
 
-                            {/* Render Provinces */}
-                            {[...Object.entries(GAME_PROVINCE_PATHS)].sort(([idA], [idB]) => {
+                            {/* Sorting: Larger first, Smaller last (tiny on top) */}
+                            {[...Object.entries(GAME_PROVINCE_PATHS)].sort(([idA, pA], [idB, pB]) => {
                                 if (idA === hoveredId) return 1;
                                 if (idB === hoveredId) return -1;
-                                return 0;
+
+                                const areaA = calculatePathCentroid(pA[0] || '')?.area || 99999;
+                                const areaB = calculatePathCentroid(pB[0] || '')?.area || 99999;
+                                return areaB - areaA;
                             }).map(([id, paths]) => {
                                 const isTarget = targetId === id;
                                 const isClicked = clickedId === id;
@@ -403,6 +407,55 @@ export default function MapGame() {
                                                 }}
                                             />
                                         ))}
+
+                                        {/* Small Region Helper Circle */}
+                                        {(() => {
+                                            if (isCanaryIsland) return null; // Canary is a group, helper might be messy
+
+                                            // Take the first path for centroid check
+                                            const firstPath = paths[0];
+                                            if (!firstPath) return null;
+
+                                            const centroid = calculatePathCentroid(firstPath);
+                                            // Tiny threshold for provinces (adjust if needed)
+                                            if (centroid && (centroid.area < 15)) {
+                                                return (
+                                                    <g
+                                                        className="cursor-pointer"
+                                                        onMouseEnter={() => gameState === 'playing' && setHoveredId(id)}
+                                                        onMouseLeave={() => setHoveredId(null)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (isClick.current) handleRegionClick(id);
+                                                        }}
+                                                    >
+                                                        {/* Invisible larger hit area */}
+                                                        <circle
+                                                            cx={centroid.x}
+                                                            cy={centroid.y}
+                                                            r={12}
+                                                            fill="transparent"
+                                                        />
+                                                        <motion.circle
+                                                            cx={centroid.x}
+                                                            cy={centroid.y}
+                                                            r={isHovered ? 7 : 5}
+                                                            fill="white"
+                                                            stroke={isSolved ? "#10b981" : "#1e293b"}
+                                                            strokeWidth={1.5}
+                                                            initial={false}
+                                                            animate={
+                                                                (isHovered && gameState === 'playing')
+                                                                    ? { scale: 1.6, opacity: 1, filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.8))' }
+                                                                    : { scale: 1, opacity: 0.9, filter: 'none' }
+                                                            }
+                                                            className="pointer-events-none"
+                                                        />
+                                                    </g>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
                                     </g>
                                 );
                             })}

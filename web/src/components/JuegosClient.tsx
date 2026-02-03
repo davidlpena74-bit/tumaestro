@@ -98,6 +98,17 @@ export default function JuegosClient() {
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.spain,
                             gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-espana',
+                            title: t.gamesPage.gameTitles.mountainsSpain,
+                            description: t.gamesPage.gameTitles.mountainsSpainDesc,
+                            href: '/juegos/montanas-espana',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.spain,
+                            gameType: t.gamesPage.gameTypes.map
                         }
                     ]
                 },
@@ -159,6 +170,28 @@ export default function JuegosClient() {
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.europe,
                             gameType: t.gamesPage.gameTypes.puzzle
+                        },
+                        {
+                            id: 'montanas-europa',
+                            title: t.gamesPage.gameTitles.mountainsEurope,
+                            description: t.gamesPage.gameTitles.mountainsEuropeDesc,
+                            href: '/juegos/montanas-europa',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.europe,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'mares-europa',
+                            title: t.gamesPage.gameTitles.oceansEurope,
+                            description: t.gamesPage.gameTitles.oceansEuropeDesc,
+                            href: '/juegos/mares-europa',
+                            icon: GlobeHemisphereWest,
+                            color: 'from-blue-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.europe,
+                            gameType: t.gamesPage.gameTypes.map
                         }
                     ]
                 },
@@ -208,6 +241,28 @@ export default function JuegosClient() {
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.america,
                             gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-america',
+                            title: t.gamesPage.gameTitles.mountainsAmerica,
+                            description: t.gamesPage.gameTitles.mountainsAmericaDesc,
+                            href: '/juegos/montanas-america',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'mares-america',
+                            title: t.gamesPage.gameTitles.oceansAmerica,
+                            description: t.gamesPage.gameTitles.oceansAmericaDesc,
+                            href: '/juegos/mares-america',
+                            icon: GlobeHemisphereWest,
+                            color: 'from-blue-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
                         }
                     ]
                 },
@@ -240,6 +295,28 @@ export default function JuegosClient() {
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.asia,
                             gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-asia',
+                            title: t.gamesPage.gameTitles.mountainsAsia,
+                            description: t.gamesPage.gameTitles.mountainsAsiaDesc,
+                            href: '/juegos/montanas-asia',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.asia,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'mares-asia',
+                            title: t.gamesPage.gameTitles.oceansAsia,
+                            description: t.gamesPage.gameTitles.oceansAsiaDesc,
+                            href: '/juegos/mares-asia',
+                            icon: GlobeHemisphereWest,
+                            color: 'from-blue-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.asia,
+                            gameType: t.gamesPage.gameTypes.map
                         }
                     ]
                 },
@@ -253,6 +330,28 @@ export default function JuegosClient() {
                             href: '/juegos/mapa-oceania',
                             icon: MapTrifold,
                             color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.oceania,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-oceania',
+                            title: t.gamesPage.gameTitles.mountainsOceania,
+                            description: t.gamesPage.gameTitles.mountainsOceaniaDesc,
+                            href: '/juegos/montanas-oceania',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.oceania,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'mares-oceania',
+                            title: t.gamesPage.gameTitles.oceansOceania,
+                            description: t.gamesPage.gameTitles.oceansOceaniaDesc,
+                            href: '/juegos/mares-oceania',
+                            icon: GlobeHemisphereWest,
+                            color: 'from-blue-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.oceania,
                             gameType: t.gamesPage.gameTypes.map

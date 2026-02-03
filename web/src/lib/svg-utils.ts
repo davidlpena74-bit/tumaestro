@@ -1,4 +1,4 @@
-export function calculatePathCentroid(pathData: string): { x: number; y: number } | null {
+export function calculatePathCentroid(pathData: string): { x: number; y: number; area: number } | null {
     if (!pathData) return null;
 
     // Matches all numbers that might be coordinates (e.g., 123.45 or -123.45)
@@ -36,8 +36,13 @@ export function calculatePathCentroid(pathData: string): { x: number; y: number 
 
     if (count === 0) return null;
 
+    const width = maxX - minX;
+    const height = maxY - minY;
+    const area = width * height;
+
     return {
-        x: minX + (maxX - minX) / 2,
-        y: minY + (maxY - minY) / 2
+        x: minX + width / 2,
+        y: minY + height / 2,
+        area
     };
 }

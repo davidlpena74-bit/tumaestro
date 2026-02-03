@@ -10,6 +10,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
+import { calculatePathCentroid } from '@/lib/svg-utils';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -260,12 +261,12 @@ export default function CountryGameBase({
                     <div className={cn("absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300", isFullscreen ? 'top-32 md:top-28' : 'top-4')} onMouseDown={e => e.stopPropagation()}>
                         <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer"><ZoomIn className="w-5 h-5" /></button>
                         <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer"><ZoomOut className="w-5 h-5" /></button>
+                        <button onClick={() => { setZoom(initialZoom); setPan(initialPan); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer" title="Reset View">
+                            <RefreshCw className="w-5 h-5" />
+                        </button>
                         <div className="h-2" />
                         <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer">
                             {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                        </button>
-                        <button onClick={() => { setZoom(initialZoom); setPan(initialPan); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer" title="Reset View">
-                            <RefreshCw className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -278,11 +279,18 @@ export default function CountryGameBase({
                         </defs>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                            {/* Sorting: Hovered last to render on top */}
-                            {[...Object.entries(pathData)].sort(([idA], [idB]) => {
-                                if (nameMapping[idA] === hoveredId) return 1;
-                                if (nameMapping[idB] === hoveredId) return -1;
-                                return 0;
+                            {/* Sorting: Larger first, Smaller last. Hovered always on very top. */}
+                            {[...Object.entries(pathData)].sort(([idA, pA], [idB, pB]) => {
+                                const nameA = nameMapping[idA];
+                                const nameB = nameMapping[idB];
+
+                                if (nameA === hoveredId) return 1;
+                                if (nameB === hoveredId) return -1;
+
+                                // Smaller area -> higher sort index -> rendered later/on top
+                                const areaA = calculatePathCentroid(pA as string)?.area || 99999;
+                                const areaB = calculatePathCentroid(pB as string)?.area || 99999;
+                                return areaB - areaA;
                             }).map(([engName, pathD]) => {
                                 const localizedName = nameMapping[engName];
                                 const isCompleted = localizedName && !remainingCountries.includes(localizedName);
@@ -342,6 +350,49 @@ export default function CountryGameBase({
                                                 pointerEvents: 'none'
                                             }}
                                         />
+
+                                        {/* Small Country Helper Circle */}
+                                        {(() => {
+                                            const centroid = calculatePathCentroid(pathD);
+                                            // 50 is a heuristic for "tiny" area in map coordinates
+                                            if (centroid && centroid.area < 50) {
+                                                return (
+                                                    <g
+                                                        className="cursor-pointer"
+                                                        onMouseEnter={() => isPlayable && gameState === 'playing' && setHoveredId(localizedName)}
+                                                        onMouseLeave={() => setHoveredId(null)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (isClick.current) handleCountryClick(engName);
+                                                        }}
+                                                    >
+                                                        {/* Invisible larger hit area for the dot */}
+                                                        <circle
+                                                            cx={centroid.x}
+                                                            cy={centroid.y}
+                                                            r={12}
+                                                            fill="transparent"
+                                                        />
+                                                        <motion.circle
+                                                            cx={centroid.x}
+                                                            cy={centroid.y}
+                                                            r={isHovered ? 7 : 5}
+                                                            fill={isCompleted ? "white" : "white"}
+                                                            stroke={isCompleted ? (isFailed ? "#ef4444" : "#10b981") : "#1e293b"}
+                                                            strokeWidth={1.5}
+                                                            initial={false}
+                                                            animate={
+                                                                (isHovered && gameState === 'playing')
+                                                                    ? { scale: 1.6, opacity: 1, filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.8))' }
+                                                                    : { scale: 1, opacity: 0.9, filter: 'none' }
+                                                            }
+                                                            className="pointer-events-none"
+                                                        />
+                                                    </g>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
                                     </g>
                                 );
                             })}
