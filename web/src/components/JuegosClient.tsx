@@ -188,7 +188,7 @@ export default function JuegosClient() {
                             description: t.gamesPage.gameTitles.oceansEuropeDesc,
                             href: '/juegos/mares-europa',
                             icon: GlobeHemisphereWest,
-                            color: 'from-blue-500 to-teal-600',
+                            color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.europe,
                             gameType: t.gamesPage.gameTypes.map
@@ -259,7 +259,7 @@ export default function JuegosClient() {
                             description: t.gamesPage.gameTitles.oceansAmericaDesc,
                             href: '/juegos/mares-america',
                             icon: GlobeHemisphereWest,
-                            color: 'from-blue-500 to-teal-600',
+                            color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.america,
                             gameType: t.gamesPage.gameTypes.map
@@ -313,7 +313,7 @@ export default function JuegosClient() {
                             description: t.gamesPage.gameTitles.oceansAsiaDesc,
                             href: '/juegos/mares-asia',
                             icon: GlobeHemisphereWest,
-                            color: 'from-blue-500 to-teal-600',
+                            color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.asia,
                             gameType: t.gamesPage.gameTypes.map
@@ -351,7 +351,7 @@ export default function JuegosClient() {
                             description: t.gamesPage.gameTitles.oceansOceaniaDesc,
                             href: '/juegos/mares-oceania',
                             icon: GlobeHemisphereWest,
-                            color: 'from-blue-500 to-teal-600',
+                            color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.oceania,
                             gameType: t.gamesPage.gameTypes.map
