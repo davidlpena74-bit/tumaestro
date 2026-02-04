@@ -1,23 +1,12 @@
 
-'use client';
+import { Metadata } from 'next';
+import MaresOceaniaClient from './MaresOceaniaClient';
 
-import PhysicalMapGame from '@/components/games/PhysicalMapGame';
-import { OCEANIA_SEAS_PATHS } from '@/components/games/data/oceania-physical-paths';
-import { OCEANIA_PATHS } from '@/components/games/data/oceania-paths';
-import { useLanguage } from '@/context/LanguageContext';
+export const metadata: Metadata = {
+    title: 'Mares y Océanos de Oceanía - Juego | TuMaestro.es',
+    description: 'Explora los mares y océanos que rodean las islas de Oceanía.',
+};
 
 export default function MaresOceaniaPage() {
-    const { t } = useLanguage();
-
-    return (
-        <PhysicalMapGame
-            title={t.gamesPage.gameTitles.oceansOceania}
-            description={t.gamesPage.gameTitles.oceansOceaniaDesc}
-            items={OCEANIA_SEAS_PATHS}
-            itemType="polygon"
-            backgroundPaths={OCEANIA_PATHS}
-            viewBox="0 0 800 600"
-            colorTheme="blue"
-        />
-    );
+    return <MaresOceaniaClient />;
 }
