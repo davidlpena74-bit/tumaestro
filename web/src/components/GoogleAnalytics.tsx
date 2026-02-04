@@ -4,7 +4,8 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 
-const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-DMBKGQVTEE';
+// Actualizado al ID de tu .env.local para evitar fallos si la prop de entorno no se inyecta
+const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || 'G-G8G47M0Q6W';
 
 export default function GoogleAnalytics() {
     const pathname = usePathname();
@@ -12,7 +13,7 @@ export default function GoogleAnalytics() {
     const [consentGiven, setConsentGiven] = useState(false);
 
     useEffect(() => {
-        // Check local storage for consent
+        // Verificar consentimiento inicial
         const checkConsent = () => {
             const consent = localStorage.getItem('cookie-consent');
             if (consent === 'accepted') {
@@ -22,9 +23,7 @@ export default function GoogleAnalytics() {
 
         checkConsent();
 
-        // Listen for storage events in case consent is updated in another component
         window.addEventListener('storage', checkConsent);
-        // Custom event for same-window updates
         window.addEventListener('cookie-consent-updated', checkConsent);
 
         return () => {
@@ -34,16 +33,25 @@ export default function GoogleAnalytics() {
     }, []);
 
     useEffect(() => {
-        // Si hay consentimiento, trackeamos la navegación
-        if (consentGiven && typeof window !== 'undefined' && (window as any).gtag) {
-            const url = pathname + searchParams.toString();
-            (window as any).gtag('config', GA_ID, {
+        if (consentGiven && typeof window !== 'undefined') {
+            // Aseguramos que dataLayer y gtag existan antes de llamar
+            const win = window as any;
+            win.dataLayer = win.dataLayer || [];
+            if (!win.gtag) {
+                win.gtag = function () {
+                    win.dataLayer.push(arguments);
+                };
+            }
+
+            const url = pathname + (searchParams.toString() ? '?' + searchParams.toString() : '');
+            
+            // Registramos la vista de página
+            win.gtag('config', GA_ID, {
                 page_path: url,
             });
         }
     }, [pathname, searchParams, consentGiven]);
 
-    // Si no hay consentimiento, no renderizamos NADA (GDPR Compliance)
     if (!consentGiven) {
         return null;
     }
@@ -59,14 +67,10 @@ export default function GoogleAnalytics() {
                 strategy="afterInteractive"
                 dangerouslySetInnerHTML={{
                     __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            
-            gtag('config', '${GA_ID}', {
-              page_path: window.location.pathname,
-            });
-          `,
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                    `,
                 }}
             />
         </>
