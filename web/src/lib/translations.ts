@@ -326,6 +326,13 @@ export const TRANSLATIONS = {
             repeat: 'Repetir Dictado',
             level: 'Nivel',
             category: 'Categoría'
+        },
+        resources: {
+            intelligenceTitle: 'Retos de Inteligencia',
+            intelligenceSubtitle: 'Desafía tu mente con acertijos, lógica y problemas de razonamiento lateral.',
+            backToLibrary: 'Volver a Recursos',
+            comingSoon: 'Más material en camino...',
+            comingSoonDesc: 'Estamos preparando fichas descargables, resúmenes y ejercicios interactivos para esta sección.'
         }
     },
     en: {
@@ -653,6 +660,13 @@ export const TRANSLATIONS = {
             repeat: 'Repeat Dictation',
             level: 'Level',
             category: 'Category'
+        },
+        resources: {
+            intelligenceTitle: 'Intelligence Challenges',
+            intelligenceSubtitle: 'Challenge your mind with riddles, logic, and lateral reasoning problems.',
+            backToLibrary: 'Back to Resources',
+            comingSoon: 'More material on the way...',
+            comingSoonDesc: 'We are preparing downloadable sheets, summaries, and interactive exercises for this section.'
         }
     }
 };

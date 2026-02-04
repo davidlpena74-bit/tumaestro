@@ -220,19 +220,19 @@ export default function RiversGame() {
 
                     {/* START OVERLAY - Unified with Map style */}
                     {gameState === 'start' && (
-                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]" onMouseDown={e => e.stopPropagation()}>
+                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-start justify-center p-12 text-left rounded-[2rem]" onMouseDown={e => e.stopPropagation()}>
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <MapPin className="w-12 h-12 text-teal-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Ríos de España</h2>
-                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                                ¿Sabes dónde nace y por dónde pasa cada río?
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase leading-tight max-w-2xl">Ríos de España</h2>
+                            <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">
+                                ¿Sabes dónde nace y por dónde pasa cada río? Pon a prueba tu conocimiento de la hidrografía española.
                             </p>
                             <button
                                 onClick={startGame}
-                                className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
+                                className="group relative px-10 py-5 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:-translate-y-1"
                             >
-                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                                <span className="relative z-10 flex items-center gap-3">EMPEZAR RETO <Timer className="w-6 h-6 opacity-60" /></span>
                             </button>
                         </div>
                     )}

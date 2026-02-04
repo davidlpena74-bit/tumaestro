@@ -252,19 +252,19 @@ export default function EuropeRiversGame() {
                 >
                     {/* START OVERLAY */}
                     {gameState === 'start' && (
-                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
+                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-start justify-center p-12 text-left rounded-[2rem]" onMouseDown={e => e.stopPropagation()}>
                             <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                 <Globe className="w-12 h-12 text-emerald-400" />
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Ríos de Europa</h2>
-                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                                Viaja por el continente y encuentra los ríos más importantes.
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase leading-tight max-w-2xl">Ríos de Europa</h2>
+                            <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">
+                                Viaja por el continente y encuentra los ríos más importantes. Demuestra tu dominio de la hidrografía continental.
                             </p>
                             <button
                                 onClick={startGame}
-                                className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1"
+                                className="group relative px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:-translate-y-1"
                             >
-                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                                <span className="relative z-10 flex items-center gap-3">EMPEZAR RETO <Timer className="w-6 h-6 opacity-60" /></span>
                             </button>
                         </div>
                     )}

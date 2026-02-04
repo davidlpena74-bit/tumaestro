@@ -211,12 +211,12 @@ export default function PhysicalMapGame({
                 >
                     <AnimatePresence>
                         {gameState === 'start' && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-start justify-center p-12 text-left rounded-[2rem]">
                                 <Globe className="w-16 h-16 text-teal-400 mb-6" />
-                                <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
-                                <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">{description}</p>
-                                <button onClick={startGame} className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1">
-                                    <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                                <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase leading-tight max-w-2xl">{title}</h2>
+                                <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">{description}</p>
+                                <button onClick={startGame} className="group relative px-10 py-5 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:-translate-y-1">
+                                    <span className="relative z-10 flex items-center gap-3">EMPEZAR RETO <Timer className="w-6 h-6 opacity-60" /></span>
                                 </button>
                             </motion.div>
                         )}

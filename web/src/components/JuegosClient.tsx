@@ -465,28 +465,6 @@ export default function JuegosClient() {
             ]
         },
         {
-            id: 'culture',
-            title: t.gamesPage.categories.culture,
-            icon: Brain,
-            colorTheme: 'from-violet-600 to-indigo-800',
-            subsections: [
-                {
-                    games: [
-                        {
-                            id: 'quiz',
-                            title: t.gamesPage.gameTitles.quiz,
-                            description: t.gamesPage.gameTitles.quizDesc,
-                            href: '/juegos/quiz-cultura',
-                            icon: Brain,
-                            color: 'from-violet-500 to-indigo-600',
-                            grade: '5º Prim.',
-                            gameType: t.gamesPage.gameTypes.quiz
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             id: 'idiomas',
             title: t.gamesPage.regions.languages,
             icon: Translate,
@@ -503,38 +481,6 @@ export default function JuegosClient() {
                             color: 'from-pink-500 to-rose-600',
                             grade: '5º Prim.',
                             gameType: t.gamesPage.gameTypes.verbs
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            id: 'intelligence',
-            title: t.gamesPage.categories.intelligence,
-            icon: Brain,
-            colorTheme: 'from-amber-500 to-yellow-700',
-            subsections: [
-                {
-                    games: [
-                        {
-                            id: 'riddles',
-                            title: t.gamesPage.gameTitles.riddles,
-                            description: t.gamesPage.gameTitles.riddlesDesc,
-                            href: '/juegos/riddles',
-                            icon: Brain,
-                            color: 'from-amber-400 to-yellow-600',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.logic
-                        },
-                        {
-                            id: 'logic-challenge',
-                            title: t.gamesPage.gameTitles.logic,
-                            description: t.gamesPage.gameTitles.logicDesc,
-                            href: '/juegos/logic',
-                            icon: Brain,
-                            color: 'from-amber-400 to-yellow-600',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.logic
                         }
                     ]
                 }
@@ -646,9 +592,7 @@ export default function JuegosClient() {
                                 category.id === 'geography' && (selectedSubject === 'geography' ? "bg-emerald-100/60" : "bg-emerald-50/40"),
                                 category.id === 'biology' && (selectedSubject === 'biology' ? "bg-blue-100/60" : "bg-blue-50/40"),
                                 category.id === 'math' && (selectedSubject === 'math' ? "bg-orange-100/60" : "bg-orange-50/40"),
-                                category.id === 'culture' && (selectedSubject === 'culture' ? "bg-violet-100/60" : "bg-violet-50/40"),
-                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "bg-pink-100/60" : "bg-pink-50/40"),
-                                category.id === 'intelligence' && (selectedSubject === 'intelligence' ? "bg-amber-100/60" : "bg-amber-50/40")
+                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "bg-pink-100/60" : "bg-pink-50/40")
                             )}>
                                 {/* Shine Effect */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -661,9 +605,7 @@ export default function JuegosClient() {
                                     category.id === 'geography' && "text-emerald-600",
                                     category.id === 'biology' && "text-blue-600",
                                     category.id === 'math' && "text-orange-600",
-                                    category.id === 'culture' && "text-violet-600",
-                                    category.id === 'idiomas' && "text-pink-600",
-                                    category.id === 'intelligence' && "text-amber-600"
+                                    category.id === 'idiomas' && "text-pink-600"
                                 )} weight="duotone" />
 
                                 <span className="relative z-10 tracking-tight text-center whitespace-nowrap">{category.title}</span>

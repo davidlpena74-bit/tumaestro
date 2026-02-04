@@ -45,17 +45,42 @@ Identifica la mecánica del juego solicitado y selecciona el archivo fuente sagr
 2.  **Gestión de Assets**:
     *   **Imágenes**: Deben ser PNG transparentes de alta calidad en `web/public/images/games/`. Si necesitas quitar fondo, usa `/images-agent`.
     *   **Paths**: Si es mapa, asegúrate de tener los paths SVG.
+    *   **Diseño Visual (Alineación)**: Asegura que el título y la descripción estén alineados a la izquierda con el `GameHUD`.
+    *   **Layout Estándar**: Usa siempre `PhysicalGameLayout` para envolver el juego. El contenedor debe ser `max-w-6xl` y el texto debe tener `text-left`.
 
 3.  **Creación de la Página Envolvente**:
     *   Lee `web/src/app/juegos/celula-animal/page.tsx` (Template de Página).
-    *   Crea `web/src/app/juegos/[slug-juego]/page.tsx`.
-    *   Actualiza título, descripción e importa tu nuevo componente de juego.
+    *   Usa el patrón de separación de componentes: `page.tsx` (Server Component para Metadata) y `[Nombre]Client.tsx` (Client Component para el Layout y Juego).
+    *   **Metadata**: Define siempre el objeto `metadata` en el `page.tsx`.
 
 4.  **Registro y Traducciones**:
     *   Añade el título y descripciones en `web/src/lib/translations.ts` (ES y EN).
     *   Registra la entrada del menú en `web/src/components/JuegosClient.tsx`.
 
 #### 3. Normas de Calidad (Checklist)
+*   **Alineación**: Título, descripción y GameHUD deben estar alineados a la izquierda (`max-w-6xl mx-auto px-4`).
 *   **Imagen**: Fondo transparente de alta calidad.
 *   **Colores**: Mantén la paleta de colores del template original.
 *   **Imports**: Verifica que todas las rutas de importación (`@/components/...`) sean correctas.
+
+#### 4. Template Maestro de Página (Referencia)
+```tsx
+// [Nombre]Client.tsx
+'use client';
+import PhysicalMapGame from '@/components/games/PhysicalMapGame';
+import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
+import { useLanguage } from '@/context/LanguageContext';
+
+export default function GameClient() {
+    const { t } = useLanguage();
+    return (
+        <PhysicalGameLayout
+            title={t.gamesPage.gameTitles.tuJuego}
+            description={t.gamesPage.gameTitles.tuJuegoDesc}
+            colorTheme="emerald"
+        >
+            <PhysicalMapGame {...props} />
+        </PhysicalGameLayout>
+    );
+}
+```
