@@ -118,13 +118,9 @@ export default function StorytellerTool() {
 
     useEffect(() => {
         if (isPlaying && selectedBook) {
-            // Un pequeño retraso para que la animación de cambio de página se vea mejor
-            const timer = setTimeout(() => {
-                speakPage();
-            }, 300); // Reduced delay for smoother feel
-            return () => clearTimeout(timer);
+            speakPage();
         }
-    }, [currentPage, isPlaying, speechRate, audioLanguage]); // Added audioLanguage to restart audio on language change
+    }, [currentPage, speechRate, audioLanguage]);
 
     const requestProgressLoop = () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
@@ -206,85 +202,61 @@ export default function StorytellerTool() {
         isUsingAudioRef.current = false;
 
         // Try to play pre-recorded audio first
-        // If language is 'es', we look in the root folder.
-        // For other languages, we look in a subfolder (e.g., /en/)
         const langSubfolder = audioLanguage === 'es' ? "" : `/${audioLanguage}`;
         const audioPath = `/audio/storyteller/${selectedBook.id}${langSubfolder}/page_${currentPage}.mp3`;
 
-        let hasMP3 = false;
-
-        // Try to play MP3 regardless of language, if it exists
         const playRecordedAudio = () => {
             return new Promise<boolean>((resolve) => {
                 if (!audioRef.current) audioRef.current = new Audio();
                 const audio = audioRef.current;
 
+                // Cleanup previous listeners
+                audio.onended = null;
+                audio.onerror = null;
+
                 audio.src = audioPath;
-                audio.load();
 
-                const loadTimeout = setTimeout(() => {
-                    cleanupLoadingListeners();
-                    resolve(false);
-                }, 2000);
+                // Optimistic Play Strategy for Mobile
+                const playPromise = audio.play();
 
-                const onCanPlayThrough = () => {
-                    clearTimeout(loadTimeout);
-                    audio.play().catch(() => {
-                        cleanupLoadingListeners();
-                        resolve(false);
-                    });
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            setIsPlaying(true);
+                            isPlayingRef.current = true;
+                            isUsingAudioRef.current = true;
 
-                    setIsPlaying(true);
-                    isPlayingRef.current = true;
+                            audio.playbackRate = speechRate;
+                            requestProgressLoop();
 
-                    const duration = audio.duration || 10;
-                    audio.playbackRate = speechRate;
-                    isUsingAudioRef.current = true;
-                    // For MP3, speedMultiplier in loop is ignored, we use currentTime
-                    requestProgressLoop();
-
-                    cleanupLoadingListeners();
-                    resolve(true);
-                };
-
-                const onError = () => {
-                    clearTimeout(loadTimeout);
-                    cleanupLoadingListeners();
-                    resolve(false);
-                };
-
-                const onEnded = () => {
-                    handlePageFinished();
-                };
-
-                const cleanupLoadingListeners = () => {
-                    if (audio) {
-                        audio.removeEventListener('canplaythrough', onCanPlayThrough);
-                        audio.removeEventListener('error', onError);
-                    }
-                };
-
-                audio.removeEventListener('ended', onEnded);
-                audio.addEventListener('canplaythrough', onCanPlayThrough, { once: true });
-                audio.addEventListener('error', onError, { once: true });
-                audio.addEventListener('ended', onEnded);
-
-                if (audio.readyState >= 3) {
-                    onCanPlayThrough();
+                            audio.onended = () => {
+                                handlePageFinished();
+                            };
+                            resolve(true);
+                        })
+                        .catch(() => {
+                            // Failed to play (likely 404 or format issue)
+                            resolve(false);
+                        });
+                } else {
+                    // Legacy fallback
+                    audio.onerror = () => resolve(false);
+                    audio.oncanplaythrough = () => {
+                        audio.play();
+                        resolve(true);
+                    };
                 }
             });
         };
 
-        hasMP3 = await playRecordedAudio();
-
+        const hasMP3 = await playRecordedAudio();
 
         if (hasMP3) return;
 
-        // Fallback to Synthesis: Clear audio source to avoid "The element has no supported sources" errors
+        // Fallback to Synthesis
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.src = "";
-            audioRef.current.load(); // Forces clearing the buffer
         }
 
         const utterance = new SpeechSynthesisUtterance(text);
@@ -361,20 +333,35 @@ export default function StorytellerTool() {
             setIsPlaying(false);
             isPlayingRef.current = false;
         } else {
-            if (audioRef.current && audioRef.current.src && !audioRef.current.ended) {
+            // Unlocks audio context for iOS/Mobile
+            const unlockAudio = () => {
+                if (audioRef.current) {
+                    audioRef.current.play().catch(() => { });
+                    audioRef.current.pause();
+                }
+                if (synthRef.current) {
+                    synthRef.current.resume();
+                }
+            };
+            unlockAudio();
+
+            if (audioRef.current && audioRef.current.src && !audioRef.current.ended && audioRef.current.currentTime > 0) {
+                // Resume Audio
                 audioRef.current.play();
                 setIsPlaying(true);
                 isPlayingRef.current = true;
                 requestProgressLoop();
-            } else if (synthRef.current?.paused) {
+            } else if (synthRef.current?.paused && synthRef.current.speaking) {
+                // Resume TTS
                 synthRef.current.resume();
                 setIsPlaying(true);
                 isPlayingRef.current = true;
                 requestProgressLoop();
             } else {
+                // Start Fresh
                 setIsPlaying(true);
-                // The useEffect at line 83 now handles calling speakPage() 
-                // because it has [isPlaying, currentPage] as dependencies.
+                isPlayingRef.current = true;
+                speakPage(); // DIRECT CALL
             }
         }
     };
