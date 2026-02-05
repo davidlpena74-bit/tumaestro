@@ -179,8 +179,13 @@ export default function StorytellerTool() {
         }
     };
 
+    const playbackRequestId = useRef(0);
+
     const speakPage = async () => {
         if (!selectedBook || !synthRef.current) return;
+
+        // Increment request ID to invalidate pending events
+        const currentRequestId = ++playbackRequestId.current;
 
         // Critical: Detach listeners from previous utterance/audio to prevent 
         // "onend" firing during cancellation and stopping playback prematurely.
@@ -210,6 +215,9 @@ export default function StorytellerTool() {
 
         // Define TTS Logic as a standalone function
         const startTTS = () => {
+            // Check if this request is still valid before starting
+            if (currentRequestId !== playbackRequestId.current) return;
+
             // Fallback to Synthesis
             if (audioRef.current) {
                 audioRef.current.pause();
@@ -251,16 +259,18 @@ export default function StorytellerTool() {
             utterance.volume = 1.0;
 
             utterance.onstart = () => {
-                setIsPlaying(true);
-                isPlayingRef.current = true;
-                lastTimeRef.current = performance.now();
-                lastBoundaryTimeRef.current = performance.now();
-                lastBoundaryCharIndexRef.current = 0;
-                requestProgressLoop();
+                if (currentRequestId === playbackRequestId.current) {
+                    setIsPlaying(true);
+                    isPlayingRef.current = true;
+                    lastTimeRef.current = performance.now();
+                    lastBoundaryTimeRef.current = performance.now();
+                    lastBoundaryCharIndexRef.current = 0;
+                    requestProgressLoop();
+                }
             };
 
             utterance.onboundary = (event) => {
-                if (event.name === 'word') {
+                if (currentRequestId === playbackRequestId.current && event.name === 'word') {
                     const currentIndex = event.charIndex;
                     const now = performance.now();
                     const timeDiff = now - lastBoundaryTimeRef.current;
@@ -280,7 +290,10 @@ export default function StorytellerTool() {
             };
 
             utterance.onend = () => {
-                handlePageFinished();
+                // GUARD: Only handle finish if ID matches
+                if (currentRequestId === playbackRequestId.current) {
+                    handlePageFinished();
+                }
             };
 
             utteranceRef.current = utterance;
@@ -306,6 +319,12 @@ export default function StorytellerTool() {
 
         audio.play()
             .then(() => {
+                // Check validity
+                if (currentRequestId !== playbackRequestId.current) {
+                    audio.pause();
+                    return;
+                }
+
                 // MP3 Success
                 setIsPlaying(true);
                 isPlayingRef.current = true;
@@ -318,13 +337,17 @@ export default function StorytellerTool() {
                 requestProgressLoop();
 
                 audio.onended = () => {
-                    handlePageFinished();
+                    if (currentRequestId === playbackRequestId.current) {
+                        handlePageFinished();
+                    }
                 };
             })
             .catch((err) => {
                 // MP3 Fail -> Start TTS
                 // console.log("MP3 Playback failed, starting TTS", err);
-                startTTS();
+                if (currentRequestId === playbackRequestId.current) {
+                    startTTS();
+                }
             });
     };
 
