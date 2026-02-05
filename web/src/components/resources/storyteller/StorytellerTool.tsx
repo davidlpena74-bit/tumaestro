@@ -122,23 +122,24 @@ export default function StorytellerTool() {
         }
     }, [currentPage, speechRate, audioLanguage]);
 
+    const isLoadingRef = useRef(false);
+
     const requestProgressLoop = () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         lastTimeRef.current = performance.now();
 
         const loop = (time: number) => {
-            // Aggressive Recovery: If we are effectively playing (audio or TTS active), 
-            // but isPlaying is false, force it back to true.
-            if (!isPlayingRef.current) {
+            // Keep alive if Loading or Playing
+            // If neither, check for "Active" ghost state to recover
+            if (!isPlayingRef.current && !isLoadingRef.current) {
                 const audioActive = audioRef.current && !audioRef.current.paused && !audioRef.current.ended;
                 const ttsActive = synthRef.current && synthRef.current.speaking && !synthRef.current.paused;
 
                 if (audioActive || ttsActive) {
-                    // console.log("State mismatch detected, forcing isPlaying=true");
                     isPlayingRef.current = true;
                     setIsPlaying(true);
                 } else {
-                    return;
+                    return; // Stop loop
                 }
             }
 
@@ -148,11 +149,13 @@ export default function StorytellerTool() {
             const text = currentBookContent[currentPage]?.text || "";
 
             if (isUsingAudioRef.current && audioRef.current) {
-                // Perfect sync for MP3: use currentTime
                 const duration = audioRef.current.duration || 1;
-                const progress = (audioRef.current.currentTime / duration) * text.length;
-                progressRef.current = progress;
-                setCharIndex(Math.min(text.length, Math.floor(progress)));
+                // Guard against NaN/Infinity
+                if (Number.isFinite(duration) && duration > 0) {
+                    const progress = (audioRef.current.currentTime / duration) * text.length;
+                    progressRef.current = progress;
+                    setCharIndex(Math.min(text.length, Math.floor(progress)));
+                }
             } else if (progressRef.current < text.length) {
                 const char = text[Math.floor(progressRef.current)];
                 let speedMultiplier = 1;
