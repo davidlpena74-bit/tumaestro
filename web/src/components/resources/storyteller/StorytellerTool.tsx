@@ -335,19 +335,23 @@ export default function StorytellerTool() {
 
         audio.play()
             .then(() => {
-                // Check validity
                 if (currentRequestId !== playbackRequestId.current) {
                     audio.pause();
                     return;
                 }
 
+                // SECURITY CHECK: Some browsers resolve play() for 404/empty audio
+                // treating it as instant playback. We must verify duration.
+                // If duration is missing, 0, or extremely short, assume it's broken.
+                if (audio.error || (audio.duration !== Infinity && audio.duration < 0.1)) {
+                    // console.warn("MP3 play resolved but seems invalid. Falling back to TTS.");
+                    throw new Error("Invalid audio duration");
+                }
+
                 // MP3 Success
+                isLoadingRef.current = false; // Loaded
                 setIsPlaying(true);
                 isPlayingRef.current = true;
-                isUsingAudioRef.current = true;
-
-                // Recalculate speed for progress bar just in case
-                // For mp3 we use currentTime anyway
                 isUsingAudioRef.current = true;
 
                 requestProgressLoop();
@@ -359,9 +363,11 @@ export default function StorytellerTool() {
                 };
             })
             .catch((err) => {
-                // MP3 Fail -> Start TTS
-                // console.log("MP3 Playback failed, starting TTS", err);
                 if (currentRequestId === playbackRequestId.current) {
+                    // Still loading (switching to TTS)
+                    // Ensure audio is fully stopped before switching
+                    audio.pause();
+                    audio.src = "";
                     startTTS();
                 }
             });
