@@ -182,9 +182,20 @@ export default function StorytellerTool() {
     const speakPage = async () => {
         if (!selectedBook || !synthRef.current) return;
 
-        // Cancel any ongoing speech synthesis or audio playback
+        // Critical: Detach listeners from previous utterance/audio to prevent 
+        // "onend" firing during cancellation and stopping playback prematurely.
+        if (utteranceRef.current) {
+            utteranceRef.current.onend = null;
+            utteranceRef.current.onerror = null;
+            utteranceRef.current = null;
+        }
+
+        // Cancel any ongoing speech synthesis
         synthRef.current.cancel();
+
         if (audioRef.current) {
+            audioRef.current.onended = null;
+            audioRef.current.onerror = null;
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
@@ -324,18 +335,8 @@ export default function StorytellerTool() {
             setIsPlaying(false);
             isPlayingRef.current = false;
         } else {
-            // Unlocks audio context for iOS/Mobile
-            const unlockAudio = () => {
-                if (audioRef.current) {
-                    audioRef.current.play().catch(() => { });
-                    audioRef.current.pause();
-                }
-                if (synthRef.current) {
-                    synthRef.current.resume();
-                }
-            };
-            unlockAudio();
-
+            // Check if we can resume the CURRENT audio
+            // We verify if the audio source seems valid and matches our expectation indirectly
             if (audioRef.current && audioRef.current.src && !audioRef.current.ended && audioRef.current.currentTime > 0) {
                 // Resume Audio
                 audioRef.current.play();
@@ -352,7 +353,7 @@ export default function StorytellerTool() {
                 // Start Fresh
                 setIsPlaying(true);
                 isPlayingRef.current = true;
-                speakPage(); // DIRECT CALL
+                speakPage();
             }
         }
     };
@@ -364,6 +365,10 @@ export default function StorytellerTool() {
             isPlayingRef.current = false;
             setCharIndex(0);
             if (synthRef.current) synthRef.current.cancel();
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = ""; // Clear src to prevent incorrect resume
+            }
         }
     };
 
@@ -374,6 +379,10 @@ export default function StorytellerTool() {
             isPlayingRef.current = false;
             setCharIndex(0);
             if (synthRef.current) synthRef.current.cancel();
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = ""; // Clear src to prevent incorrect resume
+            }
         }
     };
 
