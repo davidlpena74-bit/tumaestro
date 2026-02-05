@@ -127,7 +127,20 @@ export default function StorytellerTool() {
         lastTimeRef.current = performance.now();
 
         const loop = (time: number) => {
-            if (!isPlayingRef.current) return;
+            // Aggressive Recovery: If we are effectively playing (audio or TTS active), 
+            // but isPlaying is false, force it back to true.
+            if (!isPlayingRef.current) {
+                const audioActive = audioRef.current && !audioRef.current.paused && !audioRef.current.ended;
+                const ttsActive = synthRef.current && synthRef.current.speaking && !synthRef.current.paused;
+
+                if (audioActive || ttsActive) {
+                    // console.log("State mismatch detected, forcing isPlaying=true");
+                    isPlayingRef.current = true;
+                    setIsPlaying(true);
+                } else {
+                    return;
+                }
+            }
 
             const deltaTime = time - lastTimeRef.current;
             lastTimeRef.current = time;
