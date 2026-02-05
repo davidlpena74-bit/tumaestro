@@ -196,134 +196,125 @@ export default function StorytellerTool() {
         // Reset progress states
         setCharIndex(0);
         progressRef.current = 0;
-        // Adjust initial speed estimate based on language and rate
-        const langBase = audioLanguage === 'es' ? 0.015 : 0.014;
-        currentSpeedRef.current = (speechRate || 1) * langBase;
-        isUsingAudioRef.current = false;
+
+        // Define TTS Logic as a standalone function
+        const startTTS = () => {
+            // Fallback to Synthesis
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = "";
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            if (audioLanguage === 'en') {
+                utterance.lang = 'en-US';
+                const voices = synthRef.current?.getVoices() || [];
+                const preferredVoice = voices.find(v => v.name.includes("Google US English") || v.name.includes("Zira") || v.lang.startsWith('en'));
+                if (preferredVoice) utterance.voice = preferredVoice;
+            } else if (audioLanguage === 'fr') {
+                utterance.lang = 'fr-FR';
+                const voices = synthRef.current?.getVoices() || [];
+                const preferredVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes("Canada"));
+                if (preferredVoice) utterance.voice = preferredVoice;
+            } else if (audioLanguage === 'de') {
+                utterance.lang = 'de-DE';
+                const voices = synthRef.current?.getVoices() || [];
+                const preferredVoice = voices.find(v => v.lang.startsWith('de'));
+                if (preferredVoice) utterance.voice = preferredVoice;
+            } else {
+                utterance.lang = 'es-ES';
+                const bestVoice = getBestVoice('es-ES');
+                if (bestVoice) {
+                    utterance.voice = bestVoice;
+                }
+            }
+
+            // Calculate speed
+            const langBase = audioLanguage === 'es' ? 0.015 : 0.014;
+            currentSpeedRef.current = (speechRate || 1) * langBase;
+            isUsingAudioRef.current = false;
+
+            utterance.rate = speechRate * (audioLanguage === 'en' ? 0.9 : 0.88);
+            utterance.pitch = 1.08;
+            utterance.volume = 1.0;
+
+            utterance.onstart = () => {
+                setIsPlaying(true);
+                isPlayingRef.current = true;
+                lastTimeRef.current = performance.now();
+                lastBoundaryTimeRef.current = performance.now();
+                lastBoundaryCharIndexRef.current = 0;
+                requestProgressLoop();
+            };
+
+            utterance.onboundary = (event) => {
+                if (event.name === 'word') {
+                    const currentIndex = event.charIndex;
+                    const now = performance.now();
+                    const timeDiff = now - lastBoundaryTimeRef.current;
+                    const charDiff = currentIndex - lastBoundaryCharIndexRef.current;
+
+                    if (timeDiff > 100 && charDiff > 0) {
+                        const measuredSpeed = charDiff / timeDiff;
+                        currentSpeedRef.current = (currentSpeedRef.current * 0.7) + (measuredSpeed * 0.3);
+                    }
+
+                    lastBoundaryTimeRef.current = now;
+                    lastBoundaryCharIndexRef.current = currentIndex;
+
+                    progressRef.current = currentIndex;
+                    setCharIndex(currentIndex);
+                }
+            };
+
+            utterance.onend = () => {
+                handlePageFinished();
+            };
+
+            utteranceRef.current = utterance;
+            if (synthRef.current) synthRef.current.speak(utterance);
+        };
 
         // Try to play pre-recorded audio first
         const langSubfolder = audioLanguage === 'es' ? "" : `/${audioLanguage}`;
         const audioPath = `/audio/storyteller/${selectedBook.id}${langSubfolder}/page_${currentPage}.mp3`;
 
-        const playRecordedAudio = () => {
-            return new Promise<boolean>((resolve) => {
-                if (!audioRef.current) audioRef.current = new Audio();
-                const audio = audioRef.current;
+        if (!audioRef.current) audioRef.current = new Audio();
+        const audio = audioRef.current;
 
-                // Cleanup previous listeners
-                audio.onended = null;
-                audio.onerror = null;
+        // Cleanup
+        audio.onended = null;
+        audio.onerror = null;
+        audio.src = audioPath;
+        audio.playbackRate = speechRate;
 
-                audio.src = audioPath;
+        // DIRECT CHAIN STRATEGY: 
+        // We call play(). If it works, great. If it fails (404), we chain TTS.
+        // This preserves the rejection handler's gesture token on iOS.
 
-                // Optimistic Play Strategy for Mobile
-                const playPromise = audio.play();
+        audio.play()
+            .then(() => {
+                // MP3 Success
+                setIsPlaying(true);
+                isPlayingRef.current = true;
+                isUsingAudioRef.current = true;
 
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            setIsPlaying(true);
-                            isPlayingRef.current = true;
-                            isUsingAudioRef.current = true;
+                // Recalculate speed for progress bar just in case
+                // For mp3 we use currentTime anyway
+                isUsingAudioRef.current = true;
 
-                            audio.playbackRate = speechRate;
-                            requestProgressLoop();
+                requestProgressLoop();
 
-                            audio.onended = () => {
-                                handlePageFinished();
-                            };
-                            resolve(true);
-                        })
-                        .catch(() => {
-                            // Failed to play (likely 404 or format issue)
-                            resolve(false);
-                        });
-                } else {
-                    // Legacy fallback
-                    audio.onerror = () => resolve(false);
-                    audio.oncanplaythrough = () => {
-                        audio.play();
-                        resolve(true);
-                    };
-                }
+                audio.onended = () => {
+                    handlePageFinished();
+                };
+            })
+            .catch((err) => {
+                // MP3 Fail -> Start TTS
+                // console.log("MP3 Playback failed, starting TTS", err);
+                startTTS();
             });
-        };
-
-        const hasMP3 = await playRecordedAudio();
-
-        if (hasMP3) return;
-
-        // Fallback to Synthesis
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.src = "";
-        }
-
-        const utterance = new SpeechSynthesisUtterance(text);
-
-        if (audioLanguage === 'en') {
-            utterance.lang = 'en-US';
-            const voices = synthRef.current.getVoices();
-            const preferredVoice = voices.find(v => v.name.includes("Google US English") || v.name.includes("Zira") || v.lang.startsWith('en'));
-            if (preferredVoice) utterance.voice = preferredVoice;
-        } else if (audioLanguage === 'fr') {
-            utterance.lang = 'fr-FR';
-            const voices = synthRef.current.getVoices();
-            const preferredVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes("Canada")); // Prefer FR-FR
-            if (preferredVoice) utterance.voice = preferredVoice;
-        } else if (audioLanguage === 'de') {
-            utterance.lang = 'de-DE';
-            const voices = synthRef.current.getVoices();
-            const preferredVoice = voices.find(v => v.lang.startsWith('de'));
-            if (preferredVoice) utterance.voice = preferredVoice;
-        } else {
-            utterance.lang = 'es-ES';
-            const bestVoice = getBestVoice('es-ES');
-            if (bestVoice) {
-                utterance.voice = bestVoice;
-            }
-        }
-
-        // Parámetros refinados
-        utterance.rate = speechRate * (audioLanguage === 'en' ? 0.9 : 0.88); // Slight adjustment for EN/Others
-        utterance.pitch = 1.08;
-        utterance.volume = 1.0;
-
-        utterance.onstart = () => {
-            setIsPlaying(true);
-            isPlayingRef.current = true;
-            lastTimeRef.current = performance.now();
-            lastBoundaryTimeRef.current = performance.now();
-            lastBoundaryCharIndexRef.current = 0;
-            requestProgressLoop();
-        };
-
-        utterance.onboundary = (event) => {
-            if (event.name === 'word') {
-                const currentIndex = event.charIndex;
-                const now = performance.now();
-                const timeDiff = now - lastBoundaryTimeRef.current;
-                const charDiff = currentIndex - lastBoundaryCharIndexRef.current;
-
-                if (timeDiff > 100 && charDiff > 0) {
-                    const measuredSpeed = charDiff / timeDiff;
-                    currentSpeedRef.current = (currentSpeedRef.current * 0.7) + (measuredSpeed * 0.3);
-                }
-
-                lastBoundaryTimeRef.current = now;
-                lastBoundaryCharIndexRef.current = currentIndex;
-
-                progressRef.current = currentIndex;
-                setCharIndex(currentIndex);
-            }
-        };
-
-        utterance.onend = () => {
-            handlePageFinished();
-        };
-
-        utteranceRef.current = utterance;
-        synthRef.current.speak(utterance);
     };
 
     const togglePlay = () => {
