@@ -328,7 +328,13 @@ export default function StorytellerTool() {
             });
     };
 
+    const lastToggleTimeRef = useRef<number>(0);
+
     const togglePlay = () => {
+        const now = Date.now();
+        if (now - lastToggleTimeRef.current < 500) return; // Debounce 500ms
+        lastToggleTimeRef.current = now;
+
         if (isPlaying) {
             if (synthRef.current) synthRef.current.pause();
             if (audioRef.current) audioRef.current.pause();
