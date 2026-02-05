@@ -114,7 +114,7 @@ export default function StorytellerTool() {
                 audioRef.current.currentTime = 0;
             }
         }
-    }, [selectedBook, audioLanguage, isPlaying]); // Added isPlaying to refetch/restart if needed
+    }, [selectedBook, audioLanguage]);
 
     // State-driven playback (Regression to pre-1.6 logic)
     useEffect(() => {
