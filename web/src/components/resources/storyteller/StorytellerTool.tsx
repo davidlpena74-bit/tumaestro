@@ -116,32 +116,34 @@ export default function StorytellerTool() {
         }
     }, [selectedBook, audioLanguage, isPlaying]); // Added isPlaying to refetch/restart if needed
 
+    // State-driven playback (Regression to pre-1.6 logic)
     useEffect(() => {
+        let timer: NodeJS.Timeout;
         if (isPlaying && selectedBook) {
-            speakPage();
+            // Small delay to allow UI to update and animations to settle
+            timer = setTimeout(() => {
+                speakPage();
+            }, 100);
+        } else {
+            // Stop everything if isPlaying becomes false
+            if (synthRef.current) synthRef.current.cancel();
+            if (audioRef.current) {
+                audioRef.current.pause();
+                // We don't reset currentTime here to allow "Pause" behavior if needed, 
+                // but usually we want to stop.
+            }
+            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         }
-    }, [currentPage, speechRate, audioLanguage]);
+        return () => clearTimeout(timer);
+    }, [isPlaying, currentPage, audioLanguage, speechRate]);
 
-    const isLoadingRef = useRef(false);
 
     const requestProgressLoop = () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         lastTimeRef.current = performance.now();
 
         const loop = (time: number) => {
-            // Keep alive if Loading or Playing
-            // If neither, check for "Active" ghost state to recover
-            if (!isPlayingRef.current && !isLoadingRef.current) {
-                const audioActive = audioRef.current && !audioRef.current.paused && !audioRef.current.ended;
-                const ttsActive = synthRef.current && synthRef.current.speaking && !synthRef.current.paused;
-
-                if (audioActive || ttsActive) {
-                    isPlayingRef.current = true;
-                    setIsPlaying(true);
-                } else {
-                    return; // Stop loop
-                }
-            }
+            if (!isPlayingRef.current) return;
 
             const deltaTime = time - lastTimeRef.current;
             lastTimeRef.current = time;
@@ -150,7 +152,6 @@ export default function StorytellerTool() {
 
             if (isUsingAudioRef.current && audioRef.current) {
                 const duration = audioRef.current.duration || 1;
-                // Guard against NaN/Infinity
                 if (Number.isFinite(duration) && duration > 0) {
                     const progress = (audioRef.current.currentTime / duration) * text.length;
                     progressRef.current = progress;
@@ -159,19 +160,14 @@ export default function StorytellerTool() {
             } else if (progressRef.current < text.length) {
                 const char = text[Math.floor(progressRef.current)];
                 let speedMultiplier = 1;
-
-                // Si estamos en un signo de puntuación, reducimos la velocidad drásticamente
-                // para simular la pausa del SSML (800ms para puntos, 300ms para comas)
                 if (char === '.' || char === '?' || char === '!' || char === ':') {
-                    speedMultiplier = 0.12; // Adjusted for better feel
+                    speedMultiplier = 0.12;
                 } else if (char === ',') {
-                    speedMultiplier = 0.35; // Adjusted for better feel
+                    speedMultiplier = 0.35;
                 }
-
                 progressRef.current += deltaTime * currentSpeedRef.current * speedMultiplier;
                 setCharIndex(Math.min(text.length, Math.floor(progressRef.current)));
             }
-
             animationFrameRef.current = requestAnimationFrame(loop);
         };
         animationFrameRef.current = requestAnimationFrame(loop);
@@ -195,46 +191,26 @@ export default function StorytellerTool() {
         }
     };
 
-    const playbackRequestId = useRef(0);
-
     const speakPage = async () => {
         if (!selectedBook || !synthRef.current) return;
 
-        // Increment request ID to invalidate pending events
-        const currentRequestId = ++playbackRequestId.current;
-
-        // Critical: Detach listeners from previous utterance/audio to prevent 
-        // "onend" firing during cancellation and stopping playback prematurely.
-        if (utteranceRef.current) {
-            utteranceRef.current.onend = null;
-            utteranceRef.current.onerror = null;
-            utteranceRef.current = null;
-        }
-
-        // Cancel any ongoing speech synthesis
+        // Cleanup previous
         synthRef.current.cancel();
-
         if (audioRef.current) {
-            audioRef.current.onended = null;
-            audioRef.current.onerror = null;
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
-        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
 
         const page = currentBookContent[currentPage];
         const text = page?.text || "";
 
-        // Reset progress states
         setCharIndex(0);
         progressRef.current = 0;
 
-        // Define TTS Logic as a standalone function
+        // Define TTS Logic
         const startTTS = () => {
-            // Check if this request is still valid before starting
-            if (currentRequestId !== playbackRequestId.current) return;
+            if (!isPlayingRef.current) return;
 
-            // Fallback to Synthesis
             if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current.src = "";
@@ -242,6 +218,7 @@ export default function StorytellerTool() {
 
             const utterance = new SpeechSynthesisUtterance(text);
 
+            // Language selection logic
             if (audioLanguage === 'en') {
                 utterance.lang = 'en-US';
                 const voices = synthRef.current?.getVoices() || [];
@@ -265,7 +242,6 @@ export default function StorytellerTool() {
                 }
             }
 
-            // Calculate speed
             const langBase = audioLanguage === 'es' ? 0.015 : 0.014;
             currentSpeedRef.current = (speechRate || 1) * langBase;
             isUsingAudioRef.current = false;
@@ -275,9 +251,7 @@ export default function StorytellerTool() {
             utterance.volume = 1.0;
 
             utterance.onstart = () => {
-                if (currentRequestId === playbackRequestId.current) {
-                    setIsPlaying(true);
-                    isPlayingRef.current = true;
+                if (isPlayingRef.current) {
                     lastTimeRef.current = performance.now();
                     lastBoundaryTimeRef.current = performance.now();
                     lastBoundaryCharIndexRef.current = 0;
@@ -286,7 +260,7 @@ export default function StorytellerTool() {
             };
 
             utterance.onboundary = (event) => {
-                if (currentRequestId === playbackRequestId.current && event.name === 'word') {
+                if (isPlayingRef.current && event.name === 'word') {
                     const currentIndex = event.charIndex;
                     const now = performance.now();
                     const timeDiff = now - lastBoundaryTimeRef.current;
@@ -299,15 +273,13 @@ export default function StorytellerTool() {
 
                     lastBoundaryTimeRef.current = now;
                     lastBoundaryCharIndexRef.current = currentIndex;
-
                     progressRef.current = currentIndex;
                     setCharIndex(currentIndex);
                 }
             };
 
             utterance.onend = () => {
-                // GUARD: Only handle finish if ID matches
-                if (currentRequestId === playbackRequestId.current) {
+                if (isPlayingRef.current) {
                     handlePageFinished();
                 }
             };
@@ -316,97 +288,52 @@ export default function StorytellerTool() {
             if (synthRef.current) synthRef.current.speak(utterance);
         };
 
-        // Try to play pre-recorded audio first
+        // Try MP3
         const langSubfolder = audioLanguage === 'es' ? "" : `/${audioLanguage}`;
         const audioPath = `/audio/storyteller/${selectedBook.id}${langSubfolder}/page_${currentPage}.mp3`;
 
         if (!audioRef.current) audioRef.current = new Audio();
         const audio = audioRef.current;
 
-        // Cleanup
-        audio.onended = null;
-        audio.onerror = null;
+        // Async check using fetch is safer than loading audio on main thread for logic
+        // But for regression we go back to "Try to load"
+
+        const checkAudio = async () => {
+            return new Promise<boolean>((resolve) => {
+                const tempAudio = new Audio();
+                tempAudio.src = audioPath;
+                tempAudio.oncanplaythrough = () => resolve(true);
+                tempAudio.onerror = () => resolve(false);
+                // Timeout fallback
+                setTimeout(() => resolve(false), 2000);
+            });
+        };
+
+        // This was the old logic essentially, or similar
+        // Simplification: Just try to play it.
+
         audio.src = audioPath;
         audio.playbackRate = speechRate;
+        audio.onended = () => {
+            if (isPlayingRef.current) handlePageFinished();
+        };
+        audio.onerror = () => {
+            startTTS();
+        };
 
-        // DIRECT CHAIN STRATEGY: 
-        // We call play(). If it works, great. If it fails (404), we chain TTS.
-        // This preserves the rejection handler's gesture token on iOS.
-
-        audio.play()
-            .then(() => {
-                if (currentRequestId !== playbackRequestId.current) {
-                    audio.pause();
-                    return;
-                }
-
-                // SECURITY CHECK: Some browsers resolve play() for 404/empty audio
-                // treating it as instant playback. We must verify duration.
-                // If duration is missing, 0, or extremely short, assume it's broken.
-                if (audio.error || (audio.duration !== Infinity && audio.duration < 0.1)) {
-                    // console.warn("MP3 play resolved but seems invalid. Falling back to TTS.");
-                    throw new Error("Invalid audio duration");
-                }
-
-                // MP3 Success
-                isLoadingRef.current = false; // Loaded
-                setIsPlaying(true);
-                isPlayingRef.current = true;
-                isUsingAudioRef.current = true;
-
-                requestProgressLoop();
-
-                audio.onended = () => {
-                    if (currentRequestId === playbackRequestId.current) {
-                        handlePageFinished();
-                    }
-                };
-            })
-            .catch((err) => {
-                if (currentRequestId === playbackRequestId.current) {
-                    // Still loading (switching to TTS)
-                    // Ensure audio is fully stopped before switching
-                    audio.pause();
-                    audio.src = "";
-                    startTTS();
-                }
-            });
+        try {
+            await audio.play();
+            // Success
+            isUsingAudioRef.current = true;
+            requestProgressLoop();
+        } catch (e) {
+            // Failed
+            startTTS();
+        }
     };
 
-    const lastToggleTimeRef = useRef<number>(0);
-
     const togglePlay = () => {
-        const now = Date.now();
-        if (now - lastToggleTimeRef.current < 500) return; // Debounce 500ms
-        lastToggleTimeRef.current = now;
-
-        if (isPlaying) {
-            if (synthRef.current) synthRef.current.pause();
-            if (audioRef.current) audioRef.current.pause();
-            setIsPlaying(false);
-            isPlayingRef.current = false;
-        } else {
-            // Check if we can resume the CURRENT audio
-            // We verify if the audio source seems valid and matches our expectation indirectly
-            if (audioRef.current && audioRef.current.src && !audioRef.current.ended && audioRef.current.currentTime > 0) {
-                // Resume Audio
-                audioRef.current.play();
-                setIsPlaying(true);
-                isPlayingRef.current = true;
-                requestProgressLoop();
-            } else if (synthRef.current?.paused && synthRef.current.speaking) {
-                // Resume TTS
-                synthRef.current.resume();
-                setIsPlaying(true);
-                isPlayingRef.current = true;
-                requestProgressLoop();
-            } else {
-                // Start Fresh
-                setIsPlaying(true);
-                isPlayingRef.current = true;
-                speakPage();
-            }
-        }
+        setIsPlaying(!isPlaying);
     };
 
     const nextPage = () => {
