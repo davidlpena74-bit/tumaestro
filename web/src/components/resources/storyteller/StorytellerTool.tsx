@@ -409,38 +409,6 @@ export default function StorytellerTool() {
                         </div>
                     )}
 
-                    {/* Imagen de la Página (Normal Mode Only) */}
-                    {!isMaximized && (
-                        <AnimatePresence mode="wait">
-                            {currentBookContent[currentPage]?.image && (
-                                <motion.div
-                                    key={`img-${currentPage}`}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
-                                >
-                                    <img
-                                        src={currentBookContent[currentPage].image}
-                                        className="w-full h-full object-cover"
-                                        alt={`Ilustración página ${currentPage + 1}`}
-                                    />
-                                </motion.div>
-                            )}
-                            {!currentBookContent[currentPage]?.image && selectedBook.chipImage && (
-                                <motion.div
-                                    key={`chip-${selectedBook.id}`}
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="flex justify-center mb-[-2rem] relative z-20"
-                                >
-                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
-                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    )}
 
 
 
@@ -720,13 +688,44 @@ export default function StorytellerTool() {
                             {/* Font Size */}
                             <div className={cn("flex items-center rounded-xl p-1", isMaximized ? "bg-black/20 backdrop-blur-md border border-white/10" : "bg-white/40 border border-slate-200")}>
                                 <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={14} /></button>
-                                <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={20} /></button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-            </div >
+                    {/* Imagen de la Página (Normal Mode Only) - Moved below controls */}
+                    {!isMaximized && (
+                        <AnimatePresence mode="wait">
+                            {currentBookContent[currentPage]?.image && (
+                                <motion.div
+                                    key={`img-${currentPage}`}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mt-4 mb-2"
+                                >
+                                    <img
+                                        src={currentBookContent[currentPage].image}
+                                        className="w-full h-full object-cover"
+                                        alt={`Ilustración página ${currentPage + 1}`}
+                                    />
+                                </motion.div>
+                            )}
+                            {!currentBookContent[currentPage]?.image && selectedBook.chipImage && (
+                                <motion.div
+                                    key={`chip-${selectedBook.id}`}
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex justify-center mt-4 relative z-20"
+                                >
+                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    )}
+                </div>
+            </div>
         );
     }
 
