@@ -34,13 +34,17 @@ Esta imagen se usa en el selector de cuentos (el círculo pequeño).
 
 ## 🛠️ Instrucciones de Ejecución
 
-1. **Recibir Solicitud**: Identificar el cuento (ID) y la escena/personaje a ilustrar.
-2. **Generar Imagen**: Usar la herramienta `generate_image` con el prompt construido.
-3. **Guardar Archivo**: Mover el resultado a la carpeta `web/public/images/storyteller/` con el nombre correcto.
-   - Si la herramienta `generate_image` no guarda directamente en el destino, usa `run_command` para copiarlo:
+1. **Recibir Solicitud**: Identificar el cuento (ID) y el activo (Cover o Chip).
+2. **Búsqueda Preventiva (Smart Check)**:
+   - ANTES de generar o en caso de Error 429/503, busca en la carpeta temporal del "cerebro" de la IA: `C:\Users\david\.gemini\antigravity\brain\`.
+   - Usa `run_command` para buscar archivos `.png` que contengan el nombre del cuento o del ID:
      ```powershell
-     copy "RUTA_ORIGEN" "web/public/images/storyteller/[nombre-final].png"
+     Get-ChildItem -Path "C:\Users\david\.gemini\antigravity\brain" -Filter "*.png" -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-60) }
      ```
+   - Si encuentras una imagen válida que coincida, **CÓPIALA** directamente a `web/public/images/storyteller/` y omite la generación.
+3. **Generar Imagen**: Si no existe previamente, usa `generate_image` con el prompt oficial.
+4. **Guardar Archivo**: Mover el resultado a la carpeta `web/public/images/storyteller/` con el nombre correcto.
+   - Si falla la escritura en disco pero la imagen se ve en el chat, repite el paso 2 para rescatarla de la carpeta temporal.
 
 ## ⚠️ Reglas de Oro
 - **Consistencia**: Todas las imágenes deben parecer dibujadas por la misma mano (estilo Rackham).

@@ -23,6 +23,8 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
     - **Prompt**: `Wide landscape scene of [Key Scene], classic antique storybook illustration style of Arthur Rackham and Edmund Dulac. Muted colors, detailed scenery, vintage engraved texture. Ethereal and atmospheric. No text. High resolution.`
     - **Ubicación**: `web/public/images/storyteller/[id]-cover.png`
 
+> 💡 **Smart Recovery**: Antes de lanzar la solicitud de generación, revisa siempre la carpeta temporal del cerebro (`C:\Users\david\.gemini\antigravity\brain`) por si el servidor generó la imagen pero falló el guardado final. Esto ahorra cuota y tiempo.
+
 ### 3. Registro y Lógica Técnica
 - **Fichero**: `src/components/resources/storyteller/books-data.ts`.
 - **Estructura de Datos**: Define SIEMPRE las propiedades `content` (ES), `contentEn` (EN), `contentFr` (FR) y `contentDe` (DE) con sus respectivas traducciones.
