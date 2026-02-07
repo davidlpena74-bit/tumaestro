@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, use } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
     BookOpen,
     Play,
@@ -32,9 +33,12 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function StorytellerTool() {
+export default function StorytellerTool({ initialBookId }: { initialBookId?: string }) {
     const { t } = useLanguage();
-    const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+    const router = useRouter();
+    const [selectedBook, setSelectedBook] = useState<Book | null>(
+        initialBookId ? (BOOKS.find(b => b.id === initialBookId) || null) : null
+    );
     const [currentPage, setCurrentPage] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [speechRate, setSpeechRate] = useState(1.0);
@@ -100,6 +104,15 @@ export default function StorytellerTool() {
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         };
     }, []);
+
+    useEffect(() => {
+        if (initialBookId) {
+            const book = BOOKS.find(b => b.id === initialBookId);
+            if (book) setSelectedBook(book);
+        } else {
+            setSelectedBook(null);
+        }
+    }, [initialBookId]);
 
     useEffect(() => {
         if (selectedBook) {
@@ -370,7 +383,10 @@ export default function StorytellerTool() {
                 {/* Header Acciones */}
                 <div className="flex items-center justify-between mb-8">
                     <button
-                        onClick={() => setSelectedBook(null)}
+                        onClick={() => {
+                            setSelectedBook(null);
+                            router.push('/recursos/cuentacuentos');
+                        }}
                         className="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200 cursor-pointer"
                     >
                         <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
@@ -759,7 +775,10 @@ export default function StorytellerTool() {
                         key={book.id}
                         whileHover={{ y: -10 }}
                         className="group relative cursor-pointer"
-                        onClick={() => setSelectedBook(book)}
+                        onClick={() => {
+                            setSelectedBook(book);
+                            router.push(`/recursos/cuentacuentos/${book.id}`);
+                        }}
                     >
                         {/* Sombra Dinámica */}
                         <div className="absolute inset-x-8 -bottom-4 h-12 bg-slate-900/10 blur-2xl group-hover:bg-slate-900/20 transition-all rounded-full" />
