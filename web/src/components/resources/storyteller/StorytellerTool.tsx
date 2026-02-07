@@ -409,207 +409,7 @@ export default function StorytellerTool() {
                         </div>
                     )}
 
-                    {/* Controls Bar (Moved to top) */}
-                    <div className={cn(
-                        "flex items-center justify-between gap-4 transition-all duration-500 z-50",
-                        isMaximized
-                            ? "fixed bottom-12 left-1/2 -translate-x-1/2 w-full max-w-3xl px-8"
-                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg"
-                    )}>
-                        {/* Speed Control (Discrete 5-step) */}
-                        <div className={cn("flex flex-col gap-1.5 w-64", isMaximized ? "bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/10" : "bg-white/40 p-2 rounded-xl border border-slate-200/50")}>
-                            <div className="flex justify-between items-center px-1">
-                                <div className="flex items-center gap-1.5">
-                                    <Clock size={14} className={isMaximized ? "text-white/70" : "text-slate-500"} />
-                                    <span className={cn("text-[10px] font-black uppercase tracking-wider", isMaximized ? "text-white/80" : "text-slate-600")}>
-                                        {t.storyteller.speeds[SPEED_OPTIONS.find(o => o.value === speechRate)?.key as keyof typeof t.storyteller.speeds] || t.storyteller.speeds.normal}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="flex gap-1.5 h-2">
-                                {SPEED_OPTIONS.map((opt) => (
-                                    <button
-                                        key={opt.key}
-                                        onClick={() => setSpeechRate(opt.value)}
-                                        className={cn(
-                                            "flex-grow h-full rounded-full transition-all duration-300 cursor-pointer relative group",
-                                            speechRate === opt.value
-                                                ? (isMaximized ? "bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]" : "bg-slate-900 shadow-lg shadow-slate-900/20")
-                                                : (isMaximized ? "bg-white/20 hover:bg-white/40" : "bg-slate-200 hover:bg-slate-300")
-                                        )}
-                                        title={t.storyteller.speeds[opt.key as keyof typeof t.storyteller.speeds]}
-                                    >
-                                        {speechRate === opt.value && (
-                                            <motion.div
-                                                layoutId="activeSpeed"
-                                                className="absolute inset-0 rounded-full"
-                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                            />
-                                        )}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Main Controls */}
-                        <div className="flex items-center gap-4">
-                            <button onClick={prevPage} disabled={currentPage === 0}
-                                className={cn("p-3 rounded-xl transition-all cursor-pointer",
-                                    isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
-                                )}>
-                                <SkipBack weight="fill" size={20} />
-                            </button>
-                            <button
-                                onClick={togglePlay}
-                                className={cn(
-                                    "w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer",
-                                    isMaximized ? "bg-white text-slate-900 shadow-white/20" : "bg-slate-900 text-white shadow-slate-900/20"
-                                )}
-                            >
-                                {isPlaying ? <Pause weight="fill" size={24} /> : <Play weight="fill" size={24} className="ml-1" />}
-                            </button>
-                            <button onClick={nextPage} disabled={currentPage === currentBookContent.length - 1}
-                                className={cn("p-3 rounded-xl transition-all cursor-pointer",
-                                    isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
-                                )}>
-                                <SkipForward weight="fill" size={20} />
-                            </button>
-                        </div>
-
-                        {/* Right Group: Language & Font */}
-                        <div className="w-56 flex items-center justify-end gap-3">
-                            {/* Language Selector */}
-                            <div className="relative">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setIsLangMenuOpen(!isLangMenuOpen);
-                                    }}
-                                    className={cn(
-                                        "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all border cursor-pointer",
-                                        isMaximized
-                                            ? "bg-black/20 hover:bg-black/30 border-white/10 text-white"
-                                            : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
-                                    )}
-                                >
-                                    <img
-                                        src={
-                                            audioLanguage === 'es' ? "/images/flags/es.svg" :
-                                                audioLanguage === 'en' ? "/images/flags/gb.svg" :
-                                                    audioLanguage === 'fr' ? "/images/flags/fr.svg" :
-                                                        "/images/flags/de.svg"
-                                        }
-                                        alt={audioLanguage.toUpperCase()}
-                                        className="w-5 h-auto rounded-[2px] shadow-sm"
-                                    />
-                                    <span className="text-xs font-bold">{audioLanguage.toUpperCase()}</span>
-                                    <CaretDown size={12} weight="bold" className="opacity-50" />
-                                </button>
-
-                                {/* Dropdown */}
-                                {isLangMenuOpen && (
-                                    <>
-                                        <div
-                                            className="fixed inset-0 z-[90]"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setIsLangMenuOpen(false);
-                                            }}
-                                        />
-                                        <div className={cn(
-                                            "absolute top-full right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transition-all transform origin-top-right z-[100] animate-in fade-in zoom-in-95 duration-200",
-                                            isMaximized ? "bg-slate-800 border-slate-700" : ""
-                                        )}>
-                                            <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
-                                                Idioma Audio
-                                            </div>
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setAudioLanguage('es');
-                                                    setIsLangMenuOpen(false);
-                                                }}
-                                                className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                    isMaximized
-                                                        ? (audioLanguage === 'es' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                        : (audioLanguage === 'es' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                )}
-                                            >
-                                                <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
-                                                <span className="text-sm font-medium">Español</span>
-                                            </button>
-
-                                            {selectedBook?.contentEn && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setAudioLanguage('en');
-                                                        setIsLangMenuOpen(false);
-                                                    }}
-                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                        isMaximized
-                                                            ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                            : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                    )}
-                                                >
-                                                    <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
-                                                    <span className="text-sm font-medium">English</span>
-                                                </button>
-                                            )}
-
-                                            {selectedBook?.contentFr && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setAudioLanguage('fr');
-                                                        setIsLangMenuOpen(false);
-                                                    }}
-                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                        isMaximized
-                                                            ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                            : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                    )}
-                                                >
-                                                    <img src="/images/flags/fr.svg" alt="Français" className="w-5 h-auto rounded-[2px]" />
-                                                    <span className="text-sm font-medium">Français</span>
-                                                </button>
-                                            )}
-
-                                            {selectedBook?.contentDe && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setAudioLanguage('de');
-                                                        setIsLangMenuOpen(false);
-                                                    }}
-                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                        isMaximized
-                                                            ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                            : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                    )}
-                                                >
-                                                    <img src="/images/flags/de.svg" alt="Deutsch" className="w-5 h-auto rounded-[2px]" />
-                                                    <span className="text-sm font-medium">Deutsch</span>
-                                                </button>
-                                            )}
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-
-                            {/* Font Size */}
-                            <div className={cn("flex items-center rounded-xl p-1", isMaximized ? "bg-black/20 backdrop-blur-md border border-white/10" : "bg-white/40 border border-slate-200")}>
-                                <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={14} /></button>
-                                <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={20} /></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Imagen de la Página (Normal Mode Only) - NOW BELOW CONTROLS */}
+                    {/* Imagen de la Página (Normal Mode Only) */}
                     {!isMaximized && (
                         <AnimatePresence mode="wait">
                             {currentBookContent[currentPage]?.image && (
@@ -724,7 +524,208 @@ export default function StorytellerTool() {
                     )}
 
 
+
+                    {/* Controls Footer */}
+                    <div className={cn(
+                        "flex items-center justify-between gap-4 transition-all duration-500 z-50",
+                        isMaximized
+                            ? "fixed bottom-12 left-1/2 -translate-x-1/2 w-full max-w-3xl px-8"
+                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6"
+                    )}>
+                        {/* Speed Control (Discrete 5-step) */}
+                        <div className={cn("flex flex-col gap-1.5 w-64", isMaximized ? "bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/10" : "bg-white/40 p-2 rounded-xl border border-slate-200/50")}>
+                            <div className="flex justify-between items-center px-1">
+                                <div className="flex items-center gap-1.5">
+                                    <Clock size={14} className={isMaximized ? "text-white/70" : "text-slate-500"} />
+                                    <span className={cn("text-[10px] font-black uppercase tracking-wider", isMaximized ? "text-white/80" : "text-slate-600")}>
+                                        {t.storyteller.speeds[SPEED_OPTIONS.find(o => o.value === speechRate)?.key as keyof typeof t.storyteller.speeds] || t.storyteller.speeds.normal}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="flex gap-1.5 h-2">
+                                {SPEED_OPTIONS.map((opt) => (
+                                    <button
+                                        key={opt.key}
+                                        onClick={() => setSpeechRate(opt.value)}
+                                        className={cn(
+                                            "flex-grow h-full rounded-full transition-all duration-300 cursor-pointer relative group",
+                                            speechRate === opt.value
+                                                ? (isMaximized ? "bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]" : "bg-slate-900 shadow-lg shadow-slate-900/20")
+                                                : (isMaximized ? "bg-white/20 hover:bg-white/40" : "bg-slate-200 hover:bg-slate-300")
+                                        )}
+                                        title={t.storyteller.speeds[opt.key as keyof typeof t.storyteller.speeds]}
+                                    >
+                                        {speechRate === opt.value && (
+                                            <motion.div
+                                                layoutId="activeSpeed"
+                                                className="absolute inset-0 rounded-full"
+                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                            />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Main Controls */}
+                        <div className="flex items-center gap-4">
+                            <button onClick={prevPage} disabled={currentPage === 0}
+                                className={cn("p-3 rounded-xl transition-all cursor-pointer",
+                                    isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
+                                )}>
+                                <SkipBack weight="fill" size={20} />
+                            </button>
+                            <button
+                                onClick={togglePlay}
+                                className={cn(
+                                    "w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer",
+                                    isMaximized ? "bg-white text-slate-900 shadow-white/20" : "bg-slate-900 text-white shadow-slate-900/20"
+                                )}
+                            >
+                                {isPlaying ? <Pause weight="fill" size={24} /> : <Play weight="fill" size={24} className="ml-1" />}
+                            </button>
+                            <button onClick={nextPage} disabled={currentPage === currentBookContent.length - 1}
+                                className={cn("p-3 rounded-xl transition-all cursor-pointer",
+                                    isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
+                                )}>
+                                <SkipForward weight="fill" size={20} />
+                            </button>
+                        </div>
+
+                        {/* Right Group: Language & Font */}
+                        <div className="w-56 flex items-center justify-end gap-3">
+                            {/* Language Selector */}
+                            <div className="relative">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsLangMenuOpen(!isLangMenuOpen);
+                                    }}
+                                    className={cn(
+                                        "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all border cursor-pointer",
+                                        isMaximized
+                                            ? "bg-black/20 hover:bg-black/30 border-white/10 text-white"
+                                            : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
+                                    )}
+                                >
+                                    <img
+                                        src={
+                                            audioLanguage === 'es' ? "/images/flags/es.svg" :
+                                                audioLanguage === 'en' ? "/images/flags/gb.svg" :
+                                                    audioLanguage === 'fr' ? "/images/flags/fr.svg" :
+                                                        "/images/flags/de.svg"
+                                        }
+                                        alt={audioLanguage.toUpperCase()}
+                                        className="w-5 h-auto rounded-[2px] shadow-sm"
+                                    />
+                                    <span className="text-xs font-bold">{audioLanguage.toUpperCase()}</span>
+                                    <CaretDown size={12} weight="bold" className="opacity-50" />
+                                </button>
+
+                                {/* Dropdown */}
+                                {isLangMenuOpen && (
+                                    <>
+                                        <div
+                                            className="fixed inset-0 z-[90]"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setIsLangMenuOpen(false);
+                                            }}
+                                        />
+                                        <div className={cn(
+                                            "absolute bottom-full right-0 mb-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transition-all transform origin-bottom-right z-[100] animate-in fade-in zoom-in-95 duration-200",
+                                            isMaximized ? "bg-slate-800 border-slate-700" : ""
+                                        )}>
+                                            <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
+                                                Idioma Audio
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setAudioLanguage('es');
+                                                    setIsLangMenuOpen(false);
+                                                }}
+                                                className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                    isMaximized
+                                                        ? (audioLanguage === 'es' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                        : (audioLanguage === 'es' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                )}
+                                            >
+                                                <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
+                                                <span className="text-sm font-medium">Español</span>
+                                            </button>
+
+                                            {selectedBook?.contentEn && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setAudioLanguage('en');
+                                                        setIsLangMenuOpen(false);
+                                                    }}
+                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                        isMaximized
+                                                            ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                            : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    )}
+                                                >
+                                                    <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
+                                                    <span className="text-sm font-medium">English</span>
+                                                </button>
+                                            )}
+
+                                            {selectedBook?.contentFr && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setAudioLanguage('fr');
+                                                        setIsLangMenuOpen(false);
+                                                    }}
+                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                        isMaximized
+                                                            ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                            : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    )}
+                                                >
+                                                    <img src="/images/flags/fr.svg" alt="Français" className="w-5 h-auto rounded-[2px]" />
+                                                    <span className="text-sm font-medium">Français</span>
+                                                </button>
+                                            )}
+
+                                            {selectedBook?.contentDe && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setAudioLanguage('de');
+                                                        setIsLangMenuOpen(false);
+                                                    }}
+                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                        isMaximized
+                                                            ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                            : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    )}
+                                                >
+                                                    <img src="/images/flags/de.svg" alt="Deutsch" className="w-5 h-auto rounded-[2px]" />
+                                                    <span className="text-sm font-medium">Deutsch</span>
+                                                </button>
+                                            )}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Font Size */}
+                            <div className={cn("flex items-center rounded-xl p-1", isMaximized ? "bg-black/20 backdrop-blur-md border border-white/10" : "bg-white/40 border border-slate-200")}>
+                                <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={14} /></button>
+                                <button onClick={() => setFontSize(prev => Math.min(32, prev + 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={20} /></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div >
         );
     }
