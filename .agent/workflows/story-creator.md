@@ -28,6 +28,8 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
 ### 3. Registro y Lógica Técnica
 - **Fichero**: `src/components/resources/storyteller/books-data.ts`.
 - **Estructura de Datos**: Define SIEMPRE las propiedades `content` (ES), `contentEn` (EN), `contentFr` (FR) y `contentDe` (DE) con sus respectivas traducciones.
+- **Ilustraciones en Páginas**: Si durante la creación generas o encuentras ilustraciones horizontales (Landscape) que coincidan con la escena de una página específica y mantengan el estilo "Arthur Rackham", DEBES incluirlas usando la propiedad `image` en el objeto de esa página. Esto enriquecerá la experiencia visual debajo de los controles.
+
 - **Auto-Advance**: No es necesario tocar el código para esto, pero asegúrate de que el objeto `Book` tenga todas las páginas en el array `content`. El componente `StorytellerTool.tsx` gestionará automáticamente el paso de página al terminar el audio (MP3 o Voz Sintetizada).
 - **Theme Color**: Elige un gradiente de Tailwind que armonice con la ilustración (ej. `from-amber-600 to-brown-700`).
 - **Rating**: Añade un campo `rating` con un valor numérico (float) entre 4.0 y 5.0 (ej. `4.8`) para simular la valoración de los lectores.
