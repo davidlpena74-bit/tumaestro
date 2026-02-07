@@ -409,125 +409,12 @@ export default function StorytellerTool() {
                         </div>
                     )}
 
-                    {/* Imagen de la Página (Normal Mode Only) */}
-                    {!isMaximized && (
-                        <AnimatePresence mode="wait">
-                            {currentBookContent[currentPage]?.image && (
-                                <motion.div
-                                    key={`img-${currentPage}`}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
-                                >
-                                    <img
-                                        src={currentBookContent[currentPage].image}
-                                        className="w-full h-full object-cover"
-                                        alt={`Ilustración página ${currentPage + 1}`}
-                                    />
-                                </motion.div>
-                            )}
-                            {!currentBookContent[currentPage]?.image && selectedBook.chipImage && (
-                                <motion.div
-                                    key={`chip-${selectedBook.id}`}
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="flex justify-center mb-[-2rem] relative z-20"
-                                >
-                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
-                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    )}
-
-
-
-                    {/* Texto Principal */}
-                    <div className={cn(
-                        "transition-all duration-500 relative overflow-hidden flex flex-col justify-center",
-                        isMaximized
-                            ? "w-full max-w-5xl h-[90%] z-10 p-12 md:p-24 text-white"
-                            : "bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl min-h-[400px]"
-                    )}>
-                        {/* Glass Overlay for Immersive Mode */}
-                        {isMaximized && <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-[3rem] border border-white/20 shadow-2xl" />}
-
-                        {/* Maximize Toggle Button */}
-                        <div className="absolute top-6 right-6 z-50">
-                            <button
-                                onClick={() => setIsMaximized(!isMaximized)}
-                                className={cn(
-                                    "p-3 rounded-full transition-all hover:scale-110 active:scale-95 shadow-lg cursor-pointer",
-                                    isMaximized
-                                        ? "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/20"
-                                        : "bg-white/50 hover:bg-white/80 text-slate-600 hover:text-slate-900 border border-slate-200/50"
-                                )}
-                                title={isMaximized ? t.storyteller.minimize : t.storyteller.maximize}
-                            >
-                                {isMaximized ? <ArrowsIn weight="bold" size={24} /> : <ArrowsOut weight="bold" size={20} />}
-                            </button>
-                        </div>
-
-
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentPage}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="relative z-10 font-serif leading-relaxed text-center flex flex-col items-center justify-center h-full"
-                                style={{ fontSize: `${isMaximized ? fontSize + 4 : fontSize}px`, color: isMaximized ? 'white' : undefined }}
-                            >
-
-                                <div className="relative max-w-3xl">
-                                    <span className={cn("font-medium transition-all duration-75", isMaximized ? "text-white" : "text-slate-900")}>
-                                        {currentBookContent[currentPage]?.text.slice(0, charIndex)}
-                                    </span>
-                                    <span className={cn("font-medium", isMaximized ? "text-white/50" : "text-slate-400")}>
-                                        {currentBookContent[currentPage]?.text.slice(charIndex)}
-                                    </span>
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
-
-                        {/* Decoración sutil */}
-                        <div className="absolute top-0 right-0 p-8 opacity-5">
-                            <SpeakerHigh size={120} weight="thin" />
-                        </div>
-
-                        <div className={cn(
-                            "absolute bottom-6 left-0 right-0 text-center text-xs font-bold pointer-events-none z-20",
-                            isMaximized ? "text-white/60" : "text-slate-300"
-                        )}>
-                            {t.storyteller.pageOf.replace('{current}', (currentPage + 1).toString()).replace('{total}', currentBookContent.length.toString())}
-                        </div>
-                    </div>
-
-                    {/* Progress Bar & Indicators (Normal Mode Only - Hidden in Immersive) */}
-                    {!isMaximized && (
-                        <div className="flex flex-col gap-4">
-                            <div className="flex gap-2 px-4">
-                                {currentBookContent.map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className={cn(
-                                            "h-1.5 flex-grow rounded-full transition-all duration-500",
-                                            i <= currentPage ? "bg-slate-900" : "bg-slate-200"
-                                        )}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Controls Footer */}
+                    {/* Controls Bar (Moved to top) */}
                     <div className={cn(
                         "flex items-center justify-between gap-4 transition-all duration-500 z-50",
                         isMaximized
                             ? "fixed bottom-12 left-1/2 -translate-x-1/2 w-full max-w-3xl px-8"
-                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6"
+                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg"
                     )}>
                         {/* Speed Control (Discrete 5-step) */}
                         <div className={cn("flex flex-col gap-1.5 w-64", isMaximized ? "bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/10" : "bg-white/40 p-2 rounded-xl border border-slate-200/50")}>
@@ -630,13 +517,12 @@ export default function StorytellerTool() {
                                             }}
                                         />
                                         <div className={cn(
-                                            "absolute bottom-full right-0 mb-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transition-all transform origin-bottom-right z-[100] animate-in fade-in zoom-in-95 duration-200",
+                                            "absolute top-full right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transition-all transform origin-top-right z-[100] animate-in fade-in zoom-in-95 duration-200",
                                             isMaximized ? "bg-slate-800 border-slate-700" : ""
                                         )}>
                                             <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
                                                 Idioma Audio
                                             </div>
-                                            {/* Logic to show available languages based on book content */}
                                             <button
                                                 type="button"
                                                 onClick={(e) => {
@@ -722,6 +608,122 @@ export default function StorytellerTool() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Imagen de la Página (Normal Mode Only) - NOW BELOW CONTROLS */}
+                    {!isMaximized && (
+                        <AnimatePresence mode="wait">
+                            {currentBookContent[currentPage]?.image && (
+                                <motion.div
+                                    key={`img-${currentPage}`}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mb-2"
+                                >
+                                    <img
+                                        src={currentBookContent[currentPage].image}
+                                        className="w-full h-full object-cover"
+                                        alt={`Ilustración página ${currentPage + 1}`}
+                                    />
+                                </motion.div>
+                            )}
+                            {!currentBookContent[currentPage]?.image && selectedBook.chipImage && (
+                                <motion.div
+                                    key={`chip-${selectedBook.id}`}
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex justify-center mb-[-2rem] relative z-20"
+                                >
+                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    )}
+
+
+
+
+                    {/* Texto Principal */}
+                    <div className={cn(
+                        "transition-all duration-500 relative overflow-hidden flex flex-col justify-center",
+                        isMaximized
+                            ? "w-full max-w-5xl h-[90%] z-10 p-12 md:p-24 text-white"
+                            : "bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl min-h-[400px]"
+                    )}>
+                        {/* Glass Overlay for Immersive Mode */}
+                        {isMaximized && <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-[3rem] border border-white/20 shadow-2xl" />}
+
+                        {/* Maximize Toggle Button */}
+                        <div className="absolute top-6 right-6 z-50">
+                            <button
+                                onClick={() => setIsMaximized(!isMaximized)}
+                                className={cn(
+                                    "p-3 rounded-full transition-all hover:scale-110 active:scale-95 shadow-lg cursor-pointer",
+                                    isMaximized
+                                        ? "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/20"
+                                        : "bg-white/50 hover:bg-white/80 text-slate-600 hover:text-slate-900 border border-slate-200/50"
+                                )}
+                                title={isMaximized ? t.storyteller.minimize : t.storyteller.maximize}
+                            >
+                                {isMaximized ? <ArrowsIn weight="bold" size={24} /> : <ArrowsOut weight="bold" size={20} />}
+                            </button>
+                        </div>
+
+
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentPage}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="relative z-10 font-serif leading-relaxed text-center flex flex-col items-center justify-center h-full"
+                                style={{ fontSize: `${isMaximized ? fontSize + 4 : fontSize}px`, color: isMaximized ? 'white' : undefined }}
+                            >
+
+                                <div className="relative max-w-3xl">
+                                    <span className={cn("font-medium transition-all duration-75", isMaximized ? "text-white" : "text-slate-900")}>
+                                        {currentBookContent[currentPage]?.text.slice(0, charIndex)}
+                                    </span>
+                                    <span className={cn("font-medium", isMaximized ? "text-white/50" : "text-slate-400")}>
+                                        {currentBookContent[currentPage]?.text.slice(charIndex)}
+                                    </span>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Decoración sutil */}
+                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                            <SpeakerHigh size={120} weight="thin" />
+                        </div>
+
+                        <div className={cn(
+                            "absolute bottom-6 left-0 right-0 text-center text-xs font-bold pointer-events-none z-20",
+                            isMaximized ? "text-white/60" : "text-slate-300"
+                        )}>
+                            {t.storyteller.pageOf.replace('{current}', (currentPage + 1).toString()).replace('{total}', currentBookContent.length.toString())}
+                        </div>
+                    </div>
+
+                    {/* Progress Bar & Indicators (Normal Mode Only - Hidden in Immersive) */}
+                    {!isMaximized && (
+                        <div className="flex flex-col gap-4">
+                            <div className="flex gap-2 px-4">
+                                {currentBookContent.map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className={cn(
+                                            "h-1.5 flex-grow rounded-full transition-all duration-500",
+                                            i <= currentPage ? "bg-slate-900" : "bg-slate-200"
+                                        )}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+
                 </div>
             </div >
         );
