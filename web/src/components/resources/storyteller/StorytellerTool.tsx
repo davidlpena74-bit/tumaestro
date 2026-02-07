@@ -717,8 +717,14 @@ export default function StorytellerTool() {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="flex justify-center mt-4 relative z-20"
                                 >
-                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
-                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
+                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white flex items-center justify-center p-2 text-center">
+                                        {selectedBook.chipImage.includes('/') ? (
+                                            <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
+                                        ) : (
+                                            <span className="text-[10px] font-black uppercase text-slate-400 leading-tight">
+                                                {selectedBook.chipImage}
+                                            </span>
+                                        )}
                                     </div>
                                 </motion.div>
                             )}
@@ -766,8 +772,20 @@ export default function StorytellerTool() {
                             >
                                 <div
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                    style={{ backgroundImage: `url(${book.chipImage || book.coverImage})` }}
+                                    style={{
+                                        backgroundImage: (book.chipImage?.includes('/') || book.coverImage?.includes('/'))
+                                            ? `url(${book.chipImage?.includes('/') ? book.chipImage : book.coverImage})`
+                                            : 'none'
+                                    }}
                                 >
+                                    {/* Si es texto placeholder */}
+                                    {book.chipImage && !book.chipImage.includes('/') && (
+                                        <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+                                            <span className="text-white/40 font-black uppercase tracking-tighter text-xl rotate-12">
+                                                {book.chipImage}
+                                            </span>
+                                        </div>
+                                    )}
                                     {/* Inner Shadow Overlay */}
                                     <div className="absolute inset-0 shadow-[inset_0_-20px_60px_-10px_rgba(0,0,0,0.3)]" />
                                 </div>

@@ -2788,7 +2788,7 @@ export const BOOKS: Book[] = [
         level: 'Medio',
         age: '5+',
         coverImage: '/images/storyteller/peter-pan-cover.jpg',
-        chipImage: '/images/storyteller/character-peter-pan.jpg',
+        chipImage: 'disponible en breve',
         genre: 'Aventura/Fantasía',
         themeColor: 'from-amber-600 to-green-800',
         rating: 4.9,
