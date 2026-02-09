@@ -42,9 +42,16 @@ Esta imagen se usa en el selector de cuentos (el círculo pequeño).
      Get-ChildItem -Path "C:\Users\david\.gemini\antigravity\brain" -Filter "*.png" -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-60) }
      ```
    - Si encuentras una imagen válida que coincida, **CÓPIALA** directamente a `web/public/images/storyteller/` y omite la generación.
-3. **Generar Imagen**: Si no existe previamente, usa `generate_image` con el prompt oficial.
-4. **Guardar Archivo**: Mover el resultado a la carpeta `web/public/images/storyteller/` con el nombre correcto.
-   - Si falla la escritura en disco pero la imagen se ve en el chat, repite el paso 2 para rescatarla de la carpeta temporal.
+3. **Generación con Verificación Inteligente**:
+   - Ejecuta `generate_image` con el prompt oficial.
+   - **CRÍTICO**: Si recibes un error tipo `CORTEX_STEP_STATUS_ERROR` o "no image generated", **NO ASUMAS QUE HA FALLADO**.
+   - **INMEDIATAMENTE**: Ejecuta una búsqueda en la memoria temporal (`C:\Users\david\.gemini\antigravity\brain`) buscando archivos creados en los últimos 2 minutos.
+     ```powershell
+     Get-ChildItem -Path "C:\Users\david\.gemini\antigravity\brain" -Recurse -File | Where-Object { $_.CreationTime -gt (Get-Date).AddMinutes(-2) }
+     ```
+   - Si encuentras un archivo nuevo (incluso con nombre aleatorio), **ESE ES TU RESULTADO**. Cópialo y renómbralo. Solo si esta búsqueda manual falla, considera la operación como fallida.
+
+4. **Guardar Archivo**: Mover el resultado (generado o rescatado) a la carpeta `web/public/images/storyteller/` con el nombre correcto.
 
 ## ⚠️ Reglas de Oro
 - **Consistencia**: Todas las imágenes deben parecer dibujadas por la misma mano (estilo Rackham).
