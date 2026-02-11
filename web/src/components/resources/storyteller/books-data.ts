@@ -2847,6 +2847,7 @@ export const BOOKS: Book[] = [
             { text: "Mit der Jolly Roger, die nun mit Zauberstaub bedeckt war, benutzte Peter das Schiff, um Wendy, John und Michael zurück nach London zu bringen. Wendy bat Peter, bei ihnen zu bleiben und in einer richtigen Familie aufzuwachsen, doch Peter schüttelte den Kopf. 'Ich will immer ein kleiner Junge sein und Spaß haben', antwortete er. Er versprach jedoch, jedes Jahr zurückzukehren, um Wendys Geschichten zu hören und ihr bester Freund zu bleiben." },
             { text: "Das fliegende Piratenschiff landete sanft vor dem Fenster des Kinderzimmers der Darlings. Wendys Eltern, die sehr traurig gewesen waren, rannten herbei, um ihre Kinder mit Freudentränen zu umarmen. Die Verlorenen Jungs wurden ebenfalls von der Familie Darling adoptiert und fanden schließlich das Zuhause, das sie sich immer gewünscht hatten. In jener Nacht schliefen alle unter dem warmen Dach ihres Hauses und träumten von den Wundern des Nimmerlands." },
             { text: "Von ihrem Fenster aus sah Wendy zu, wie die Jolly Roger in Richtung des zweiten Sterns rechts davonflog. Peter Pan und Tinker Bell winkten von oben, bevor sie im Nachthimmel verschwanden. Obwohl Wendy erwachsen wurde und Mutter wurde, vergaß sie nie den Zauberstaub oder die Magie der Kindheit. Sie wusste, dass Peter Pan, solange es fröhliche und unschuldige Kinder gäbe, weiterhin frei fliegen und die Träume aller beschützen würde." }
+        ]
     },
     {
         id: 'simbad-marino',
