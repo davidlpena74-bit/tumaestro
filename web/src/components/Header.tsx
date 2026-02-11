@@ -78,7 +78,7 @@ export default function Header() {
                         >
                             <span className="flex items-center gap-2">
                                 <img
-                                    src={language === 'es' ? 'https://flagcdn.com/es.svg' : 'https://flagcdn.com/us.svg'}
+                                    src={language === 'es' ? 'https://flagcdn.com/es.svg' : 'https://flagcdn.com/gb.svg'}
                                     className="w-5 h-4 object-cover rounded-sm shadow-sm"
                                     alt={language === 'es' ? 'Español' : 'English'}
                                 />
@@ -113,7 +113,7 @@ export default function Header() {
                                         className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === 'en' ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
                                     >
                                         <span className="flex items-center gap-3">
-                                            <img src="https://flagcdn.com/us.svg" className="w-5 h-4 object-cover rounded-sm" alt="EN" />
+                                            <img src="https://flagcdn.com/gb.svg" className="w-5 h-4 object-cover rounded-sm" alt="EN" />
                                             English
                                         </span>
                                         {language === 'en' && <Check className="w-4 h-4" weight="bold" />}

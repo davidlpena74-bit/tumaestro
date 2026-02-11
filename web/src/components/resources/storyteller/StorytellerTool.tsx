@@ -28,13 +28,14 @@ import { twMerge } from 'tailwind-merge';
 import { BOOKS, Book } from './books-data';
 import { getBestVoice } from '@/lib/speech-utils';
 import { useLanguage } from '@/context/LanguageContext';
+import StorySearch from './StorySearch';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
 export default function StorytellerTool({ initialBookId, initialLanguage = 'es' }: { initialBookId?: string, initialLanguage?: 'es' | 'en' | 'fr' | 'de' }) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const router = useRouter();
     const [selectedBook, setSelectedBook] = useState<Book | null>(
         initialBookId ? (BOOKS.find(b => b.id === initialBookId) || null) : null
@@ -760,11 +761,14 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 </Link>
             </div>
 
-            <header className="text-center mb-16">
+            <header className="text-center mb-12">
                 <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
-                <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
+                <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
                     {t.storyteller.subtitle}
                 </p>
+
+                {/* Search Component */}
+                <StorySearch books={BOOKS} />
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -810,7 +814,21 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
 
                                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-slate-900 flex items-center gap-1.5 shadow-xl border border-white/20 z-10">
-                                    <BookmarkSimple weight="fill" className="text-orange-500" /> {book.genre.toUpperCase()}
+                                    <BookmarkSimple weight="fill" className="text-orange-500" />
+                                    {(() => {
+                                        const genres: Record<string, Record<string, string>> = {
+                                            'Fábula': { en: 'Fable', fr: 'Fable', de: 'Fabel' },
+                                            'Cuento de Hadas': { en: 'Fairytale', fr: 'Conte de fées', de: 'Märchen' },
+                                            'Aventura': { en: 'Adventure', fr: 'Aventure', de: 'Abenteuer' },
+                                            'Humor': { en: 'Humor', fr: 'Humour', de: 'Humor' },
+                                            'Leyenda': { en: 'Legend', fr: 'Légende', de: 'Legende' },
+                                            'Realista': { en: 'Realistic', fr: 'Réaliste', de: 'Realistisch' },
+                                            'Aventura/Fábula': { en: 'Adventure/Fable', fr: 'Aventure/Fable', de: 'Abenteuer/Fabel' },
+                                            'Fábula/Drama': { en: 'Fable/Drama', fr: 'Fable/Drame', de: 'Fabel/Drama' }
+                                        };
+                                        const localizedGenre = genres[book.genre]?.[language as string] || book.genre;
+                                        return localizedGenre.toUpperCase();
+                                    })()}
                                 </div>
                             </div>
 
@@ -818,7 +836,14 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                             <div className="p-5 flex flex-col flex-grow relative">
                                 <div className="flex gap-2 mb-2 items-start">
                                     <span className="px-2.5 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50 shadow-sm">
-                                        {book.level}
+                                        {(() => {
+                                            const levels: Record<string, Record<string, string>> = {
+                                                'Fácil': { en: 'Easy', fr: 'Facile', de: 'Einfach' },
+                                                'Medio': { en: 'Medium', fr: 'Moyen', de: 'Mittel' },
+                                                'Difícil': { en: 'Hard', fr: 'Difficile', de: 'Schwer' }
+                                            };
+                                            return levels[book.level]?.[language as string] || book.level;
+                                        })()}
                                     </span>
                                     <span className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-wider uppercase border border-slate-200/50 shadow-sm">
                                         {book.age}
@@ -870,10 +895,10 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                     </div>
                                 </div>
                                 <h3 className="text-2xl font-black text-slate-800 mb-1 transition-colors group-hover:text-slate-900 leading-tight">
-                                    {book.title}
+                                    {(book as any)[`title${language.charAt(0).toUpperCase() + language.slice(1)}`] || book.title}
                                 </h3>
                                 <p className="text-slate-500 text-base font-medium line-clamp-2 mb-3 flex-grow leading-snug">
-                                    {book.description}
+                                    {(book as any)[`description${language.charAt(0).toUpperCase() + language.slice(1)}`] || book.description}
                                 </p>
 
                                 <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
