@@ -761,7 +761,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 </Link>
             </div>
 
-            <header className="text-center mb-12">
+            <header className="text-center mb-12 -mt-24">
                 <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
                 <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
                     {t.storyteller.subtitle}

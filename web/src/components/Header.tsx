@@ -74,15 +74,27 @@ export default function Header() {
                     <div className="relative">
                         <button
                             onClick={() => setLangMenuOpen(!langMenuOpen)}
-                            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 pl-3 pr-3 py-2 rounded-full text-sm font-bold text-white transition-all min-w-[130px]"
+                            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 pl-3 pr-3 py-2 rounded-full text-sm font-bold text-white transition-all min-w-[140px]"
                         >
                             <span className="flex items-center gap-2">
                                 <img
-                                    src={language === 'es' ? 'https://flagcdn.com/es.svg' : 'https://flagcdn.com/gb.svg'}
+                                    src={
+                                        language === 'es' ? 'https://flagcdn.com/es.svg' :
+                                            language === 'en' ? 'https://flagcdn.com/gb.svg' :
+                                                language === 'fr' ? 'https://flagcdn.com/fr.svg' :
+                                                    'https://flagcdn.com/de.svg'
+                                    }
                                     className="w-5 h-4 object-cover rounded-sm shadow-sm"
-                                    alt={language === 'es' ? 'Español' : 'English'}
+                                    alt={language}
                                 />
-                                <span>{language === 'es' ? 'Español' : 'English'}</span>
+                                <span>
+                                    {
+                                        language === 'es' ? 'Español' :
+                                            language === 'en' ? 'English' :
+                                                language === 'fr' ? 'Français' :
+                                                    'Deutsch'
+                                    }
+                                </span>
                             </span>
                             <CaretDown className={`w-3 h-3 text-white/50 transition-transform ${langMenuOpen ? 'rotate-180' : ''}`} weight="bold" />
                         </button>
@@ -93,31 +105,30 @@ export default function Header() {
                                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    className="absolute top-full right-0 mt-2 w-40 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50"
+                                    className="absolute top-full right-0 mt-2 w-48 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50"
                                 >
                                     <div className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                                        {language === 'es' ? 'Idioma' : 'Language'}
+                                        {language === 'es' ? 'Idioma' : language === 'fr' ? 'Langue' : language === 'de' ? 'Sprache' : 'Language'}
                                     </div>
-                                    <button
-                                        onClick={() => { setLanguage('es'); setLangMenuOpen(false); }}
-                                        className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === 'es' ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
-                                    >
-                                        <span className="flex items-center gap-3">
-                                            <img src="https://flagcdn.com/es.svg" className="w-5 h-4 object-cover rounded-sm" alt="ES" />
-                                            Español
-                                        </span>
-                                        {language === 'es' && <Check className="w-4 h-4" weight="bold" />}
-                                    </button>
-                                    <button
-                                        onClick={() => { setLanguage('en'); setLangMenuOpen(false); }}
-                                        className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === 'en' ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
-                                    >
-                                        <span className="flex items-center gap-3">
-                                            <img src="https://flagcdn.com/gb.svg" className="w-5 h-4 object-cover rounded-sm" alt="EN" />
-                                            English
-                                        </span>
-                                        {language === 'en' && <Check className="w-4 h-4" weight="bold" />}
-                                    </button>
+
+                                    {[
+                                        { code: 'es', label: 'Español', flag: 'es.svg' },
+                                        { code: 'en', label: 'English', flag: 'gb.svg' },
+                                        { code: 'fr', label: 'Français', flag: 'fr.svg' },
+                                        { code: 'de', label: 'Deutsch', flag: 'de.svg' }
+                                    ].map((lang) => (
+                                        <button
+                                            key={lang.code}
+                                            onClick={() => { setLanguage(lang.code as any); setLangMenuOpen(false); }}
+                                            className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === lang.code ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
+                                        >
+                                            <span className="flex items-center gap-3">
+                                                <img src={`https://flagcdn.com/${lang.flag}`} className="w-5 h-4 object-cover rounded-sm" alt={lang.code.toUpperCase()} />
+                                                {lang.label}
+                                            </span>
+                                            {language === lang.code && <Check className="w-4 h-4" weight="bold" />}
+                                        </button>
+                                    ))}
                                 </motion.div>
                             )}
                         </AnimatePresence>
