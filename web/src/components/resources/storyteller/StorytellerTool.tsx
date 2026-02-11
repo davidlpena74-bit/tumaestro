@@ -386,19 +386,18 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
         return (
             <div className="w-full max-w-5xl mx-auto p-4 animate-in fade-in duration-500">
                 {/* Header Acciones */}
-                <div className="flex items-center justify-between mb-8">
-                    <button
-                        onClick={() => {
-                            setSelectedBook(null);
-                            router.push('/recursos/cuentacuentos');
-                        }}
-                        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200 cursor-pointer"
-                    >
-                        <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
-                    </button>
-
-
-
+                <div className="flex justify-center z-50 relative -mb-16 pointer-events-none w-full">
+                    <div className="w-full max-w-4xl px-0">
+                        <button
+                            onClick={() => {
+                                setSelectedBook(null);
+                                router.push('/recursos/cuentacuentos');
+                            }}
+                            className="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200 cursor-pointer backdrop-blur-sm pointer-events-auto shadow-sm"
+                        >
+                            <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Área de Lectura */}
@@ -434,11 +433,34 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
 
 
+                    {/* Chip Flotante (Solo Normal Mode + No Cover Page) */}
+                    {!isMaximized && !currentBookContent[currentPage]?.image && selectedBook.chipImage && (
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={`chip-${selectedBook.id}`}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                className="flex justify-center relative z-20 -mb-6 pointer-events-none"
+                            >
+                                <div className="w-28 h-28 rounded-full shadow-2xl overflow-hidden flex items-center justify-center text-center relative z-30 filter drop-shadow-lg">
+                                    {selectedBook.chipImage.includes('/') ? (
+                                        <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
+                                    ) : (
+                                        <span className="text-[10px] font-black uppercase text-slate-400 leading-tight bg-white w-full h-full flex items-center justify-center">
+                                            {selectedBook.chipImage}
+                                        </span>
+                                    )}
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
+                    )}
+
                     {/* Texto Principal */}
                     <div className={cn(
-                        "transition-all duration-500 relative overflow-hidden flex flex-col justify-center",
+                        "transition-all duration-500 relative flex flex-col justify-center",
                         isMaximized
-                            ? "w-full max-w-5xl h-[90%] z-10 p-12 md:p-24 text-white"
+                            ? "w-full max-w-5xl h-[90%] z-10 p-12 md:p-24 text-white overflow-hidden"
                             : "bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl min-h-[400px]"
                     )}>
                         {/* Glass Overlay for Immersive Mode */}
@@ -718,24 +740,6 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                         className="w-full h-full object-cover"
                                         alt={`Ilustración página ${currentPage + 1}`}
                                     />
-                                </motion.div>
-                            )}
-                            {!currentBookContent[currentPage]?.image && selectedBook.chipImage && (
-                                <motion.div
-                                    key={`chip-${selectedBook.id}`}
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="flex justify-center mt-4 relative z-20"
-                                >
-                                    <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white flex items-center justify-center p-2 text-center">
-                                        {selectedBook.chipImage.includes('/') ? (
-                                            <img src={selectedBook.chipImage} className="w-full h-full object-cover" alt="Character" />
-                                        ) : (
-                                            <span className="text-[10px] font-black uppercase text-slate-400 leading-tight">
-                                                {selectedBook.chipImage}
-                                            </span>
-                                        )}
-                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>

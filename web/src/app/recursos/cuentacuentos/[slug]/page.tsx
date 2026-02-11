@@ -63,7 +63,7 @@ export default async function BookStoryPage({ params }: Props) {
     return (
         <div className="min-h-screen relative overflow-hidden bg-transparent">
             {/* Main Content */}
-            <div className="relative z-20 pt-32 pb-12">
+            <div className="relative z-20 pt-20 pb-12">
                 <StorytellerTool initialBookId={slug} />
             </div>
         </div>

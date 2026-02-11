@@ -48,13 +48,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     // Localized Title logic
     let localizedTitle = book.title;
+
     // Ideally we should have localized titles in book data, but we append the suffix for now to distinguish.
-    // If book data has localized titles (e.g. book.titleEn), use them:
-    if (lang === 'en' && book.contentEn && book.titleEn) localizedTitle = book.titleEn; // Assuming titleEn might exist in future or we use generic
-    // Since we don't have titleEn in the interface yet conform to previous usage, we use the specific content check
-    // But for the <title> tag, using the Spanish title + Localized Suffix is okay, 
-    // OR we can try to extract a title if we had it. 
     // For now, let's stick to: "Robin Hood | Best Free Audio Story..." which is mixed but clear.
+
+    // Better: Since we don't have explicit localized titles in the Book interface yet (only contentEn), 
+    // we will use the generic title but surrounded by the strong localized SEO keywords.
 
     // Better: Since we don't have explicit localized titles in the Book interface yet (only contentEn), 
     // we will use the generic title but surrounded by the strong localized SEO keywords.
@@ -101,7 +100,7 @@ export default async function BookStoryLanguagePage({ params }: Props) {
     return (
         <div className="min-h-screen relative overflow-hidden bg-transparent">
             {/* Main Content */}
-            <div className="relative z-20 pt-32 pb-12">
+            <div className="relative z-20 pt-20 pb-12">
                 <StorytellerTool initialBookId={slug} initialLanguage={lang as any} />
             </div>
         </div>

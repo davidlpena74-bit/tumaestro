@@ -49,8 +49,8 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
 3. **Idiomas Adicionales**: De momento el sistema usará TTS nativo del navegador para inglés, francés y alemán; no es necesario generar MP3s para estos idiomas.
 
 ## Verificación Final
-- La imagen del personaje debe verse completa en el círculo del reproductor.
+- La imagen del personaje debe verse completa en el círculo del reproductor, superpuesta al contenedor.
 - El cuento debe avanzar automáticamente a la siguiente página tras el audio.
 - Comprueba que aparecen las **banderas de idioma** (ES, UK, FR, DE) y las **estrellas de valoración** en la tarjeta del libro.
-- El selector de idioma debe permitir cambiar entre los 4 idiomas durante la lectura.
+- El selector de idioma debe permitir cambiar entre los 4 idiomas durante la lectura y **verificar que la URL cambia** (`/en`, `/fr`, `/de`) para SEO internacional.
 - El despliegue debe incluir un incremento de versión en `package.json` y el uso del flujo `/deploy`.
