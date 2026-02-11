@@ -34,22 +34,31 @@ Esta imagen se usa en el selector de cuentos (el círculo pequeño).
 
 ## 🛠️ Instrucciones de Ejecución
 
-1. **Recibir Solicitud**: Identificar el cuento (ID) y el activo (Cover o Chip).
-2. **Búsqueda Preventiva (Smart Check)**:
+1. **Verificación de Existencia (CRÍTICO)**:
+   - **ANTES** de cualquier acción, comprueba si el archivo de destino ya existe en `web/public/images/storyteller/`.
+   - Si el archivo `[id]-cover.png` o `character-[id].png` YA EXISTE, **DETENTE**.
+   - Informa al usuario: "La imagen ya existe, no es necesario regenerarla."
+   - **NO** generes una nueva imagen si ya tienes una válida.
+
+2. **Recibir Solicitud**: Identificar el cuento (ID) y el activo (Cover o Chip).
+3. **Búsqueda Preventiva (Smart Check)**:
    - ANTES de generar o en caso de Error 429/503, busca en la carpeta temporal del "cerebro" de la IA: `C:\Users\david\.gemini\antigravity\brain\`.
    - Usa `run_command` para buscar archivos `.png` que contengan el nombre del cuento o del ID:
      ```powershell
      Get-ChildItem -Path "C:\Users\david\.gemini\antigravity\brain" -Filter "*.png" -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-60) }
      ```
    - Si encuentras una imagen válida que coincida, **CÓPIALA** directamente a `web/public/images/storyteller/` y omite la generación.
-3. **Generación con Verificación Inteligente**:
+4. **Generación con Verificación Estricta**:
    - Ejecuta `generate_image` con el prompt oficial.
-   - **CRÍTICO**: Si recibes un error tipo `CORTEX_STEP_STATUS_ERROR` o "no image generated", **NO ASUMAS QUE HA FALLADO**.
-   - **INMEDIATAMENTE**: Ejecuta una búsqueda en la memoria temporal (`C:\Users\david\.gemini\antigravity\brain`) buscando archivos creados en los últimos 2 minutos.
-     ```powershell
-     Get-ChildItem -Path "C:\Users\david\.gemini\antigravity\brain" -Recurse -File | Where-Object { $_.CreationTime -gt (Get-Date).AddMinutes(-2) }
-     ```
-   - Si encuentras un archivo nuevo (incluso con nombre aleatorio), **ESE ES TU RESULTADO**. Cópialo y renómbralo. Solo si esta búsqueda manual falla, considera la operación como fallida.
+   - **CASO A: ÉXITO**: Si la herramienta devuelve éxito y la imagen se crea -> **PROCESAR**.
+   - **CASO B: ERROR (503/429/Error desconocido)**:
+     - **NO REINTENTES LA LLAMADA A LA HERRAMIENTA**.
+     - **VERIFICA LA CARPETA TEMPORAL**: Ejecuta inmediatamente:
+       ```powershell
+       Get-ChildItem -Path "C:\Users\david\.gemini\antigravity\brain" -Recurse -File | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-2) } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+       ```
+     - **Sub-caso B1 (Archivo encontrado)**: Si el comando devuelve un archivo -> **ÉXITO**. Recupera la imagen y procésala como válida.
+     - **Sub-caso B2 (Archivo NO encontrado)**: Si el comando NO devuelve nada -> **FALLO TOTAL**. Asume que no es posible generar imágenes en este momento. **DETENTE** y reporta al usuario que el servicio no está disponible. **NO INTENTES GENERAR DE NUEVO**.
 
 4. **Guardar Archivo**: Mover el resultado (generado o rescatado) a la carpeta `web/public/images/storyteller/` con el nombre correcto.
 

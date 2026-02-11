@@ -33,7 +33,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function StorytellerTool({ initialBookId }: { initialBookId?: string }) {
+export default function StorytellerTool({ initialBookId, initialLanguage = 'es' }: { initialBookId?: string, initialLanguage?: 'es' | 'en' | 'fr' | 'de' }) {
     const { t } = useLanguage();
     const router = useRouter();
     const [selectedBook, setSelectedBook] = useState<Book | null>(
@@ -50,8 +50,13 @@ export default function StorytellerTool({ initialBookId }: { initialBookId?: str
         { key: 'fastest', value: 1.3 }
     ] as const;
     const [fontSize, setFontSize] = useState(24);
-    const [audioLanguage, setAudioLanguage] = useState<'es' | 'en' | 'fr' | 'de'>('es');
+    const [audioLanguage, setAudioLanguage] = useState<'es' | 'en' | 'fr' | 'de'>(initialLanguage);
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+
+    // Sync state if prop changes (navigation)
+    useEffect(() => {
+        setAudioLanguage(initialLanguage);
+    }, [initialLanguage]);
 
     const [charIndex, setCharIndex] = useState(0);
     const [isMaximized, setIsMaximized] = useState(false);
@@ -623,78 +628,67 @@ export default function StorytellerTool({ initialBookId }: { initialBookId?: str
                                             <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
                                                 Idioma Audio
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setAudioLanguage('es');
-                                                    setIsLangMenuOpen(false);
-                                                }}
-                                                className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                    isMaximized
-                                                        ? (audioLanguage === 'es' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                        : (audioLanguage === 'es' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                )}
-                                            >
-                                                <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
-                                                <span className="text-sm font-medium">Español</span>
-                                            </button>
 
-                                            {selectedBook?.contentEn && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setAudioLanguage('en');
-                                                        setIsLangMenuOpen(false);
-                                                    }}
-                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                        isMaximized
-                                                            ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                            : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                    )}
-                                                >
-                                                    <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
-                                                    <span className="text-sm font-medium">English</span>
-                                                </button>
-                                            )}
+                                            {selectedBook && (
+                                                <>
+                                                    <Link
+                                                        href={`/recursos/cuentacuentos/${selectedBook.id}`}
+                                                        onClick={(e) => setIsLangMenuOpen(false)}
+                                                        className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                            isMaximized
+                                                                ? (audioLanguage === 'es' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                : (audioLanguage === 'es' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                        )}
+                                                    >
+                                                        <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
+                                                        <span className="text-sm font-medium">Español</span>
+                                                    </Link>
 
-                                            {selectedBook?.contentFr && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setAudioLanguage('fr');
-                                                        setIsLangMenuOpen(false);
-                                                    }}
-                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                        isMaximized
-                                                            ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                            : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    {selectedBook?.contentEn && (
+                                                        <Link
+                                                            href={`/recursos/cuentacuentos/${selectedBook.id}/en`}
+                                                            onClick={(e) => setIsLangMenuOpen(false)}
+                                                            className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                                isMaximized
+                                                                    ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                    : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                            )}
+                                                        >
+                                                            <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
+                                                            <span className="text-sm font-medium">English</span>
+                                                        </Link>
                                                     )}
-                                                >
-                                                    <img src="/images/flags/fr.svg" alt="Français" className="w-5 h-auto rounded-[2px]" />
-                                                    <span className="text-sm font-medium">Français</span>
-                                                </button>
-                                            )}
 
-                                            {selectedBook?.contentDe && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setAudioLanguage('de');
-                                                        setIsLangMenuOpen(false);
-                                                    }}
-                                                    className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
-                                                        isMaximized
-                                                            ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                            : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                    {selectedBook?.contentFr && (
+                                                        <Link
+                                                            href={`/recursos/cuentacuentos/${selectedBook.id}/fr`}
+                                                            onClick={(e) => setIsLangMenuOpen(false)}
+                                                            className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                                isMaximized
+                                                                    ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                    : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                            )}
+                                                        >
+                                                            <img src="/images/flags/fr.svg" alt="Français" className="w-5 h-auto rounded-[2px]" />
+                                                            <span className="text-sm font-medium">Français</span>
+                                                        </Link>
                                                     )}
-                                                >
-                                                    <img src="/images/flags/de.svg" alt="Deutsch" className="w-5 h-auto rounded-[2px]" />
-                                                    <span className="text-sm font-medium">Deutsch</span>
-                                                </button>
+
+                                                    {selectedBook?.contentDe && (
+                                                        <Link
+                                                            href={`/recursos/cuentacuentos/${selectedBook.id}/de`}
+                                                            onClick={(e) => setIsLangMenuOpen(false)}
+                                                            className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                                isMaximized
+                                                                    ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                    : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                            )}
+                                                        >
+                                                            <img src="/images/flags/de.svg" alt="Deutsch" className="w-5 h-auto rounded-[2px]" />
+                                                            <span className="text-sm font-medium">Deutsch</span>
+                                                        </Link>
+                                                    )}
+                                                </>
                                             )}
                                         </div>
                                     </>

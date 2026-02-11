@@ -4,6 +4,11 @@ description: Creación completa de un nuevo libro para el Cuenta Cuentos (Texto,
 
 Este flujo de trabajo coordina la creación de un nuevo cuento asegurando que cumpla con los estándares de diseño "Vintage/Classic" y la lógica de reproducción automática mejorada.
 
+### 0. Verificación Inicial (CRÍTICO)
+Antes de comenzar, lee la lista oficial de cuentos en `.agent/resources/storyteller_books_list.md`.
+- Si el cuento ya existe en la lista, **DETENTE** e informa al usuario.
+- Si no existe, **añade el nuevo ID y Título a la lista** antes de proceder con la generación de código para evitar duplicados futuros.
+
 ## Estándar de Calidad Premium
 
 ### 1. Formato de Texto y Narrativa

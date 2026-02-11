@@ -29,6 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             title,
             description,
             images: [book.coverImage],
+            locale: 'es_ES',
+            type: 'book',
         },
         keywords: [
             book.title,
@@ -37,7 +39,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             'aprender idiomas niños',
             'cuento infantil inglés francés alemán',
             'mejores cuentos para niños'
-        ]
+        ],
+        alternates: {
+            canonical: `/recursos/cuentacuentos/${slug}`,
+            languages: {
+                'es': `/recursos/cuentacuentos/${slug}`,
+                'en': `/recursos/cuentacuentos/${slug}/en`,
+                'fr': `/recursos/cuentacuentos/${slug}/fr`,
+                'de': `/recursos/cuentacuentos/${slug}/de`,
+            }
+        }
     };
 }
 
