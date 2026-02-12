@@ -28,7 +28,14 @@ Cada nuevo cuento DEBE seguir este estilo visual para mantener la coherencia de 
     - **Prompt**: `Wide landscape scene of [Key Scene], classic antique storybook illustration style of Arthur Rackham and Edmund Dulac. Muted colors, detailed scenery, vintage engraved texture. Ethereal and atmospheric. No text. High resolution.`
     - **Ubicación**: `web/public/images/storyteller/[id]-cover.png`
 
-> 💡 **Smart Recovery**: Las imágenes se intentan crear **una sola vez**. Si el servidor devuelve un error, **busca inmediatamente en la memoria temporal** del cerebro (`C:\Users\david\.gemini\antigravity\brain`) por si la imagen se generó pero falló la entrega. NO reintentes la generación sin verificar esto primero.
+> 🛑 **POLÍTICA DE GENERACIÓN ÚNICA (STRICT ONE-SHOT)**:
+> 1.  Antes de llamar a `generate_image`, **BUSCA SIEMPRE** en la memoria temporal (`C:\Users\david\.gemini\antigravity\brain`) usando `find_by_name`.
+> 2.  Si existe una imagen con un nombre similar, **ÚSALA**.
+> 3.  Si NO existe, realiza **UN ÚNICO INTENTO**.
+> 4.  **PROTOCOLO ANTI-RACE-CONDITION**: Si `generate_image` devuelve error (503/Timeout):
+>     a. **ESPERA 10 SEGUNDOS** ejecutando `run_command` con `Start-Sleep -Seconds 10`.
+>     b. **VUELVE A BUSCAR** en la memoria temporal. A veces la imagen se guarda milisegundos después del error.
+>     c. Si aparece, úsala. Si no, **ABORTA** la imagen. NO reintentes la generación.
 
 ### 3. Registro y Lógica Técnica
 - **Fichero**: `src/components/resources/storyteller/books-data.ts`.
