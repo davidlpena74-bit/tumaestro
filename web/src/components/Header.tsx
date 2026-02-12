@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
 import { User as UserIcon, Globe, CaretDown, Check, SignOut } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AuthModal from './AuthModal';
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);
@@ -13,6 +14,7 @@ export default function Header() {
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [authModalOpen, setAuthModalOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -175,13 +177,18 @@ export default function Header() {
                             </AnimatePresence>
                         </div>
                     ) : (
-                        <Link href="/login" className="flex items-center gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full font-bold text-sm hover:from-white hover:to-white hover:text-teal-900 transition-all shadow-lg group">
+                        <button
+                            onClick={() => setAuthModalOpen(true)}
+                            className="flex items-center gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full font-bold text-sm hover:from-white hover:to-white hover:text-teal-900 transition-all shadow-lg group"
+                        >
                             <UserIcon className="w-4 h-4 group-hover:scale-110 transition-transform" weight="bold" />
                             <span>{t.header.login}</span>
-                        </Link>
+                        </button>
                     )}
                 </div>
             </div>
+
+            <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
         </header>
     );
 }

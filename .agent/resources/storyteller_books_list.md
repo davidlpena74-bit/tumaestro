@@ -34,3 +34,4 @@ Any new story MUST be added to this list to ensure there are no duplicates.
 | `simbad-marino` | Simbad el Marino |
 | `robin-hood` | Robin Hood |
 | `libro-selva` | El Libro de la Selva |
+| `principe-feliz` | El Príncipe Feliz |
