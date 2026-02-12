@@ -107,7 +107,7 @@ export default function Header() {
                                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    className="absolute top-full right-0 mt-2 w-32 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50"
+                                    className="absolute top-full right-0 mt-2 w-40 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50"
                                 >
                                     <div className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                                         {language === 'es' ? 'Idioma' : language === 'fr' ? 'Langue' : language === 'de' ? 'Sprache' : 'Language'}
@@ -122,7 +122,7 @@ export default function Header() {
                                         <button
                                             key={lang.code}
                                             onClick={() => { setLanguage(lang.code as any); setLangMenuOpen(false); }}
-                                            className={`w-full text-left px-3 py-2.5 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === lang.code ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
+                                            className={`w-full text-left px-2.5 py-1.5 text-sm font-medium flex items-center justify-between hover:bg-white/5 transition-colors ${language === lang.code ? 'text-teal-400 bg-teal-500/10' : 'text-white'}`}
                                         >
                                             <span className="flex items-center gap-2">
                                                 <img src={`https://flagcdn.com/${lang.flag}`} className="w-5 h-4 object-cover rounded-sm" alt={lang.code.toUpperCase()} />

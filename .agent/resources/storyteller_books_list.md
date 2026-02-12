@@ -35,3 +35,6 @@ Any new story MUST be added to this list to ensure there are no duplicates.
 | `robin-hood` | Robin Hood |
 | `libro-selva` | El Libro de la Selva |
 | `principe-feliz` | El Príncipe Feliz |
+| `ricitos-oro` | Ricitos de Oro y los Tres Osos |
+| `traje-nuevo-emperador` | El Traje Nuevo del Emperador |
+| `cigarra-y-hormiga` | La Cigarra y la Hormiga |

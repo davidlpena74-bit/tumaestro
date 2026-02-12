@@ -657,7 +657,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                                     <Link
                                                         href={`/recursos/cuentacuentos/${selectedBook.id}`}
                                                         onClick={(e) => setIsLangMenuOpen(false)}
-                                                        className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                        className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                             isMaximized
                                                                 ? (audioLanguage === 'es' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
                                                                 : (audioLanguage === 'es' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
@@ -671,7 +671,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                                         <Link
                                                             href={`/recursos/cuentacuentos/${selectedBook.id}/en`}
                                                             onClick={(e) => setIsLangMenuOpen(false)}
-                                                            className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                            className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                 isMaximized
                                                                     ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
                                                                     : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
@@ -686,7 +686,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                                         <Link
                                                             href={`/recursos/cuentacuentos/${selectedBook.id}/fr`}
                                                             onClick={(e) => setIsLangMenuOpen(false)}
-                                                            className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                            className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                 isMaximized
                                                                     ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
                                                                     : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
@@ -701,7 +701,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                                         <Link
                                                             href={`/recursos/cuentacuentos/${selectedBook.id}/de`}
                                                             onClick={(e) => setIsLangMenuOpen(false)}
-                                                            className={cn("w-full flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer relative z-50",
+                                                            className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                 isMaximized
                                                                     ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
                                                                     : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
