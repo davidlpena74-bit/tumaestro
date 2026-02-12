@@ -98,6 +98,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setLoading(false);
     };
 
+    const handleResetPassword = async () => {
+        if (!email) {
+            alert('Por favor, introduce tu correo electrónico primero.');
+            return;
+        }
+        setLoading(true);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/perfil`, // Redirect to profile to set new password
+        });
+
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            alert('Enlace de restablecimiento enviado. Revisa tu correo.');
+            onClose();
+        }
+        setLoading(false);
+    };
+
     if (!isOpen || !mounted) return null;
 
     return createPortal(
@@ -227,7 +246,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
 
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-700 mb-1 ml-1 uppercase tracking-wider">Contraseña</label>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Contraseña</label>
+                                        {mode === 'signin' && (
+                                            <button
+                                                type="button"
+                                                onClick={handleResetPassword}
+                                                className="text-xs text-teal-600 hover:text-teal-700 font-semibold"
+                                            >
+                                                ¿Olvidaste tu contraseña?
+                                            </button>
+                                        )}
+                                    </div>
                                     <div className="relative">
                                         <Key className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                         <input

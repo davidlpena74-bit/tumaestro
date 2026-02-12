@@ -164,6 +164,17 @@ export default function Header() {
                                         </div>
 
                                         <div className="py-1">
+                                            <Link
+                                                href="/perfil"
+                                                onClick={() => setUserMenuOpen(false)}
+                                                className="w-full text-left px-4 py-2.5 text-sm font-medium text-white hover:bg-white/5 flex items-center gap-2 transition-colors"
+                                            >
+                                                <UserIcon size={16} weight="bold" />
+                                                Mi Perfil
+                                            </Link>
+                                        </div>
+
+                                        <div className="py-1">
                                             <button
                                                 onClick={handleLogout}
                                                 className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-2 transition-colors"
