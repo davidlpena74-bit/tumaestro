@@ -444,7 +444,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                 exit={{ opacity: 0, y: 20 }}
                                 className="flex justify-center relative z-20 -mb-6 pointer-events-none"
                             >
-                                <div className="w-28 h-28 rounded-full shadow-2xl overflow-hidden flex items-center justify-center text-center relative z-30 filter drop-shadow-lg bg-[#fffdf5]">
+                                <div className="w-32 h-32 rounded-full shadow-2xl overflow-hidden flex items-center justify-center text-center relative z-30 filter drop-shadow-lg bg-[#fffdf5]">
                                     {selectedBook.chipImage.includes('/') ? (
                                         <img src={selectedBook.chipImage} className="w-full h-full object-cover mix-blend-multiply" alt="Character" />
                                     ) : (
