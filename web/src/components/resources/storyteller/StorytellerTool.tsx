@@ -751,176 +751,183 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
     }
 
     return (
-        <div className="w-full max-w-7xl mx-auto p-4">
-            <div className="mb-8">
-                <Link
-                    href="/recursos"
-                    className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200"
-                >
-                    <ArrowLeft weight="bold" /> {t.storyteller.backToResources}
-                </Link>
-            </div>
+        <div className="w-full max-w-7xl mx-auto p-4 relative z-10">
+            <div className="bg-white/30 backdrop-blur-xl rounded-[3rem] p-8 md:p-14 border border-white/40 shadow-2xl relative overflow-hidden ring-1 ring-white/50">
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/10 to-transparent pointer-events-none" />
 
-            <header className="text-center mb-12 -mt-24">
-                <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
-                <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
-                    {t.storyteller.subtitle}
-                </p>
-
-                {/* Search Component */}
-                <StorySearch books={BOOKS} />
-            </header>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {BOOKS.map((book) => (
-                    <motion.div
-                        key={book.id}
-                        whileHover={{ y: -10 }}
-                        className="group relative cursor-pointer"
-                        onClick={() => {
-                            setSelectedBook(book);
-                            router.push(`/recursos/cuentacuentos/${book.id}`);
-                        }}
-                    >
-                        {/* Sombra Dinámica */}
-                        <div className="absolute inset-x-8 -bottom-4 h-12 bg-slate-900/10 blur-2xl group-hover:bg-slate-900/20 transition-all rounded-full" />
-
-                        <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-slate-200/50 overflow-hidden relative shadow-xl hover:shadow-2xl hover:shadow-slate-400/20 transition-all h-full flex flex-col">
-                            {/* Portada */}
-                            {/* Portada */}
-                            <div
-                                className={`aspect-[4/3.8] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} shadow-inner`}
-                            >
-                                <div
-                                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                    style={{
-                                        backgroundImage: (book.chipImage?.includes('/') || book.coverImage?.includes('/'))
-                                            ? `url(${book.chipImage?.includes('/') ? book.chipImage : book.coverImage})`
-                                            : 'none'
-                                    }}
-                                >
-                                    {/* Si es texto placeholder */}
-                                    {book.chipImage && !book.chipImage.includes('/') && (
-                                        <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
-                                            <span className="text-white/40 font-black uppercase tracking-tighter text-xl rotate-12">
-                                                {book.chipImage}
-                                            </span>
-                                        </div>
-                                    )}
-                                    {/* Inner Shadow Overlay */}
-                                    <div className="absolute inset-0 shadow-[inset_0_-20px_60px_-10px_rgba(0,0,0,0.3)]" />
-                                </div>
-
-
-
-                                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-slate-900 flex items-center gap-1.5 shadow-xl border border-white/20 z-10">
-                                    <BookmarkSimple weight="fill" className="text-orange-500" />
-                                    {(() => {
-                                        const genres: Record<string, Record<string, string>> = {
-                                            'Fábula': { en: 'Fable', fr: 'Fable', de: 'Fabel' },
-                                            'Cuento de Hadas': { en: 'Fairytale', fr: 'Conte de fées', de: 'Märchen' },
-                                            'Aventura': { en: 'Adventure', fr: 'Aventure', de: 'Abenteuer' },
-                                            'Humor': { en: 'Humor', fr: 'Humour', de: 'Humor' },
-                                            'Leyenda': { en: 'Legend', fr: 'Légende', de: 'Legende' },
-                                            'Realista': { en: 'Realistic', fr: 'Réaliste', de: 'Realistisch' },
-                                            'Aventura/Fábula': { en: 'Adventure/Fable', fr: 'Aventure/Fable', de: 'Abenteuer/Fabel' },
-                                            'Fábula/Drama': { en: 'Fable/Drama', fr: 'Fable/Drame', de: 'Fabel/Drama' }
-                                        };
-                                        const localizedGenre = genres[book.genre]?.[language as string] || book.genre;
-                                        return localizedGenre.toUpperCase();
-                                    })()}
-                                </div>
-                            </div>
-
-                            {/* Contenido */}
-                            <div className="p-5 flex flex-col flex-grow relative">
-                                <div className="flex gap-2 mb-2 items-start">
-                                    <span className="px-2.5 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50 shadow-sm">
-                                        {(() => {
-                                            const levels: Record<string, Record<string, string>> = {
-                                                'Fácil': { en: 'Easy', fr: 'Facile', de: 'Einfach' },
-                                                'Medio': { en: 'Medium', fr: 'Moyen', de: 'Mittel' },
-                                                'Difícil': { en: 'Hard', fr: 'Difficile', de: 'Schwer' }
-                                            };
-                                            return levels[book.level]?.[language as string] || book.level;
-                                        })()}
-                                    </span>
-                                    <span className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-wider uppercase border border-slate-200/50 shadow-sm">
-                                        {book.age}
-                                    </span>
-
-                                    <div className="flex flex-col items-end ml-auto gap-2">
-                                        <div className="flex gap-1">
-                                            <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Español">
-                                                <img src="/images/flags/es.svg" alt="Español" className="w-full h-full object-cover" />
-                                            </div>
-                                            {book.contentEn && (
-                                                <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="English">
-                                                    <img src="/images/flags/gb.svg" alt="English" className="w-full h-full object-cover" />
-                                                </div>
-                                            )}
-                                            {book.contentFr && (
-                                                <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Français">
-                                                    <img src="/images/flags/fr.svg" alt="Français" className="w-full h-full object-cover" />
-                                                </div>
-                                            )}
-                                            {book.contentDe && (
-                                                <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Deutsch">
-                                                    <img src="/images/flags/de.svg" alt="Deutsch" className="w-full h-full object-cover" />
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Valoración Estrellas */}
-                                        {book.rating && (
-                                            <div className="flex items-center gap-0.5" title={`Puntuación: ${book.rating} / 5`}>
-                                                {[1, 2, 3, 4, 5].map((star) => {
-                                                    const isFull = book.rating! >= star;
-                                                    const isHalf = book.rating! >= star - 0.5 && book.rating! < star;
-                                                    return (
-                                                        <div key={star}>
-                                                            {isFull ? (
-                                                                <Star weight="fill" className="text-amber-400" size={13} />
-                                                            ) : isHalf ? (
-                                                                <StarHalf weight="fill" className="text-amber-400" size={13} />
-                                                            ) : (
-                                                                <Star weight="fill" className="text-slate-200" size={13} />
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })}
-                                                <span className="text-[10px] font-bold text-slate-400 ml-1">{book.rating}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                <h3 className="text-2xl font-black text-slate-800 mb-1 transition-colors group-hover:text-slate-900 leading-tight">
-                                    {(book as any)[`title${language.charAt(0).toUpperCase() + language.slice(1)}`] || book.title}
-                                </h3>
-                                <p className="text-slate-500 text-base font-medium line-clamp-2 mb-3 flex-grow leading-snug">
-                                    {(book as any)[`description${language.charAt(0).toUpperCase() + language.slice(1)}`] || book.description}
-                                </p>
-
-                                <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
-                                    <span className="text-base font-bold text-slate-600 flex items-center gap-2 italic">
-                                        {t.storyteller.by} {book.author}
-                                    </span>
-                                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                                        <Play weight="fill" size={16} className="ml-1" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
-
-                {/* Coming Soon */}
-                <div className="bg-white/20 border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center p-12 text-center group transition-colors hover:bg-white/30">
-                    <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <BookOpen size={32} className="text-slate-300" weight="duotone" />
+                <div className="relative z-10">
+                    <div className="mb-8">
+                        <Link
+                            href="/recursos"
+                            className="inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 font-bold transition-colors bg-white/60 hover:bg-white/80 px-4 py-2 rounded-2xl border border-white/50 shadow-sm backdrop-blur-sm"
+                        >
+                            <ArrowLeft weight="bold" /> {t.storyteller.backToResources}
+                        </Link>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-400 mb-2">{t.storyteller.moreTitles}</h3>
-                    <p className="text-xs text-slate-400 font-medium">{t.storyteller.moreTitlesDesc}</p>
+
+                    <header className="text-center mb-12">
+                        <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
+                        <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
+                            {t.storyteller.subtitle}
+                        </p>
+
+                        {/* Search Component */}
+                        <StorySearch books={BOOKS} />
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {BOOKS.map((book) => (
+                            <motion.div
+                                key={book.id}
+                                whileHover={{ y: -10 }}
+                                className="group relative cursor-pointer"
+                                onClick={() => {
+                                    setSelectedBook(book);
+                                    router.push(`/recursos/cuentacuentos/${book.id}`);
+                                }}
+                            >
+                                {/* Sombra Dinámica */}
+                                <div className="absolute inset-x-8 -bottom-4 h-12 bg-slate-900/10 blur-2xl group-hover:bg-slate-900/20 transition-all rounded-full" />
+
+                                <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-slate-200/50 overflow-hidden relative shadow-xl hover:shadow-2xl hover:shadow-slate-400/20 transition-all h-full flex flex-col">
+                                    {/* Portada */}
+                                    {/* Portada */}
+                                    <div
+                                        className={`aspect-[4/3.8] relative overflow-hidden bg-gradient-to-br ${book.themeColor || 'from-slate-200 to-slate-300'} shadow-inner`}
+                                    >
+                                        <div
+                                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                            style={{
+                                                backgroundImage: (book.chipImage?.includes('/') || book.coverImage?.includes('/'))
+                                                    ? `url(${book.chipImage?.includes('/') ? book.chipImage : book.coverImage})`
+                                                    : 'none'
+                                            }}
+                                        >
+                                            {/* Si es texto placeholder */}
+                                            {book.chipImage && !book.chipImage.includes('/') && (
+                                                <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+                                                    <span className="text-white/40 font-black uppercase tracking-tighter text-xl rotate-12">
+                                                        {book.chipImage}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {/* Inner Shadow Overlay */}
+                                            <div className="absolute inset-0 shadow-[inset_0_-20px_60px_-10px_rgba(0,0,0,0.3)]" />
+                                        </div>
+
+
+
+                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-slate-900 flex items-center gap-1.5 shadow-xl border border-white/20 z-10">
+                                            <BookmarkSimple weight="fill" className="text-orange-500" />
+                                            {(() => {
+                                                const genres: Record<string, Record<string, string>> = {
+                                                    'Fábula': { en: 'Fable', fr: 'Fable', de: 'Fabel' },
+                                                    'Cuento de Hadas': { en: 'Fairytale', fr: 'Conte de fées', de: 'Märchen' },
+                                                    'Aventura': { en: 'Adventure', fr: 'Aventure', de: 'Abenteuer' },
+                                                    'Humor': { en: 'Humor', fr: 'Humour', de: 'Humor' },
+                                                    'Leyenda': { en: 'Legend', fr: 'Légende', de: 'Legende' },
+                                                    'Realista': { en: 'Realistic', fr: 'Réaliste', de: 'Realistisch' },
+                                                    'Aventura/Fábula': { en: 'Adventure/Fable', fr: 'Aventure/Fable', de: 'Abenteuer/Fabel' },
+                                                    'Fábula/Drama': { en: 'Fable/Drama', fr: 'Fable/Drame', de: 'Fabel/Drama' }
+                                                };
+                                                const localizedGenre = genres[book.genre]?.[language as string] || book.genre;
+                                                return localizedGenre.toUpperCase();
+                                            })()}
+                                        </div>
+                                    </div>
+
+                                    {/* Contenido */}
+                                    <div className="p-5 flex flex-col flex-grow relative">
+                                        <div className="flex gap-2 mb-2 items-start">
+                                            <span className="px-2.5 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black tracking-wider uppercase border border-emerald-200/50 shadow-sm">
+                                                {(() => {
+                                                    const levels: Record<string, Record<string, string>> = {
+                                                        'Fácil': { en: 'Easy', fr: 'Facile', de: 'Einfach' },
+                                                        'Medio': { en: 'Medium', fr: 'Moyen', de: 'Mittel' },
+                                                        'Difícil': { en: 'Hard', fr: 'Difficile', de: 'Schwer' }
+                                                    };
+                                                    return levels[book.level]?.[language as string] || book.level;
+                                                })()}
+                                            </span>
+                                            <span className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-wider uppercase border border-slate-200/50 shadow-sm">
+                                                {book.age}
+                                            </span>
+
+                                            <div className="flex flex-col items-end ml-auto gap-2">
+                                                <div className="flex gap-1">
+                                                    <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Español">
+                                                        <img src="/images/flags/es.svg" alt="Español" className="w-full h-full object-cover" />
+                                                    </div>
+                                                    {book.contentEn && (
+                                                        <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="English">
+                                                            <img src="/images/flags/gb.svg" alt="English" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    )}
+                                                    {book.contentFr && (
+                                                        <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Français">
+                                                            <img src="/images/flags/fr.svg" alt="Français" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    )}
+                                                    {book.contentDe && (
+                                                        <div className="w-6 h-4 relative rounded shadow-sm overflow-hidden" title="Deutsch">
+                                                            <img src="/images/flags/de.svg" alt="Deutsch" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Valoración Estrellas */}
+                                                {book.rating && (
+                                                    <div className="flex items-center gap-0.5" title={`Puntuación: ${book.rating} / 5`}>
+                                                        {[1, 2, 3, 4, 5].map((star) => {
+                                                            const isFull = book.rating! >= star;
+                                                            const isHalf = book.rating! >= star - 0.5 && book.rating! < star;
+                                                            return (
+                                                                <div key={star}>
+                                                                    {isFull ? (
+                                                                        <Star weight="fill" className="text-amber-400" size={13} />
+                                                                    ) : isHalf ? (
+                                                                        <StarHalf weight="fill" className="text-amber-400" size={13} />
+                                                                    ) : (
+                                                                        <Star weight="fill" className="text-slate-200" size={13} />
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                        <span className="text-[10px] font-bold text-slate-400 ml-1">{book.rating}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <h3 className="text-2xl font-black text-slate-800 mb-1 transition-colors group-hover:text-slate-900 leading-tight">
+                                            {(book as any)[`title${language.charAt(0).toUpperCase() + language.slice(1)}`] || book.title}
+                                        </h3>
+                                        <p className="text-slate-500 text-base font-medium line-clamp-2 mb-3 flex-grow leading-snug">
+                                            {(book as any)[`description${language.charAt(0).toUpperCase() + language.slice(1)}`] || book.description}
+                                        </p>
+
+                                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
+                                            <span className="text-base font-bold text-slate-600 flex items-center gap-2 italic">
+                                                {t.storyteller.by} {book.author}
+                                            </span>
+                                            <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                                                <Play weight="fill" size={16} className="ml-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+
+                        {/* Coming Soon */}
+                        <div className="bg-white/20 border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center p-12 text-center group transition-colors hover:bg-white/30">
+                            <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <BookOpen size={32} className="text-slate-300" weight="duotone" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-400 mb-2">{t.storyteller.moreTitles}</h3>
+                            <p className="text-xs text-slate-400 font-medium">{t.storyteller.moreTitlesDesc}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

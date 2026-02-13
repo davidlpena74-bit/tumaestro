@@ -3471,6 +3471,63 @@ export const BOOKS: Book[] = [
             { text: "Die Ameise sah sie streng an und fragte: 'Und was hast du den ganzen Sommer gemacht, als ich ohne Unterlass arbeitete?'. 'Ich... ich habe gesungen', antwortete die Grille und senkte den Kopf. 'Ich habe gesungen, um die Welt aufzuheitern'. 'Du hast gesungen?', erwiderte die Ameise. 'Nun, wenn du im Sommer gesungen hast, dann tanze jetzt im Winter!'." },
             { text: "Und sie schloss die Tür. Da verstand die Grille ihren Fehler. Sie hatte Arbeit und Vorsorge verachtet und zahlte nun die Konsequenzen. Obwohl man sagt, dass die Ameise, im Grunde nicht so grausam, die Tür wieder ein wenig öffnete, um ihr ein paar Körner zu geben, genug zum Überleben, aber mit der gut gelernten Lektion: Es gibt eine Zeit zum Arbeiten und eine Zeit zum Vergnügen, und wer nicht sät, der nicht erntet." }
         ]
+    },
+    {
+        id: 'princesa-guisante',
+        title: 'La Princesa y el Guisante',
+        titleEn: 'The Princess and the Pea',
+        titleFr: 'La Princesse au Petit Pois',
+        titleDe: 'Die Prinzessin auf der Erbse',
+        author: 'Hans Christian Andersen',
+        description: 'Un príncipe busca una princesa real, y una tormenta trae a una joven que afirma serlo. Una pequeña prueba revelará la verdad.',
+        descriptionEn: 'A prince searches for a real princess, and a storm brings a young woman claiming to be one. A small test will reveal the truth.',
+        descriptionFr: 'Un prince cherche une vraie princesse, et une tempête amène une jeune femme prétendant l\'être. Un petit test révélera la vérité.',
+        descriptionDe: 'Ein Prinz sucht eine echte Prinzessin, und ein Sturm bringt eine junge Frau, die behauptet, eine zu sein. Ein kleiner Test wird die Wahrheit enthüllen.',
+        level: 'Fácil',
+        age: '4+',
+        coverImage: '/images/storyteller/princesa-guisante-cover.png',
+        chipImage: '/images/storyteller/character-princesa-guisante.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-pink-400 to-purple-500',
+        rating: 4.6,
+        content: [
+            {
+                text: "Érase una vez un príncipe que quería casarse con una princesa, pero tenía que ser una princesa de verdad. Viajó por todo el mundo para encontrar una, pero siempre había algo que no estaba bien. Princesas había muchas, pero si eran verdaderas princesas, no podía estar completamente seguro; siempre había algo que no encajaba del todo. Así que regresó a casa muy triste, porque deseaba mucho tener una verdadera princesa."
+            },
+            {
+                text: "Una noche se desató una tormenta terrible; había relámpagos y truenos, y la lluvia caía a cántaros; ¡era algo espantoso! Entonces llamaron a la puerta de la ciudad, y el viejo rey fue a abrir. Era una princesa quien estaba fuera. ¡Pero Dios mío, qué aspecto tenía por culpa de la lluvia y el mal tiempo! El agua le chorreaba por el pelo y la ropa, le entraba por la punta de los zapatos y le salía por los talones; y sin embargo, ella decía que era una verdadera princesa."
+            },
+            {
+                text: "'Bueno, eso pronto lo sabremos', pensó la vieja reina. No dijo nada, fue al dormitorio, quitó toda la ropa de cama y puso un guisante en el fondo de la cama. Luego cogió veinte colchones y los puso sobre el guisante, y además veinte edredones de plumas sobre los colchones. Allí tendría que dormir la princesa esa noche."
+            },
+            {
+                text: "A la mañana siguiente le preguntaron qué tal había dormido. '¡Oh, terriblemente mal!', dijo la princesa. 'Apenas he pegado ojo en toda la noche. ¡Sabe Dios lo que había en la cama! He estado acostada sobre algo tan duro que tengo todo el cuerpo lleno de moratones. ¡Es horrible!'. Así vieron que era una verdadera princesa, puesto que había sentido el guisante a través de los veinte colchones y los veinte edredones."
+            },
+            {
+                text: "Nadie más que una verdadera princesa podía ser tan sensible. El príncipe la tomó por esposa, pues ahora sabía que había encontrado una verdadera princesa; y el guisante fue llevado al museo de arte, donde todavía puede verse, a no ser que alguien se lo haya llevado. ¡Mirad, esta sí que es una historia verdadera!"
+            }
+        ],
+        contentEn: [
+            { text: "Once upon a time there was a prince who wanted to marry a princess, but she had to be a real princess. He traveled all over the world to find one, but there was always something wrong. There were plenty of princesses, but whether they were real princesses, he could not be completely sure; there was always something that didn't quite fit. So he came home again quite sad, for he wished so much to have a real princess." },
+            { text: "One night a terrible storm broke out; there was lightning and thunder, and the rain poured down; it was something frightful! Then there was a knocking at the city gate, and the old king went to open it. It was a princess standing out there. But good heavens, what a sight the rain and the bad weather had made of her! The water ran down from her hair and clothes; it ran in at the points of her shoes and out at the heels; and yet she said that she was a real princess." },
+            { text: "'Well, we'll soon find that out,' thought the old queen. She said nothing, went into the bedroom, took all the bedding off the bedstead, and laid a pea on the bottom; then she took twenty mattresses and laid them on the pea, and then twenty eider-down beds on top of the mattresses. On this the princess had to lie all night." },
+            { text: "In the morning she was asked how she had slept. 'Oh, very badly!' said the princess. 'I have scarcely closed my eyes all night. Heaven only knows what was in the bed! But I was lying on something hard, so that I am black and blue all over my body. It's horrible!' Now they knew that she was a real princess, because she had felt the pea right through the twenty mattresses and the twenty eider-down beds." },
+            { text: "Nobody but a real princess could be as sensitive as that. The prince took her for his wife, for now he knew that he had found a real princess; and the pea was put in the museum, where it may still be seen, if no one has stolen it. There, that is a true story." }
+        ],
+        contentFr: [
+            { text: "Il était une fois un prince qui voulait épouser une princesse, mais ce devait être une vraie princesse. Il fit le tour du monde pour en trouver une, mais il y avait toujours quelque chose qui clochait. Des princesses, il n'en manquait pas, mais étaient-elles de vraies princesses ? Il ne pouvait jamais en être tout à fait sûr ; toujours quelque chose ne semblait pas parfait. Il rentra donc chez lui bien triste, car il désirait tant une véritable princesse." },
+            { text: "Une nuit, un orage terrible éclata ; les éclairs brillaient, le tonnerre grondait, et la pluie tombait à verse ; c'était effrayant ! On frappa alors à la porte de la ville, et le vieux roi alla ouvrir. C'était une princesse qui était là dehors. Mais grand Dieu, de quoi avait-elle l'air avec cette pluie et ce mauvais temps ! L'eau ruisselait de ses cheveux et de ses vêtements, entrait par la pointe de ses chaussures et sortait par les talons ; et pourtant elle affirmait être une vraie princesse." },
+            { text: "'C'est ce que nous saurons bientôt', pensa la vieille reine. Elle ne dit rien, entra dans la chambre à coucher, retira toute la literie et mit un petit pois au fond du lit. Ensuite, elle prit vingt matelas qu'elle empila sur le petit pois, et par-dessus, vingt édredons de plumes. C'est là que la princesse dut dormir cette nuit-là." },
+            { text: "Le lendemain matin, on lui demanda comment elle avait dormi. 'Oh, terriblement mal !', dit la princesse. 'Je n'ai presque pas fermé l'œil de la nuit. Dieu seul sait ce qu'il y avait dans ce lit ! J'étais couchée sur quelque chose de si dur que j'ai des bleus sur tout le corps. C'est horrible !' On vit alors qu'elle était une vraie princesse, puisqu'elle avait senti le petit pois à travers les vingt matelas et les vingt édredons." },
+            { text: "Personne d'autre qu'une vraie princesse ne pouvait avoir la peau aussi sensible. Le prince la prit donc pour femme, sûr maintenant d'avoir trouvé une vraie princesse ; et le petit pois fut placé au musée, où l'on peut encore le voir, à moins que quelqu'un ne l'ait pris. Voilà, c'est une histoire vraie !" }
+        ],
+        contentDe: [
+            { text: "Es war einmal ein Prinz, der wollte eine Prinzessin heiraten, aber es sollte eine wirkliche Prinzessin sein. Er reiste in der ganzen Welt herum, um eine solche zu finden, aber überall kam etwas dazwischen. Prinzessinnen gab es genug, aber ob es wirkliche Prinzessinnen waren, konnte er nicht ganz herausfinden; immer war da etwas, was nicht ganz in Ordnung war. Da kam er wieder nach Hause und war ganz traurig, denn er wollte doch so gern eine wirkliche Prinzessin haben." },
+            { text: "Eines Abends zog ein furchtbares Wetter auf; es blitzte und donnerte, der Regen stürzte herab, es war ganz entsetzlich! Da klopfte es an das Stadttor, und der alte König ging hin, um aufzumachen. Es war eine Prinzessin, die draußen vor dem Tor stand. Aber Gott, wie sah sie vom Regen und dem bösen Wetter aus! Das Wasser lief ihr von den Haaren und den Kleidern herab, lief in die Schnäbel der Schuhe hinein und aus den Fersen wieder heraus; und doch sagte sie, dass sie eine wirkliche Prinzessin sei." },
+            { text: "'Ja, das werden wir schon erfahren!', dachte die alte Königin. Sie sagte aber nichts, ging in die Schlafkammer hinein, nahm alles Bettzeug ab und legte eine Erbse auf den Boden der Bettstelle; dann nahm sie zwanzig Matratzen, legte sie auf die Erbse, und dann noch zwanzig Eideraunendecken oben auf die Matratzen. Hier sollte die Prinzessin nun die Nacht über liegen." },
+            { text: "Am Morgen wurde sie gefragt, wie sie geschlafen hätte. 'Oh, entsetzlich schlecht!', sagte die Prinzessin. 'Ich habe fast die ganze Nacht kein Auge geschlossen. Gott weiß, was in dem Bett gewesen ist! Ich habe auf etwas Hartem gelegen, sodass ich am ganzen Körper braun und blau bin. Es ist ganz entsetzlich!' Da sahen sie ein, dass es eine wirkliche Prinzessin war, da sie durch die zwanzig Matratzen und die zwanzig Eideraunendecken die Erbse gespürt hatte." },
+            { text: "Niemand als eine echte Prinzessin konnte so empfindlich sein. Da nahm sie der Prinz zur Frau, denn nun wusste er, dass er eine wirkliche Prinzessin gefunden hatte; und die Erbse kam auf die Kunstkammer, wo sie noch zu sehen ist, wenn sie niemand gestohlen hat. Sieh, das war eine wahre Geschichte!" }
+        ]
     }
 ];
 
