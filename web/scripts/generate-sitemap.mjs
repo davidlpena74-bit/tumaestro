@@ -39,7 +39,27 @@ try {
     console.error('Error reading games directory:', error);
 }
 
-const allRoutes = [...staticRoutes, ...resourceRoutes, ...gameRoutes];
+// Get stories dynamically from books-data.ts
+const booksFile = path.join(process.cwd(), 'src', 'components', 'resources', 'storyteller', 'books-data.ts');
+let storyRoutes = [];
+
+try {
+    const booksContent = fs.readFileSync(booksFile, 'utf8');
+    // Regex to capture IDs: id: 'some-id'
+    const idRegex = /id:\s*'([a-zA-Z0-9-]+)'/g;
+    let match;
+
+    while ((match = idRegex.exec(booksContent)) !== null) {
+        if (match[1]) {
+            storyRoutes.push(`/recursos/cuentacuentos/${match[1]}`);
+        }
+    }
+    console.log(`Found ${storyRoutes.length} stories.`);
+} catch (error) {
+    console.error('Error reading books-data.ts:', error);
+}
+
+const allRoutes = [...staticRoutes, ...resourceRoutes, ...gameRoutes, ...storyRoutes];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

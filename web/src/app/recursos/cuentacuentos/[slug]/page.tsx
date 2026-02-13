@@ -28,7 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title,
             description,
-            images: [book.coverImage],
+            // Ensure absolute URL for social sharing images
+            images: [`https://tumaestro.es${book.coverImage}`],
             locale: 'es_ES',
             type: 'book',
         },
