@@ -75,6 +75,7 @@ import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Header from "@/components/Header";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { BackgroundProvider } from "@/context/BackgroundContext";
 import PageBackground from "@/components/PageBackground";
 import ContentWrapper from "@/components/ContentWrapper";
 
@@ -89,11 +90,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LanguageProvider>
-          <PageBackground />
-          <Header />
-          <ContentWrapper>
-            {children}
-          </ContentWrapper>
+          <BackgroundProvider>
+            <PageBackground />
+            <Header />
+            <ContentWrapper>
+              {children}
+            </ContentWrapper>
+          </BackgroundProvider>
           <CookieConsent />
         </LanguageProvider>
         <Suspense fallback={null}>

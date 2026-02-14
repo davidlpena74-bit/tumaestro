@@ -28,6 +28,7 @@ import { twMerge } from 'tailwind-merge';
 import { BOOKS, Book } from './books-data';
 import { getBestVoice } from '@/lib/speech-utils';
 import { useLanguage } from '@/context/LanguageContext';
+import { useBackground } from '@/context/BackgroundContext';
 import StorySearch from './StorySearch';
 
 function cn(...inputs: ClassValue[]) {
@@ -36,6 +37,7 @@ function cn(...inputs: ClassValue[]) {
 
 export default function StorytellerTool({ initialBookId, initialLanguage = 'es' }: { initialBookId?: string, initialLanguage?: 'es' | 'en' | 'fr' | 'de' }) {
     const { t, language } = useLanguage();
+    const { setBackgroundImage, setIsImmersive, setThemeColor } = useBackground();
     const router = useRouter();
     const [selectedBook, setSelectedBook] = useState<Book | null>(
         initialBookId ? (BOOKS.find(b => b.id === initialBookId) || null) : null
@@ -61,6 +63,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
     const [charIndex, setCharIndex] = useState(0);
     const [isMaximized, setIsMaximized] = useState(false);
+
 
     const synthRef = useRef<SpeechSynthesis | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -92,6 +95,29 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
         return selectedBook.content;
     }, [selectedBook, audioLanguage]);
 
+    // Sync Background with context
+    useEffect(() => {
+        if (isMaximized && selectedBook) {
+            setIsImmersive(true);
+            const currentImg = currentBookContent[currentPage]?.image || selectedBook.chipImage || selectedBook.coverImage;
+            setBackgroundImage(currentImg || null);
+            setThemeColor(selectedBook.themeColor || null);
+        } else {
+            setIsImmersive(false);
+            setBackgroundImage(null);
+            setThemeColor(null);
+        }
+
+        // Cleanup when story closed
+        return () => {
+            if (!selectedBook) {
+                setIsImmersive(false);
+                setBackgroundImage(null);
+                setThemeColor(null);
+            }
+        };
+    }, [isMaximized, selectedBook, currentPage, currentBookContent]);
+
     // Initialize synthesis
     useEffect(() => {
         if (typeof window !== 'undefined' && !synthRef.current) {
@@ -108,6 +134,11 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 audioRef.current.src = "";
             }
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+
+            // Clean global background definitively on unmount
+            setIsImmersive(false);
+            setBackgroundImage(null);
+            setThemeColor(null);
         };
     }, []);
 
@@ -386,45 +417,26 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
     if (selectedBook) {
         return (
             <div className="w-full max-w-5xl mx-auto p-4 animate-in fade-in duration-500">
-                {/* Fondo Fijo Inmersivo (Solo en modo maximizado) */}
-                <AnimatePresence>
-                    {isMaximized && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-950"
-                        >
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={currentPage + (currentBookContent[currentPage]?.image || selectedBook.id)}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 1 }}
-                                    className="absolute inset-0"
-                                >
-                                    <img
-                                        src={currentBookContent[currentPage]?.image || selectedBook.chipImage || selectedBook.coverImage}
-                                        className="w-full h-full object-cover blur-sm brightness-[0.4] scale-105"
-                                        alt=""
-                                    />
-                                    <div className="absolute inset-0 bg-slate-900/30" />
-                                </motion.div>
-                            </AnimatePresence>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                {/* Fondo Fijo Inmersivo ahora gestionado por PageBackground vía Context */}
 
-                {/* Header Acciones */}
-                <div className="flex justify-center z-50 relative -mb-16 pointer-events-none w-full">
-                    <div className="w-full max-w-4xl px-0">
+                <div className={cn(
+                    "flex relative pointer-events-none w-full transition-all duration-500",
+                    isMaximized
+                        ? "fixed top-10 left-0 right-0 justify-center z-[90] px-8 lg:px-16"
+                        : "justify-center -mb-16 z-50 px-4"
+                )}>
+                    <div className={cn("w-full px-0 flex justify-start", isMaximized ? "max-w-5xl" : "max-w-4xl")}>
                         <button
                             onClick={() => {
                                 setSelectedBook(null);
                                 router.push('/recursos/cuentacuentos');
                             }}
-                            className="flex items-center gap-2 text-slate-700 hover:text-slate-900 font-bold transition-colors bg-white/30 px-4 py-2 rounded-2xl border border-white/40 cursor-pointer backdrop-blur-xl pointer-events-auto shadow-sm hover:bg-white/50"
+                            className={cn(
+                                "flex items-center gap-2 font-bold transition-all px-4 py-2 rounded-2xl border cursor-pointer backdrop-blur-xl pointer-events-auto shadow-sm",
+                                isMaximized
+                                    ? "text-white/90 bg-white/10 hover:bg-white/20 border-white/20"
+                                    : "text-slate-700 hover:text-slate-900 bg-white/30 border-white/40 hover:bg-white/50"
+                            )}
                         >
                             <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
                         </button>
@@ -435,7 +447,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 <div className={cn(
                     "w-full mx-auto flex flex-col transition-all duration-500",
                     isMaximized
-                        ? "fixed inset-0 z-50 bg-transparent items-center justify-center p-8 lg:p-16 gap-0 overflow-hidden"
+                        ? "fixed inset-0 z-[80] bg-transparent items-center justify-center p-8 lg:p-16 gap-0 overflow-hidden"
                         : "max-w-4xl gap-8 relative"
                 )}>
                     {/* Chip Flotante (Solo Normal Mode + No Cover Page) */}
@@ -469,7 +481,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                             : "bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl min-h-[400px]"
                     )}>
                         {/* Glass Overlay for Immersive Mode */}
-                        {isMaximized && <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-[3rem] border border-white/20 shadow-2xl" />}
+                        {isMaximized && <div className="absolute inset-0 bg-white/10 backdrop-blur-[120px] rounded-[3rem] border border-white/20 shadow-2xl" />}
 
                         {/* Maximize Toggle Button */}
                         <div className="absolute top-6 right-6 z-50">

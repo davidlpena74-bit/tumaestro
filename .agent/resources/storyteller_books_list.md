@@ -38,3 +38,6 @@ Any new story MUST be added to this list to ensure there are no duplicates.
 | `ricitos-oro` | Ricitos de Oro y los Tres Osos |
 | `traje-nuevo-emperador` | El Traje Nuevo del Emperador |
 | `cigarra-y-hormiga` | La Cigarra y la Hormiga |
+| `princesa-guisante` | La Princesa y el Guisante |
+| `tortuga-liebre` | La Tortuga y la Liebre |
+| `cascanueces` | El Cascanueces |
