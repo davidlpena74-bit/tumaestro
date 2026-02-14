@@ -434,7 +434,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                             className={cn(
                                 "flex items-center gap-2 font-bold transition-all px-4 py-2 rounded-2xl border cursor-pointer backdrop-blur-xl pointer-events-auto shadow-sm",
                                 isMaximized
-                                    ? "text-white/90 bg-white/10 hover:bg-white/20 border-white/20"
+                                    ? "text-white/80 bg-white/10 hover:bg-white/20 border-white/20"
                                     : "text-slate-700 hover:text-slate-900 bg-white/30 border-white/40 hover:bg-white/50"
                             )}
                         >
