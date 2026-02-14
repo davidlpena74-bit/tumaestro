@@ -386,6 +386,36 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
     if (selectedBook) {
         return (
             <div className="w-full max-w-5xl mx-auto p-4 animate-in fade-in duration-500">
+                {/* Fondo Fijo Inmersivo (Solo en modo maximizado) */}
+                <AnimatePresence>
+                    {isMaximized && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-950"
+                        >
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentPage + (currentBookContent[currentPage]?.image || selectedBook.id)}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 1 }}
+                                    className="absolute inset-0"
+                                >
+                                    <img
+                                        src={currentBookContent[currentPage]?.image || selectedBook.chipImage || selectedBook.coverImage}
+                                        className="w-full h-full object-cover blur-sm brightness-[0.4] scale-105"
+                                        alt=""
+                                    />
+                                    <div className="absolute inset-0 bg-slate-900/30" />
+                                </motion.div>
+                            </AnimatePresence>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 {/* Header Acciones */}
                 <div className="flex justify-center z-50 relative -mb-16 pointer-events-none w-full">
                     <div className="w-full max-w-4xl px-0">
@@ -405,35 +435,9 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 <div className={cn(
                     "w-full mx-auto flex flex-col transition-all duration-500",
                     isMaximized
-                        ? "fixed inset-0 z-50 bg-slate-900 items-center justify-center p-8 lg:p-16 gap-0"
+                        ? "fixed inset-0 z-50 bg-transparent items-center justify-center p-8 lg:p-16 gap-0 overflow-hidden"
                         : "max-w-4xl gap-8 relative"
                 )}>
-                    {/* Fondo Inmersivo */}
-                    {isMaximized && (
-                        <div className="absolute inset-0 z-0">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={currentPage}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="absolute inset-0"
-                                >
-                                    <img
-                                        src={currentBookContent[currentPage]?.image || selectedBook.chipImage || selectedBook.coverImage}
-                                        className="w-full h-full object-cover blur-sm brightness-50 scale-105"
-                                        alt="Background"
-                                    />
-                                    <div className="absolute inset-0 bg-slate-900/30" />
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
-                    )}
-
-
-
-
-
                     {/* Chip Flotante (Solo Normal Mode + No Cover Page) */}
                     {!isMaximized && !currentBookContent[currentPage]?.image && selectedBook.chipImage && (
                         <AnimatePresence mode="wait">
@@ -511,8 +515,8 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                         </div>
 
                         <div className={cn(
-                            "absolute bottom-6 left-0 right-0 text-center text-xs font-bold pointer-events-none z-20",
-                            isMaximized ? "text-white/60" : "text-slate-300"
+                            "absolute left-0 right-0 text-center text-xs font-bold pointer-events-none z-20",
+                            isMaximized ? "bottom-4 text-white/60" : "bottom-6 text-slate-300"
                         )}>
                             {t.storyteller.pageOf.replace('{current}', (currentPage + 1).toString()).replace('{total}', currentBookContent.length.toString())}
                         </div>
@@ -539,13 +543,17 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
                     {/* Controls Footer */}
                     <div className={cn(
-                        "flex items-center justify-between gap-4 transition-all duration-500 z-50",
+                        "flex items-center gap-6 transition-all duration-500 z-50",
                         isMaximized
-                            ? "fixed bottom-12 left-1/2 -translate-x-1/2 w-full max-w-3xl px-8"
-                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6"
+                            ? "fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-5xl px-8 justify-center pb-8"
+                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6 justify-between"
                     )}>
                         {/* Speed Control (Discrete 5-step) */}
-                        <div className={cn("flex flex-col gap-1.5 w-64", isMaximized ? "bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/10" : "bg-white/40 p-2 rounded-xl border border-slate-200/50")}>
+                        <div className={cn("flex flex-col gap-1.5",
+                            isMaximized
+                                ? "bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/10 w-48"
+                                : "bg-white/40 p-2 rounded-xl border border-slate-200/50 w-64"
+                        )}>
                             <div className="flex justify-between items-center px-1">
                                 <div className="flex items-center gap-1.5">
                                     <Clock size={14} className={isMaximized ? "text-white/70" : "text-slate-500"} />
@@ -605,7 +613,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                         </div>
 
                         {/* Right Group: Language & Font */}
-                        <div className="w-56 flex items-center justify-end gap-3">
+                        <div className={cn("flex items-center gap-3", isMaximized ? "w-auto" : "w-56 justify-end")}>
                             {/* Language Selector */}
                             <div className="relative">
                                 <button
@@ -752,7 +760,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
     return (
         <div className="w-full max-w-6xl mx-auto p-0 relative z-10">
-            <div className="p-0 md:p-8 relative overflow-hidden group">
+            <div className="p-0 md:p-8 relative overflow-hidden">
                 {/* Gradient Overlay removed */}
 
                 <div className="relative z-10">
