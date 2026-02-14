@@ -3528,6 +3528,100 @@ export const BOOKS: Book[] = [
             { text: "Am Morgen wurde sie gefragt, wie sie geschlafen hätte. 'Oh, entsetzlich schlecht!', sagte die Prinzessin. 'Ich habe fast die ganze Nacht kein Auge geschlossen. Gott weiß, was in dem Bett gewesen ist! Ich habe auf etwas Hartem gelegen, sodass ich am ganzen Körper braun und blau bin. Es ist ganz entsetzlich!' Da sahen sie ein, dass es eine wirkliche Prinzessin war, da sie durch die zwanzig Matratzen und die zwanzig Eideraunendecken die Erbse gespürt hatte." },
             { text: "Niemand als eine echte Prinzessin konnte so empfindlich sein. Da nahm sie der Prinz zur Frau, denn nun wusste er, dass er eine wirkliche Prinzessin gefunden hatte; und die Erbse kam auf die Kunstkammer, wo sie noch zu sehen ist, wenn sie niemand gestohlen hat. Sieh, das war eine wahre Geschichte!" }
         ]
+    },
+    {
+        id: 'tortuga-liebre',
+        title: 'La Tortuga y la Liebre',
+        titleEn: 'The Tortoise and the Hare',
+        titleFr: 'Le Lièvre et la Tortue',
+        titleDe: 'Die Schildkröte und der Hase',
+        author: 'Esopo',
+        description: 'Una liebre muy veloz se burla de una tortuga lenta y la desafía a una carrera. ¿Quién ganará?',
+        descriptionEn: 'A very fast hare mocks a slow tortoise and challenges him to a race. Who will win?',
+        descriptionFr: 'Un lièvre très rapide se moque d\'une tortue lente et la défie à la course. Qui gagnera ?',
+        descriptionDe: 'Ein sehr schneller Hase verspottet eine langsame Schildkröte und fordert sie zu einem Rennen heraus. Wer wird gewinnen?',
+        level: 'Fácil',
+        age: '3+',
+        coverImage: '/images/storyteller/tortuga-liebre-cover.png',
+        chipImage: '/images/storyteller/character-tortuga-liebre.png',
+        genre: 'Fábula',
+        themeColor: 'from-green-400 to-emerald-600',
+        rating: 4.7,
+        content: [
+            { text: 'Había una vez una liebre muy vanidosa que se pasaba todo el día presumiendo de lo rápido que podía correr. "Soy el animal más rápido del bosque", decía, riéndose de la lenta tortuga.', image: '/images/storyteller/tortuga-liebre-cover.png' },
+            { text: 'Cansada de las burlas, la tortuga desafió a la liebre a una carrera. La liebre, divertida, aceptó el reto segura de su victoria. Todos los animales del bosque se reunieron para verla.', image: '/images/storyteller/tortuga-liebre-cover.png' },
+            { text: 'Al comenzar la carrera, la liebre salió disparada y pronto dejó muy atrás a la tortuga. Al ver que llevaba tanta ventaja, decidió echarse una siesta bajo un árbol.', image: '/images/storyteller/tortuga-liebre-cover.png' },
+            { text: 'Mientras la liebre dormía profundamente, la tortuga siguió caminando paso a paso, lenta pero sin detenerse nunca, acercándose poco a poco a la meta.', image: '/images/storyteller/tortuga-liebre-cover.png' },
+            { text: 'Cuando la liebre despertó, vio que la tortuga estaba a punto de cruzar la línea de meta. Corrió lo más rápido que pudo, pero fue tarde. ¡La tortuga había ganado la carrera!', image: '/images/storyteller/tortuga-liebre-cover.png' }
+        ],
+        contentEn: [
+            { text: 'Once upon a time, there was a very vain hare who spent all day boasting about how fast he could run. "I am the fastest animal in the forest," he said, laughing at the slow tortoise.' },
+            { text: 'Tired of the mockery, the tortoise challenged the hare to a race. The hare, amused, accepted the challenge, certain of his victory. All the animals in the forest gathered to watch.' },
+            { text: 'When the race began, the hare shot off and soon left the tortoise far behind. Seeing that he had such a lead, he decided to take a nap under a tree.' },
+            { text: 'While the hare slept soundly, the tortoise kept walking step by step, slowly but never stopping, getting closer and closer to the finish line.' },
+            { text: 'When the hare woke up, he saw the tortoise was about to cross the finish line. He ran as fast as he could, but it was too late. The tortoise had won the race!' }
+        ],
+        contentFr: [
+            { text: 'Il était une fois un lièvre très vaniteux qui passait toute la journée à se vanter de sa vitesse. "Je suis l\'animal le plus rapide de la forêt", disait-il en se moquant de la tortue lente.' },
+            { text: 'Fatiguée des moqueries, la tortue défia le lièvre à la course. Le lièvre, amusé, accepta le défi, sûr de sa victoire. Tous les animaux de la forêt se rassemblèrent pour regarder.' },
+            { text: 'Au début de la course, le lièvre partit en flèche et laissa bientôt la tortue loin derrière. Voyant qu\'il avait tant d\'avance, il décida de faire une sieste sous un arbre.' },
+            { text: 'Tandis que le lièvre dormait profondément, la tortue continua de marcher pas à pas, lentement mais sans jamais s\'arrêter, se rapprochant peu à peu de la ligne d\'arrivée.' },
+            { text: 'Quand le lièvre se réveilla, il vit que la tortue était sur le point de franchir la ligne d\'arrivée. Il courut aussi vite qu\'il put, mais c\'était trop tard. La tortue avait gagné la course !' }
+        ],
+        contentDe: [
+            { text: 'Es war einmal ein sehr eitler Hase, der den ganzen Tag damit prahlte, wie schnell er laufen konnte. "Ich bin das schnellste Tier im Wald", sagte er und lachte über die langsame Schildkröte.' },
+            { text: 'Müde von dem Spott forderte die Schildkröte den Hasen zu einem Rennen heraus. Der Hase nahm die Herausforderung amüsiert an, sicher seines Sieges. Alle Tiere des Waldes versammelten sich, um zuzusehen.' },
+            { text: 'Als das Rennen begann, schoss der Hase davon und ließ die Schildkröte bald weit hinter sich. Da er sah, dass er einen so großen Vorsprung hatte, beschloss er, unter einem Baum ein Nickerchen zu machen.' },
+            { text: 'Während der Hase tief schlief, ging die Schildkröte Schritt für Schritt weiter, langsam aber ohne je anzuhalten, und kam der Ziellinie immer näher.' },
+            { text: 'Als der Hase aufwachte, sah er, dass die Schildkröte kurz davor war, die Ziellinie zu überqueren. Er rannte so schnell er konnte, aber es war zu spät. Die Schildkröte hatte das Rennen gewonnen!' }
+        ]
+    },
+    {
+        id: 'cascanueces',
+        title: 'El Cascanueces',
+        titleEn: 'The Nutcracker',
+        titleFr: 'Casse-Noisette',
+        titleDe: 'Der Nussknacker',
+        author: 'E.T.A. Hoffmann',
+        description: 'En Nochebuena, el juguete favorito de Clara cobra vida para defenderla del Rey de los Ratones y llevarla a un reino mágico.',
+        descriptionEn: 'On Christmas Eve, Clara\'s favorite toy comes to life to defend her from the Mouse King and take her to a magical kingdom.',
+        descriptionFr: 'La veille de Noël, le jouet préféré de Clara prend vie pour la défendre contre le Roi des Souris et l\'emmener dans un royaume magique.',
+        descriptionDe: 'Am Heiligabend erwacht Claras Lieblingsspielzeug zum Leben, um sie vor dem Mäusekönig zu verteidigen und sie in ein magisches Reich zu führen.',
+        level: 'Medio',
+        age: '5+',
+        coverImage: '/images/storyteller/cascanueces-cover.png',
+        chipImage: '/images/storyteller/character-cascanueces.png',
+        genre: 'Cuento de hadas',
+        themeColor: 'from-red-600 to-rose-800',
+        rating: 4.8,
+        content: [
+            { text: 'Era Nochebuena y la familia Stahlbaum celebraba una gran fiesta. El padrino Drosselmeyer le regaló a Clara un extraño muñeco de madera: un Cascanueces con uniforme de soldado.', image: '/images/storyteller/cascanueces-cover.png' },
+            { text: 'Cuando el reloj dio las doce, todo cambió. El árbol de Navidad creció hasta el techo y un ejército de ratones, liderado por el Rey de los Ratones de siete cabezas, invadió el salón.', image: '/images/storyteller/cascanueces-cover.png' },
+            { text: 'El Cascanueces cobró vida y lideró a los soldaditos de juguete en la batalla. Clara, valientemente, lanzó su zapato al Rey Ratón, distrayéndolo y permitiendo que el Cascanueces ganara.', image: '/images/storyteller/cascanueces-cover.png' },
+            { text: 'El Cascanueces se transformó en un apuesto príncipe e invitó a Clara a un viaje mágico. Volaron a través de un bosque nevado hasta llegar al maravilloso Reino de los Dulces.', image: '/images/storyteller/cascanueces-cover.png' },
+            { text: 'Allí, el Hada de Azúcar organizó un gran banquete en su honor. Bailaron valses entre flores de caramelo hasta que Clara despertó bajo el árbol de Navidad, abrazada a su Cascanueces.', image: '/images/storyteller/cascanueces-cover.png' }
+        ],
+        contentEn: [
+            { text: 'It was Christmas Eve and the Stahlbaum family was throwing a grand party. Godfather Drosselmeyer gave Clara a strange wooden doll: a Nutcracker in a soldier\'s uniform.' },
+            { text: 'When the clock struck twelve, everything changed. The Christmas tree grew to the ceiling and an army of mice, led by the seven-headed Mouse King, invaded the living room.' },
+            { text: 'The Nutcracker came to life and led the toy soldiers into battle. Clara bravely threw her shoe at the Mouse King, distracting him and allowing the Nutcracker to win.' },
+            { text: 'The Nutcracker transformed into a handsome prince and invited Clara on a magical journey. They flew through a snowy forest until they reached the wonderful Land of Sweets.' },
+            { text: 'There, the Sugar Plum Fairy hosted a grand banquet in their honor. They danced waltzes among candy flowers until Clara woke up under the Christmas tree, hugging her Nutcracker.' }
+        ],
+        contentFr: [
+            { text: 'C\'était la veille de Noël et la famille Stahlbaum donnait une grande fête. Le parrain Drosselmeyer offrit à Clara une étrange poupée en bois : un Casse-Noisette en uniforme de soldat.' },
+            { text: 'Quand l\'horloge sonna minuit, tout changea. Le sapin de Noël grandit jusqu\'au plafond et une armée de souris, menée par le Roi des Souris à sept têtes, envahit le salon.' },
+            { text: 'Le Casse-Noisette prit vie et mena les soldats de plomb au combat. Clara lança courageusement sa chaussure sur le Roi des Souris, le distrayant et permettant au Casse-Noisette de gagner.' },
+            { text: 'Le Casse-Noisette se transforma en un beau prince et invita Clara pour un voyage magique. Ils volèrent à travers une forêt enneigée jusqu\'au merveilleux Royaume des Délices.' },
+            { text: 'Là, la Fée Dragée organisa un grand banquet en leur honneur. Ils dansèrent des valses parmi les fleurs en bonbons jusqu\'à ce que Clara se réveille sous le sapin de Noël, serrant son Casse-Noisette.' }
+        ],
+        contentDe: [
+            { text: 'Es war Heiligabend und die Familie Stahlbaum feierte ein großes Fest. Pate Drosselmeyer schenkte Clara eine seltsame Holzpuppe: einen Nussknacker in einer Soldatenuniform.' },
+            { text: 'Als die Uhr zwölf schlug, änderte sich alles. Der Weihnachtsbaum wuchs bis zur Decke und eine Armee von Mäusen, angeführt vom siebenköpfigen Mäusekönig, überfiel das Wohnzimmer.' },
+            { text: 'Der Nussknacker erwachte zum Leben und führte die Spielzeugsoldaten in die Schlacht. Clara warf mutig ihren Schuh auf den Mäusekönig, lenkte ihn ab und ermöglichte dem Nussknacker den Sieg.' },
+            { text: 'Der Nussknacker verwandelte sich in einen schönen Prinzen und lud Clara zu einer magischen Reise ein. Sie flogen durch einen verschneiten Wald, bis sie das wunderbare Reich der Süßigkeiten erreichten.' },
+            { text: 'Dort veranstaltete die Zuckerfee ein großes Bankett zu ihren Ehren. Sie tanzten Walzer zwischen Zuckerblumen, bis Clara unter dem Weihnachtsbaum aufwachte und ihren Nussknacker umarmte.' }
+        ]
     }
 ];
 

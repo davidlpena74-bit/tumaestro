@@ -394,7 +394,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                 setSelectedBook(null);
                                 router.push('/recursos/cuentacuentos');
                             }}
-                            className="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200 cursor-pointer backdrop-blur-sm pointer-events-auto shadow-sm"
+                            className="flex items-center gap-2 text-slate-700 hover:text-slate-900 font-bold transition-colors bg-white/30 px-4 py-2 rounded-2xl border border-white/40 cursor-pointer backdrop-blur-xl pointer-events-auto shadow-sm hover:bg-white/50"
                         >
                             <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
                         </button>
@@ -751,10 +751,9 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
     }
 
     return (
-        <div className="w-full max-w-7xl mx-auto p-4 relative z-10">
-            <div className="bg-white/30 backdrop-blur-xl rounded-[3rem] p-8 md:p-14 border border-white/40 shadow-2xl relative overflow-hidden ring-1 ring-white/50">
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/10 to-transparent pointer-events-none" />
+        <div className="w-full max-w-6xl mx-auto p-0 relative z-10">
+            <div className="p-0 md:p-8 relative overflow-hidden group">
+                {/* Gradient Overlay removed */}
 
                 <div className="relative z-10">
                     <div className="mb-8">
@@ -766,7 +765,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                         </Link>
                     </div>
 
-                    <header className="text-center mb-12">
+                    <header className="text-center mb-12 -mt-24">
                         <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
                         <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
                             {t.storyteller.subtitle}
@@ -790,7 +789,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                 {/* Sombra Dinámica */}
                                 <div className="absolute inset-x-8 -bottom-4 h-12 bg-slate-900/10 blur-2xl group-hover:bg-slate-900/20 transition-all rounded-full" />
 
-                                <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-slate-200/50 overflow-hidden relative shadow-xl hover:shadow-2xl hover:shadow-slate-400/20 transition-all h-full flex flex-col">
+                                <div className="bg-white/10 backdrop-blur-md rounded-[2.5rem] border border-slate-200/50 overflow-hidden relative shadow-xl hover:shadow-2xl hover:shadow-slate-400/20 transition-all h-full flex flex-col group-hover:bg-white/20">
                                     {/* Portada */}
                                     {/* Portada */}
                                     <div
