@@ -419,35 +419,28 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
             <div className="w-full max-w-5xl mx-auto p-4 animate-in fade-in duration-500">
                 {/* Fondo Fijo Inmersivo ahora gestionado por PageBackground vía Context */}
 
-                <div className={cn(
-                    "flex relative pointer-events-none w-full transition-all duration-500",
-                    isMaximized
-                        ? "fixed top-10 left-0 right-0 justify-center z-[90] px-8 lg:px-16"
-                        : "justify-center -mb-16 z-50 px-4"
-                )}>
-                    <div className={cn("w-full px-0 flex justify-start", isMaximized ? "max-w-5xl" : "max-w-4xl")}>
-                        <button
-                            onClick={() => {
-                                setSelectedBook(null);
-                                router.push('/recursos/cuentacuentos');
-                            }}
-                            className={cn(
-                                "flex items-center gap-2 transition-all px-4 py-2 rounded-2xl border cursor-pointer backdrop-blur-xl pointer-events-auto shadow-sm",
-                                isMaximized
-                                    ? "text-white/80 bg-white/10 hover:bg-white/20 border-white/20 font-medium"
-                                    : "text-slate-700 hover:text-slate-900 bg-white/30 border-white/40 hover:bg-white/50 font-bold"
-                            )}
-                        >
-                            <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
-                        </button>
+                {!isMaximized && (
+                    <div className="flex relative pointer-events-none w-full transition-all duration-500 justify-center -mb-16 z-50 px-4">
+                        <div className="w-full px-0 flex justify-start max-w-4xl">
+                            <button
+                                onClick={() => {
+                                    setIsMaximized(false);
+                                    setSelectedBook(null);
+                                    router.push('/recursos/cuentacuentos');
+                                }}
+                                className="inline-flex items-center gap-2 font-bold transition-all p-3 rounded-2xl border shadow-xl pointer-events-auto hover:scale-105 active:scale-95 group bg-white/80 hover:bg-white border-slate-200 text-slate-700"
+                            >
+                                <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
+                            </button>
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Área de Lectura */}
                 <div className={cn(
                     "w-full mx-auto flex flex-col transition-all duration-500",
                     isMaximized
-                        ? "fixed inset-0 z-[80] bg-transparent items-center justify-center p-8 lg:p-16 gap-0 overflow-hidden"
+                        ? "fixed inset-0 z-[80] bg-transparent items-center justify-start pt-10 md:pt-14 lg:pt-16 px-8 gap-0 overflow-hidden"
                         : "max-w-4xl gap-8 relative"
                 )}>
                     {/* Chip Flotante (Solo Normal Mode + No Cover Page) */}
@@ -477,8 +470,8 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                     <div className={cn(
                         "transition-all duration-500 relative flex flex-col justify-center",
                         isMaximized
-                            ? "w-full max-w-5xl h-[90%] z-10 p-12 md:p-24 text-white overflow-hidden"
-                            : "bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white flex-grow shadow-2xl min-h-[400px]"
+                            ? "w-full max-w-5xl max-h-[78vh] z-10 px-8 md:px-12 lg:px-20 py-4 md:py-6 lg:py-10 text-white flex flex-col mb-8"
+                            : "bg-white/40 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white/20 flex-grow shadow-2xl min-h-[400px]"
                     )}>
                         {/* Glass Overlay for Immersive Mode */}
                         {isMaximized && <div className="absolute inset-0 bg-white/10 backdrop-blur-[120px] rounded-[3rem] border border-white/20 shadow-2xl" />}
@@ -500,39 +493,34 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                         </div>
 
 
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentPage}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="relative z-10 font-serif leading-relaxed text-center flex flex-col items-center justify-center h-full"
-                                style={{ fontSize: `${isMaximized ? fontSize + 4 : fontSize}px`, color: isMaximized ? 'white' : undefined }}
-                            >
-
-                                <div className="relative max-w-3xl">
-                                    <span className={cn("font-medium transition-all duration-75", isMaximized ? "text-white" : "text-slate-900")}>
-                                        {currentBookContent[currentPage]?.text.slice(0, charIndex)}
-                                    </span>
-                                    <span className={cn("font-medium", isMaximized ? "text-white/50" : "text-slate-400")}>
-                                        {currentBookContent[currentPage]?.text.slice(charIndex)}
-                                    </span>
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
+                        <div className="flex-grow flex flex-col items-center justify-center overflow-hidden w-full relative z-10">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentPage}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="relative z-10 font-serif leading-relaxed text-center flex flex-col items-center justify-center w-full h-full overflow-hidden"
+                                    style={{ fontSize: `${isMaximized ? fontSize + 4 : fontSize}px`, color: isMaximized ? 'white' : undefined }}
+                                >
+                                    <div className="relative max-w-4xl overflow-y-auto custom-scrollbar px-4 py-2">
+                                        <span className={cn("font-medium transition-all duration-75", isMaximized ? "text-white" : "text-slate-900")}>
+                                            {currentBookContent[currentPage]?.text.slice(0, charIndex)}
+                                        </span>
+                                        <span className={cn("font-medium", isMaximized ? "text-white/50" : "text-slate-500")}>
+                                            {currentBookContent[currentPage]?.text.slice(charIndex)}
+                                        </span>
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
 
                         {/* Decoración sutil */}
                         <div className="absolute top-0 right-0 p-8 opacity-5">
                             <SpeakerHigh size={120} weight="thin" />
                         </div>
-
-                        <div className={cn(
-                            "absolute left-0 right-0 text-center text-xs font-bold pointer-events-none z-20",
-                            isMaximized ? "bottom-4 text-white/60" : "bottom-6 text-slate-300"
-                        )}>
-                            {t.storyteller.pageOf.replace('{current}', (currentPage + 1).toString()).replace('{total}', currentBookContent.length.toString())}
-                        </div>
                     </div>
+
 
                     {/* Progress Bar & Indicators (Normal Mode Only - Hidden in Immersive) */}
                     {!isMaximized && (
@@ -553,218 +541,256 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
 
 
-                    {/* Controls Footer */}
                     <div className={cn(
-                        "flex items-center gap-6 transition-all duration-500 z-50",
+                        "flex items-center transition-all duration-500 z-50",
                         isMaximized
-                            ? "fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-5xl px-8 justify-center pb-8"
-                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6 justify-between"
+                            ? "fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-4xl bg-black/20 backdrop-blur-2xl rounded-[3rem] border border-white/10 p-4 shadow-3xl justify-between"
+                            : "bg-white/40 backdrop-blur-md rounded-2xl py-3 px-6 border border-slate-200/50 shadow-lg mb-6 justify-between gap-6"
                     )}>
-                        {/* Speed Control (Discrete 5-step) */}
-                        <div className={cn("flex flex-col gap-1.5",
-                            isMaximized
-                                ? "bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/10 w-48"
-                                : "bg-white/40 p-2 rounded-xl border border-slate-200/50 w-64"
-                        )}>
-                            <div className="flex justify-between items-center px-1">
-                                <div className="flex items-center gap-1.5">
-                                    <Clock size={14} className={isMaximized ? "text-white/70" : "text-slate-500"} />
-                                    <span className={cn("text-[10px] font-black uppercase tracking-wider", isMaximized ? "text-white/80" : "text-slate-600")}>
-                                        {t.storyteller.speeds[SPEED_OPTIONS.find(o => o.value === speechRate)?.key as keyof typeof t.storyteller.speeds] || t.storyteller.speeds.normal}
-                                    </span>
+                        {/* Lado Izquierdo: Salir + Velocidad (Centrada entre Salir y Skip) */}
+                        <div className={cn("items-center", isMaximized ? "flex-1 flex justify-start px-2" : "flex flex-none gap-6")}>
+                            {isMaximized && (
+                                <button
+                                    onClick={() => {
+                                        setIsMaximized(false);
+                                        setSelectedBook(null);
+                                        router.push('/recursos/cuentacuentos');
+                                    }}
+                                    className="p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2 h-[44px]"
+                                    title={t.storyteller.backToLibrary}
+                                >
+                                    <ArrowLeft weight="bold" size={20} />
+                                    <span className="text-xs font-bold hidden md:block">Salir</span>
+                                </button>
+                            )}
+
+                            <div className={cn("flex items-center", isMaximized ? "flex-1 justify-center" : "gap-6")}>
+                                <div className={cn("flex flex-col gap-1.5 transition-all",
+                                    isMaximized
+                                        ? "bg-white/10 p-2 rounded-xl border border-white/10 w-48 h-[44px] justify-center"
+                                        : "bg-white/40 p-2 rounded-xl border border-slate-200/50 w-64"
+                                )}>
+                                    <div className="flex justify-between items-center px-1">
+                                        <div className="flex items-center gap-1.5">
+                                            <Clock size={12} className={isMaximized ? "text-white/60" : "text-slate-500"} />
+                                            <span className={cn(
+                                                isMaximized ? "text-xs font-bold text-white/80" : "text-[9px] font-black uppercase tracking-widest text-slate-600"
+                                            )}>
+                                                {isMaximized ? "Velocidad voz" : (t.storyteller.speeds[SPEED_OPTIONS.find(o => o.value === speechRate)?.key as keyof typeof t.storyteller.speeds] || t.storyteller.speeds.normal)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-1 h-1.5">
+                                        {SPEED_OPTIONS.map((opt) => (
+                                            <button
+                                                key={opt.key}
+                                                onClick={() => setSpeechRate(opt.value)}
+                                                className={cn(
+                                                    "flex-grow h-full rounded-full transition-all duration-300 cursor-pointer relative group",
+                                                    speechRate === opt.value
+                                                        ? (isMaximized ? "bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]" : "bg-slate-900 shadow-lg shadow-slate-900/20")
+                                                        : (isMaximized ? "bg-white/20 hover:bg-white/40" : "bg-slate-200 hover:bg-slate-300")
+                                                )}
+                                                title={t.storyteller.speeds[opt.key as keyof typeof t.storyteller.speeds]}
+                                            >
+                                                {speechRate === opt.value && (
+                                                    <motion.div
+                                                        layoutId="activeSpeed"
+                                                        className="absolute inset-0 rounded-full"
+                                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                                    />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex gap-1.5 h-2">
-                                {SPEED_OPTIONS.map((opt) => (
-                                    <button
-                                        key={opt.key}
-                                        onClick={() => setSpeechRate(opt.value)}
-                                        className={cn(
-                                            "flex-grow h-full rounded-full transition-all duration-300 cursor-pointer relative group",
-                                            speechRate === opt.value
-                                                ? (isMaximized ? "bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]" : "bg-slate-900 shadow-lg shadow-slate-900/20")
-                                                : (isMaximized ? "bg-white/20 hover:bg-white/40" : "bg-slate-200 hover:bg-slate-300")
-                                        )}
-                                        title={t.storyteller.speeds[opt.key as keyof typeof t.storyteller.speeds]}
-                                    >
-                                        {speechRate === opt.value && (
-                                            <motion.div
-                                                layoutId="activeSpeed"
-                                                className="absolute inset-0 rounded-full"
-                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                            />
-                                        )}
-                                    </button>
-                                ))}
                             </div>
                         </div>
 
-                        {/* Main Controls */}
-                        <div className="flex items-center gap-4">
+                        {/* 2. CENTRO: SkipBack + Play + SkipForward (Simetría perfecta) */}
+                        <div className="flex items-center gap-4 z-10">
                             <button onClick={prevPage} disabled={currentPage === 0}
-                                className={cn("p-3 rounded-xl transition-all cursor-pointer",
+                                className={cn("p-3 rounded-xl transition-all cursor-pointer flex-none",
                                     isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
                                 )}>
                                 <SkipBack weight="fill" size={20} />
                             </button>
+
                             <button
                                 onClick={togglePlay}
                                 className={cn(
-                                    "w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer",
+                                    "w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer flex-none",
                                     isMaximized ? "bg-white text-slate-900 shadow-white/20" : "bg-slate-900 text-white shadow-slate-900/20"
                                 )}
                             >
                                 {isPlaying ? <Pause weight="fill" size={24} /> : <Play weight="fill" size={24} className="ml-1" />}
                             </button>
+
                             <button onClick={nextPage} disabled={currentPage === currentBookContent.length - 1}
-                                className={cn("p-3 rounded-xl transition-all cursor-pointer",
+                                className={cn("p-3 rounded-xl transition-all cursor-pointer flex-none",
                                     isMaximized ? "bg-white/10 hover:bg-white/20 text-white disabled:opacity-30" : "bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-30"
                                 )}>
                                 <SkipForward weight="fill" size={20} />
                             </button>
                         </div>
 
-                        {/* Right Group: Language & Font */}
-                        <div className={cn("flex items-center gap-3", isMaximized ? "w-auto" : "w-56 justify-end")}>
-                            {/* Language Selector */}
-                            <div className="relative">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setIsLangMenuOpen(!isLangMenuOpen);
-                                    }}
-                                    className={cn(
-                                        "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all border cursor-pointer",
-                                        isMaximized
-                                            ? "bg-black/20 hover:bg-black/30 border-white/10 text-white"
-                                            : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
-                                    )}
-                                >
-                                    <img
-                                        src={
-                                            audioLanguage === 'es' ? "/images/flags/es.svg" :
-                                                audioLanguage === 'en' ? "/images/flags/gb.svg" :
-                                                    audioLanguage === 'fr' ? "/images/flags/fr.svg" :
-                                                        "/images/flags/de.svg"
-                                        }
-                                        alt={audioLanguage.toUpperCase()}
-                                        className="w-5 h-auto rounded-[2px] shadow-sm"
-                                    />
-                                    <span className="text-xs font-bold">{audioLanguage.toUpperCase()}</span>
-                                    <CaretDown size={12} weight="bold" className="opacity-50" />
-                                </button>
+                        {/* 3. Lado Derecho: Herramientas (Idioma, Fuente, Contador) */}
+                        <div className={cn("items-center gap-6", isMaximized ? "flex-1 flex justify-end" : "flex flex-none")}>
 
-                                {/* Dropdown */}
-                                {isLangMenuOpen && (
-                                    <>
-                                        <div
-                                            className="fixed inset-0 z-[90]"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setIsLangMenuOpen(false);
-                                            }}
+                            {/* 5. Otros (Idioma, Fuente, Contador) */}
+                            <div className={cn("flex items-center gap-4 flex-none", isMaximized ? "" : "flex")}>
+                                <div className={cn(
+                                    "text-[10px] font-black uppercase tracking-wider px-3 rounded-xl border transition-all flex items-center",
+                                    isMaximized
+                                        ? "text-white/60 bg-white/10 border-white/10 h-[44px]"
+                                        : "text-slate-500 bg-slate-100/50 border-slate-200/50 py-1.5"
+                                )}>
+                                    {currentPage + 1} / {currentBookContent.length}
+                                </div>
+                                {/* Language Selector */}
+                                <div className="relative">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setIsLangMenuOpen(!isLangMenuOpen);
+                                        }}
+                                        className={cn(
+                                            "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all border cursor-pointer",
+                                            isMaximized
+                                                ? "bg-white/10 hover:bg-white/20 border-white/10 text-white h-[44px]"
+                                                : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
+                                        )}
+                                    >
+                                        <img
+                                            src={
+                                                audioLanguage === 'es' ? "/images/flags/es.svg" :
+                                                    audioLanguage === 'en' ? "/images/flags/gb.svg" :
+                                                        audioLanguage === 'fr' ? "/images/flags/fr.svg" :
+                                                            "/images/flags/de.svg"
+                                            }
+                                            alt={audioLanguage.toUpperCase()}
+                                            className="w-5 h-auto rounded-[2px] shadow-sm"
                                         />
-                                        <div className={cn(
-                                            "absolute bottom-full right-0 mb-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transition-all transform origin-bottom-right z-[100] animate-in fade-in zoom-in-95 duration-200",
-                                            isMaximized ? "bg-slate-800 border-slate-700" : ""
-                                        )}>
-                                            <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
-                                                Idioma Audio
-                                            </div>
+                                        <span className="text-xs font-bold">{audioLanguage.toUpperCase()}</span>
+                                        <CaretDown size={12} weight="bold" className="opacity-50" />
+                                    </button>
 
-                                            {selectedBook && (
-                                                <>
-                                                    <Link
-                                                        href={`/recursos/cuentacuentos/${selectedBook.id}`}
-                                                        onClick={(e) => setIsLangMenuOpen(false)}
-                                                        className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
-                                                            isMaximized
-                                                                ? (audioLanguage === 'es' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                                : (audioLanguage === 'es' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                    {/* Dropdown */}
+                                    {isLangMenuOpen && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-[90]"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setIsLangMenuOpen(false);
+                                                }}
+                                            />
+                                            <div className={cn(
+                                                "absolute bottom-full right-0 mb-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transition-all transform origin-bottom-right z-[100] animate-in fade-in zoom-in-95 duration-200",
+                                                isMaximized ? "bg-slate-800 border-slate-700" : ""
+                                            )}>
+                                                <div className={cn("px-3 py-2 text-[10px] font-bold uppercase tracking-wider", isMaximized ? "text-slate-400" : "text-slate-400")}>
+                                                    Idioma Audio
+                                                </div>
+
+                                                {selectedBook && (
+                                                    <>
+                                                        <Link
+                                                            href={`/recursos/cuentacuentos/${selectedBook.id}`}
+                                                            onClick={(e) => setIsLangMenuOpen(false)}
+                                                            className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
+                                                                isMaximized
+                                                                    ? (audioLanguage === 'es' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                    : (audioLanguage === 'es' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                            )}
+                                                        >
+                                                            <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
+                                                            <span className="text-sm font-medium">Español</span>
+                                                        </Link>
+
+                                                        {selectedBook?.contentEn && (
+                                                            <Link
+                                                                href={`/recursos/cuentacuentos/${selectedBook.id}/en`}
+                                                                onClick={(e) => setIsLangMenuOpen(false)}
+                                                                className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
+                                                                    isMaximized
+                                                                        ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                        : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                                )}
+                                                            >
+                                                                <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
+                                                                <span className="text-sm font-medium">English</span>
+                                                            </Link>
                                                         )}
-                                                    >
-                                                        <img src="/images/flags/es.svg" alt="Español" className="w-5 h-auto rounded-[2px]" />
-                                                        <span className="text-sm font-medium">Español</span>
-                                                    </Link>
 
-                                                    {selectedBook?.contentEn && (
-                                                        <Link
-                                                            href={`/recursos/cuentacuentos/${selectedBook.id}/en`}
-                                                            onClick={(e) => setIsLangMenuOpen(false)}
-                                                            className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
-                                                                isMaximized
-                                                                    ? (audioLanguage === 'en' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                                    : (audioLanguage === 'en' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                            )}
-                                                        >
-                                                            <img src="/images/flags/gb.svg" alt="English" className="w-5 h-auto rounded-[2px]" />
-                                                            <span className="text-sm font-medium">English</span>
-                                                        </Link>
-                                                    )}
+                                                        {selectedBook?.contentFr && (
+                                                            <Link
+                                                                href={`/recursos/cuentacuentos/${selectedBook.id}/fr`}
+                                                                onClick={(e) => setIsLangMenuOpen(false)}
+                                                                className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
+                                                                    isMaximized
+                                                                        ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                        : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                                )}
+                                                            >
+                                                                <img src="/images/flags/fr.svg" alt="Français" className="w-5 h-auto rounded-[2px]" />
+                                                                <span className="text-sm font-medium">Français</span>
+                                                            </Link>
+                                                        )}
 
-                                                    {selectedBook?.contentFr && (
-                                                        <Link
-                                                            href={`/recursos/cuentacuentos/${selectedBook.id}/fr`}
-                                                            onClick={(e) => setIsLangMenuOpen(false)}
-                                                            className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
-                                                                isMaximized
-                                                                    ? (audioLanguage === 'fr' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                                    : (audioLanguage === 'fr' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                            )}
-                                                        >
-                                                            <img src="/images/flags/fr.svg" alt="Français" className="w-5 h-auto rounded-[2px]" />
-                                                            <span className="text-sm font-medium">Français</span>
-                                                        </Link>
-                                                    )}
+                                                        {selectedBook?.contentDe && (
+                                                            <Link
+                                                                href={`/recursos/cuentacuentos/${selectedBook.id}/de`}
+                                                                onClick={(e) => setIsLangMenuOpen(false)}
+                                                                className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
+                                                                    isMaximized
+                                                                        ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
+                                                                        : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
+                                                                )}
+                                                            >
+                                                                <img src="/images/flags/de.svg" alt="Deutsch" className="w-5 h-auto rounded-[2px]" />
+                                                                <span className="text-sm font-medium">Deutsch</span>
+                                                            </Link>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
 
-                                                    {selectedBook?.contentDe && (
-                                                        <Link
-                                                            href={`/recursos/cuentacuentos/${selectedBook.id}/de`}
-                                                            onClick={(e) => setIsLangMenuOpen(false)}
-                                                            className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
-                                                                isMaximized
-                                                                    ? (audioLanguage === 'de' ? "bg-slate-700 text-white" : "hover:bg-slate-700 text-slate-300")
-                                                                    : (audioLanguage === 'de' ? "bg-slate-100 text-slate-900" : "hover:bg-slate-50 text-slate-700")
-                                                            )}
-                                                        >
-                                                            <img src="/images/flags/de.svg" alt="Deutsch" className="w-5 h-auto rounded-[2px]" />
-                                                            <span className="text-sm font-medium">Deutsch</span>
-                                                        </Link>
-                                                    )}
-                                                </>
-                                            )}
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-
-                            {/* Font Size */}
-                            <div className={cn("flex items-center rounded-xl p-1", isMaximized ? "bg-black/20 backdrop-blur-md border border-white/10" : "bg-white/40 border border-slate-200")}>
-                                <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/10 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={14} /></button>
+                                {/* Font Size */}
+                                <div className={cn("flex items-center rounded-xl transition-all",
+                                    isMaximized
+                                        ? "bg-white/10 backdrop-blur-md border border-white/10 h-[44px] px-2"
+                                        : "bg-white/40 border border-slate-200 p-1"
+                                )}>
+                                    <button onClick={() => setFontSize(prev => Math.max(16, prev - 2))} className={cn("p-1.5 rounded-lg transition-colors cursor-pointer", isMaximized ? "hover:bg-white/20 text-white" : "hover:bg-white/60 text-slate-700")}><TextT size={14} /></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Imagen de la Página (Normal Mode Only) - Moved below controls */}
-                    {!isMaximized && (
-                        <AnimatePresence mode="wait">
-                            {currentBookContent[currentPage]?.image && (
-                                <motion.div
-                                    key={`img-${currentPage}`}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mt-4 mb-2"
-                                >
-                                    <img
-                                        src={currentBookContent[currentPage].image}
-                                        className="w-full h-full object-cover"
-                                        alt={`Ilustración página ${currentPage + 1}`}
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    )}
+                        {/* Imagen de la Página (Normal Mode Only) - Moved below controls */}
+                        {!isMaximized && (
+                            <AnimatePresence mode="wait">
+                                {currentBookContent[currentPage]?.image && (
+                                    <motion.div
+                                        key={`img-${currentPage}`}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white mt-4 mb-2"
+                                    >
+                                        <img
+                                            src={currentBookContent[currentPage].image}
+                                            className="w-full h-full object-cover"
+                                            alt={`Ilustración página ${currentPage + 1}`}
+                                        />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        )}
+                    </div>
                 </div>
             </div>
         );
