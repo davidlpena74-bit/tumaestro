@@ -182,7 +182,8 @@ export default function ReadingTeacherTool() {
             audioContextRef.current = audioContext;
 
             const analyser = audioContext.createAnalyser();
-            analyser.fftSize = 256;
+            analyser.fftSize = 64; // Smaller FFT size for fewer, thicker bars
+            analyser.smoothingTimeConstant = 0.8; // Smooth out the reaction
             analyserRef.current = analyser;
 
             const source = audioContext.createMediaStreamSource(stream);
@@ -223,47 +224,65 @@ export default function ReadingTeacherTool() {
 
         const draw = () => {
             animationFrameIdRef.current = requestAnimationFrame(draw);
-            analyser.getByteTimeDomainData(dataArray);
+            analyser.getByteFrequencyData(dataArray); // Use Frequency Data instead of Time Domain
 
             // Calculate average audio level
             let sum = 0;
             for (let i = 0; i < bufferLength; i++) {
-                const normalized = (dataArray[i] - 128) / 128;
-                sum += Math.abs(normalized);
+                sum += dataArray[i];
             }
-            const avgLevel = sum / bufferLength;
-            setAudioLevel(avgLevel);
+            const avgLevel = sum / bufferLength / 255;
+            setAudioLevel(prev => prev * 0.9 + avgLevel * 0.1); // Smooth transition
 
             // Clear canvas
             canvasCtx.fillStyle = 'rgb(248, 250, 252)';
             canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw waveform
-            canvasCtx.lineWidth = 3;
-            canvasCtx.strokeStyle = 'rgb(16, 185, 129)';
-            canvasCtx.beginPath();
-
-            const sliceWidth = canvas.width / bufferLength;
+            // Draw bars
+            const barWidth = (canvas.width / bufferLength) * 0.8;
+            let barHeight;
             let x = 0;
 
+            // Center bars vertically
+            const centerY = canvas.height / 2;
+
             for (let i = 0; i < bufferLength; i++) {
-                const v = dataArray[i] / 128.0;
-                const y = (v * canvas.height) / 2;
+                barHeight = (dataArray[i] / 255) * canvas.height * 0.8; // Scale height
 
-                if (i === 0) {
-                    canvasCtx.moveTo(x, y);
-                } else {
-                    canvasCtx.lineTo(x, y);
-                }
+                // Color based on height/intensity
+                const r = 16 + (dataArray[i] / 255) * 50; // Dark to lighter green
+                const g = 185;
+                const b = 129;
 
-                x += sliceWidth;
+                canvasCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+
+                // Draw rounded rect (simulated with standard rect for performance or roundRect if supported)
+                // Using simple rect for now, centered vertically
+                canvasCtx.fillStyle = '#10b981'; // Emerald 500
+                if (dataArray[i] > 100) canvasCtx.fillStyle = '#059669'; // Emerald 600 for loud
+
+                // Draw pill shape
+                roundRect(canvasCtx, x, centerY - barHeight / 2, barWidth, Math.max(4, barHeight), 4);
+
+                x += barWidth + (canvas.width / bufferLength) * 0.2; // Space between bars
             }
-
-            canvasCtx.lineTo(canvas.width, canvas.height / 2);
-            canvasCtx.stroke();
         };
 
         draw();
+    };
+
+    // Helper for rounded rectangles
+    const roundRect = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
+        if (w < 2 * r) r = w / 2;
+        if (h < 2 * r) r = h / 2;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+        ctx.fill();
     };
 
     const togglePlayback = () => {
