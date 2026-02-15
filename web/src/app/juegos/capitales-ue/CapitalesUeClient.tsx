@@ -4,12 +4,12 @@
 import CapitalGame from '@/components/games/CapitalGame';
 import { EUROPE_PATHS } from '@/components/games/data/europe-paths';
 import { EUROPE_CAPITALS_COORDS } from '@/components/games/data/europe-capitals-coords';
-import { EU_MEMBERS_LIST } from '@/components/games/data/capitals-data';
+import { EU_MEMBERS_LIST, EU_MEMBERS_LIST_EN } from '@/components/games/data/capitals-data';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function CapitalesUeClient() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     return (
         <PhysicalGameLayout
@@ -20,7 +20,7 @@ export default function CapitalesUeClient() {
             <CapitalGame
                 paths={EUROPE_PATHS}
                 centroids={EUROPE_CAPITALS_COORDS}
-                targetList={EU_MEMBERS_LIST}
+                targetList={language === 'es' ? EU_MEMBERS_LIST : EU_MEMBERS_LIST_EN}
                 title={t.gamesPage.gameTitles.euCapitalsMap}
                 initialPan={{ x: 0, y: -180 }}
                 initialZoom={1.75}

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, ZoomIn, ZoomOut, Maximize, Minimize, Trophy, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { PATH_TO_SPANISH_NAME, EUROPE_CAPITALS } from './data/capitals-data';
+import { PATH_TO_SPANISH_NAME, EUROPE_CAPITALS, PATH_TO_ENGLISH_NAME, EUROPE_CAPITALS_EN } from './data/capitals-data';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
@@ -12,6 +12,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
 import { calculatePathCentroid } from '@/lib/svg-utils';
+import { useMemo } from 'react';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -40,10 +41,15 @@ export default function CapitalGame({
         score, addScore,
         errors, addError,
         timeLeft,
+        elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10 });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode: 'challenge' });
+
+    // Dynamic Data based on Language
+    const nameMapping = useMemo(() => language === 'es' ? PATH_TO_SPANISH_NAME : PATH_TO_ENGLISH_NAME, [language]);
+    const capitalsData = useMemo(() => language === 'es' ? EUROPE_CAPITALS : EUROPE_CAPITALS_EN, [language]);
 
     const [loading, setLoading] = useState(true);
     const [targetCapital, setTargetCapital] = useState('');
@@ -70,7 +76,7 @@ export default function CapitalGame({
     // Initialize
     useEffect(() => {
         // Filter available countries based on targetList if provided, otherwise use all from paths
-        const pathCountries = Object.keys(paths).map(eng => PATH_TO_SPANISH_NAME[eng]).filter(Boolean);
+        const pathCountries = Object.keys(paths).map(eng => nameMapping[eng]).filter(Boolean);
 
         let playable = pathCountries;
         if (targetList) {
@@ -79,11 +85,16 @@ export default function CapitalGame({
         }
 
         // Ensure we only have countries with defined capitals
-        playable = playable.filter(c => EUROPE_CAPITALS[c]);
+        playable = playable.filter(c => capitalsData[c]);
 
         setRemainingCountries(playable);
         setLoading(false);
-    }, [paths, targetList]);
+
+        // Reset game state on language change to avoid mismatches
+        setGameState('start');
+        setTargetCapital('');
+        setCurrentCountryName('');
+    }, [paths, targetList, language, nameMapping, capitalsData, setGameState]);
 
     const startGame = () => {
         hookStartGame();
@@ -94,12 +105,12 @@ export default function CapitalGame({
         setCurrentCountryName('');
 
         // Re-calculate playable list to be safe
-        const pathCountries = Object.keys(paths).map(eng => PATH_TO_SPANISH_NAME[eng]).filter(Boolean);
+        const pathCountries = Object.keys(paths).map(eng => nameMapping[eng]).filter(Boolean);
         let playable = pathCountries;
         if (targetList) {
             playable = pathCountries.filter(c => targetList.includes(c));
         }
-        playable = playable.filter(c => EUROPE_CAPITALS[c]);
+        playable = playable.filter(c => capitalsData[c]);
         setRemainingCountries(playable);
 
         nextTurn(playable);
@@ -113,7 +124,7 @@ export default function CapitalGame({
         }
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);
         const nextCountry = currentRemaining[randomIndex];
-        const nextCap = EUROPE_CAPITALS[nextCountry];
+        const nextCap = capitalsData[nextCountry];
 
         setCurrentCountryName(nextCountry);
         setTargetCapital(nextCap);
@@ -128,14 +139,14 @@ export default function CapitalGame({
 
         setClickedId(engName); // Mark as clicked for visual feedback
 
-        const clickedCountry = PATH_TO_SPANISH_NAME[engName];
+        const clickedCountry = nameMapping[engName];
         if (!clickedCountry) return;
 
         // Is this the country for the target capital?
         if (clickedCountry === currentCountryName) {
             // Correct
             addScore(10);
-            setMessage(`¡Correcto! ${targetCapital} es la capital de ${clickedCountry}. 🎉`);
+            setMessage(`${t.common.correct} ${targetCapital} - ${clickedCountry}. 🎉`);
 
             const newRemaining = remainingCountries.filter(c => c !== currentCountryName);
             setRemainingCountries(newRemaining);
@@ -147,7 +158,9 @@ export default function CapitalGame({
             setAttempts(newAttempts);
 
             if (newAttempts >= 3) {
-                setMessage(`¡Fallaste! Era ${currentCountryName}. ❌`); // Reveal country
+                setMessage(language === 'es'
+                    ? `¡Fallaste! Era ${currentCountryName}. ❌`
+                    : `Failed! It was ${currentCountryName}. ❌`); // Reveal country
                 setFailedCountries(prev => [...prev, currentCountryName]);
                 // Mark this country as "completed" but failed, so it shows up in red or distinct style
                 // In this logic, we remove it from "remaining" so nextTurn picks something else.
@@ -159,8 +172,10 @@ export default function CapitalGame({
                 setTimeout(() => nextTurn(newRemaining), 2000);
             } else {
                 // Show what they clicked
-                const clickedCapital = EUROPE_CAPITALS[clickedCountry] || 'Desconocida';
-                setMessage(`¡Incorrecto! Esa es ${clickedCapital} (${clickedCountry}). Intento ${newAttempts}/3. ❌`);
+                const clickedCapital = capitalsData[clickedCountry] || 'Unknown';
+                setMessage(language === 'es'
+                    ? `¡Incorrecto! Esa es ${clickedCapital} (${clickedCountry}). Intento ${newAttempts}/3. ❌`
+                    : `Incorrect! That is ${clickedCapital} (${clickedCountry}). Attempt ${newAttempts}/3. ❌`);
             }
         }
     };
@@ -175,12 +190,12 @@ export default function CapitalGame({
         setTargetCapital('');
         setCurrentCountryName('');
 
-        const pathCountries = Object.keys(paths).map(eng => PATH_TO_SPANISH_NAME[eng]).filter(Boolean);
+        const pathCountries = Object.keys(paths).map(eng => nameMapping[eng]).filter(Boolean);
         let playable = pathCountries;
         if (targetList) {
             playable = pathCountries.filter(c => targetList.includes(c));
         }
-        playable = playable.filter(c => EUROPE_CAPITALS[c]);
+        playable = playable.filter(c => capitalsData[c]);
 
         setRemainingCountries(playable);
         setGameState('playing');
@@ -222,13 +237,13 @@ export default function CapitalGame({
     const handleMouseUp = () => setIsDragging(false);
 
     const totalTargets = useMemo(() => {
-        const pathCountries = Object.keys(paths).map(eng => PATH_TO_SPANISH_NAME[eng]).filter(Boolean);
+        const pathCountries = Object.keys(paths).map(eng => nameMapping[eng]).filter(Boolean);
         let playable = pathCountries;
         if (targetList) {
             playable = pathCountries.filter(c => targetList.includes(c));
         }
-        return playable.filter(c => EUROPE_CAPITALS[c]).length;
-    }, [paths, targetList]);
+        return playable.filter(c => capitalsData[c]).length;
+    }, [paths, targetList, nameMapping, capitalsData]);
 
     return (
         <div
@@ -276,13 +291,13 @@ export default function CapitalGame({
                             </div>
                             <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                                Busca la capital mostrada en el mapa.
+                                {language === 'es' ? 'Busca la capital mostrada en el mapa.' : 'Find the capital shown on the map.'}
                             </p>
                             <button
                                 onClick={startGame}
                                 className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
                             >
-                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <Globe className="w-5 h-5 opacity-50" /></span>
+                                <span className="relative z-10 flex items-center gap-2">{t.common.start.toUpperCase()} <Globe className="w-5 h-5 opacity-50" /></span>
                             </button>
                         </div>
                     )}
@@ -293,17 +308,17 @@ export default function CapitalGame({
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                             </div>
-                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                            <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
 
                             <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
+                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
                                 <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
                                     {score}
                                 </span>
                             </div>
 
                             <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> Jugar de nuevo
+                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                             </button>
                         </div>
                     )}
@@ -324,7 +339,7 @@ export default function CapitalGame({
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                                 {/* Layer 1: Country Paths */}
                                 {Object.entries(paths).map(([engName, pathD]) => {
-                                    const spanishName = PATH_TO_SPANISH_NAME[engName];
+                                    const spanishName = nameMapping[engName];
                                     const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                     const isFailed = failedCountries.includes(spanishName || '');
                                     const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
@@ -354,7 +369,7 @@ export default function CapitalGame({
 
                                 {/* Layer 2: Capital Points (Always on top) */}
                                 {Object.entries(paths).map(([engName, pathD]) => {
-                                    const spanishName = PATH_TO_SPANISH_NAME[engName];
+                                    const spanishName = nameMapping[engName];
                                     const isTarget = spanishName === currentCountryName;
                                     const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                     const isFailed = failedCountries.includes(spanishName || '');
@@ -414,5 +429,4 @@ export default function CapitalGame({
     );
 }
 
-// Helper to calculate initial target count outside if needed, or just memo inside.
-import { useMemo } from 'react';
+
