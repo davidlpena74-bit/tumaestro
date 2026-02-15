@@ -225,7 +225,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                                     onClick={() => setRole('student')}
                                                     className={`flex items-center justify-center p-3 rounded-xl border-2 transition-all gap-2 ${role === 'student' ? 'border-teal-500 bg-teal-50 text-teal-700' : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'}`}
                                                 >
-                                                    <span className="text-xl">🎓</span>
                                                     <span className="text-xs font-bold uppercase transition-all">Alumno</span>
                                                 </button>
                                                 <button
@@ -233,7 +232,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                                     onClick={() => setRole('teacher')}
                                                     className={`flex items-center justify-center p-3 rounded-xl border-2 transition-all gap-2 ${role === 'teacher' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'}`}
                                                 >
-                                                    <span className="text-xl">👨‍🏫</span>
                                                     <span className="text-xs font-bold uppercase transition-all">Profesor</span>
                                                 </button>
                                             </div>

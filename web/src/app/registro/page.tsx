@@ -143,18 +143,16 @@ export default function RegisterPage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setRole('student')}
-                                                className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all gap-2 ${role === 'student' ? 'border-blue-500 bg-blue-50/50 text-blue-600 shadow-md shadow-blue-500/10' : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'}`}
+                                                className={`flex items-center justify-center p-3 rounded-xl border-2 transition-all gap-2 ${role === 'student' ? 'border-teal-500 bg-teal-50 text-teal-700' : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'}`}
                                             >
-                                                <span className="text-2xl">🎓</span>
-                                                <span className="text-sm font-bold">Alumno</span>
+                                                <span className="text-xs font-bold uppercase transition-all">Alumno</span>
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setRole('teacher')}
-                                                className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all gap-2 ${role === 'teacher' ? 'border-purple-500 bg-purple-50/50 text-purple-600 shadow-md shadow-purple-500/10' : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'}`}
+                                                className={`flex items-center justify-center p-3 rounded-xl border-2 transition-all gap-2 ${role === 'teacher' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'}`}
                                             >
-                                                <span className="text-2xl">👨‍🏫</span>
-                                                <span className="text-sm font-bold">Profesor</span>
+                                                <span className="text-xs font-bold uppercase transition-all">Profesor</span>
                                             </button>
                                         </div>
                                     </div>
