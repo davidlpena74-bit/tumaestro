@@ -288,7 +288,7 @@ export default function ReadingTeacherTool() {
 
     const handleRecognitionResult = (event: any) => {
         // Log raw event to see if we get ANYTHING
-        console.log('🎤 Raw recognition event:', event);
+        // console.log('🎤 Raw recognition event:', event);
 
         if (!selectedText) {
             console.warn('❌ No text selected, ignoring recognition');
@@ -307,23 +307,26 @@ export default function ReadingTeacherTool() {
             if (results[i].isFinal) {
                 final += transcript + ' ';
                 console.log('✅ FINAL: ', transcript);
-                processFinalTranscript(transcript); // Separate processing logic
+                processTranscript(transcript, true); // Process final
             } else {
                 interim += transcript;
                 console.log('⚪ INTERIM: ', transcript);
             }
         }
 
-        if (interim) setInterimTranscript(interim);
+        if (interim) {
+            setInterimTranscript(interim);
+            processTranscript(interim, false); // Process interim "agile"
+        }
         if (final) {
             setFinalTranscripts(prev => [...prev, final.trim()]);
             setInterimTranscript('');
         }
     };
 
-    const processFinalTranscript = (transcript: string) => {
+    const processTranscript = (transcript: string, isFinal: boolean) => {
         const spokenWords = transcript.trim().toLowerCase().split(/\s+/);
-        console.log('📝 Processing spoken words:', spokenWords);
+        // console.log('📝 Processing spoken words:', spokenWords, isFinal ? '(FINAL)' : '(INTERIM)');
 
         const originalWords = getWordsOnly(selectedText!.content);
         const wordsWithSpaces = selectedText!.content.split(/(\s+)/);
@@ -331,6 +334,10 @@ export default function ReadingTeacherTool() {
         setWordStatuses(prev => {
             const newStatuses = [...prev];
             let currentIdx = currentWordIndexRef.current;
+
+            // If we are done, do nothing
+            if (currentIdx >= originalWords.length) return prev;
+
             let charCount = 0;
 
             // Recalculate charCount based on currentIdx to be safe
@@ -344,12 +351,14 @@ export default function ReadingTeacherTool() {
 
                 const target = originalWords[currentIdx];
                 const nextTarget = originalWords[currentIdx + 1];
+
+                // Check match
                 const match = isMatch(spoken, target);
 
-                // Allow checking next word if current one was skipped
-                const nextMatch = nextTarget && isMatch(spoken, nextTarget);
+                // Only check skip if it's FINAL results. Interim should be strict to avoid jumping ahead erroneously.
+                const nextMatch = isFinal && nextTarget && isMatch(spoken, nextTarget);
 
-                console.log(`  Matching: "${spoken}" vs "${target}" (${match}) or "${nextTarget}" (${nextMatch})`);
+                // console.log(`  Matching: "${spoken}" vs "${target}" (${match})`);
 
                 if (match) {
                     newStatuses[currentIdx] = 'correct';
@@ -369,8 +378,8 @@ export default function ReadingTeacherTool() {
                     charCount += wordsWithSpaces[(currentIdx + 1) * 2 + 1]?.length || 0;
 
                     currentIdx += 2;
-                } else {
-                    // Just mark as incorrect but don't advance blindly unless we are sure?
+                } else if (isFinal) {
+                    // Only mark as incorrect on FINAL results to avoid flickering errors while talking
                     // Strategy: Mark as incorrect and move on effectively treating it as a mispronunciation of the current word
                     newStatuses[currentIdx] = 'incorrect';
                     charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
@@ -382,7 +391,11 @@ export default function ReadingTeacherTool() {
             currentWordIndexRef.current = currentIdx;
             setCharIndex(charCount);
             setWordIndex(currentIdx);
+
+            // Feedback only on final sentences or confident stops?
+            // Let's keep it simple: check feedback whenever index moves
             checkSentenceFeedback(newStatuses, currentIdx);
+
             return newStatuses;
         });
     };
