@@ -42,6 +42,8 @@ export default function ReadingTeacherTool() {
     const [wordIndex, setWordIndex] = useState(-1);
     const [wordStatuses, setWordStatuses] = useState<('unread' | 'correct' | 'incorrect')[]>([]);
     const [audioLevel, setAudioLevel] = useState(0);
+    const [interimTranscript, setInterimTranscript] = useState('');
+    const [finalTranscripts, setFinalTranscripts] = useState<string[]>([]);
 
     // Internal refs for matching logic
     const currentWordIndexRef = useRef(0);
@@ -235,12 +237,26 @@ export default function ReadingTeacherTool() {
         const originalWords = getWordsOnly(selectedText.content);
         const wordsWithSpaces = selectedText.content.split(/(\s+)/);
         const results = event.results;
+
+        // Build interim transcript from all results
+        let interim = '';
+        for (let i = event.resultIndex; i < results.length; i++) {
+            if (!results[i].isFinal) {
+                interim += results[i][0].transcript;
+            }
+        }
+        setInterimTranscript(interim);
+
         const lastResult = results[results.length - 1];
         const transcript = lastResult[0].transcript.toLowerCase();
 
         console.log('🎤 Transcript:', transcript, 'isFinal:', lastResult.isFinal);
 
         if (lastResult.isFinal) {
+            // Add to final transcripts
+            setFinalTranscripts(prev => [...prev, transcript]);
+            setInterimTranscript('');
+
             const spokenWords = transcript.trim().split(/\s+/);
             console.log('📝 Spoken words:', spokenWords);
             console.log('🎯 Current word index:', currentWordIndexRef.current);
@@ -390,6 +406,8 @@ export default function ReadingTeacherTool() {
             lastSentenceCheckRef.current = 0;
             setCharIndex(0);
             setWordIndex(-1);
+            setInterimTranscript('');
+            setFinalTranscripts([]);
             if (selectedText) {
                 const words = getWordsOnly(selectedText.content);
                 setWordStatuses(new Array(words.length).fill('unread'));
@@ -651,6 +669,35 @@ export default function ReadingTeacherTool() {
                                     <span className="text-xs font-black text-emerald-600 min-w-[3ch]">
                                         {Math.round(Math.min(audioLevel * 200, 100))}%
                                     </span>
+                                </div>
+
+                                {/* Real-time Transcript Display */}
+                                <div className="w-full max-w-2xl mt-4">
+                                    <div className="bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-700">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                                            <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">Reconocimiento en Vivo</span>
+                                        </div>
+                                        <div className="min-h-[80px] max-h-[120px] overflow-y-auto custom-scrollbar">
+                                            <p className="text-white font-mono text-sm leading-relaxed">
+                                                {finalTranscripts.map((text, idx) => (
+                                                    <span key={idx} className="text-emerald-300">
+                                                        {text}{' '}
+                                                    </span>
+                                                ))}
+                                                {interimTranscript && (
+                                                    <span className="text-slate-400 italic">
+                                                        {interimTranscript}
+                                                    </span>
+                                                )}
+                                                {!interimTranscript && finalTranscripts.length === 0 && (
+                                                    <span className="text-slate-500 italic">
+                                                        Esperando que empieces a hablar...
+                                                    </span>
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
