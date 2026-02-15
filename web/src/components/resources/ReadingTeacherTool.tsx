@@ -66,31 +66,63 @@ export default function ReadingTeacherTool() {
             // Initialize Speech Recognition
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
             if (SpeechRecognition) {
+                console.log('✅ Speech Recognition API available');
                 const recognition = new SpeechRecognition();
                 recognition.continuous = true;
                 recognition.interimResults = true;
                 recognition.lang = language === 'es' ? 'es-ES' : language === 'en' ? 'en-US' : language === 'fr' ? 'fr-FR' : 'de-DE';
+                recognition.maxAlternatives = 1;
+
+                console.log('🌍 Recognition language set to:', recognition.lang);
+
+                recognition.onstart = () => {
+                    console.log('🎙️ Speech recognition started');
+                };
 
                 recognition.onresult = (event: any) => {
+                    console.log('📥 Recognition result received', event);
                     handleRecognitionResult(event);
                 };
 
                 recognition.onerror = (event: any) => {
-                    console.error('Speech Recognition Error', event.error);
-                    if (event.error === 'no-speech') return;
+                    console.error('❌ Speech Recognition Error:', event.error, event);
+                    if (event.error === 'no-speech') {
+                        console.warn('⚠️ No speech detected');
+                        return;
+                    }
+                    if (event.error === 'aborted') {
+                        console.warn('⚠️ Recognition aborted');
+                        return;
+                    }
                     setIsListening(false);
                 };
 
                 recognition.onend = () => {
-                    if (isListening) recognition.start(); // Auto-restart if we're supposed to be listening
+                    console.log('🛑 Recognition ended, isListening:', isListening);
+                    if (isListening) {
+                        console.log('🔄 Restarting recognition...');
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error('Failed to restart recognition:', e);
+                        }
+                    }
                 };
 
                 recognitionRef.current = recognition;
+            } else {
+                console.error('❌ Speech Recognition API not available');
             }
         }
         return () => {
             cancelSpeech();
-            if (recognitionRef.current) recognitionRef.current.stop();
+            if (recognitionRef.current) {
+                try {
+                    recognitionRef.current.stop();
+                } catch (e) {
+                    console.log('Recognition already stopped');
+                }
+            }
             stopAudioVisualization();
         };
     }, [language, isListening]);
@@ -391,15 +423,22 @@ export default function ReadingTeacherTool() {
 
     const toggleListening = () => {
         if (!recognitionRef.current) {
+            console.error('❌ Recognition not initialized');
             alert("Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.");
             return;
         }
 
         if (isListening) {
-            recognitionRef.current.stop();
-            setIsListening(false);
-            stopAudioVisualization();
+            console.log('🛑 Stopping recognition...');
+            try {
+                recognitionRef.current.stop();
+                setIsListening(false);
+                stopAudioVisualization();
+            } catch (e) {
+                console.error('Error stopping recognition:', e);
+            }
         } else {
+            console.log('▶️ Starting recognition...');
             cancelSpeech();
             // Reset progress for fresh start
             currentWordIndexRef.current = 0;
@@ -412,9 +451,22 @@ export default function ReadingTeacherTool() {
                 const words = getWordsOnly(selectedText.content);
                 setWordStatuses(new Array(words.length).fill('unread'));
             }
-            recognitionRef.current.start();
-            setIsListening(true);
-            startAudioVisualization();
+
+            try {
+                recognitionRef.current.start();
+                setIsListening(true);
+                startAudioVisualization();
+                console.log('✅ Recognition started successfully');
+            } catch (e: any) {
+                console.error('❌ Error starting recognition:', e);
+                if (e.message && e.message.includes('already started')) {
+                    console.log('Recognition already running, just updating state');
+                    setIsListening(true);
+                    startAudioVisualization();
+                } else {
+                    alert('Error al iniciar el reconocimiento de voz: ' + e.message);
+                }
+            }
         }
     };
 
