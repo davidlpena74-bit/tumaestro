@@ -135,7 +135,7 @@ export default function CapitalGame({
 
     const handleCountryClick = (engName: string) => {
         if (gameState !== 'playing') return;
-        if (Math.abs(pan.x - dragStart.current.x) > 5 || Math.abs(pan.y - dragStart.current.y) > 5) return;
+
 
         setClickedId(engName); // Mark as clicked for visual feedback
 
