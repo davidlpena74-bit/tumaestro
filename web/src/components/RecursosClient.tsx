@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { BookOpen } from '@phosphor-icons/react';
+import { BookOpen, GraduationCap, Sparkle } from '@phosphor-icons/react';
 
 export default function RecursosClient() {
     return (
@@ -166,6 +166,73 @@ export default function RecursosClient() {
                                             <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                         </Link>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* SECCIÓN PROFESOR DE LECTURA */}
+                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
+                        <div className="absolute inset-0 bg-gradient-to-r from-sky-500/10 to-indigo-500/10 rounded-3xl blur-3xl -z-10" />
+
+                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            {/* Decorative Glow */}
+                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-sky-500/10 rounded-full blur-[100px] group-hover:bg-sky-500/20 transition-all duration-700" />
+
+                            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                                <div className="w-full md:w-1/3 flex justify-center">
+                                    <motion.div
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(14,165,233,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(14,165,233,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
+                                    >
+                                        <div className="absolute inset-0 bg-sky-500/20 rounded-3xl blur-2xl group-hover/img:bg-sky-500/30 transition-all -z-10" />
+                                        <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-sky-500 to-indigo-600 rounded-3xl border-4 border-white/50 shadow-2xl flex items-center justify-center transform -rotate-3 group-hover:rotate-0 transition-all duration-500 relative">
+                                            <BookOpen className="w-32 h-32 text-white/90" weight="duotone" />
+                                            {/* Floating Particles/Icons */}
+                                            <motion.div
+                                                animate={{ y: [0, -10, 0] }}
+                                                transition={{ duration: 2, repeat: Infinity }}
+                                                className="absolute -top-4 -right-4 p-3 bg-white rounded-2xl shadow-xl text-sky-600"
+                                            >
+                                                <GraduationCap className="w-8 h-8" weight="fill" />
+                                            </motion.div>
+                                            <motion.div
+                                                animate={{ y: [0, 10, 0] }}
+                                                transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
+                                                className="absolute -bottom-4 -left-4 p-3 bg-white rounded-2xl shadow-xl text-indigo-600"
+                                            >
+                                                <Sparkle className="w-8 h-8" weight="fill" />
+                                            </motion.div>
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <div className="w-full md:w-2/3 text-center md:text-left">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/10 text-sky-600 text-xs font-black mb-6 border border-sky-500/20 uppercase tracking-widest">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                                        </span>
+                                        Nueva Herramienta
+                                    </div>
+
+                                    <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                                        Profesor de Lectura
+                                    </h2>
+                                    <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
+                                        Entrena tu fluidez y comprensión automática con nuestro asistente inteligente. Lectura asistida con resaltado en tiempo real y modo enfoque.
+                                    </p>
+
+                                    <Link
+                                        href="/recursos/profesor-lectura"
+                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                    >
+                                        EMPEZAR A ENTRENAR
+                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
                                 </div>
                             </div>
                         </div>

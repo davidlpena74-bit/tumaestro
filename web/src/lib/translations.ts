@@ -333,6 +333,22 @@ export const TRANSLATIONS = {
             backToLibrary: 'Volver a Recursos',
             comingSoon: 'Más material en camino...',
             comingSoonDesc: 'Estamos preparando fichas descargables, resúmenes y ejercicios interactivos para esta sección.'
+        },
+        readingTeacher: {
+            title: 'Profesor de Lectura',
+            subtitle: 'Mejora tu fluidez y comprensión lectora con nuestro asistente inteligente. Escucha, lee y practica a tu ritmo.',
+            backToResources: 'Volver a Recursos',
+            startReading: 'Empezar a Leer',
+            focusMode: 'Modo Enfoque',
+            exitFocus: 'Salir de Enfoque',
+            speed: 'Velocidad',
+            texts: 'Textos de Práctica',
+            selectText: 'Selecciona un texto para empezar...',
+            readingNow: 'Leyendo ahora',
+            completed: '¡Lectura Completada!',
+            repeat: 'Repetir Lectura',
+            comprehension: 'Preguntas de Comprensión',
+            checkAnswers: 'Comprobar Respuestas'
         }
     },
     en: {
@@ -667,6 +683,22 @@ export const TRANSLATIONS = {
             backToLibrary: 'Back to Resources',
             comingSoon: 'More material on the way...',
             comingSoonDesc: 'We are preparing downloadable sheets, summaries, and interactive exercises for this section.'
+        },
+        readingTeacher: {
+            title: 'Reading Teacher',
+            subtitle: 'Improve your fluency and reading comprehension with our intelligent assistant. Listen, read, and practice at your own pace.',
+            backToResources: 'Back to Resources',
+            startReading: 'Start Reading',
+            focusMode: 'Focus Mode',
+            exitFocus: 'Exit Focus',
+            speed: 'Speed',
+            texts: 'Practice Texts',
+            selectText: 'Select a text to start...',
+            readingNow: 'Reading now',
+            completed: 'Reading Completed!',
+            repeat: 'Repeat Reading',
+            comprehension: 'Comprehension Questions',
+            checkAnswers: 'Check Answers'
         }
     },
     fr: {
@@ -1000,6 +1032,22 @@ export const TRANSLATIONS = {
             backToLibrary: 'Retour aux Ressources',
             comingSoon: 'Plus de matériel en route...',
             comingSoonDesc: 'Nous préparons des fiches téléchargeables, des résumés et des exercices interactifs pour cette section.'
+        },
+        readingTeacher: {
+            title: 'Professeur de Lecture',
+            subtitle: 'Améliorez votre fluidité et votre compréhension de lecture avec notre assistant intelligent. Écoutez, lisez et pratiquez à votre rythme.',
+            backToResources: 'Retour aux Ressources',
+            startReading: 'Commencer à Lire',
+            focusMode: 'Mode Mise au Point',
+            exitFocus: 'Quitter le Mode Mise au Point',
+            speed: 'Vitesse',
+            texts: 'Textes de Pratique',
+            selectText: 'Sélectionnez un texte pour commencer...',
+            readingNow: 'Lecture en cours',
+            completed: 'Lecture Terminée !',
+            repeat: 'Répéter la Lecture',
+            comprehension: 'Questions de Compréhension',
+            checkAnswers: 'Vérifier les Réponses'
         }
     },
     de: {
@@ -1333,6 +1381,22 @@ export const TRANSLATIONS = {
             backToLibrary: 'Zurück zu Ressourcen',
             comingSoon: 'Mehr Material unterwegs...',
             comingSoonDesc: 'Wir bereiten herunterladbare Blätter, Zusammenfassungen und interaktive Übungen für diesen Bereich vor.'
+        },
+        readingTeacher: {
+            title: 'Leselehrer',
+            subtitle: 'Verbessern Sie Ihre Leseflüssigkeit und Ihr Verständnis mit unserem intelligenten Assistenten. Hören Sie zu, lesen Sie und üben Sie in Ihrem eigenen Tempo.',
+            backToResources: 'Zurück zu Ressourcen',
+            startReading: 'Lesen Starten',
+            focusMode: 'Fokus-Modus',
+            exitFocus: 'Fokus Verlassen',
+            speed: 'Geschwindigkeit',
+            texts: 'Übungstexte',
+            selectText: 'Wählen Sie einen Text aus, um zu beginnen...',
+            readingNow: 'Liest gerade',
+            completed: 'Lesen Abgeschlossen!',
+            repeat: 'Lesen Wiederholen',
+            comprehension: 'Verständnisfragen',
+            checkAnswers: 'Antworten Überprüfen'
         }
     }
 };
