@@ -348,7 +348,12 @@ export const TRANSLATIONS = {
             completed: '¡Lectura Completada!',
             repeat: 'Repetir Lectura',
             comprehension: 'Preguntas de Comprensión',
-            checkAnswers: 'Comprobar Respuestas'
+            checkAnswers: 'Comprobar Respuestas',
+            readAloud: 'Leer en voz alta',
+            listening: 'Escuchando...',
+            stopListening: 'Detener micrófono',
+            keepReading: 'Te estoy escuchando... ¡Sigue leyendo!',
+            pronounceClear: 'Pronuncia con claridad cada palabra'
         }
     },
     en: {
@@ -698,7 +703,12 @@ export const TRANSLATIONS = {
             completed: 'Reading Completed!',
             repeat: 'Repeat Reading',
             comprehension: 'Comprehension Questions',
-            checkAnswers: 'Check Answers'
+            checkAnswers: 'Check Answers',
+            readAloud: 'Read Aloud',
+            listening: 'Listening...',
+            stopListening: 'Stop Microphone',
+            keepReading: 'I am listening... Keep reading!',
+            pronounceClear: 'Pronounce each word clearly'
         }
     },
     fr: {

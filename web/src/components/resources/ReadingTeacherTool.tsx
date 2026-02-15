@@ -15,7 +15,10 @@ import {
     SpeakerHigh,
     GraduationCap,
     Clock,
-    Sparkle
+    Sparkle,
+    Microphone,
+    MicrophoneSlash,
+    Waveform
 } from '@phosphor-icons/react';
 import { READING_TEXTS, ReadingText } from './data/reading-texts';
 import { clsx, type ClassValue } from 'clsx';
@@ -34,23 +37,65 @@ export default function ReadingTeacherTool() {
     const [isPaused, setIsPaused] = useState(false);
     const [isSlow, setIsSlow] = useState(false);
     const [focusMode, setFocusMode] = useState(false);
+    const [isListening, setIsListening] = useState(false);
     const [charIndex, setCharIndex] = useState(0);
     const [wordIndex, setWordIndex] = useState(-1);
+    const [wordStatuses, setWordStatuses] = useState<('unread' | 'correct' | 'incorrect')[]>([]);
 
+    // Internal refs for matching logic
+    const currentWordIndexRef = useRef(0);
+    const recognitionRef = useRef<any>(null);
     const synthRef = useRef<SpeechSynthesis | null>(null);
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-    const animationFrameRef = useRef<number | null>(null);
-    const lastTimeRef = useRef<number>(0);
-    const currentSpeedRef = useRef<number>(0.015);
+    const lastSentenceCheckRef = useRef(0);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
             synthRef.current = window.speechSynthesis;
+
+            // Initialize Speech Recognition
+            const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = language === 'es' ? 'es-ES' : language === 'en' ? 'en-US' : language === 'fr' ? 'fr-FR' : 'de-DE';
+
+                recognition.onresult = (event: any) => {
+                    handleRecognitionResult(event);
+                };
+
+                recognition.onerror = (event: any) => {
+                    console.error('Speech Recognition Error', event.error);
+                    if (event.error === 'no-speech') return;
+                    setIsListening(false);
+                };
+
+                recognition.onend = () => {
+                    if (isListening) recognition.start(); // Auto-restart if we're supposed to be listening
+                };
+
+                recognitionRef.current = recognition;
+            }
         }
         return () => {
             cancelSpeech();
+            if (recognitionRef.current) recognitionRef.current.stop();
         };
-    }, []);
+    }, [language, isListening]);
+
+    useEffect(() => {
+        if (selectedText) {
+            const words = getWordsOnly(selectedText.content);
+            setWordStatuses(new Array(words.length).fill('unread'));
+            currentWordIndexRef.current = 0;
+            lastSentenceCheckRef.current = 0;
+        }
+    }, [selectedText]);
+
+    const getWordsOnly = (text: string) => {
+        return text.trim().split(/\s+/).map(w => w.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").toLowerCase());
+    };
 
     const cancelSpeech = () => {
         if (synthRef.current) {
@@ -60,10 +105,6 @@ export default function ReadingTeacherTool() {
         setIsPaused(false);
         setCharIndex(0);
         setWordIndex(-1);
-        if (animationFrameRef.current) {
-            cancelAnimationFrame(animationFrameRef.current);
-            animationFrameRef.current = null;
-        }
     };
 
     const togglePlayback = () => {
@@ -86,9 +127,135 @@ export default function ReadingTeacherTool() {
         startReading();
     };
 
+    const handleRecognitionResult = (event: any) => {
+        if (!selectedText) return;
+
+        const originalWords = getWordsOnly(selectedText.content);
+        const results = event.results;
+        const lastResult = results[results.length - 1];
+        const transcript = lastResult[0].transcript.toLowerCase();
+
+        if (lastResult.isFinal) {
+            const spokenWords = transcript.trim().split(/\s+/);
+
+            setWordStatuses(prev => {
+                const newStatuses = [...prev];
+                let currentIdx = currentWordIndexRef.current;
+
+                spokenWords.forEach((spoken: string) => {
+                    if (currentIdx >= originalWords.length) return;
+
+                    const target = originalWords[currentIdx];
+                    const nextTarget = originalWords[currentIdx + 1];
+
+                    if (isMatch(spoken, target)) {
+                        newStatuses[currentIdx] = 'correct';
+                        currentIdx++;
+                    } else if (nextTarget && isMatch(spoken, nextTarget)) {
+                        newStatuses[currentIdx] = 'incorrect';
+                        newStatuses[currentIdx + 1] = 'correct';
+                        currentIdx += 2;
+                    }
+                });
+
+                currentWordIndexRef.current = currentIdx;
+                checkSentenceFeedback(newStatuses, currentIdx);
+                return newStatuses;
+            });
+        }
+    };
+
+    const isMatch = (spoken: string, target: string) => {
+        if (!target) return false;
+        const s = spoken.toLowerCase().trim();
+        const t = target.toLowerCase().trim();
+        if (s === t) return true;
+
+        // Simple fuzzy: check if one contains the other or diff is small
+        if (s.length > 3 && t.length > 3) {
+            const distance = levenshteinDistance(s, t);
+            return distance <= 2; // Allow 1-2 character difference
+        }
+        return false;
+    };
+
+    const levenshteinDistance = (a: string, b: string): number => {
+        const matrix = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+        for (let j = 1; j <= b.length; j++) matrix[0][j] = j;
+
+        for (let i = 1; i <= a.length; i++) {
+            for (let j = 1; j <= b.length; j++) {
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j] + 1,
+                    matrix[i][j - 1] + 1,
+                    matrix[i - 1][j - 1] + cost
+                );
+            }
+        }
+        return matrix[a.length][b.length];
+    };
+
+    const checkSentenceFeedback = (statuses: ('unread' | 'correct' | 'incorrect')[], currentIdx: number) => {
+        if (!selectedText) return;
+
+        const wordsJoined = selectedText.content.split(/\s+/);
+        const lastWordWithPunctuation = wordsJoined[currentIdx - 1] || "";
+        const isEndOfSentence = /[.!?]/.test(lastWordWithPunctuation);
+
+        if (isEndOfSentence && currentIdx > lastSentenceCheckRef.current) {
+            const sentenceWordIndices = Array.from(
+                { length: currentIdx - lastSentenceCheckRef.current },
+                (_, i) => lastSentenceCheckRef.current + i
+            );
+
+            const hasErrors = sentenceWordIndices.some(idx => statuses[idx] === 'incorrect');
+
+            if (hasErrors) {
+                // Construct the actual sentence from words
+                const sentenceToRead = wordsJoined.slice(lastSentenceCheckRef.current, currentIdx).join(" ");
+
+                // Play feedback after a short delay so it doesn't overlap with user's last word
+                setTimeout(() => {
+                    if (!isPlaying) speakFeedback(sentenceToRead);
+                }, 800);
+            }
+            lastSentenceCheckRef.current = currentIdx;
+        }
+    };
+
+    const speakFeedback = (text: string) => {
+        if (!synthRef.current) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = language === 'es' ? 'es-ES' : language === 'en' ? 'en-US' : language === 'fr' ? 'fr-FR' : 'de-DE';
+        u.rate = 0.8;
+        const voice = getBestVoice(u.lang);
+        if (voice) u.voice = voice;
+        synthRef.current.speak(u);
+    };
+
+    const toggleListening = () => {
+        if (!recognitionRef.current) {
+            alert("Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.");
+            return;
+        }
+
+        if (isListening) {
+            recognitionRef.current.stop();
+            setIsListening(false);
+        } else {
+            cancelSpeech(); // Stop any AI reading
+            recognitionRef.current.start();
+            setIsListening(true);
+            // Reset progress for a fresh start or continue?
+            // currentWordIndexRef.current = 0; 
+        }
+    };
+
     const startReading = () => {
         if (!selectedText || !synthRef.current) return;
         cancelSpeech();
+        if (isListening) toggleListening();
 
         const utterance = new SpeechSynthesisUtterance(selectedText.content);
         utterance.lang = language === 'es' ? 'es-ES' : language === 'en' ? 'en-US' : language === 'fr' ? 'fr-FR' : 'de-DE';
@@ -122,35 +289,46 @@ export default function ReadingTeacherTool() {
 
     const renderText = () => {
         if (!selectedText) return null;
-        const words = selectedText.content.split(/(\s+)/);
+        const wordsWithSpaces = selectedText.content.split(/(\s+)/);
         let cumulativeCharCount = 0;
+        let visibleWordCounter = 0;
 
         return (
             <div className={cn(
                 "prose prose-slate max-w-none transition-all duration-500 font-serif",
                 focusMode ? "text-2xl md:text-4xl leading-relaxed md:leading-[1.8]" : "text-xl md:text-2xl leading-relaxed"
             )}>
-                {words.map((word, idx) => {
-                    const isSpace = /^\s+$/.test(word);
+                {wordsWithSpaces.map((part, idx) => {
+                    const isSpace = /^\s+$/.test(part);
                     const startPos = cumulativeCharCount;
-                    cumulativeCharCount += word.length;
+                    cumulativeCharCount += part.length;
 
+                    if (isSpace) return <span key={idx}>{part}</span>;
+
+                    const status = wordStatuses[visibleWordCounter];
                     const isHighlight = charIndex >= startPos && charIndex < cumulativeCharCount;
+                    const wordIdx = visibleWordCounter;
+                    visibleWordCounter++;
 
                     return (
                         <motion.span
                             key={idx}
+                            layout
                             animate={{
-                                color: isHighlight ? '#0ea5e9' : (charIndex >= cumulativeCharCount ? '#1e293b' : '#94a3b8'),
+                                color: status === 'correct' ? '#10b981' :
+                                    status === 'incorrect' ? '#f43f5e' :
+                                        isHighlight ? '#0ea5e9' : '#94a3b8',
                                 scale: isHighlight ? 1.1 : 1,
                                 backgroundColor: isHighlight ? 'rgba(14, 165, 233, 0.1)' : 'transparent',
                             }}
                             className={cn(
-                                "inline-block rounded-lg px-0.5 transition-colors duration-200",
-                                isHighlight && "font-bold shadow-sm ring-1 ring-sky-500/20"
+                                "inline-block rounded-lg px-0.5 transition-all duration-300",
+                                isHighlight && "font-bold shadow-sm ring-1 ring-sky-500/20",
+                                status === 'correct' && "font-bold",
+                                status === 'incorrect' && "font-bold underline decoration-rose-400 decoration-wavy"
                             )}
                         >
-                            {word}
+                            {part}
                         </motion.span>
                     );
                 })}
@@ -314,6 +492,25 @@ export default function ReadingTeacherTool() {
                             <div className="w-px h-6 bg-slate-100 mx-1" />
 
                             <button
+                                onClick={toggleListening}
+                                className={cn(
+                                    "px-6 py-2 md:py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 shadow-xl active:scale-95",
+                                    isListening
+                                        ? "bg-emerald-500 text-white animate-pulse"
+                                        : "bg-white text-slate-400 border border-slate-200 hover:border-emerald-500 hover:text-emerald-600"
+                                )}
+                                title={isListening ? t.readingTeacher.stopListening : t.readingTeacher.readAloud}
+                            >
+                                {isListening ? (
+                                    <><Waveform className="w-6 h-6" weight="fill" /> {t.readingTeacher.listening}</>
+                                ) : (
+                                    <><Microphone className="w-6 h-6" /> {t.readingTeacher.readAloud}</>
+                                )}
+                            </button>
+
+                            <div className="w-px h-6 bg-slate-100 mx-1" />
+
+                            <button
                                 onClick={togglePlayback}
                                 className={cn(
                                     "px-8 py-2 md:px-10 md:py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 shadow-xl active:scale-95",
@@ -352,6 +549,35 @@ export default function ReadingTeacherTool() {
                                 >
                                     <img src={selectedText.image} className="w-full h-full object-cover" alt="" />
                                 </motion.div>
+                            )}
+
+                            {isListening && (
+                                <div className="flex flex-col items-center gap-4">
+                                    <div className="flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 shadow-sm">
+                                        <div className="relative flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                        </div>
+                                        <span className="text-xs font-black uppercase tracking-widest">{t.readingTeacher.keepReading}</span>
+                                    </div>
+                                    <motion.div
+                                        animate={{ scale: [1, 1.1, 1] }}
+                                        transition={{ repeat: Infinity, duration: 2 }}
+                                        className="text-slate-400 text-sm italic font-medium"
+                                    >
+                                        {t.readingTeacher.pronounceClear}
+                                    </motion.div>
+
+                                    {/* Stats */}
+                                    <div className="flex gap-4">
+                                        <div className="bg-emerald-500/10 text-emerald-600 px-4 py-1.5 rounded-xl text-xs font-black border border-emerald-500/20">
+                                            {wordStatuses.filter(s => s === 'correct').length} CORRECTAS
+                                        </div>
+                                        <div className="bg-rose-500/10 text-rose-600 px-4 py-1.5 rounded-xl text-xs font-black border border-rose-500/20">
+                                            {wordStatuses.filter(s => s === 'incorrect').length} ERRORES
+                                        </div>
+                                    </div>
+                                </div>
                             )}
 
                             {isPlaying && (
