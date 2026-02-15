@@ -35,6 +35,7 @@ export default function CapitalGame({
     initialPan = { x: 0, y: 0 },
     centroids
 }: CapitalGameProps) {
+    const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
     const {

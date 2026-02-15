@@ -264,7 +264,7 @@ export default function AnimalCellGame() {
                     )}
 
                     <AnimatePresence>
-                        {gameOver && (
+                        {gameState === 'finished' && (
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
