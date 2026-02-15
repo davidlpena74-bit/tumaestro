@@ -632,6 +632,77 @@ export default function ReadingTeacherTool() {
                         </div>
                     </div>
 
+                    {/* Status Indicators - Outside Container */}
+                    {isListening && (
+                        <div className="flex flex-col items-center gap-4 mb-8">
+                            <div className="flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 shadow-sm">
+                                <div className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                </div>
+                                <span className="text-xs font-black uppercase tracking-widest">{t.readingTeacher.keepReading}</span>
+                            </div>
+                            <motion.div
+                                animate={{ scale: [1, 1.1, 1] }}
+                                transition={{ repeat: Infinity, duration: 2 }}
+                                className="text-slate-400 text-sm italic font-medium"
+                            >
+                                {t.readingTeacher.pronounceClear}
+                            </motion.div>
+
+                            {/* Stats */}
+                            <div className="flex gap-4">
+                                <div className="bg-emerald-500/10 text-emerald-600 px-4 py-1.5 rounded-xl text-xs font-black border border-emerald-500/20">
+                                    {wordStatuses.filter(s => s === 'correct').length} CORRECTAS
+                                </div>
+                                <div className="bg-rose-500/10 text-rose-600 px-4 py-1.5 rounded-xl text-xs font-black border border-rose-500/20">
+                                    {wordStatuses.filter(s => s === 'incorrect').length} ERRORES
+                                </div>
+                            </div>
+
+                            {/* Waveform Visualization */}
+                            <div className="w-full max-w-2xl">
+                                <div className="bg-white rounded-2xl border-2 border-emerald-200 shadow-lg overflow-hidden">
+                                    <canvas
+                                        ref={canvasRef}
+                                        width={600}
+                                        height={120}
+                                        className="w-full h-[120px]"
+                                    />
+                                </div>
+
+                                {/* Audio Level Indicator */}
+                                <div className="mt-4 flex items-center gap-3">
+                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Nivel de Audio</span>
+                                    <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                        <motion.div
+                                            className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
+                                            animate={{ width: `${Math.min(audioLevel * 200, 100)}%` }}
+                                            transition={{ duration: 0.1 }}
+                                        />
+                                    </div>
+                                    <span className="text-xs font-black text-emerald-600 min-w-[3ch]">
+                                        {Math.round(Math.min(audioLevel * 200, 100))}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {isPlaying && (
+                        <div className="flex items-center justify-center gap-1 mb-8">
+                            {[1, 2, 3, 4, 5].map(i => (
+                                <motion.div
+                                    key={i}
+                                    animate={{ height: [8, 24, 8] }}
+                                    transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
+                                    className="w-1 bg-sky-500 rounded-full"
+                                />
+                            ))}
+                            <span className="ml-2 text-sky-500 font-black text-xs uppercase tracking-widest">{t.readingTeacher.readingNow}</span>
+                        </div>
+                    )}
+
                     {/* Content Area */}
                     <div className={cn(
                         "relative bg-white rounded-[3rem] border border-slate-200/50 shadow-2xl transition-all duration-700 overflow-hidden",
@@ -651,76 +722,6 @@ export default function ReadingTeacherTool() {
                                 >
                                     <img src={selectedText.image} className="w-full h-full object-cover" alt="" />
                                 </motion.div>
-                            )}
-
-                            {isListening && (
-                                <div className="flex flex-col items-center gap-4">
-                                    <div className="flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 shadow-sm">
-                                        <div className="relative flex h-3 w-3">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                                        </div>
-                                        <span className="text-xs font-black uppercase tracking-widest">{t.readingTeacher.keepReading}</span>
-                                    </div>
-                                    <motion.div
-                                        animate={{ scale: [1, 1.1, 1] }}
-                                        transition={{ repeat: Infinity, duration: 2 }}
-                                        className="text-slate-400 text-sm italic font-medium"
-                                    >
-                                        {t.readingTeacher.pronounceClear}
-                                    </motion.div>
-
-                                    {/* Stats */}
-                                    <div className="flex gap-4">
-                                        <div className="bg-emerald-500/10 text-emerald-600 px-4 py-1.5 rounded-xl text-xs font-black border border-emerald-500/20">
-                                            {wordStatuses.filter(s => s === 'correct').length} CORRECTAS
-                                        </div>
-                                        <div className="bg-rose-500/10 text-rose-600 px-4 py-1.5 rounded-xl text-xs font-black border border-rose-500/20">
-                                            {wordStatuses.filter(s => s === 'incorrect').length} ERRORES
-                                        </div>
-                                    </div>
-
-                                    {/* Waveform Visualization */}
-                                    <div className="w-full max-w-2xl">
-                                        <div className="bg-white rounded-2xl border-2 border-emerald-200 shadow-lg overflow-hidden">
-                                            <canvas
-                                                ref={canvasRef}
-                                                width={600}
-                                                height={120}
-                                                className="w-full h-[120px]"
-                                            />
-                                        </div>
-
-                                        {/* Audio Level Indicator */}
-                                        <div className="mt-4 flex items-center gap-3">
-                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Nivel de Audio</span>
-                                            <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                                                <motion.div
-                                                    className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
-                                                    animate={{ width: `${Math.min(audioLevel * 200, 100)}%` }}
-                                                    transition={{ duration: 0.1 }}
-                                                />
-                                            </div>
-                                            <span className="text-xs font-black text-emerald-600 min-w-[3ch]">
-                                                {Math.round(Math.min(audioLevel * 200, 100))}%
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {isPlaying && (
-                                <div className="flex items-center gap-1">
-                                    {[1, 2, 3, 4, 5].map(i => (
-                                        <motion.div
-                                            key={i}
-                                            animate={{ height: [8, 24, 8] }}
-                                            transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
-                                            className="w-1 bg-sky-500 rounded-full"
-                                        />
-                                    ))}
-                                    <span className="ml-2 text-sky-500 font-black text-xs uppercase tracking-widest">{t.readingTeacher.readingNow}</span>
-                                </div>
                             )}
 
                             {renderText()}
