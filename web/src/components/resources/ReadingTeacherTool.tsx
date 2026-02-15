@@ -264,92 +264,104 @@ export default function ReadingTeacherTool() {
     };
 
     const handleRecognitionResult = (event: any) => {
-        if (!selectedText) return;
+        // Log raw event to see if we get ANYTHING
+        console.log('🎤 Raw recognition event:', event);
 
-        const originalWords = getWordsOnly(selectedText.content);
-        const wordsWithSpaces = selectedText.content.split(/(\s+)/);
+        if (!selectedText) {
+            console.warn('❌ No text selected, ignoring recognition');
+            return;
+        }
+
         const results = event.results;
+        if (!results || results.length === 0) return;
 
-        // Build interim transcript from all results
+        // Process interim results
         let interim = '';
+        let final = '';
+
         for (let i = event.resultIndex; i < results.length; i++) {
-            if (!results[i].isFinal) {
-                interim += results[i][0].transcript;
+            const transcript = results[i][0].transcript;
+            if (results[i].isFinal) {
+                final += transcript + ' ';
+                console.log('✅ FINAL: ', transcript);
+                processFinalTranscript(transcript); // Separate processing logic
+            } else {
+                interim += transcript;
+                console.log('⚪ INTERIM: ', transcript);
             }
         }
-        setInterimTranscript(interim);
 
-        const lastResult = results[results.length - 1];
-        const transcript = lastResult[0].transcript.toLowerCase();
-
-        console.log('🎤 Transcript:', transcript, 'isFinal:', lastResult.isFinal);
-
-        if (lastResult.isFinal) {
-            // Add to final transcripts
-            setFinalTranscripts(prev => [...prev, transcript]);
+        if (interim) setInterimTranscript(interim);
+        if (final) {
+            setFinalTranscripts(prev => [...prev, final.trim()]);
             setInterimTranscript('');
-
-            const spokenWords = transcript.trim().split(/\s+/);
-            console.log('📝 Spoken words:', spokenWords);
-            console.log('🎯 Current word index:', currentWordIndexRef.current);
-
-            setWordStatuses(prev => {
-                const newStatuses = [...prev];
-                let currentIdx = currentWordIndexRef.current;
-                let charCount = 0;
-
-                // Calculate character position up to current word
-                for (let i = 0; i < currentIdx; i++) {
-                    charCount += wordsWithSpaces[i * 2]?.length || 0; // word
-                    charCount += wordsWithSpaces[i * 2 + 1]?.length || 0; // space
-                }
-
-                spokenWords.forEach((spoken: string) => {
-                    if (currentIdx >= originalWords.length) return;
-
-                    const target = originalWords[currentIdx];
-                    const nextTarget = originalWords[currentIdx + 1];
-                    const match = isMatch(spoken, target);
-                    const nextMatch = nextTarget && isMatch(spoken, nextTarget);
-
-                    console.log(`  Word ${currentIdx}: "${spoken}" vs "${target}" = ${match ? '✅' : '❌'}`);
-
-                    if (match) {
-                        newStatuses[currentIdx] = 'correct';
-                        // Update character position
-                        charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
-                        charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
-                        currentIdx++;
-                    } else if (nextMatch) {
-                        console.log(`  Skipping to next: "${spoken}" matches "${nextTarget}"`);
-                        newStatuses[currentIdx] = 'incorrect';
-                        newStatuses[currentIdx + 1] = 'correct';
-                        // Skip current word
-                        charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
-                        charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
-                        // Add next word
-                        charCount += wordsWithSpaces[(currentIdx + 1) * 2]?.length || 0;
-                        charCount += wordsWithSpaces[(currentIdx + 1) * 2 + 1]?.length || 0;
-                        currentIdx += 2;
-                    } else {
-                        // Mark as incorrect if no match
-                        newStatuses[currentIdx] = 'incorrect';
-                        charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
-                        charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
-                        currentIdx++;
-                    }
-                });
-
-                console.log('✨ New statuses:', newStatuses.slice(0, currentIdx));
-                console.log('📍 CharIndex:', charCount, 'WordIndex:', currentIdx);
-
-                currentWordIndexRef.current = currentIdx;
-                setCharIndex(charCount);
-                setWordIndex(currentIdx);
-                checkSentenceFeedback(newStatuses, currentIdx);
-                return newStatuses;
-            });
         }
+    };
+
+    const processFinalTranscript = (transcript: string) => {
+        const spokenWords = transcript.trim().toLowerCase().split(/\s+/);
+        console.log('📝 Processing spoken words:', spokenWords);
+
+        const originalWords = getWordsOnly(selectedText!.content);
+        const wordsWithSpaces = selectedText!.content.split(/(\s+)/);
+
+        setWordStatuses(prev => {
+            const newStatuses = [...prev];
+            let currentIdx = currentWordIndexRef.current;
+            let charCount = 0;
+
+            // Recalculate charCount based on currentIdx to be safe
+            for (let i = 0; i < currentIdx; i++) {
+                charCount += wordsWithSpaces[i * 2]?.length || 0;
+                charCount += wordsWithSpaces[i * 2 + 1]?.length || 0;
+            }
+
+            spokenWords.forEach((spoken: string) => {
+                if (currentIdx >= originalWords.length) return;
+
+                const target = originalWords[currentIdx];
+                const nextTarget = originalWords[currentIdx + 1];
+                const match = isMatch(spoken, target);
+
+                // Allow checking next word if current one was skipped
+                const nextMatch = nextTarget && isMatch(spoken, nextTarget);
+
+                console.log(`  Matching: "${spoken}" vs "${target}" (${match}) or "${nextTarget}" (${nextMatch})`);
+
+                if (match) {
+                    newStatuses[currentIdx] = 'correct';
+                    // Advance char counter for word + space
+                    charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
+                    charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
+                    currentIdx++;
+                } else if (nextMatch) {
+                    // Mark skipped word as incorrect
+                    newStatuses[currentIdx] = 'incorrect';
+                    charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
+                    charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
+
+                    // Mark current (next) word as correct
+                    newStatuses[currentIdx + 1] = 'correct';
+                    charCount += wordsWithSpaces[(currentIdx + 1) * 2]?.length || 0;
+                    charCount += wordsWithSpaces[(currentIdx + 1) * 2 + 1]?.length || 0;
+
+                    currentIdx += 2;
+                } else {
+                    // Just mark as incorrect but don't advance blindly unless we are sure?
+                    // Strategy: Mark as incorrect and move on effectively treating it as a mispronunciation of the current word
+                    newStatuses[currentIdx] = 'incorrect';
+                    charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
+                    charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
+                    currentIdx++;
+                }
+            });
+
+            currentWordIndexRef.current = currentIdx;
+            setCharIndex(charCount);
+            setWordIndex(currentIdx);
+            checkSentenceFeedback(newStatuses, currentIdx);
+            return newStatuses;
+        });
     };
 
     const isMatch = (spoken: string, target: string) => {
@@ -728,23 +740,25 @@ export default function ReadingTeacherTool() {
                                     <div className="bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-700">
                                         <div className="flex items-center gap-2 mb-3">
                                             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                                            <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">Reconocimiento en Vivo</span>
+                                            <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">
+                                                Reconocimiento en Vivo {interimTranscript ? '(Procesando...)' : ''}
+                                            </span>
                                         </div>
-                                        <div className="min-h-[80px] max-h-[120px] overflow-y-auto custom-scrollbar">
-                                            <p className="text-white font-mono text-sm leading-relaxed">
+                                        <div className="min-h-[80px] max-h-[120px] overflow-y-auto custom-scrollbar flex flex-col-reverse">
+                                            <p className="text-white font-mono text-sm leading-relaxed whitespace-pre-wrap">
                                                 {finalTranscripts.map((text, idx) => (
-                                                    <span key={idx} className="text-emerald-300">
-                                                        {text}{' '}
+                                                    <span key={idx} className="text-emerald-300 mr-2">
+                                                        {text}
                                                     </span>
                                                 ))}
-                                                {interimTranscript && (
-                                                    <span className="text-slate-400 italic">
-                                                        {interimTranscript}
-                                                    </span>
-                                                )}
+                                                <span className="text-slate-400 italic bg-white/5 px-1 rounded">
+                                                    {interimTranscript}
+                                                </span>
                                                 {!interimTranscript && finalTranscripts.length === 0 && (
-                                                    <span className="text-slate-500 italic">
-                                                        Esperando que empieces a hablar...
+                                                    <span className="text-slate-500 italic block mt-2 text-center">
+                                                        {audioLevel > 0.05
+                                                            ? "Detectando sonido... procesando voz..."
+                                                            : "Esperando voz... (habla claro y fuerte)"}
                                                     </span>
                                                 )}
                                             </p>
