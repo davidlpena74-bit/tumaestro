@@ -22,15 +22,18 @@ function cn(...inputs: ClassValue[]) {
 
 export default function EuropeRiversGame() {
     const { language, t } = useLanguage();
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
     const {
         gameState, setGameState,
         score, addScore,
         errors, addError,
         timeLeft,
+        elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10 });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
 
     const [targetRiver, setTargetRiver] = useState('');
     const [remainingRivers, setRemainingRivers] = useState<string[]>([]);
@@ -71,7 +74,6 @@ export default function EuropeRiversGame() {
             let coord = EUROPE_CAPITALS_COORDS[id];
 
             // Priority 2: Fallback to path centroid
-            // Priority 2: Fallback to path centroid
             if (!coord) {
                 const centroid = calculatePathCentroid(pathD);
                 if (centroid) coord = centroid;
@@ -79,12 +81,7 @@ export default function EuropeRiversGame() {
 
             // Manual Overrides for cosmetic perfection
             if (id === 'Portugal') {
-                // Move Portugal label slightly west/north from Lisbon if needed, 
-                // but Lisbon coords (294, 498) are pretty good.
-                // Let's force it slightly more centered on land mass if needed.
-                // Lisbon is coastal. Let's keep capital coords as they are generally good anchors.
-                // Actually, let's nudge it slightly Right/Up to be more "centered" in the country shape visually if logic differs.
-                // But capital coords are usually the best anchor for "Name of Country".
+                // Keep visually pleasing
             }
 
             const spanishName = EUROPE_MAPPING[id];
@@ -110,7 +107,8 @@ export default function EuropeRiversGame() {
         return () => document.removeEventListener('fullscreenchange', handleFsChange);
     }, []);
 
-    const startGame = () => {
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
         hookStartGame();
         setAttempts(0);
         setFailedRivers([]);
@@ -165,7 +163,11 @@ export default function EuropeRiversGame() {
 
                 setTimeout(() => nextTurn(newRemaining), 1500);
             } else {
-                setMessage(`¡No! Eso es el ${name} (${newAttempts}/3) ❌`);
+                if (gameMode === 'practice') {
+                    setMessage(language === 'es' ? `¡No! Eso es el ${name} (${newAttempts}/3) ❌` : `No! That is the ${name} (${newAttempts}/3) ❌`);
+                } else {
+                    setMessage(language === 'es' ? `¡Incorrecto! (${newAttempts}/3) ❌` : `Incorrect! (${newAttempts}/3) ❌`);
+                }
             }
         }
     };
@@ -228,6 +230,8 @@ export default function EuropeRiversGame() {
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
+                    elapsedTime={elapsedTime}
+                    gameMode={gameMode}
                     totalTargets={Object.keys(EUROPE_RIVERS_PATHS).length}
                     remainingTargets={remainingRivers.length}
                     targetName={targetRiver}
@@ -260,12 +264,33 @@ export default function EuropeRiversGame() {
                             <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">
                                 Viaja por el continente y encuentra los ríos más importantes. Demuestra tu dominio de la hidrografía continental.
                             </p>
-                            <button
-                                onClick={startGame}
-                                className="group relative px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:-translate-y-1"
-                            >
-                                <span className="relative z-10 flex items-center gap-3">EMPEZAR RETO <Timer className="w-6 h-6 opacity-60" /></span>
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-start">
+                                <button
+                                    onClick={() => startGame('challenge')}
+                                    className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                >
+                                    <span className="relative z-10 flex flex-col items-center gap-1">
+                                        <div className="flex items-center gap-2">
+                                            EMPEZAR RETO
+                                            <Timer className="w-5 h-5 opacity-60" />
+                                        </div>
+                                        <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                                    </span>
+                                </button>
+
+                                <button
+                                    onClick={() => startGame('practice')}
+                                    className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                                >
+                                    <span className="relative z-10 flex flex-col items-center gap-1">
+                                        <div className="flex items-center gap-2">
+                                            PRÁCTICA
+                                            <Globe className="w-5 h-5 opacity-50" />
+                                        </div>
+                                        <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     )}
 

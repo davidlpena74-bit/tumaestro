@@ -35,7 +35,8 @@ export default function CapitalGame({
     initialPan = { x: 0, y: 0 },
     centroids
 }: CapitalGameProps) {
-    const { language, t } = useLanguage();
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -45,7 +46,7 @@ export default function CapitalGame({
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode: 'challenge' });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
 
     // Dynamic Data based on Language
     const nameMapping = useMemo(() => language === 'es' ? PATH_TO_SPANISH_NAME : PATH_TO_ENGLISH_NAME, [language]);
@@ -96,7 +97,8 @@ export default function CapitalGame({
         setCurrentCountryName('');
     }, [paths, targetList, language, nameMapping, capitalsData, setGameState]);
 
-    const startGame = () => {
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
         hookStartGame();
         setAttempts(0);
         setFailedCountries([]);
@@ -154,6 +156,9 @@ export default function CapitalGame({
         } else {
             // Incorrect
             addError();
+            if (gameMode === 'challenge') addScore(-5); // Penalty in challenge
+            // No score penalty in practice, just error count
+
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
@@ -171,11 +176,15 @@ export default function CapitalGame({
                 setRemainingCountries(newRemaining);
                 setTimeout(() => nextTurn(newRemaining), 2000);
             } else {
-                // Show what they clicked
-                const clickedCapital = capitalsData[clickedCountry] || 'Unknown';
-                setMessage(language === 'es'
-                    ? `¡Incorrecto! Esa es ${clickedCapital} (${clickedCountry}). Intento ${newAttempts}/3. ❌`
-                    : `Incorrect! That is ${clickedCapital} (${clickedCountry}). Attempt ${newAttempts}/3. ❌`);
+                // Show what they clicked ONLY in practice mode
+                if (gameMode === 'practice') {
+                    const clickedCapital = capitalsData[clickedCountry] || 'Unknown';
+                    setMessage(language === 'es'
+                        ? `¡Incorrecto! Esa es ${clickedCapital} (${clickedCountry}). Intento ${newAttempts}/3. ❌`
+                        : `Incorrect! That is ${clickedCapital} (${clickedCountry}). Attempt ${newAttempts}/3. ❌`);
+                } else {
+                    setMessage(language === 'es' ? `¡Incorrecto! Intento ${newAttempts}/3. ❌` : `Incorrect! Attempt ${newAttempts}/3. ❌`);
+                }
             }
         }
     };
@@ -262,6 +271,8 @@ export default function CapitalGame({
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
+                    elapsedTime={elapsedTime}
+                    gameMode={gameMode}
                     totalTargets={totalTargets}
                     remainingTargets={remainingCountries.length}
                     targetName={targetCapital}
@@ -293,12 +304,33 @@ export default function CapitalGame({
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                                 {language === 'es' ? 'Busca la capital mostrada en el mapa.' : 'Find the capital shown on the map.'}
                             </p>
-                            <button
-                                onClick={startGame}
-                                className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
-                            >
-                                <span className="relative z-10 flex items-center gap-2">{t.common.start.toUpperCase()} <Globe className="w-5 h-5 opacity-50" /></span>
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                                <button
+                                    onClick={() => startGame('challenge')}
+                                    className="group relative px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                >
+                                    <span className="relative z-10 flex flex-col items-center gap-1">
+                                        <div className="flex items-center gap-2">
+                                            {t.common.start.toUpperCase()}
+                                            <Trophy className="w-5 h-5 opacity-50" />
+                                        </div>
+                                        <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                                    </span>
+                                </button>
+
+                                <button
+                                    onClick={() => startGame('practice')}
+                                    className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                                >
+                                    <span className="relative z-10 flex flex-col items-center gap-1">
+                                        <div className="flex items-center gap-2">
+                                            PRÁCTICA
+                                            <Globe className="w-5 h-5 opacity-50" />
+                                        </div>
+                                        <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     )}
 

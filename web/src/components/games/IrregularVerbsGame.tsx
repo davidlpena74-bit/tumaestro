@@ -19,24 +19,52 @@ export default function IrregularVerbsGame() {
     const [showResult, setShowResult] = useState<'correct' | 'incorrect' | null>(null);
     const [gameOver, setGameOver] = useState(false);
     const [streak, setStreak] = useState(0);
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+    const INITIAL_TIME = 120;
+    const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [gameStarted, setGameStarted] = useState(false);
 
     useEffect(() => {
-        startNewGame();
-    }, []);
+        let interval: NodeJS.Timeout;
+        if (gameStarted && !gameOver) {
+            interval = setInterval(() => {
+                setElapsedTime(prev => prev + 1);
+                if (gameMode === 'challenge') {
+                    setTimeLeft(prev => {
+                        if (prev <= 1) {
+                            clearInterval(interval);
+                            setGameOver(true);
+                            return 0;
+                        }
+                        return prev - 1;
+                    });
+                }
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [gameStarted, gameOver, gameMode]);
 
-    const startNewGame = () => {
+    const startNewGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
         const shuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
-        setVerbs(shuffled.slice(0, 10)); // Play 10 random verbs
+        // In challenge mode we want an endless stream, but for simplicity we can just verify checks against the full list or a very large slice.
+        // Actually, let's just use the full shuffled list.
+        setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 10));
         setCurrentIndex(0);
         setScore(0);
         setStreak(0);
         setGameOver(false);
         setGameStarted(true);
+        setTimeLeft(INITIAL_TIME);
+        setElapsedTime(0);
         setInputs({ pastSimple: '', pastParticiple: '' });
         setShowResult(null);
     };
 
-    const [gameStarted, setGameStarted] = useState(false);
+    useEffect(() => {
+        startNewGame();
+    }, []);
 
     const currentVerb = verbs[currentIndex];
 
@@ -118,12 +146,26 @@ export default function IrregularVerbsGame() {
     };
 
     const nextVerb = () => {
-        if (currentIndex < verbs.length - 1) {
-            setCurrentIndex(prev => prev + 1);
+        if (gameMode === 'challenge') {
+            // In challenge mode, if we reach the end of the list, reshuffle and continue
+            if (currentIndex >= verbs.length - 1) {
+                const reshuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
+                setVerbs(reshuffled);
+                setCurrentIndex(0);
+            } else {
+                setCurrentIndex(prev => prev + 1);
+            }
             setInputs({ pastSimple: '', pastParticiple: '' });
             setShowResult(null);
         } else {
-            setGameOver(true);
+            // Practice mode: End after the set (10 verbs)
+            if (currentIndex < verbs.length - 1) {
+                setCurrentIndex(prev => prev + 1);
+                setInputs({ pastSimple: '', pastParticiple: '' });
+                setShowResult(null);
+            } else {
+                setGameOver(true);
+            }
         }
     };
 
@@ -135,9 +177,15 @@ export default function IrregularVerbsGame() {
                 {/* WON OVERLAY - Unified with Map style */}
                 <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl animate-in fade-in duration-500">
                     <div className="bg-rose-500/10 p-4 rounded-full mb-6 ring-1 ring-rose-500/30">
-                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                        {gameMode === 'challenge' && timeLeft === 0 ? (
+                            <Trophy className="w-16 h-16 text-red-400 animate-pulse" />
+                        ) : (
+                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                        )}
                     </div>
-                    <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                    <h2 className="text-4xl font-bold text-white mb-2">
+                        {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Reto Completado!'}
+                    </h2>
 
                     <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
                         <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
@@ -147,7 +195,7 @@ export default function IrregularVerbsGame() {
                     </div>
 
                     <button
-                        onClick={startNewGame}
+                        onClick={() => setGameStarted(false)}
                         className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
                     >
                         <RefreshCw className="w-5 h-5" /> Jugar de nuevo
@@ -182,6 +230,19 @@ export default function IrregularVerbsGame() {
                         <span className="text-orange-400 font-black text-xl leading-none">x{streak}</span>
                         <span className="text-orange-400/60 text-[10px] uppercase font-bold tracking-widest">Racha</span>
                     </div>
+
+                    {/* Timer Display */}
+                    <div className={`p-3 rounded-xl ${gameMode === 'challenge' && timeLeft < 10 ? 'bg-red-500/20 animate-pulse' : 'bg-rose-500/20'}`}>
+                        <div className="flex items-center gap-2 text-white font-mono font-bold text-xl">
+                            <Timer className={`w-5 h-5 ${gameMode === 'challenge' && timeLeft < 10 ? 'text-red-400' : 'text-rose-400'}`} />
+                            <span>
+                                {gameMode === 'challenge'
+                                    ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`
+                                    : `${Math.floor(elapsedTime / 60)}:${(elapsedTime % 60).toString().padStart(2, '0')}`
+                                }
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -196,14 +257,33 @@ export default function IrregularVerbsGame() {
                         <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                             Domina el inglés practicando los verbos más importantes. ¿Te los sabes todos?
                         </p>
-                        <button
-                            onClick={startNewGame}
-                            className="group relative px-10 py-5 bg-rose-500 hover:bg-rose-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(244,63,94,0.5)] hover:shadow-[0_0_60px_-10px_rgba(244,63,94,0.6)] hover:-translate-y-1"
-                        >
-                            <span className="relative z-10 flex items-center gap-3">
-                                EMPEZAR RETO <ArrowRight className="w-6 h-6 opacity-50" />
-                            </span>
-                        </button>
+                        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                            <button
+                                onClick={() => startNewGame('challenge')}
+                                className="group relative px-8 py-4 bg-rose-500 hover:bg-rose-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(244,63,94,0.5)] hover:shadow-[0_0_60px_-10px_rgba(244,63,94,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                            >
+                                <span className="relative z-10 flex flex-col items-center gap-1">
+                                    <div className="flex items-center gap-2">
+                                        EMPEZAR RETO
+                                        <Trophy className="w-5 h-5 opacity-50" />
+                                    </div>
+                                    <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                                </span>
+                            </button>
+
+                            <button
+                                onClick={() => startNewGame('practice')}
+                                className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                            >
+                                <span className="relative z-10 flex flex-col items-center gap-1">
+                                    <div className="flex items-center gap-2">
+                                        PRÁCTICA
+                                        <RefreshCw className="w-5 h-5 opacity-50" />
+                                    </div>
+                                    <span className="text-xs opacity-50 font-bold tracking-wider">10 VERBOS</span>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 )}
                 <motion.div

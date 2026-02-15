@@ -20,8 +20,8 @@ export default function CapitalesEuropaClient() {
                 paths={EUROPE_PATHS}
                 centroids={EUROPE_CAPITALS_COORDS}
                 title={t.gamesPage.gameTitles.europeCapitalsMap}
-                initialPan={{ x: -80, y: -170 }}
-                initialZoom={1.8}
+                initialPan={{ x: -80, y: -230 }}
+                initialZoom={1.62}
             />
         </PhysicalGameLayout>
     );

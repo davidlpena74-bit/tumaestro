@@ -2,24 +2,37 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hash, CheckCircle, RefreshCw, Trophy, Timer, MousePointer2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
+import GameHUD from './GameHUD';
+import { useGameLogic } from '@/hooks/useGameLogic';
+import { Hash, CheckCircle, RefreshCw, Trophy, Timer, MousePointer2 } from 'lucide-react';
 
 type GameState = 'start' | 'playing' | 'feedback' | 'finished';
 
 export default function MultiplicationGame() {
     const { t } = useLanguage();
-    const [gameState, setGameState] = useState<GameState>('start');
+    const [level, setLevel] = useState(1);
     const [numA, setNumA] = useState(2);
     const [numB, setNumB] = useState(3);
     const [userAnswer, setUserAnswer] = useState('');
-    const [points, setPoints] = useState(0);
-    const [level, setLevel] = useState(1);
     const [streak, setStreak] = useState(0);
     const [activeIntersections, setActiveIntersections] = useState<Set<string>>(new Set());
 
-    const generateProblem = (targetState: GameState = 'playing') => {
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        elapsedTime,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+
+    const generateProblem = (targetState: 'playing' | 'feedback' | 'start' = 'playing') => {
         let max = 4;
         if (level > 2) max = 6;
         if (level > 5) max = 9;
@@ -31,17 +44,25 @@ export default function MultiplicationGame() {
         setNumB(b);
         setUserAnswer('');
         setActiveIntersections(new Set());
-        setGameState(targetState);
+        if (targetState !== 'start') setGameState(targetState);
     };
 
-    const startGame = () => {
+    useEffect(() => {
+        generateProblem('start');
+    }, []);
+
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
+        hookStartGame();
+        setStreak(0);
+        setLevel(1);
         generateProblem('playing');
     };
 
     const checkAnswer = () => {
         if (parseInt(userAnswer) === numA * numB) {
             setGameState('feedback');
-            setPoints(p => p + 10 + (streak * 2));
+            addScore(10 + (streak * 2));
             setStreak(s => s + 1);
             confetti({
                 particleCount: 150,
@@ -55,6 +76,7 @@ export default function MultiplicationGame() {
             }, 4000);
         } else {
             setStreak(0);
+            addError();
             const btn = document.getElementById('submit-btn');
             btn?.classList.add('animate-shake');
             setTimeout(() => btn?.classList.remove('animate-shake'), 500);
@@ -101,40 +123,54 @@ export default function MultiplicationGame() {
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                         {t.gamesPage.multiplicationGame.description}
                     </p>
-                    <button
-                        onClick={startGame}
-                        className="group relative px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] hover:shadow-[0_0_60px_-10px_rgba(37,99,235,0.6)] hover:-translate-y-1"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">{t.gamesPage.multiplicationGame.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                        <button
+                            onClick={() => startGame('challenge')}
+                            className="group relative px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] hover:shadow-[0_0_60px_-10px_rgba(37,99,235,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    {t.gamesPage.multiplicationGame.startBtn}
+                                    <Trophy className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                            </span>
+                        </button>
+
+                        <button
+                            onClick={() => startGame('practice')}
+                            className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    PRÁCTICA
+                                    <RefreshCw className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                            </span>
+                        </button>
+                    </div>
                 </div>
             )}
 
-            {/* HUD */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl gap-4">
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="p-3 rounded-xl bg-blue-500/20">
-                        <Trophy className="text-blue-400 w-8 h-8" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-black text-white leading-none">
-                            {points} <span className="text-sm font-normal text-blue-300">pts</span>
-                        </h2>
-                        <div className="flex gap-3 text-xs font-bold mt-1 text-blue-300 uppercase tracking-wider">
-                            <span>{t.gamesPage.divisionGame.level} {level}</span>
-                            <span>•</span>
-                            <span>{t.gamesPage.gameTypes.math}</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="flex items-center gap-6 w-full md:w-auto justify-end">
-                    <div className="flex flex-col items-end">
-                        <span className="text-blue-400 font-black text-xl leading-none">x{streak}</span>
-                        <span className="text-blue-400/60 text-[10px] uppercase font-bold tracking-widest">{t.gamesPage.divisionGame.streak}</span>
-                    </div>
-                </div>
-            </div>
+
+            {/* HUD */}
+            <GameHUD
+                title={t.gamesPage.multiplicationGame.title}
+                score={score}
+                errors={errors}
+                timeLeft={timeLeft}
+                elapsedTime={elapsedTime}
+                gameMode={gameMode}
+                totalTargets={10}
+                remainingTargets={10 - (level % 10)}
+                targetName=""
+                onReset={() => setGameState('start')}
+                colorTheme="blue"
+                message={message}
+                icon={<Hash className="w-8 h-8 text-blue-400" />}
+            />
 
             {/* Game Grid */}
             <div className="grid lg:grid-cols-2 gap-8 items-start">

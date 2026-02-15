@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export type GameState = 'start' | 'playing' | 'won' | 'finished';
+export type GameState = 'start' | 'playing' | 'won' | 'finished' | 'feedback';
 
 interface UseGameLogicProps {
     initialTime?: number; // Default 120s

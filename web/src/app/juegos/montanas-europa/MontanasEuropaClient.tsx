@@ -23,8 +23,8 @@ export default function MontanasEuropaClient() {
                 itemType="line"
                 backgroundPaths={EUROPE_PATHS}
                 viewBox="0 0 800 600"
-                initialZoom={1.8}
-                initialPan={{ x: -160, y: -170 }}
+                initialZoom={1.62}
+                initialPan={{ x: -160, y: -230 }}
                 colorTheme="emerald"
             />
         </PhysicalGameLayout>

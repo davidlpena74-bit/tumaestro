@@ -49,15 +49,18 @@ export default function PhysicalMapGame({
     colorTheme = "teal"
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
     const {
         gameState, setGameState,
         score, addScore,
         errors, addError,
         timeLeft,
+        elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10 });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
 
     const [targetItem, setTargetItem] = useState('');
     const [remainingItems, setRemainingItems] = useState<string[]>([]);
@@ -93,7 +96,8 @@ export default function PhysicalMapGame({
         }
     };
 
-    const startGame = () => {
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
         hookStartGame();
         setAttempts(0);
         setFailedItems([]);
@@ -130,6 +134,11 @@ export default function PhysicalMapGame({
             nextTurn(newRemaining);
         } else {
             addError();
+            // Penalty adjustment is handled inside addError hook based on mode
+            if (gameMode === 'practice') {
+                // In practice we might want less visual penalty or different message but useGameLogic handles score deduction
+            }
+
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
@@ -141,7 +150,11 @@ export default function PhysicalMapGame({
                 setRemainingItems(newRemaining);
                 setTimeout(() => nextTurn(newRemaining), 1500);
             } else {
-                setMessage(`${t.common.incorrect} (${newAttempts}/3) ❌`);
+                if (gameMode === 'practice') {
+                    setMessage(language === 'es' ? `¡Incorrecto! Esa es ${name}. Intento ${newAttempts}/3. ❌` : `Incorrect! That is ${name}. Attempt ${newAttempts}/3. ❌`);
+                } else {
+                    setMessage(`${language === 'es' ? 'Incorrecto' : 'Incorrect'} (${newAttempts}/3) ❌`);
+                }
             }
         }
     };
@@ -193,6 +206,8 @@ export default function PhysicalMapGame({
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
+                    elapsedTime={elapsedTime}
+                    gameMode={gameMode}
                     totalTargets={Object.keys(items).length}
                     remainingTargets={remainingItems.length}
                     targetName={targetItem}
@@ -215,16 +230,33 @@ export default function PhysicalMapGame({
                                 <Globe className="w-16 h-16 text-teal-400 mb-6" />
                                 <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase leading-tight max-w-2xl">{title}</h2>
                                 <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">{description}</p>
-                                <button onClick={startGame} className="group relative px-10 py-5 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:-translate-y-1">
-                                    <span className="relative z-10 flex items-center gap-3">EMPEZAR RETO <Timer className="w-6 h-6 opacity-60" /></span>
-                                </button>
+                                <div className="flex gap-4">
+                                    <button onClick={() => startGame('challenge')} className="group relative px-6 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:-translate-y-1">
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            MODO RETO <Timer className="w-5 h-5 opacity-50" />
+                                        </span>
+                                    </button>
+                                    <button onClick={() => startGame('practice')} className="group relative px-6 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1">
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            MODO PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
+                                        </span>
+                                    </button>
+                                </div>
                             </motion.div>
                         )}
 
                         {gameState === 'finished' && (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                                <Trophy className="w-16 h-16 text-yellow-400 mb-6 animate-bounce" />
-                                <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
+                                <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
+                                    {gameMode === 'challenge' && timeLeft === 0 ? (
+                                        <Trophy className="w-16 h-16 text-red-500 animate-pulse" />
+                                    ) : (
+                                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                    )}
+                                </div>
+                                <h2 className="text-4xl font-bold text-white mb-2">
+                                    {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
+                                </h2>
                                 <div className="bg-transparent border border-white/20 p-8 rounded-3xl text-center shadow-2xl mb-8">
                                     <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Puntuación Final</span>
                                     <span className="block text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">{score}</span>

@@ -26,7 +26,7 @@ interface GameHUDProps {
     gameType?: string;
 
     // Customization
-    colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow';
+    colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow' | 'cyan';
     icon?: React.ReactNode;
     gameMode?: 'challenge' | 'practice';
     elapsedTime?: number;
@@ -39,6 +39,7 @@ const THEMES = {
     orange: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-400', sub: 'text-orange-300' },
     teal: { bg: 'bg-teal-500/20', text: 'text-teal-400', border: 'border-teal-400', sub: 'text-teal-300' },
     yellow: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-400', sub: 'text-yellow-300' },
+    cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', border: 'border-cyan-400', sub: 'text-cyan-300' },
 };
 
 export default function GameHUD({
@@ -158,12 +159,12 @@ export default function GameHUD({
                             exit={{ opacity: 0 }}
                             className={cn(
                                 "px-6 py-2 rounded-full border shadow-xl backdrop-blur-md font-bold text-lg flex items-center gap-2",
-                                message.includes('Correcto') || message.includes('Success')
+                                ((message.includes(t.common.correct) || message.includes('🎉') || message.includes('✅') || message.includes('Success')) && !message.includes('❌') && !message.toLowerCase().includes('incorrect'))
                                     ? "bg-green-500/90 border-green-400 text-white"
                                     : "bg-red-500/90 border-red-400 text-white"
                             )}
                         >
-                            {message.includes('Correcto') || message.includes('Success') ? <CheckCircle className="w-5 h-5" weight="fill" /> : <XCircle className="w-5 h-5" weight="fill" />}
+                            {((message.includes(t.common.correct) || message.includes('🎉') || message.includes('✅') || message.includes('Success')) && !message.includes('❌') && !message.toLowerCase().includes('incorrect')) ? <CheckCircle className="w-5 h-5" weight="fill" /> : <XCircle className="w-5 h-5" weight="fill" />}
                             {message}
                         </motion.div>
                     </div>

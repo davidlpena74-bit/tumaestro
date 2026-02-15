@@ -23,8 +23,8 @@ export default function MaresEuropaClient() {
                 itemType="polygon"
                 backgroundPaths={EUROPE_PATHS}
                 viewBox="0 0 800 600"
-                initialZoom={1.5}
-                initialPan={{ x: -100, y: -100 }}
+                initialZoom={1.35}
+                initialPan={{ x: -100, y: -160 }}
                 colorTheme="emerald"
             />
         </PhysicalGameLayout>

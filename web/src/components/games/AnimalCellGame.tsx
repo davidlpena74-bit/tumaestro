@@ -12,6 +12,7 @@ import {
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
+import { useGameLogic } from '@/hooks/useGameLogic';
 
 type CellPart = {
     id: string;
@@ -38,8 +39,6 @@ const CELL_PARTS: CellPart[] = [
 
 export default function AnimalCellGame() {
     const { t, language } = useLanguage();
-    const [gameStarted, setGameStarted] = useState(false);
-    const [gameOver, setGameOver] = useState(false);
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
     const [dragState, setDragState] = useState<{
         active: boolean;
@@ -58,8 +57,6 @@ export default function AnimalCellGame() {
         currX: 0,
         currY: 0
     });
-    const [time, setTime] = useState(0);
-    const [errors, setErrors] = useState(0);
     const diagramRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
@@ -92,20 +89,23 @@ export default function AnimalCellGame() {
         });
     }, [matches, t, language]);
 
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (gameStarted && !gameOver) {
-            interval = setInterval(() => setTime(prev => prev + 1), 1000);
-        }
-        return () => clearInterval(interval);
-    }, [gameStarted, gameOver]);
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
-    const startGame = () => {
-        setGameStarted(true);
-        setGameOver(false);
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        elapsedTime,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
+        hookStartGame();
         setMatches({});
-        setErrors(0);
-        setTime(0);
         setDragState({
             active: false,
             startId: null,
@@ -118,7 +118,7 @@ export default function AnimalCellGame() {
     };
 
     const finishGame = () => {
-        setGameOver(true);
+        setGameState('finished');
         confetti({
             particleCount: 150,
             spread: 70,
@@ -148,7 +148,7 @@ export default function AnimalCellGame() {
     };
 
     const handleDragStart = (e: React.MouseEvent | React.TouchEvent, id: string, type: 'label' | 'point', x: number, y: number) => {
-        if (!gameStarted || gameOver) return;
+        if (gameState !== 'playing') return;
         if (type === 'label' && matches[id]) return;
         if (type === 'point' && Object.values(matches).includes(id)) return;
 
@@ -188,11 +188,13 @@ export default function AnimalCellGame() {
                     origin: { y: 0.6 },
                     colors: ['#34d399', '#ffffff']
                 });
+                addScore(100);
                 if (Object.keys(newMatches).length === CELL_PARTS.length) {
                     finishGame();
                 }
             } else {
-                setErrors(prev => prev + 1);
+                addError();
+                addScore(gameMode === 'challenge' ? -20 : -5);
             }
         }
 
@@ -203,15 +205,17 @@ export default function AnimalCellGame() {
         <div className="w-full px-4 md:px-8 pb-4 md:pb-8 pt-0 select-none">
             <GameHUD
                 title={t.gamesPage.gameTitles.animalCell}
-                score={Object.keys(matches).length * 100}
+                score={score}
                 errors={errors}
-                timeLeft={time}
+                timeLeft={timeLeft}
+                elapsedTime={elapsedTime}
+                gameMode={gameMode}
                 totalTargets={CELL_PARTS.length}
                 remainingTargets={CELL_PARTS.length - Object.keys(matches).length}
                 targetName=""
-                onReset={startGame}
+                onReset={() => setGameState('start')}
                 colorTheme="blue"
-                message={gameOver ? t.common.victoryMessage : undefined}
+                message={message}
                 icon={<Dna className="w-8 h-8 text-blue-400" weight="duotone" />}
             />
 
@@ -220,7 +224,7 @@ export default function AnimalCellGame() {
                     ref={diagramRef}
                     className="w-full bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none shadow-2xl"
                 >
-                    {!gameStarted && !gameOver && (
+                    {gameState === 'start' && (
                         <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
                             <div className="bg-blue-500/10 p-6 rounded-full mb-6 ring-1 ring-blue-500/30">
                                 <HandGrabbing className="w-16 h-16 text-blue-400" />
@@ -229,14 +233,33 @@ export default function AnimalCellGame() {
                             <p className="text-gray-300 mb-8 max-w-xl text-lg leading-relaxed font-medium">
                                 Aprende las partes fundamentales de la célula animal. Arrastra cada etiqueta para conectarla con su ubicación correspondiente. Si te equivocas, la línea no se fijará.
                             </p>
-                            <button
-                                onClick={startGame}
-                                className="group relative px-10 py-5 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-xl rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.6)] hover:-translate-y-1"
-                            >
-                                <span className="relative z-10 flex items-center gap-3">
-                                    EMPEZAR RETO <ArrowCounterClockwise className="w-6 h-6 opacity-50" />
-                                </span>
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                                <button
+                                    onClick={() => startGame('challenge')}
+                                    className="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                >
+                                    <span className="relative z-10 flex flex-col items-center gap-1">
+                                        <div className="flex items-center gap-2">
+                                            EMPEZAR RETO
+                                            <Trophy className="w-5 h-5 opacity-50" />
+                                        </div>
+                                        <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                                    </span>
+                                </button>
+
+                                <button
+                                    onClick={() => startGame('practice')}
+                                    className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                                >
+                                    <span className="relative z-10 flex flex-col items-center gap-1">
+                                        <div className="flex items-center gap-2">
+                                            PRÁCTICA
+                                            <ArrowCounterClockwise className="w-5 h-5 opacity-50" />
+                                        </div>
+                                        <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -248,14 +271,22 @@ export default function AnimalCellGame() {
                                 className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]"
                             >
                                 <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
-                                    <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                    {gameMode === 'challenge' && timeLeft === 0 ? (
+                                        <Trophy className="w-16 h-16 text-red-400 animate-pulse" /> // Actually should be Skull or X, but I'll stick to Trophy logic or maybe import skull.
+                                        // Wait, I didn't import Skull in this file. I'll just use Trophy color change for now or add import.
+                                        // Let's use Trophy since I see Trophy imported.
+                                    ) : (
+                                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                    )}
                                 </div>
-                                <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                                <h2 className="text-4xl font-bold text-white mb-2">
+                                    {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Reto Completado!'}
+                                </h2>
 
                                 <div className="flex gap-12 mb-8 mt-4">
                                     <div className="flex flex-col items-center gap-1">
                                         <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Tiempo</span>
-                                        <span className="text-4xl font-black text-white">{time}s</span>
+                                        <span className="text-4xl font-black text-white">{elapsedTime}s</span>
                                     </div>
                                     <div className="flex flex-col items-center gap-1">
                                         <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Errores</span>
@@ -264,7 +295,7 @@ export default function AnimalCellGame() {
                                 </div>
 
                                 <button
-                                    onClick={startGame}
+                                    onClick={() => setGameState('start')}
                                     className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
                                 >
                                     <ArrowCounterClockwise className="w-5 h-5" /> Jugar de nuevo

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, RefreshCw, Timer, MapPin } from 'lucide-react';
+import { Globe, RefreshCw, Timer, MapPin, Trophy } from 'lucide-react';
 import { EUROPE_LIST, EUROPE_CAPITALS, EUROPE_LIST_EN, EUROPE_CAPITALS_EN } from './data/capitals-data';
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
@@ -24,15 +24,18 @@ export default function EuropeCapitalsGame() {
     // Let's stick to standard behavior: Count DOWN from a generous time? Or stick to UP?
     // User requested "MARCADOR", which usually implies the same look (Timer counting down).
     // Let's give it 5 minutes (300s).
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
     const {
         gameState, setGameState,
         score, addScore,
         errors, addError,
         timeLeft,
+        elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 300, penaltyTime: 0 }); // No time penalty for drag errors, just error count? Or maybe -10s?
+    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode });
 
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
@@ -80,7 +83,8 @@ export default function EuropeCapitalsGame() {
         setCapitals(sortedCapitals);
     };
 
-    const startGame = () => {
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
         hookStartGame();
         setMatches({});
         setupGameData();
@@ -90,7 +94,7 @@ export default function EuropeCapitalsGame() {
         hookResetGame();
         setMatches({});
         setupGameData();
-        startGame(); // Immediate restart
+        // Removed immediate startGame() to allow mode selection
     };
 
     // Standard HTML5 Drag Start
@@ -144,7 +148,7 @@ export default function EuropeCapitalsGame() {
         } else {
             // Error
             addError();
-            addScore(-20);
+            if (gameMode === 'challenge') addScore(-20);
             const msg = language === 'es' ? '¡Incorrecto!' : 'Incorrect!';
             setMessage(msg);
             speak(msg, language === 'es' ? 'es-ES' : 'en-US');
@@ -208,6 +212,8 @@ export default function EuropeCapitalsGame() {
                 score={score}
                 errors={errors}
                 timeLeft={timeLeft}
+                elapsedTime={elapsedTime}
+                gameMode={gameMode}
                 totalTargets={countries.length}
                 remainingTargets={countries.length - Object.keys(matches).length}
                 // HIDE TARGET BOX by passing undefined or handle inside component
@@ -233,12 +239,33 @@ export default function EuropeCapitalsGame() {
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                         {content.desc}
                     </p>
-                    <button
-                        onClick={startGame}
-                        className="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(168,85,247,0.5)] hover:shadow-[0_0_60px_-10px_rgba(168,85,247,0.6)] hover:-translate-y-1"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">{content.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                        <button
+                            onClick={() => startGame('challenge')}
+                            className="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(168,85,247,0.5)] hover:shadow-[0_0_60px_-10px_rgba(168,85,247,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    {content.startBtn}
+                                    <Timer className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                            </span>
+                        </button>
+
+                        <button
+                            onClick={() => startGame('practice')}
+                            className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    PRÁCTICA
+                                    <Globe className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                            </span>
+                        </button>
+                    </div>
                 </div>
             )}
 

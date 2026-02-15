@@ -22,8 +22,8 @@ export default function CapitalesUeClient() {
                 centroids={EUROPE_CAPITALS_COORDS}
                 targetList={language === 'es' ? EU_MEMBERS_LIST : EU_MEMBERS_LIST_EN}
                 title={t.gamesPage.gameTitles.euCapitalsMap}
-                initialPan={{ x: 0, y: -180 }}
-                initialZoom={1.75}
+                initialPan={{ x: 0, y: -240 }}
+                initialZoom={1.58}
             />
         </PhysicalGameLayout>
     );

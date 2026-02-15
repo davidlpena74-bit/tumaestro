@@ -53,15 +53,18 @@ export default function MapGameTemplate({
     svgTransform
 }: MapGameTemplateProps) {
     const { language, t } = useLanguage();
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
     const {
         gameState, setGameState,
         score, addScore,
         errors, addError,
         timeLeft,
+        elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame
-    } = useGameLogic({ initialTime, penaltyTime: 5 });
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode });
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
@@ -92,7 +95,8 @@ export default function MapGameTemplate({
         }
     };
 
-    const startGame = () => {
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
         hookStartGame();
         setClickedId(null);
         setSolvedIds([]);
@@ -128,8 +132,13 @@ export default function MapGameTemplate({
             setTimeout(() => pickNewTarget(newSolved), 600);
         } else {
             addError();
-            addScore(-20);
-            setMessage(language === 'es' ? '¡Esa no es! Intenta de nuevo.' : 'Not that one! Try again.');
+            addScore(gameMode === 'challenge' ? -20 : -5);
+            if (gameMode === 'practice') {
+                const clickedName = nameMapping[id] || id;
+                setMessage(language === 'es' ? `¡Incorrecto! Esa es ${clickedName}. ❌` : `Incorrect! That is ${clickedName}. ❌`);
+            } else {
+                setMessage(language === 'es' ? '¡Esa no es! Intenta de nuevo.' : 'Not that one! Try again.');
+            }
         }
     };
 
@@ -172,6 +181,8 @@ export default function MapGameTemplate({
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
+                    elapsedTime={elapsedTime}
+                    gameMode={gameMode}
                     totalTargets={Object.keys(nameMapping).length}
                     remainingTargets={Object.keys(nameMapping).length - solvedIds.length}
                     targetName={targetId ? (nameMapping[targetId] || targetId) : '...'}
@@ -199,18 +210,29 @@ export default function MapGameTemplate({
                                 </div>
                                 <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
                                 <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">{description}</p>
-                                <button onClick={startGame} className={cn("group relative px-8 py-4 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1", colorTheme === 'teal' ? "bg-teal-500 hover:bg-teal-400 text-slate-900 shadow-teal-500/20" : "bg-emerald-500 hover:bg-emerald-400 text-slate-900 shadow-emerald-500/20")}>
-                                    <span className="relative z-10 flex items-center gap-2">{t.common.start.toUpperCase()} <Timer className="w-5 h-5 opacity-50" /></span>
-                                </button>
+                                <div className="flex gap-4 items-center justify-center w-full">
+                                    <button onClick={() => startGame('challenge')} className={cn("group relative px-6 py-4 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1", colorTheme === 'teal' ? "bg-teal-500 hover:bg-teal-400 text-slate-900 shadow-teal-500/20" : "bg-emerald-500 hover:bg-emerald-400 text-slate-900 shadow-emerald-500/20")}>
+                                        <span className="relative z-10 flex items-center gap-2">MODO RETO <Timer className="w-5 h-5 opacity-50" /></span>
+                                    </button>
+                                    <button onClick={() => startGame('practice')} className={cn("group relative px-6 py-4 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1 border", colorTheme === 'teal' ? "bg-slate-700 hover:bg-slate-600 text-white border-teal-500/30" : "bg-slate-700 hover:bg-slate-600 text-white border-emerald-500/30")}>
+                                        <span className="relative z-10 flex items-center gap-2">MODO PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" /></span>
+                                    </button>
+                                </div>
                             </motion.div>
                         )}
 
                         {gameState === 'finished' && (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
                                 <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
-                                    <RefreshCw className="w-16 h-16 text-yellow-400 animate-spin-slow" />
+                                    {gameMode === 'challenge' && timeLeft === 0 ? (
+                                        <Timer className="w-16 h-16 text-red-500 animate-pulse" />
+                                    ) : (
+                                        <RefreshCw className="w-16 h-16 text-yellow-400 animate-spin-slow" />
+                                    )}
                                 </div>
-                                <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
+                                <h2 className="text-4xl font-bold text-white mb-2">
+                                    {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
+                                </h2>
                                 <div className="flex flex-col items-center gap-1 mb-8">
                                     <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
                                     <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">{score}</span>

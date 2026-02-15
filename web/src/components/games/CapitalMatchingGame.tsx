@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, RefreshCw, Timer, MapPin, Trophy } from 'lucide-react';
+import { Check, X, RefreshCw, Timer, MapPin, Trophy, Globe } from 'lucide-react';
 import { EU_MEMBERS_LIST, EUROPE_CAPITALS, EU_MEMBERS_LIST_EN, EUROPE_CAPITALS_EN, PATH_TO_SPANISH_NAME, PATH_TO_ENGLISH_NAME } from './data/capitals-data';
 import { EU_PATHS } from './data/eu-paths';
 import { EU_CAPITALS_COORDS } from './data/eu-capitals-coords';
@@ -61,9 +61,13 @@ export default function CapitalMatchingGame() {
 
 
     // Stats
+    // Stats
     const [errors, setErrors] = useState(0);
     const [startTime, setStartTime] = useState<number | null>(null);
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+    const INITIAL_TIME = 180; // 3 minutes for EU Capitals
+    const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
 
     // Custom Drag State
     const [draggedItem, setDraggedItem] = useState<MatchItem | null>(null);
@@ -80,11 +84,25 @@ export default function CapitalMatchingGame() {
         let interval: NodeJS.Timeout;
         if (gameState === 'playing' && startTime) {
             interval = setInterval(() => {
-                setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+                const now = Date.now();
+                const secondsPassed = Math.floor((now - startTime) / 1000);
+
+                setElapsedTime(secondsPassed);
+
+                if (gameMode === 'challenge') {
+                    const remaining = INITIAL_TIME - secondsPassed;
+                    if (remaining <= 0) {
+                        setTimeLeft(0);
+                        setGameState('won'); // Using 'won' state for finished to reuse UI, but with Time's Up message
+                        clearInterval(interval);
+                    } else {
+                        setTimeLeft(remaining);
+                    }
+                }
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [gameState, startTime]);
+    }, [gameState, startTime, gameMode]);
 
     // Global drag listener to update cursor position
     useEffect(() => {
@@ -160,7 +178,10 @@ export default function CapitalMatchingGame() {
         setGameState(autoStart ? 'playing' : 'start');
     };
 
-    const startGame = () => {
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
+        setTimeLeft(INITIAL_TIME);
+        setElapsedTime(0);
         setStartTime(Date.now());
         setGameState('playing');
     };
@@ -251,12 +272,33 @@ export default function CapitalMatchingGame() {
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                         {content.desc}
                     </p>
-                    <button
-                        onClick={startGame}
-                        className="group relative px-8 py-4 bg-indigo-500 hover:bg-indigo-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] hover:shadow-[0_0_60px_-10px_rgba(99,102,241,0.6)] hover:-translate-y-1"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">{content.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                        <button
+                            onClick={() => startGame('challenge')}
+                            className="group relative px-8 py-4 bg-indigo-500 hover:bg-indigo-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] hover:shadow-[0_0_60px_-10px_rgba(99,102,241,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    {content.startBtn}
+                                    <Timer className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                            </span>
+                        </button>
+
+                        <button
+                            onClick={() => startGame('practice')}
+                            className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    PRÁCTICA
+                                    <Globe className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                            </span>
+                        </button>
+                    </div>
                 </div>
             )}
 
@@ -283,7 +325,10 @@ export default function CapitalMatchingGame() {
                         <div className="flex flex-col items-center gap-1">
                             <div className="flex items-center gap-2">
                                 <Timer className="w-5 h-5 text-indigo-400" />
-                                <span className="font-mono font-bold text-xl text-white">{formatTime(elapsedTime)}</span>
+                                <span className={`font-mono font-bold text-xl ${gameMode === 'challenge' && timeLeft <= 30 ? 'text-red-400 animate-pulse' : 'text-white'
+                                    }`}>
+                                    {formatTime(gameMode === 'challenge' ? timeLeft : elapsedTime)}
+                                </span>
                             </div>
                             {gameState === 'playing' && (
                                 <span className="text-[10px] uppercase font-bold text-indigo-300/70 tracking-wider">
@@ -328,9 +373,15 @@ export default function CapitalMatchingGame() {
                     className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl animate-in fade-in duration-500"
                 >
                     <div className="bg-indigo-500/10 p-4 rounded-full mb-6 ring-1 ring-indigo-500/30">
-                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                        {gameMode === 'challenge' && timeLeft <= 0 ? (
+                            <Timer className="w-16 h-16 text-red-400 animate-pulse" />
+                        ) : (
+                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                        )}
                     </div>
-                    <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
+                    <h2 className="text-4xl font-bold text-white mb-2">
+                        {gameMode === 'challenge' && timeLeft <= 0 ? '¡Tiempo Agotado!' : '¡Reto Completado!'}
+                    </h2>
 
                     <div className="flex gap-12 mb-8 mt-4">
                         <div className="flex flex-col items-center gap-1">
@@ -343,10 +394,14 @@ export default function CapitalMatchingGame() {
                         </div>
                     </div>
 
-                    <p className="text-gray-300 mb-8 max-w-sm">{content.winMsg}</p>
+                    <p className="text-gray-300 mb-8 max-w-sm">
+                        {gameMode === 'challenge' && timeLeft <= 0
+                            ? 'Se acabó el tiempo. ¡Inténtalo de nuevo!'
+                            : content.winMsg}
+                    </p>
 
                     <button
-                        onClick={() => setupGame(true)}
+                        onClick={() => setupGame(false)} // Pass false to go back to start screen
                         className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
                     >
                         <RefreshCw className="w-5 h-5" /> {content.playAgain}

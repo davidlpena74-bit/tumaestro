@@ -139,9 +139,13 @@ export default function CountryGameBase({
                 setRemainingCountries(newRemaining);
                 setTimeout(() => nextTurn(newRemaining), 1500);
             } else {
-                setMessage(language === 'es'
-                    ? `¡No! Eso es ${localizedName} (${newAttempts}/3) ❌`
-                    : `No! That is ${localizedName} (${newAttempts}/3) ❌`);
+                if (gameMode === 'practice') {
+                    setMessage(language === 'es'
+                        ? `¡No! Eso es ${localizedName} (${newAttempts}/3) ❌`
+                        : `No! That is ${localizedName} (${newAttempts}/3) ❌`);
+                } else {
+                    setMessage(language === 'es' ? `¡Incorrecto! (${newAttempts}/3) ❌` : `Incorrect! (${newAttempts}/3) ❌`);
+                }
             }
         }
     };

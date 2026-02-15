@@ -2,9 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Trophy, Timer, Hand } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
+import GameHUD from './GameHUD';
+import { useGameLogic } from '@/hooks/useGameLogic';
+import { Trophy } from '@phosphor-icons/react';
+import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Timer, Hand } from 'lucide-react';
 
 type GameState = 'start' | 'playing' | 'feedback' | 'finished';
 
@@ -18,8 +21,6 @@ interface DivisionProblem {
 export default function DivisionGame() {
     const { t } = useLanguage();
     const [level, setLevel] = useState(1);
-    const [points, setPoints] = useState(0);
-    const [gameState, setGameState] = useState<GameState>('start');
     const [problem, setProblem] = useState<DivisionProblem>({ dividend: 6, divisor: 2, quotient: 3, remainder: 0 });
     const [distributedCounts, setDistributedCounts] = useState<number[]>([]); // Items per person currently
     const [itemsLeft, setItemsLeft] = useState(0);
@@ -28,11 +29,24 @@ export default function DivisionGame() {
     const [streak, setStreak] = useState(0);
     const [dragActive, setDragActive] = useState(false);
 
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        elapsedTime,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+
     // Refs for drop zones
     const friendRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     // Generate new problem
-    const generateProblem = (targetState: GameState = 'playing') => {
+    const generateProblem = (targetState: 'playing' | 'feedback' | 'start' = 'playing') => {
         let maxDividend = 12;
         let maxDivisor = 3;
 
@@ -70,7 +84,7 @@ export default function DivisionGame() {
         setProblem({ dividend, divisor, quotient, remainder });
         setItemsLeft(dividend);
         setDistributedCounts(new Array(divisor).fill(0));
-        setGameState(targetState);
+        if (targetState !== 'start') setGameState(targetState);
         setUserAnswer('');
         setUserRemainder('');
     };
@@ -79,7 +93,15 @@ export default function DivisionGame() {
         generateProblem('start');
     }, []);
 
-    const startGame = () => setGameState('playing');
+
+
+    const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        setGameMode(mode);
+        hookStartGame();
+        setStreak(0);
+        setLevel(1);
+        generateProblem('playing');
+    };
 
     // Distribute one item to all (animation helper)
     const distributeOneRound = () => {
@@ -130,7 +152,7 @@ export default function DivisionGame() {
 
         if (isQuotientCorrect && isRemainderCorrect) {
             setGameState('feedback');
-            setPoints(p => p + 10 + (streak * 2));
+            addScore(10 + (streak * 2));
             setStreak(s => s + 1);
             confetti({
                 particleCount: 100,
@@ -143,6 +165,7 @@ export default function DivisionGame() {
             }, 4000); // Longer wait to read feedback
         } else {
             setStreak(0);
+            addError();
             // Shake effect
             const btn = document.getElementById('submit-btn');
             btn?.classList.add('animate-shake');
@@ -163,40 +186,52 @@ export default function DivisionGame() {
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                         {t.gamesPage.divisionGame.description}
                     </p>
-                    <button
-                        onClick={startGame}
-                        className="group relative px-8 py-4 bg-orange-500 hover:bg-orange-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">{t.gamesPage.divisionGame.startBtn} <Timer className="w-5 h-5 opacity-50" /></span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                        <button
+                            onClick={() => startGame('challenge')}
+                            className="group relative px-8 py-4 bg-orange-500 hover:bg-orange-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] hover:shadow-[0_0_60px_-10px_rgba(249,115,22,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    {t.gamesPage.divisionGame.startBtn}
+                                    <Trophy className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                            </span>
+                        </button>
+
+                        <button
+                            onClick={() => startGame('practice')}
+                            className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                        >
+                            <span className="relative z-10 flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                    PRÁCTICA
+                                    <RefreshCw className="w-5 h-5 opacity-50" />
+                                </div>
+                                <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                            </span>
+                        </button>
+                    </div>
                 </div>
             )}
 
             {/* HUD */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl gap-4">
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="p-3 rounded-xl bg-orange-500/20">
-                        <Trophy className="text-orange-400 w-8 h-8" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-black text-white leading-none">
-                            {points} <span className="text-sm font-normal text-orange-300">pts</span>
-                        </h2>
-                        <div className="flex gap-3 text-xs font-bold mt-1 text-orange-300 uppercase tracking-wider">
-                            <span>{t.gamesPage.divisionGame.level} {level}</span>
-                            <span>•</span>
-                            <span>{t.gamesPage.gameTypes.math}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-6 w-full md:w-auto justify-end">
-                    <div className="flex flex-col items-end">
-                        <span className="text-orange-400 font-black text-xl leading-none">x{streak}</span>
-                        <span className="text-orange-400/60 text-[10px] uppercase font-bold tracking-widest">{t.gamesPage.divisionGame.streak}</span>
-                    </div>
-                </div>
-            </div>
+            <GameHUD
+                title={t.gamesPage.divisionGame.title}
+                score={score}
+                errors={errors}
+                timeLeft={timeLeft}
+                elapsedTime={elapsedTime}
+                gameMode={gameMode}
+                totalTargets={10} // Division level targets
+                remainingTargets={10 - (level % 10)}
+                targetName=""
+                onReset={() => setGameState('start')}
+                colorTheme="orange"
+                message={message}
+                icon={<Pizza className="w-8 h-8 text-orange-400" />}
+            />
 
             {/* Game Grid */}
             <div className="grid lg:grid-cols-2 gap-8 items-start">
