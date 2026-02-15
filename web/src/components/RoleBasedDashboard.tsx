@@ -12,7 +12,8 @@ import {
     Books,
     MagnifyingGlass,
     IdentificationBadge,
-    CheckCircle
+    CheckCircle,
+    CircleNotch
 } from '@phosphor-icons/react';
 
 type Profile = {

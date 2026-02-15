@@ -25,16 +25,16 @@ type CellPart = {
 
 // Calibrated coordinates for Animal Cell
 const CELL_PARTS: CellPart[] = [
-    { id: 'nucleus', nameKey: 'nucleus', x: 363, y: 435, lx: 700, ly: 435 },
-    { id: 'nucleolus', nameKey: 'nucleolus', x: 412, y: 443, lx: 700, ly: 443 },
-    { id: 'mitochondria', nameKey: 'mitochondria', x: 343, y: 288, lx: 700, ly: 288 },
-    { id: 'golgi', nameKey: 'golgi', x: 500, y: 538, lx: 700, ly: 538 },
-    { id: 'reticulum', nameKey: 'reticulum', x: 402, y: 348, lx: 700, ly: 348 },
-    { id: 'cytoplasm', nameKey: 'cytoplasm', x: 481, y: 262, lx: 700, ly: 262 },
-    { id: 'membrane', nameKey: 'membrane', x: 440, y: 218, lx: 700, ly: 218 },
-    { id: 'lysosome', nameKey: 'lysosome', x: 253, y: 532, lx: 700, ly: 532 },
-    { id: 'ribosome', nameKey: 'ribosome', x: 587, y: 507, lx: 700, ly: 507 },
-    { id: 'centrioles', nameKey: 'centrioles', x: 522, y: 405, lx: 700, ly: 405 },
+    { id: 'nucleus', nameKey: 'nucleus', x: 363, y: 355, lx: 700, ly: 355 },
+    { id: 'nucleolus', nameKey: 'nucleolus', x: 412, y: 363, lx: 700, ly: 363 },
+    { id: 'mitochondria', nameKey: 'mitochondria', x: 343, y: 208, lx: 700, ly: 208 },
+    { id: 'golgi', nameKey: 'golgi', x: 500, y: 458, lx: 700, ly: 458 },
+    { id: 'reticulum', nameKey: 'reticulum', x: 402, y: 268, lx: 700, ly: 268 },
+    { id: 'cytoplasm', nameKey: 'cytoplasm', x: 481, y: 182, lx: 700, ly: 182 },
+    { id: 'membrane', nameKey: 'membrane', x: 440, y: 138, lx: 700, ly: 138 },
+    { id: 'lysosome', nameKey: 'lysosome', x: 253, y: 452, lx: 700, ly: 452 },
+    { id: 'ribosome', nameKey: 'ribosome', x: 587, y: 427, lx: 700, ly: 427 },
+    { id: 'centrioles', nameKey: 'centrioles', x: 522, y: 325, lx: 700, ly: 325 },
 ];
 
 export default function AnimalCellGame() {
@@ -84,7 +84,7 @@ export default function AnimalCellGame() {
             return {
                 ...part,
                 labelX: isMatched ? 750 : -150, // Moved further out
-                labelY: 100 + ((isMatched ? yOrderIndex : unmatchedIndex) * 70) // Slightly tighter for cell parts
+                labelY: 20 + ((isMatched ? yOrderIndex : unmatchedIndex) * 70) // Slightly tighter for cell parts
             };
         });
     }, [matches, t, language]);
@@ -305,7 +305,7 @@ export default function AnimalCellGame() {
                     </AnimatePresence>
 
                     <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
-                        <div className="relative w-[600px] h-full overflow-hidden -translate-y-10">
+                        <div className="relative w-[600px] h-full overflow-hidden -translate-y-[120px]">
                             <img
                                 src="/images/games/animal-cell-hq.png"
                                 alt="Animal Cell Anatomy"
