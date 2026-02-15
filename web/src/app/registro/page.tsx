@@ -8,11 +8,14 @@ import { supabase } from '@/lib/supabaseClient';
 
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [role, setRole] = useState<'student' | 'teacher'>('student');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -34,6 +37,12 @@ export default function RegisterPage() {
             const { data, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                        role: role
+                    }
+                }
             });
 
             if (authError) throw authError;
@@ -127,6 +136,49 @@ export default function RegisterPage() {
                                 </div>
 
                                 <form onSubmit={handleRegister} className="space-y-5">
+                                    {/* Role Selection */}
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">¿Qué eres?</label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => setRole('student')}
+                                                className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all gap-2 ${role === 'student' ? 'border-blue-500 bg-blue-50/50 text-blue-600 shadow-md shadow-blue-500/10' : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'}`}
+                                            >
+                                                <span className="text-2xl">🎓</span>
+                                                <span className="text-sm font-bold">Alumno</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setRole('teacher')}
+                                                className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all gap-2 ${role === 'teacher' ? 'border-purple-500 bg-purple-50/50 text-purple-600 shadow-md shadow-purple-500/10' : 'border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200'}`}
+                                            >
+                                                <span className="text-2xl">👨‍🏫</span>
+                                                <span className="text-sm font-bold">Profesor</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Full Name Field */}
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nombre Completo</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={fullName}
+                                                onChange={(e) => setFullName(e.target.value)}
+                                                placeholder="Tu nombre y apellidos"
+                                                required
+                                                className="w-full bg-slate-50 border-2 border-slate-100 text-slate-800 rounded-2xl py-3.5 pl-12 pr-4 font-medium focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-300"
+                                            />
+                                        </div>
+                                    </div>
+
                                     {/* Email Field */}
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Email</label>
