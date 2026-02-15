@@ -978,6 +978,10 @@ export default function ReadingTeacherTool() {
                             </button>
                         </div>
                     </div>
+
+                    <div className="text-center text-slate-300 text-[10px] font-mono mt-4 opacity-50 hover:opacity-100 transition-opacity">
+                        v2.2.6
+                    </div>
                 </div>
             </motion.div>
         </AnimatePresence>
