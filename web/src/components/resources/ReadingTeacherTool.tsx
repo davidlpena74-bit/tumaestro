@@ -738,30 +738,46 @@ export default function ReadingTeacherTool() {
                                 {/* Real-time Transcript Display */}
                                 <div className="w-full max-w-2xl mt-4">
                                     <div className="bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-700">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                                            <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">
-                                                Reconocimiento en Vivo {interimTranscript ? '(Procesando...)' : ''}
-                                            </span>
-                                        </div>
-                                        <div className="min-h-[80px] max-h-[120px] overflow-y-auto custom-scrollbar flex flex-col-reverse">
-                                            <p className="text-white font-mono text-sm leading-relaxed whitespace-pre-wrap">
-                                                {finalTranscripts.map((text, idx) => (
-                                                    <span key={idx} className="text-emerald-300 mr-2">
-                                                        {text}
-                                                    </span>
-                                                ))}
-                                                <span className="text-slate-400 italic bg-white/5 px-1 rounded">
-                                                    {interimTranscript}
+                                        <div className="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className={cn("w-2 h-2 rounded-full", interimTranscript ? "bg-emerald-400 animate-ping" : "bg-emerald-600 animate-pulse")}></div>
+                                                <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">
+                                                    Escuchando ({language === 'es' ? 'Español' : language === 'en' ? 'English' : language})
                                                 </span>
-                                                {!interimTranscript && finalTranscripts.length === 0 && (
-                                                    <span className="text-slate-500 italic block mt-2 text-center">
+                                            </div>
+                                            {audioLevel > 0.1 && (
+                                                <span className="text-xs text-slate-500 font-mono">
+                                                    Vol: {Math.round(audioLevel * 100)}%
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="h-[120px] overflow-y-auto custom-scrollbar flex flex-col font-mono text-sm leading-relaxed p-2 bg-black/20 rounded-lg">
+                                            {finalTranscripts.map((text, idx) => (
+                                                <div key={idx} className="text-emerald-300 mb-1 border-b border-emerald-900/30 pb-1">
+                                                    <span className="text-emerald-600 mr-2 text-xs">[{idx + 1}]</span>
+                                                    {text}
+                                                </div>
+                                            ))}
+
+                                            {interimTranscript && (
+                                                <div className="text-white bg-slate-800/50 p-1 rounded animate-pulse border-l-2 border-emerald-500 pl-2">
+                                                    <span className="text-slate-400 text-xs mr-2">...</span>
+                                                    {interimTranscript}
+                                                </div>
+                                            )}
+
+                                            {!interimTranscript && finalTranscripts.length === 0 && (
+                                                <div className="h-full flex flex-col items-center justify-center text-slate-600 italic gap-2 opacity-50">
+                                                    <Microphone className="w-8 h-8 opacity-20" />
+                                                    <span className="text-center">
                                                         {audioLevel > 0.05
-                                                            ? "Detectando sonido... procesando voz..."
-                                                            : "Esperando voz... (habla claro y fuerte)"}
+                                                            ? "Detectando sonido... Habla..."
+                                                            : "Esperando voz..."}
                                                     </span>
-                                                )}
-                                            </p>
+                                                </div>
+                                            )}
+                                            <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />
                                         </div>
                                     </div>
                                 </div>
