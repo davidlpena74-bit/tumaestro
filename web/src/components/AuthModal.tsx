@@ -17,6 +17,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [fullName, setFullName] = useState('');
+    const [role, setRole] = useState<'student' | 'teacher'>('student');
     const [sent, setSent] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -73,6 +74,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 options: {
                     data: {
                         full_name: fullName,
+                        role: role,
                         avatar_url: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`
                     }
                 }
@@ -213,20 +215,45 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         ) : (
                             <form onSubmit={handlePasswordAuth} className="space-y-4">
                                 {mode === 'signup' && (
-                                    <div>
-                                        <label className="block text-xs font-bold text-slate-700 mb-1 ml-1 uppercase tracking-wider">Nombre Completo</label>
-                                        <div className="relative">
-                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                                            <input
-                                                type="text"
-                                                required
-                                                className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
-                                                placeholder="Juan Pérez"
-                                                value={fullName}
-                                                onChange={(e) => setFullName(e.target.value)}
-                                            />
+                                    <>
+                                        {/* Role Selection */}
+                                        <div className="space-y-1.5 mb-4">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">¿Qué eres?</label>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setRole('student')}
+                                                    className={`flex items-center justify-center p-3 rounded-xl border-2 transition-all gap-2 ${role === 'student' ? 'border-teal-500 bg-teal-50 text-teal-700' : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'}`}
+                                                >
+                                                    <span className="text-xl">🎓</span>
+                                                    <span className="text-xs font-bold uppercase transition-all">Alumno</span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setRole('teacher')}
+                                                    className={`flex items-center justify-center p-3 rounded-xl border-2 transition-all gap-2 ${role === 'teacher' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'}`}
+                                                >
+                                                    <span className="text-xl">👨‍🏫</span>
+                                                    <span className="text-xs font-bold uppercase transition-all">Profesor</span>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-700 mb-1 ml-1 uppercase tracking-wider">Nombre Completo</label>
+                                            <div className="relative">
+                                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                                                    placeholder="Juan Pérez"
+                                                    value={fullName}
+                                                    onChange={(e) => setFullName(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
                                 )}
 
                                 <div>
