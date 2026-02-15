@@ -59,6 +59,16 @@ export default function ReadingTeacherTool() {
     const animationFrameIdRef = useRef<number | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+    // Refs to avoid stale closures in listeners
+    const isListeningRef = useRef(isListening);
+    const handleRecognitionResultRef = useRef<((event: any) => void) | null>(null);
+
+    // Sync refs with current state
+    useEffect(() => {
+        isListeningRef.current = isListening;
+        handleRecognitionResultRef.current = handleRecognitionResult;
+    });
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             synthRef.current = window.speechSynthesis;
@@ -81,7 +91,9 @@ export default function ReadingTeacherTool() {
 
                 recognition.onresult = (event: any) => {
                     console.log('📥 Recognition result received', event);
-                    handleRecognitionResult(event);
+                    if (handleRecognitionResultRef.current) {
+                        handleRecognitionResultRef.current(event);
+                    }
                 };
 
                 recognition.onerror = (event: any) => {
@@ -94,12 +106,15 @@ export default function ReadingTeacherTool() {
                         console.warn('⚠️ Recognition aborted');
                         return;
                     }
-                    setIsListening(false);
+                    // Do not update state if we are going to restart or if it's transient
+                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                        setIsListening(false);
+                    }
                 };
 
                 recognition.onend = () => {
-                    console.log('🛑 Recognition ended, isListening:', isListening);
-                    if (isListening) {
+                    console.log('🛑 Recognition ended, isListening:', isListeningRef.current);
+                    if (isListeningRef.current) {
                         console.log('🔄 Restarting recognition...');
                         try {
                             recognition.start();
@@ -125,7 +140,7 @@ export default function ReadingTeacherTool() {
             }
             stopAudioVisualization();
         };
-    }, [language, isListening]);
+    }, [language]); // Only recreate if language changes
 
     useEffect(() => {
         if (selectedText) {
