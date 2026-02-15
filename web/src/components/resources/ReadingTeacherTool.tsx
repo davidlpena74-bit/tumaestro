@@ -528,107 +528,28 @@ export default function ReadingTeacherTool() {
                     "flex flex-col gap-8",
                     !focusMode && "animate-in fade-in zoom-in-95 duration-500"
                 )}>
-                    {/* Toolbar */}
+                    {/* Header with Back Button and Title */}
                     <div className={cn(
-                        "flex items-center justify-between transition-all",
-                        focusMode ? "mb-12 sticky top-0 bg-slate-50/80 backdrop-blur-md py-4 z-20" : "mb-4"
+                        "flex items-center gap-4 transition-all",
+                        focusMode ? "mb-4" : "mb-0"
                     )}>
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => {
-                                    cancelSpeech();
-                                    setSelectedText(null);
-                                    if (focusMode) setFocusMode(false);
-                                }}
-                                className="p-4 rounded-2xl text-slate-400 hover:text-slate-900 hover:bg-white border border-transparent hover:border-slate-200 transition-all shadow-sm active:scale-95"
-                                title={t.common.back}
-                            >
-                                <ArrowLeft weight="bold" className="w-6 h-6" />
-                            </button>
-                            {!focusMode && (
-                                <div>
-                                    <h3 className="text-slate-800 font-black text-2xl">{selectedText.title}</h3>
-                                    <div className="flex items-center gap-2 text-slate-400 text-sm font-bold uppercase tracking-wider">
-                                        <Clock weight="bold" />
-                                        <span>{Math.ceil(selectedText.content.split(' ').length / 150)} min • {selectedText.level}</span>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="flex items-center gap-2 bg-white p-2 rounded-[2rem] shadow-xl border border-slate-100">
-                            <button
-                                onClick={() => synthRef.current?.cancel()}
-                                className="p-3 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
-                                title={t.readingTeacher.repeat}
-                            >
-                                <ArrowCounterClockwise className="w-5 h-5" weight="bold" />
-                            </button>
-
-                            <div className="w-px h-6 bg-slate-100 mx-1" />
-
-                            <button
-                                onClick={() => setIsSlow(!isSlow)}
-                                className={cn(
-                                    "px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm font-black uppercase tracking-widest",
-                                    isSlow ? "bg-amber-500 text-white shadow-lg" : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
-                                )}
-                            >
-                                <Gauge className="w-5 h-5" weight={isSlow ? "fill" : "bold"} />
-                                <span className="hidden md:inline">{t.readingTeacher.speed}</span>
-                            </button>
-
-                            <div className="w-px h-6 bg-slate-100 mx-1" />
-
-                            <button
-                                onClick={() => setFocusMode(!focusMode)}
-                                className={cn(
-                                    "px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm font-black uppercase tracking-widest",
-                                    focusMode ? "bg-slate-900 text-white shadow-lg" : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
-                                )}
-                            >
-                                {focusMode ? <EyeSlash className="w-5 h-5" weight="fill" /> : <Eye className="w-5 h-5" weight="bold" />}
-                                <span className="hidden md:inline">{focusMode ? t.readingTeacher.exitFocus : t.readingTeacher.focusMode}</span>
-                            </button>
-
-                            <div className="w-px h-6 bg-slate-100 mx-1" />
-
-                            <button
-                                onClick={toggleListening}
-                                className={cn(
-                                    "px-6 py-2 md:py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 shadow-xl active:scale-95",
-                                    isListening
-                                        ? "bg-emerald-500 text-white animate-pulse"
-                                        : "bg-white text-slate-400 border border-slate-200 hover:border-emerald-500 hover:text-emerald-600"
-                                )}
-                                title={isListening ? t.readingTeacher.stopListening : t.readingTeacher.readAloud}
-                            >
-                                {isListening ? (
-                                    <><Waveform className="w-6 h-6" weight="fill" /> {t.readingTeacher.listening}</>
-                                ) : (
-                                    <><Microphone className="w-6 h-6" /> {t.readingTeacher.readAloud}</>
-                                )}
-                            </button>
-
-                            <div className="w-px h-6 bg-slate-100 mx-1" />
-
-                            <button
-                                onClick={togglePlayback}
-                                className={cn(
-                                    "px-8 py-2 md:px-10 md:py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 shadow-xl active:scale-95",
-                                    isPlaying
-                                        ? "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/20"
-                                        : "bg-sky-500 hover:bg-sky-600 text-white shadow-sky-500/20"
-                                )}
-                            >
-                                {isPlaying ? (
-                                    <><Pause className="w-5 h-5" weight="fill" /> {language === 'es' ? 'PAUSAR' : 'PAUSE'}</>
-                                ) : isPaused ? (
-                                    <><Play className="w-5 h-5" weight="fill" /> {language === 'es' ? 'REANUDAR' : 'RESUME'}</>
-                                ) : (
-                                    <><SpeakerHigh className="w-5 h-5" weight="fill" /> {t.readingTeacher.startReading}</>
-                                )}
-                            </button>
+                        <button
+                            onClick={() => {
+                                cancelSpeech();
+                                setSelectedText(null);
+                                if (focusMode) setFocusMode(false);
+                            }}
+                            className="p-4 rounded-2xl text-slate-400 hover:text-slate-900 hover:bg-white border border-transparent hover:border-slate-200 transition-all shadow-sm active:scale-95"
+                            title={t.common.back}
+                        >
+                            <ArrowLeft weight="bold" className="w-6 h-6" />
+                        </button>
+                        <div className="flex-1">
+                            <h3 className="text-slate-800 font-black text-2xl md:text-3xl">{selectedText.title}</h3>
+                            <div className="flex items-center gap-2 text-slate-400 text-sm font-bold uppercase tracking-wider">
+                                <Clock weight="bold" />
+                                <span>{Math.ceil(selectedText.content.split(' ').length / 150)} min • {selectedText.level}</span>
+                            </div>
                         </div>
                     </div>
 
@@ -747,6 +668,84 @@ export default function ReadingTeacherTool() {
                                     </button>
                                 </motion.div>
                             )}
+                        </div>
+                    </div>
+
+                    {/* Control Bar - Below Content */}
+                    <div className="flex justify-center">
+                        <div className="w-full max-w-4xl flex items-center justify-center gap-2 bg-white p-2 rounded-[2rem] shadow-xl border border-slate-100">
+                            <button
+                                onClick={() => synthRef.current?.cancel()}
+                                className="p-3 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
+                                title={t.readingTeacher.repeat}
+                            >
+                                <ArrowCounterClockwise className="w-5 h-5" weight="bold" />
+                            </button>
+
+                            <div className="w-px h-6 bg-slate-100 mx-1" />
+
+                            <button
+                                onClick={() => setIsSlow(!isSlow)}
+                                className={cn(
+                                    "px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm font-black uppercase tracking-widest",
+                                    isSlow ? "bg-amber-500 text-white shadow-lg" : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
+                                )}
+                            >
+                                <Gauge className="w-5 h-5" weight={isSlow ? "fill" : "bold"} />
+                                <span className="hidden md:inline">{t.readingTeacher.speed}</span>
+                            </button>
+
+                            <div className="w-px h-6 bg-slate-100 mx-1" />
+
+                            <button
+                                onClick={() => setFocusMode(!focusMode)}
+                                className={cn(
+                                    "px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm font-black uppercase tracking-widest",
+                                    focusMode ? "bg-slate-900 text-white shadow-lg" : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
+                                )}
+                            >
+                                {focusMode ? <EyeSlash className="w-5 h-5" weight="fill" /> : <Eye className="w-5 h-5" weight="bold" />}
+                                <span className="hidden md:inline">{focusMode ? t.readingTeacher.exitFocus : t.readingTeacher.focusMode}</span>
+                            </button>
+
+                            <div className="w-px h-6 bg-slate-100 mx-1" />
+
+                            <button
+                                onClick={toggleListening}
+                                className={cn(
+                                    "px-6 py-2 md:py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 shadow-xl active:scale-95",
+                                    isListening
+                                        ? "bg-emerald-500 text-white animate-pulse"
+                                        : "bg-white text-slate-400 border border-slate-200 hover:border-emerald-500 hover:text-emerald-600"
+                                )}
+                                title={isListening ? t.readingTeacher.stopListening : t.readingTeacher.readAloud}
+                            >
+                                {isListening ? (
+                                    <><Waveform className="w-6 h-6" weight="fill" /> {t.readingTeacher.listening}</>
+                                ) : (
+                                    <><Microphone className="w-6 h-6" /> {t.readingTeacher.readAloud}</>
+                                )}
+                            </button>
+
+                            <div className="w-px h-6 bg-slate-100 mx-1" />
+
+                            <button
+                                onClick={togglePlayback}
+                                className={cn(
+                                    "px-8 py-2 md:px-10 md:py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 shadow-xl active:scale-95",
+                                    isPlaying
+                                        ? "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/20"
+                                        : "bg-sky-500 hover:bg-sky-600 text-white shadow-sky-500/20"
+                                )}
+                            >
+                                {isPlaying ? (
+                                    <><Pause className="w-5 h-5" weight="fill" /> {language === 'es' ? 'PAUSAR' : 'PAUSE'}</>
+                                ) : isPaused ? (
+                                    <><Play className="w-5 h-5" weight="fill" /> {language === 'es' ? 'REANUDAR' : 'RESUME'}</>
+                                ) : (
+                                    <><SpeakerHigh className="w-5 h-5" weight="fill" /> {t.readingTeacher.startReading}</>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>
