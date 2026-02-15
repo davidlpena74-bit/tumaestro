@@ -189,12 +189,22 @@ export default function AnimalCellGame() {
                     colors: ['#34d399', '#ffffff']
                 });
                 addScore(100);
+                if (gameMode === 'practice') {
+                    const part = CELL_PARTS.find(p => p.id === partId);
+                    const partName = (t.gamesPage.cellParts as any)[part?.nameKey || ''];
+                    setMessage(language === 'es' ? `¡Correcto! ${partName} ✅` : `Correct! ${partName} ✅`);
+                }
                 if (Object.keys(newMatches).length === CELL_PARTS.length) {
                     finishGame();
                 }
             } else {
                 addError();
                 addScore(gameMode === 'challenge' ? -20 : -5);
+                if (gameMode === 'practice') {
+                    const part = CELL_PARTS.find(p => p.id === partId);
+                    const partName = (t.gamesPage.cellParts as any)[part?.nameKey || ''];
+                    setMessage(language === 'es' ? `¡Incorrecto! Esa es ${partName}. ❌` : `Incorrect! That is ${partName}. ❌`);
+                }
             }
         }
 
