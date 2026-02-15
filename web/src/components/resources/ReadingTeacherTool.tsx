@@ -233,34 +233,71 @@ export default function ReadingTeacherTool() {
         if (!selectedText) return;
 
         const originalWords = getWordsOnly(selectedText.content);
+        const wordsWithSpaces = selectedText.content.split(/(\s+)/);
         const results = event.results;
         const lastResult = results[results.length - 1];
         const transcript = lastResult[0].transcript.toLowerCase();
 
+        console.log('🎤 Transcript:', transcript, 'isFinal:', lastResult.isFinal);
+
         if (lastResult.isFinal) {
             const spokenWords = transcript.trim().split(/\s+/);
+            console.log('📝 Spoken words:', spokenWords);
+            console.log('🎯 Current word index:', currentWordIndexRef.current);
 
             setWordStatuses(prev => {
                 const newStatuses = [...prev];
                 let currentIdx = currentWordIndexRef.current;
+                let charCount = 0;
+
+                // Calculate character position up to current word
+                for (let i = 0; i < currentIdx; i++) {
+                    charCount += wordsWithSpaces[i * 2]?.length || 0; // word
+                    charCount += wordsWithSpaces[i * 2 + 1]?.length || 0; // space
+                }
 
                 spokenWords.forEach((spoken: string) => {
                     if (currentIdx >= originalWords.length) return;
 
                     const target = originalWords[currentIdx];
                     const nextTarget = originalWords[currentIdx + 1];
+                    const match = isMatch(spoken, target);
+                    const nextMatch = nextTarget && isMatch(spoken, nextTarget);
 
-                    if (isMatch(spoken, target)) {
+                    console.log(`  Word ${currentIdx}: "${spoken}" vs "${target}" = ${match ? '✅' : '❌'}`);
+
+                    if (match) {
                         newStatuses[currentIdx] = 'correct';
+                        // Update character position
+                        charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
+                        charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
                         currentIdx++;
-                    } else if (nextTarget && isMatch(spoken, nextTarget)) {
+                    } else if (nextMatch) {
+                        console.log(`  Skipping to next: "${spoken}" matches "${nextTarget}"`);
                         newStatuses[currentIdx] = 'incorrect';
                         newStatuses[currentIdx + 1] = 'correct';
+                        // Skip current word
+                        charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
+                        charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
+                        // Add next word
+                        charCount += wordsWithSpaces[(currentIdx + 1) * 2]?.length || 0;
+                        charCount += wordsWithSpaces[(currentIdx + 1) * 2 + 1]?.length || 0;
                         currentIdx += 2;
+                    } else {
+                        // Mark as incorrect if no match
+                        newStatuses[currentIdx] = 'incorrect';
+                        charCount += wordsWithSpaces[currentIdx * 2]?.length || 0;
+                        charCount += wordsWithSpaces[currentIdx * 2 + 1]?.length || 0;
+                        currentIdx++;
                     }
                 });
 
+                console.log('✨ New statuses:', newStatuses.slice(0, currentIdx));
+                console.log('📍 CharIndex:', charCount, 'WordIndex:', currentIdx);
+
                 currentWordIndexRef.current = currentIdx;
+                setCharIndex(charCount);
+                setWordIndex(currentIdx);
                 checkSentenceFeedback(newStatuses, currentIdx);
                 return newStatuses;
             });
@@ -269,14 +306,14 @@ export default function ReadingTeacherTool() {
 
     const isMatch = (spoken: string, target: string) => {
         if (!target) return false;
-        const s = spoken.toLowerCase().trim();
+        const s = spoken.toLowerCase().trim().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
         const t = target.toLowerCase().trim();
         if (s === t) return true;
 
         // Simple fuzzy: check if one contains the other or diff is small
-        if (s.length > 3 && t.length > 3) {
+        if (s.length > 2 && t.length > 2) {
             const distance = levenshteinDistance(s, t);
-            return distance <= 2; // Allow 1-2 character difference
+            return distance <= 1; // Allow 1 character difference for better accuracy
         }
         return false;
     };
@@ -348,6 +385,15 @@ export default function ReadingTeacherTool() {
             stopAudioVisualization();
         } else {
             cancelSpeech();
+            // Reset progress for fresh start
+            currentWordIndexRef.current = 0;
+            lastSentenceCheckRef.current = 0;
+            setCharIndex(0);
+            setWordIndex(-1);
+            if (selectedText) {
+                const words = getWordsOnly(selectedText.content);
+                setWordStatuses(new Array(words.length).fill('unread'));
+            }
             recognitionRef.current.start();
             setIsListening(true);
             startAudioVisualization();
