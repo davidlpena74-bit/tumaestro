@@ -58,6 +58,7 @@ export default function ReadingTeacherTool() {
     const micStreamRef = useRef<MediaStream | null>(null);
     const animationFrameIdRef = useRef<number | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const transcriptEndRef = useRef<HTMLDivElement | null>(null);
 
     // Refs to avoid stale closures in listeners
     const isListeningRef = useRef(isListening);
@@ -141,6 +142,13 @@ export default function ReadingTeacherTool() {
             stopAudioVisualization();
         };
     }, [language]); // Only recreate if language changes
+
+    // Scroll to bottom of transcript when it updates
+    useEffect(() => {
+        if (transcriptEndRef.current) {
+            transcriptEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, [finalTranscripts, interimTranscript]);
 
     useEffect(() => {
         if (selectedText) {
@@ -792,7 +800,7 @@ export default function ReadingTeacherTool() {
                                                     </span>
                                                 </div>
                                             )}
-                                            <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />
+                                            <div ref={transcriptEndRef} />
                                         </div>
                                     </div>
                                 </div>
