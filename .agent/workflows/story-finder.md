@@ -20,7 +20,7 @@ Este flujo de trabajo permite encontrar, limpiar y formatear cuentos extensos de
 
 4. **Formateo para la App**:
    - El cuento debe dividirse en un array de strings (`content: string[]`).
-   - Cada elemento del array representa una "página" o "pantalla" lógica para el Cuenta Cuentos (aproximadamente 200-500 caracteres por página para una lectura cómoda).
+   - Cada elemento del array representa una "página" o "pantalla" lógica. **NUEVO ESTÁNDAR**: Cada página debe contener entre **5 y 10 líneas** de texto para ajustarse perfectamente al diseño Premium sin necesidad de scroll.
 
 5. **Integración**:
    - Crear un objeto que cumpla con la interfaz `Book` de `books-data.ts`.
@@ -30,7 +30,7 @@ Este flujo de trabajo permite encontrar, limpiar y formatear cuentos extensos de
 ## 📋 Reglas de Oro
 - **Verificar Derechos**: Confirmar que la fuente explicite que el texto es libre.
 - **Calidad de Traducción**: Si es traducción al español, priorizar versiones clásicas reconocidas o de alta calidad.
-- **Extensión**: No hay límite de tamaño, pero la división por "páginas" es obligatoria para el efecto karaoke.
+- **Extensión**: El texto seleccionado o adaptado debe tener una extensión de entre **1000 y 1200 palabras**. La división por "páginas" es obligatoria para el efecto karaoke.
 
 // turbo-all
 6. **Ejecución Automática**: Una vez encontrado el texto, el agente debe proponer el código listo para insertar en `books-data.ts`.
