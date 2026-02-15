@@ -41,6 +41,7 @@ export default function ReadingTeacherTool() {
     const [charIndex, setCharIndex] = useState(0);
     const [wordIndex, setWordIndex] = useState(-1);
     const [wordStatuses, setWordStatuses] = useState<('unread' | 'correct' | 'incorrect')[]>([]);
+    const [audioLevel, setAudioLevel] = useState(0);
 
     // Internal refs for matching logic
     const currentWordIndexRef = useRef(0);
@@ -48,6 +49,13 @@ export default function ReadingTeacherTool() {
     const synthRef = useRef<SpeechSynthesis | null>(null);
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
     const lastSentenceCheckRef = useRef(0);
+
+    // Audio visualization refs
+    const audioContextRef = useRef<AudioContext | null>(null);
+    const analyserRef = useRef<AnalyserNode | null>(null);
+    const micStreamRef = useRef<MediaStream | null>(null);
+    const animationFrameIdRef = useRef<number | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -81,6 +89,7 @@ export default function ReadingTeacherTool() {
         return () => {
             cancelSpeech();
             if (recognitionRef.current) recognitionRef.current.stop();
+            stopAudioVisualization();
         };
     }, [language, isListening]);
 
@@ -105,6 +114,99 @@ export default function ReadingTeacherTool() {
         setIsPaused(false);
         setCharIndex(0);
         setWordIndex(-1);
+    };
+
+    const startAudioVisualization = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            micStreamRef.current = stream;
+
+            const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            audioContextRef.current = audioContext;
+
+            const analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            analyserRef.current = analyser;
+
+            const source = audioContext.createMediaStreamSource(stream);
+            source.connect(analyser);
+
+            drawWaveform();
+        } catch (err) {
+            console.error('Error accessing microphone:', err);
+        }
+    };
+
+    const stopAudioVisualization = () => {
+        if (animationFrameIdRef.current) {
+            cancelAnimationFrame(animationFrameIdRef.current);
+            animationFrameIdRef.current = null;
+        }
+        if (micStreamRef.current) {
+            micStreamRef.current.getTracks().forEach(track => track.stop());
+            micStreamRef.current = null;
+        }
+        if (audioContextRef.current) {
+            audioContextRef.current.close();
+            audioContextRef.current = null;
+        }
+        setAudioLevel(0);
+    };
+
+    const drawWaveform = () => {
+        if (!analyserRef.current || !canvasRef.current) return;
+
+        const canvas = canvasRef.current;
+        const canvasCtx = canvas.getContext('2d');
+        if (!canvasCtx) return;
+
+        const analyser = analyserRef.current;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        const draw = () => {
+            animationFrameIdRef.current = requestAnimationFrame(draw);
+            analyser.getByteTimeDomainData(dataArray);
+
+            // Calculate average audio level
+            let sum = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                const normalized = (dataArray[i] - 128) / 128;
+                sum += Math.abs(normalized);
+            }
+            const avgLevel = sum / bufferLength;
+            setAudioLevel(avgLevel);
+
+            // Clear canvas
+            canvasCtx.fillStyle = 'rgb(248, 250, 252)';
+            canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw waveform
+            canvasCtx.lineWidth = 3;
+            canvasCtx.strokeStyle = 'rgb(16, 185, 129)';
+            canvasCtx.beginPath();
+
+            const sliceWidth = canvas.width / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = (v * canvas.height) / 2;
+
+                if (i === 0) {
+                    canvasCtx.moveTo(x, y);
+                } else {
+                    canvasCtx.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            canvasCtx.lineTo(canvas.width, canvas.height / 2);
+            canvasCtx.stroke();
+        };
+
+        draw();
     };
 
     const togglePlayback = () => {
@@ -243,12 +345,12 @@ export default function ReadingTeacherTool() {
         if (isListening) {
             recognitionRef.current.stop();
             setIsListening(false);
+            stopAudioVisualization();
         } else {
-            cancelSpeech(); // Stop any AI reading
+            cancelSpeech();
             recognitionRef.current.start();
             setIsListening(true);
-            // Reset progress for a fresh start or continue?
-            // currentWordIndexRef.current = 0; 
+            startAudioVisualization();
         }
     };
 
@@ -575,6 +677,33 @@ export default function ReadingTeacherTool() {
                                         </div>
                                         <div className="bg-rose-500/10 text-rose-600 px-4 py-1.5 rounded-xl text-xs font-black border border-rose-500/20">
                                             {wordStatuses.filter(s => s === 'incorrect').length} ERRORES
+                                        </div>
+                                    </div>
+
+                                    {/* Waveform Visualization */}
+                                    <div className="w-full max-w-2xl">
+                                        <div className="bg-white rounded-2xl border-2 border-emerald-200 shadow-lg overflow-hidden">
+                                            <canvas
+                                                ref={canvasRef}
+                                                width={600}
+                                                height={120}
+                                                className="w-full h-[120px]"
+                                            />
+                                        </div>
+
+                                        {/* Audio Level Indicator */}
+                                        <div className="mt-4 flex items-center gap-3">
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Nivel de Audio</span>
+                                            <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                                <motion.div
+                                                    className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
+                                                    animate={{ width: `${Math.min(audioLevel * 200, 100)}%` }}
+                                                    transition={{ duration: 0.1 }}
+                                                />
+                                            </div>
+                                            <span className="text-xs font-black text-emerald-600 min-w-[3ch]">
+                                                {Math.round(Math.min(audioLevel * 200, 100))}%
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
