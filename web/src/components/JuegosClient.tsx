@@ -618,7 +618,7 @@ export default function JuegosClient() {
                 </motion.div>
 
                 {/* GRADE FILTER DROPDOWN */}
-                <div className="mb-20 flex justify-center">
+                <div className="mb-12 flex justify-center">
                     <div className="relative">
                         <button
                             onClick={() => setFilterOpen(!filterOpen)}
