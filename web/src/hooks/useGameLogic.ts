@@ -11,24 +11,34 @@ interface UseGameLogicProps {
 export function useGameLogic({
     initialTime = 120,
     penaltyTime = 10,
-    onFinish
-}: UseGameLogicProps = {}) {
+    onFinish,
+    gameMode = 'challenge' // 'challenge' | 'practice'
+}: UseGameLogicProps & { gameMode?: 'challenge' | 'practice' } = {}) {
     const [gameState, setGameState] = useState<GameState>('start');
     const [score, setScore] = useState(0);
     const [errors, setErrors] = useState(0);
     const [timeLeft, setTimeLeft] = useState(initialTime);
+    const [elapsedTime, setElapsedTime] = useState(0);
     const [message, setMessage] = useState('');
 
     // Timer Loop
     useEffect(() => {
-        if (gameState === 'playing' && timeLeft > 0) {
-            const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+        if (gameState === 'playing') {
+            const timer = setInterval(() => {
+                if (gameMode === 'challenge') {
+                    if (timeLeft > 0) {
+                        setTimeLeft((prev) => prev - 1);
+                    } else {
+                        setGameState('finished');
+                        if (onFinish) onFinish();
+                    }
+                } else {
+                    setElapsedTime(prev => prev + 1);
+                }
+            }, 1000);
             return () => clearInterval(timer);
-        } else if (timeLeft === 0 && gameState === 'playing') {
-            setGameState('finished');
-            if (onFinish) onFinish();
         }
-    }, [gameState, timeLeft, onFinish]);
+    }, [gameState, timeLeft, onFinish, gameMode]);
 
     // Auto clear message
     useEffect(() => {
@@ -43,6 +53,7 @@ export function useGameLogic({
         setScore(0);
         setErrors(0);
         setTimeLeft(initialTime);
+        setElapsedTime(0);
         setMessage('');
     }, [initialTime]);
 
@@ -52,9 +63,12 @@ export function useGameLogic({
 
     const addError = useCallback(() => {
         setErrors(e => e + 1);
-        setScore(s => Math.max(0, s - 5)); // Fixed penalty score
-        setTimeLeft(t => Math.max(0, t - penaltyTime));
-    }, [penaltyTime]);
+        if (gameMode === 'challenge') {
+            setScore(s => Math.max(0, s - 5)); // Fixed penalty score in challenge
+            setTimeLeft(t => Math.max(0, t - penaltyTime));
+        }
+        // In practice mode, we might just track errors without heavy penalties
+    }, [penaltyTime, gameMode]);
 
     const resetGame = useCallback(() => {
         startGame();
@@ -69,6 +83,7 @@ export function useGameLogic({
         setErrors, // Expose setter if needed for custom logic
         timeLeft,
         setTimeLeft,
+        elapsedTime, // Start exposing elapsed time
         message,
         setMessage,
         startGame,

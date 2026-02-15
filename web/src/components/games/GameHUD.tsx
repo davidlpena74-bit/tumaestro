@@ -28,6 +28,8 @@ interface GameHUDProps {
     // Customization
     colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow';
     icon?: React.ReactNode;
+    gameMode?: 'challenge' | 'practice';
+    elapsedTime?: number;
 }
 
 const THEMES = {
@@ -50,7 +52,9 @@ export default function GameHUD({
     message,
     onReset,
     colorTheme = 'blue',
-    icon
+    icon,
+    gameMode = 'challenge',
+    elapsedTime = 0
 }: GameHUDProps) {
     const { t } = useLanguage();
     const theme = THEMES[colorTheme];
@@ -59,6 +63,8 @@ export default function GameHUD({
     const completed = totalTargets - remainingTargets;
     const totalAttempts = completed + errors;
     const accuracy = totalAttempts > 0 ? Math.round((completed / totalAttempts) * 100) : 100;
+
+    const displayTime = gameMode === 'challenge' ? timeLeft : elapsedTime;
 
     return (
         <div className="w-full relative z-20">
@@ -109,12 +115,14 @@ export default function GameHUD({
                     <div className="flex flex-col items-center gap-1">
                         <div className={cn(
                             "flex items-center gap-2 px-3 py-2 rounded-xl font-mono font-bold text-xl border transition-all shadow-lg min-w-[100px] justify-center",
-                            timeLeft < 20
+                            gameMode === 'challenge' && timeLeft < 20
                                 ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse"
                                 : "bg-slate-800/80 border-white/10 " + theme.text
                         )}>
                             <Timer className="w-5 h-5" weight="bold" />
-                            <span>{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+                            <span>
+                                {Math.floor(displayTime / 60)}:{(displayTime % 60).toString().padStart(2, '0')}
+                            </span>
                         </div>
                         {remainingTargets > 0 && (
                             <span className={cn("text-[10px] uppercase font-bold tracking-wider", theme.sub)}>

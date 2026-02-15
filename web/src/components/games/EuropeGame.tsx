@@ -29,8 +29,8 @@ export default function EuropeGame() {
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.70775}
-            initialPan={{ x: -40, y: -150 }}
+            initialZoom={1.53}
+            initialPan={{ x: -40, y: -100 }}
             elevationHeight={6}
         />
     );

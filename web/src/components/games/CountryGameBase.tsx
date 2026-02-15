@@ -40,15 +40,18 @@ export default function CountryGameBase({
     elevationHeight = 8
 }: CountryGameProps) {
     const { language, t } = useLanguage();
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
     const {
         gameState, setGameState,
         score, addScore,
         errors, addError,
         timeLeft,
+        elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame
-    } = useGameLogic({ initialTime, penaltyTime: 5 });
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode });
 
     const [targetCountry, setTargetCountry] = useState('');
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
@@ -77,7 +80,10 @@ export default function CountryGameBase({
         return () => document.removeEventListener('fullscreenchange', handleFsChange);
     }, [pathData, nameMapping]);
 
-    const startGame = () => {
+    const startGame = (mode?: 'challenge' | 'practice') => {
+        if (mode) setGameMode(mode);
+        // Small timeout to allow state update if needed, though hook uses current render value
+        // but hookStartGame resets things.
         hookStartGame();
         setAttempts(0);
         setFailedCountries([]);
@@ -120,7 +126,7 @@ export default function CountryGameBase({
             nextTurn(newRemaining);
         } else {
             addError();
-            addScore(-20);
+            addScore(gameMode === 'challenge' ? -20 : -5); // Less penalty in practice
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
@@ -141,10 +147,9 @@ export default function CountryGameBase({
     };
 
     const resetGame = () => {
-        hookResetGame();
+        setGameState('start'); // Go back to start screen to choose mode
         setZoom(initialZoom);
         setPan(initialPan);
-        startGame();
     };
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -154,15 +159,7 @@ export default function CountryGameBase({
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        // Panning blocked by user request
-        /*
-        if (!isDragging) return;
-        isClick.current = false;
-        setPan({
-            x: e.clientX - dragStart.current.x,
-            y: e.clientY - dragStart.current.y,
-        });
-        */
+        // Panning logic here if enabled
     };
 
     const handleMouseUp = () => {
@@ -186,6 +183,8 @@ export default function CountryGameBase({
                     score={score}
                     errors={errors}
                     timeLeft={timeLeft}
+                    elapsedTime={elapsedTime}
+                    gameMode={gameMode}
                     totalTargets={Object.keys(nameMapping).length}
                     remainingTargets={remainingCountries.length}
                     targetName={targetCountry}
@@ -222,15 +221,32 @@ export default function CountryGameBase({
                                 <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
                                 <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed text-center">
                                     {language === 'es'
-                                        ? `Pon a prueba tus conocimientos de geografía en ${regionName}. ¿Ubicarlos todos a tiempo?`
-                                        : `Test your geography knowledge in ${regionName}. Can you locate them all in time?`}
+                                        ? `Pon a prueba tus conocimientos de geografía en ${regionName}.`
+                                        : `Test your geography knowledge in ${regionName}.`}
                                 </p>
-                                <button
-                                    onClick={startGame}
-                                    className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1"
-                                >
-                                    <span className="relative z-10 flex items-center gap-2">{t.common.start.toUpperCase()} {t.gamesPage.gameTypes.map.toUpperCase()} <Timer className="w-5 h-5 opacity-50" /></span>
-                                </button>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        onClick={() => startGame('challenge')}
+                                        className="group relative px-6 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1"
+                                    >
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            {language === 'es' ? 'MODO RETO' : 'CHALLENGE MODE'}
+                                            <Timer className="w-5 h-5 opacity-50" />
+                                        </span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => startGame('practice')}
+                                        className="group relative px-6 py-4 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1"
+                                    >
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            {language === 'es' ? 'MODO PRÁCTICA' : 'PRACTICE MODE'}
+                                            <RefreshCw className="w-5 h-5 opacity-50" />
+                                        </span>
+                                    </button>
+                                </div>
+
                             </motion.div>
                         )}
 
