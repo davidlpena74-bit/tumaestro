@@ -728,18 +728,16 @@ export default function RoleBasedDashboard() {
                                             {conn.full_name?.[0] || conn.email[0]}
                                         </div>
                                         <div className="flex-1">
-                                            <div className="flex-1">
-                                                <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                                                    {conn.full_name || 'Sin nombre'}
-                                                    {(conn as any).connection_status === 'pending' && (
-                                                        <span className="bg-yellow-100 text-yellow-700 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide">Pendiente</span>
-                                                    )}
-                                                </h4>
-                                                <p className="text-slate-400 text-sm">{conn.email}</p>
-                                            </div>
-                                            <div className="text-green-500 bg-green-50 p-2 rounded-full">
-                                                <CheckCircle size={20} weight="fill" />
-                                            </div>
+                                            <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                                                {conn.full_name || 'Sin nombre'}
+                                                {(conn as any).connection_status === 'pending' && (
+                                                    <span className="bg-yellow-100 text-yellow-700 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide">Pendiente</span>
+                                                )}
+                                            </h4>
+                                            <p className="text-slate-400 text-sm">{conn.email}</p>
+                                        </div>
+                                        <div className="text-green-500 bg-green-50 p-2 rounded-full">
+                                            <CheckCircle size={20} weight="fill" />
                                         </div>
 
                                         {/* Display Classes (Teacher View) */}
