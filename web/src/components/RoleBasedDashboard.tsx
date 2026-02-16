@@ -58,6 +58,7 @@ export default function RoleBasedDashboard() {
 
     // UI states
     const [searchTerm, setSearchTerm] = useState('');
+    const [openedDropdownId, setOpenedDropdownId] = useState<string | null>(null);
     const [isCreatingClass, setIsCreatingClass] = useState(false);
     const [newClassName, setNewClassName] = useState('');
     const [newClassDesc, setNewClassDesc] = useState('');
@@ -607,8 +608,55 @@ export default function RoleBasedDashboard() {
 
                                     {/* Display Classes (Teacher View) */}
                                     {isTeacher && (
-                                        <div className="mb-4">
-                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Clases inscritas</p>
+                                        <div className="mb-4 relative">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clases inscritas</p>
+                                                <button
+                                                    onClick={() => setOpenedDropdownId(openedDropdownId === conn.id ? null : conn.id)}
+                                                    className="bg-blue-50 text-blue-600 p-1 rounded-md hover:bg-blue-100 transition-colors"
+                                                    title="Añadir a otra clase"
+                                                >
+                                                    <Plus size={14} weight="bold" />
+                                                </button>
+                                            </div>
+
+                                            {/* Add Class Dropdown */}
+                                            {openedDropdownId === conn.id && (
+                                                <div className="absolute top-8 right-0 bg-white border border-slate-100 shadow-xl rounded-xl z-20 w-48 overflow-hidden animate-in fade-in zoom-in duration-200">
+                                                    <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] uppercase font-bold text-slate-400">
+                                                        Añadir a clase
+                                                    </div>
+                                                    <div className="max-h-40 overflow-y-auto">
+                                                        {myClasses.filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id)).length > 0 ? (
+                                                            myClasses
+                                                                .filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id))
+                                                                .map(c => (
+                                                                    <button
+                                                                        key={c.id}
+                                                                        onClick={() => {
+                                                                            addStudentToClass(c.id, conn.id);
+                                                                            // Update local state optimsitically or wait for fetch
+                                                                            // Helper to update local state avoiding full reload
+                                                                            const currentClasses = studentClasses[conn.id] || [];
+                                                                            setStudentClasses({
+                                                                                ...studentClasses,
+                                                                                [conn.id]: [...currentClasses, c]
+                                                                            });
+                                                                            setOpenedDropdownId(null);
+                                                                        }}
+                                                                        className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+                                                                    >
+                                                                        {c.name}
+                                                                    </button>
+                                                                ))
+                                                        ) : (
+                                                            <p className="px-4 py-3 text-[10px] text-slate-400 italic text-center">
+                                                                Ya está en todas tus clases
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
                                             <div className="flex flex-wrap gap-2">
                                                 {(studentClasses[conn.id] || []).map(cls => (
                                                     <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
