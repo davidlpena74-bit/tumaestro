@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
-import { User, Envelope, Lock, FloppyDisk, SignOut, CircleNotch } from '@phosphor-icons/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { User, Envelope, Lock, FloppyDisk, SignOut, CircleNotch, Trash } from '@phosphor-icons/react';
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -20,6 +21,11 @@ export default function ProfilePage() {
 
     // UI States
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+    // Account Deletion States
+    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+    const [deleteConfirmation, setDeleteConfirmation] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const getUser = async () => {
@@ -92,6 +98,29 @@ export default function ProfilePage() {
             setMessage({ type: 'error', text: error.message });
         } finally {
             setUpdating(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        if (deleteConfirmation !== 'borra mi cuenta') return;
+        setIsDeleting(true);
+
+        try {
+            // Call the RPC function to delete account data
+            const { error } = await supabase.rpc('delete_own_account');
+
+            if (error) throw error;
+
+            // Sign out
+            await supabase.auth.signOut();
+
+            // Force reload to go to login
+            window.location.href = '/login';
+
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            setMessage({ type: 'error', text: 'Error al eliminar la cuenta. Por favor, inténtalo de nuevo.' });
+            setIsDeleting(false);
         }
     };
 
@@ -224,6 +253,83 @@ export default function ProfilePage() {
                         </p>
                     </div>
                 </div>
+
+                {/* Danger Zone */}
+                <div className="border-t border-slate-200 pt-8 mt-12 pb-8">
+                    <h3 className="text-red-600 font-black text-xl mb-4">Zona de Peligro</h3>
+                    <div className="bg-red-50 border border-red-100 p-6 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div>
+                            <h4 className="font-bold text-red-700">Eliminar cuenta</h4>
+                            <p className="text-red-500 text-sm">Esta acción es irreversible. Se eliminarán todos tus datos, clases y tareas.</p>
+                        </div>
+                        <button
+                            onClick={() => setIsDeletingAccount(true)}
+                            className="bg-white text-red-600 border border-red-200 px-6 py-2.5 rounded-xl font-bold hover:bg-red-600 hover:text-white transition-colors shadow-sm"
+                        >
+                            Eliminar mi cuenta
+                        </button>
+                    </div>
+                </div>
+
+                {/* Delete Account Modal */}
+                <AnimatePresence>
+                    {isDeletingAccount && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setIsDeletingAccount(false)}
+                                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+                            />
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                                className="bg-white rounded-3xl p-8 max-w-md w-full relative z-10 shadow-2xl border border-slate-100"
+                            >
+                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-600 mx-auto mb-6">
+                                    <Trash size={32} weight="fill" />
+                                </div>
+                                <h3 className="font-black text-2xl text-center text-slate-800 mb-2">¿Estás absolutamente seguro?</h3>
+                                <p className="text-slate-500 text-center mb-6">Esta acción no se puede deshacer. Esto eliminará permanentemente tu cuenta y eliminará tus datos de nuestros servidores.</p>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-700 uppercase mb-2">
+                                            Escribe <span className="text-red-600">borra mi cuenta</span> para confirmar
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold focus:border-red-500 focus:outline-none transition-colors"
+                                            placeholder="borra mi cuenta"
+                                            value={deleteConfirmation}
+                                            onChange={(e) => setDeleteConfirmation(e.target.value)}
+                                            onPaste={(e) => e.preventDefault()}
+                                        />
+                                    </div>
+
+                                    <button
+                                        disabled={deleteConfirmation !== 'borra mi cuenta' || isDeleting}
+                                        onClick={handleDeleteAccount}
+                                        className="w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-200 flex items-center justify-center gap-2"
+                                    >
+                                        {isDeleting ? <CircleNotch className="animate-spin" size={24} /> : 'Eliminar cuenta definitivamente'}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsDeletingAccount(false);
+                                            setDeleteConfirmation('');
+                                        }}
+                                        className="w-full text-slate-400 font-bold py-3 hover:text-slate-600"
+                                    >
+                                        Cancelar, quiero conservar mi cuenta
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );
