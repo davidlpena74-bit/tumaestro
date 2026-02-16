@@ -395,6 +395,23 @@ export default function RoleBasedDashboard() {
         }
     };
 
+    const deleteClass = async (classId: string) => {
+        if (!confirm('¿Seguro que quieres eliminar esta clase? Se borrarán todas las tareas y el acceso de los alumnos.')) return;
+
+        const { error } = await supabase.from('classes').delete().eq('id', classId);
+
+        if (error) {
+            console.error('Error deleting class:', error);
+            alert('Error al eliminar la clase: ' + error.message);
+        } else {
+            setMyClasses(myClasses.filter(c => c.id !== classId));
+            setMyTasks(myTasks.filter(t => t.class_id !== classId));
+            if (selectedClassId === classId) {
+                setSelectedClassId(null);
+            }
+        }
+    };
+
     const createTask = async () => {
         if (!targetClassId || !newTaskTitle) return;
 
@@ -782,7 +799,11 @@ export default function RoleBasedDashboard() {
                                             <p className="text-slate-500 text-sm">{cls.description}</p>
                                         </div>
                                         {isTeacher && (
-                                            <button className="text-red-400 hover:text-red-600 p-2 bg-red-50 rounded-xl">
+                                            <button
+                                                onClick={() => deleteClass(cls.id)}
+                                                className="text-red-400 hover:text-red-600 p-2 bg-red-50 rounded-xl"
+                                                title="Eliminar clase"
+                                            >
                                                 <Trash size={20} />
                                             </button>
                                         )}
