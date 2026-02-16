@@ -50,7 +50,7 @@ type Notification = {
     title: string;
     message: string;
     data: any;
-    is_read: boolean;
+    read: boolean;
     created_at: string;
 };
 
@@ -349,7 +349,14 @@ export default function RoleBasedDashboard() {
 
     const approveConnection = async (notification: Notification) => {
         if (!myProfile) return;
-        const { teacher_id, class_id } = notification.data;
+        // Support both data structures (manual insert and RPC insert)
+        const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
+        const class_id = notification.data?.class_id;
+
+        if (!teacher_id) {
+            console.error("No teacher_id or sender_id found in notification data", notification);
+            return;
+        }
 
         // 1. Update status to accepted
         const { error: updateError } = await supabase
@@ -361,39 +368,63 @@ export default function RoleBasedDashboard() {
         if (!updateError) {
             // 2. If there was a class involved, add to class_students
             if (class_id) {
-                await supabase.from('class_students').insert({
+                const { error: classError } = await supabase.from('class_students').insert({
                     class_id: class_id,
                     student_id: myProfile.id
                 });
+                if (classError) console.error("Error adding to class:", classError);
             }
 
             // 3. Delete notification
-            await supabase.from('notifications').delete().eq('id', notification.id);
+            const { error: deleteError } = await supabase.from('notifications').delete().eq('id', notification.id);
 
-            // Refresh
-            fetchNotifications(myProfile.id);
+            if (deleteError) {
+                console.error("Error deleting notification:", deleteError);
+                // Even if deletion fails (likely RLS), we should probably hide it from state 
+                // to avoid confusing the user, but it will come back on refresh until RLS is fixed.
+                setNotifications(prev => prev.filter(n => n.id !== notification.id));
+            } else {
+                fetchNotifications(myProfile.id);
+            }
+
+            // Refresh other data
             fetchConnections(myProfile.id, myProfile.role);
             if (class_id) fetchClassesAsStudent(myProfile.id);
 
             alert("¡Solicitud aceptada!");
         } else {
+            console.error("Error updating connection status:", updateError);
             alert("Error al aceptar: " + updateError.message);
         }
     };
 
     const rejectConnection = async (notification: Notification) => {
         if (!myProfile) return;
-        const { teacher_id } = notification.data;
+        const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
+
+        if (!teacher_id) {
+            console.error("No teacher_id or sender_id found in notification data", notification);
+            return;
+        }
 
         // Delete the pending connection
-        await supabase.from('student_teachers').delete()
+        const { error: connError } = await supabase.from('student_teachers').delete()
             .eq('student_id', myProfile.id)
-            .eq('teacher_id', teacher_id); // Assuming we delete it on reject
+            .eq('teacher_id', teacher_id);
+
+        if (connError) console.error("Error deleting connection:", connError);
 
         // Delete notification
-        await supabase.from('notifications').delete().eq('id', notification.id);
+        const { error: deleteError } = await supabase.from('notifications').delete().eq('id', notification.id);
 
-        fetchNotifications(myProfile.id);
+        if (deleteError) {
+            console.error("Error deleting notification:", deleteError);
+            // Optimistic update
+            setNotifications(prev => prev.filter(n => n.id !== notification.id));
+        } else {
+            fetchNotifications(myProfile.id);
+        }
+
         alert("Solicitud rechazada.");
     };
 

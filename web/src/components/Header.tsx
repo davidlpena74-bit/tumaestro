@@ -92,19 +92,56 @@ export default function Header() {
 
     const handleAcceptRequest = async (notification: Notification, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (notification.type === 'connection_request' && notification.data?.sender_id) {
-            // Call RPC to accept
-            const { error } = await supabase.rpc('accept_connection_request', {
-                requester_id: notification.data.sender_id
-            });
+        if (!user) return;
 
-            if (!error) {
-                alert('Solicitud aceptada correctamente');
-                // Mark as read after accepting
-                markAsRead(notification.id);
+        // Verify it's a connection request
+        if (notification.type === 'connection_request') {
+            // Get teacher_id from data (it was stored as teacher_id in RoleBasedDashboard)
+            // Fallback to sender_id just in case, though teacher_id is the standard now
+            const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
+            const class_id = notification.data?.class_id;
+
+            if (!teacher_id) {
+                console.error("No teacher_id found in notification data", notification);
+                return;
+            }
+
+            // 1. Update status to accepted
+            const { error: updateError } = await supabase
+                .from('student_teachers')
+                .update({ status: 'accepted' })
+                .eq('student_id', user.id)
+                .eq('teacher_id', teacher_id);
+
+            if (!updateError) {
+                // 2. If there was a class involved, add to class_students
+                if (class_id) {
+                    const { error: classError } = await supabase.from('class_students').insert({
+                        class_id: class_id,
+                        student_id: user.id
+                    });
+
+                    if (classError) console.error("Error adding to class:", classError);
+                }
+
+                // 3. Delete notification so it doesn't appear again
+                const { error: deleteError } = await supabase.from('notifications').delete().eq('id', notification.id);
+
+                if (deleteError) {
+                    console.error("Error deleting notification:", deleteError);
+                    // Optimistic update even if delete failed (for UI consistency)
+                    setNotifications(prev => prev.filter(n => n.id !== notification.id));
+                    setUnreadCount(prev => Math.max(0, prev - 1));
+                    alert('¡Solicitud aceptada correctamente!');
+                } else {
+                    // Update local state by removing the notification
+                    setNotifications(prev => prev.filter(n => n.id !== notification.id));
+                    setUnreadCount(prev => Math.max(0, prev - 1));
+                    alert('¡Solicitud aceptada correctamente!');
+                }
             } else {
-                console.error(error);
-                alert('Error al aceptar la solicitud');
+                console.error("Error accepting connection:", updateError);
+                alert('Error al aceptar la solicitud: ' + updateError.message);
             }
         }
     };
