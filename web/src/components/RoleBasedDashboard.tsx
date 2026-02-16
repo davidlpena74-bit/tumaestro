@@ -931,26 +931,26 @@ export default function RoleBasedDashboard() {
 
                                     {/* Student Avatars Display */}
                                     {isTeacher && (
-                                        <div className="mb-6 flex items-center gap-2">
-                                            <div className="flex -space-x-3 overflow-hidden p-1">
-                                                {(enrolledStudentsByClass[cls.id] || []).slice(0, 5).map((student, i) => (
-                                                    <div key={i} className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600" title={student.full_name}>
-                                                        {student.full_name?.[0] || '?'}
-                                                    </div>
-                                                ))}
-                                                {(enrolledStudentsByClass[cls.id] || []).length > 5 && (
-                                                    <div className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
-                                                        +{(enrolledStudentsByClass[cls.id] || []).length - 5}
-                                                    </div>
-                                                )}
-                                                {(enrolledStudentsByClass[cls.id] || []).length === 0 && (
-                                                    <span className="text-slate-400 text-xs italic pl-2">Sin alumnos aún</span>
-                                                )}
-                                            </div>
-                                            {(enrolledStudentsByClass[cls.id] || []).length > 0 && (
-                                                <span className="text-xs text-slate-400 font-medium ml-2">
-                                                    {(enrolledStudentsByClass[cls.id] || []).length} alumnos
-                                                </span>
+                                        <div className="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Alumnos Inscritos ({(enrolledStudentsByClass[cls.id] || []).length})</h5>
+
+                                            {(enrolledStudentsByClass[cls.id] || []).length > 0 ? (
+                                                <div className="flex flex-wrap gap-4">
+                                                    {(enrolledStudentsByClass[cls.id] || []).map((student, i) => (
+                                                        <div key={student.id} className="flex flex-col items-center group/student">
+                                                            <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-sm font-bold text-purple-600 mb-1 group-hover/student:scale-110 group-hover/student:border-purple-200 transition-all">
+                                                                {student.full_name?.[0] || '?'}
+                                                            </div>
+                                                            <span className="text-[10px] font-medium text-slate-500 max-w-[60px] truncate text-center leading-tight group-hover/student:text-purple-600">
+                                                                {student.full_name?.split(' ')[0]}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="text-center py-2">
+                                                    <span className="text-slate-400 text-xs italic">No hay alumnos inscritos todavía.</span>
+                                                </div>
                                             )}
                                         </div>
                                     )}
@@ -1108,14 +1108,14 @@ export default function RoleBasedDashboard() {
                                             )
                                         )}
                                     </div>
-                            ))}
-
-                                    {myClasses.length === 0 && (
-                                        <div className="text-center py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                                            <p className="text-slate-400 font-bold">No estás inscrito en ninguna clase todavía.</p>
-                                        </div>
-                                    )}
                                 </div>
+                            ))}
+                            {myClasses.length === 0 && (
+                                <div className="text-center py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                                    <p className="text-slate-400 font-bold">No estás inscrito en ninguna clase todavía.</p>
+                                </div>
+                            )}
+                        </div>
                     </motion.div>
                 )}
 
