@@ -166,18 +166,6 @@ export default function Header() {
                             />
                         </div>
                     </Link>
-                    {user && (
-                        <motion.div
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${user.user_metadata?.role === 'teacher'
-                                ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                                : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
-                                }`}
-                        >
-                            {user.user_metadata?.role === 'teacher' ? (language === 'es' ? 'Profesor' : 'Teacher') : (language === 'es' ? 'Alumno' : 'Student')}
-                        </motion.div>
-                    )}
                 </div>
 
                 {/* ACTIONS */}
@@ -332,6 +320,18 @@ export default function Header() {
                     {/* Auth Section */}
                     {user ? (
                         <div className="relative">
+                            {/* Role Badge - Floating Above */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className={`absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border shadow-sm whitespace-nowrap z-10 ${user.user_metadata?.role === 'teacher'
+                                    ? 'bg-purple-500 text-white border-purple-400 shadow-purple-500/20'
+                                    : 'bg-teal-500 text-white border-teal-400 shadow-teal-500/20'
+                                    }`}
+                            >
+                                {user.user_metadata?.role === 'teacher' ? (language === 'es' ? 'Profesor' : 'Teacher') : (language === 'es' ? 'Alumno' : 'Student')}
+                            </motion.div>
+
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                                 className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-800 border border-white/10 text-white pl-2 pr-4 py-1.5 rounded-full font-bold text-sm transition-all shadow-lg group"
