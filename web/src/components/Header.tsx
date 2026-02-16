@@ -149,7 +149,7 @@ export default function Header() {
     const handleLogout = async () => {
         await supabase.auth.signOut();
         setUserMenuOpen(false);
-        window.location.reload();
+        window.location.href = '/';
     };
 
     return (
