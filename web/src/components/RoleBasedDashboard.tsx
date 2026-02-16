@@ -471,7 +471,7 @@ export default function RoleBasedDashboard() {
             <div className={`grid grid-cols-1 ${isTeacher ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
                 <div
                     onClick={() => setActiveTab('connections')}
-                    className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer hover:scale-105 transition-transform"
+                    className={`bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all ${activeTab === 'connections' ? 'ring-4 ring-offset-4 ring-blue-500 scale-105' : 'hover:scale-105 opacity-90 hover:opacity-100'}`}
                 >
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-white/20 rounded-2xl">
@@ -488,7 +488,7 @@ export default function RoleBasedDashboard() {
 
                 <div
                     onClick={() => setActiveTab('classes')}
-                    className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer hover:scale-105 transition-transform"
+                    className={`bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all ${activeTab === 'classes' ? 'ring-4 ring-offset-4 ring-purple-500 scale-105' : 'hover:scale-105 opacity-90 hover:opacity-100'}`}
                 >
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-white/20 rounded-2xl">
@@ -504,7 +504,10 @@ export default function RoleBasedDashboard() {
                 </div>
 
                 {isTeacher && (
-                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl">
+                    <div
+                        onClick={() => setActiveTab('tasks')}
+                        className={`bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all ${activeTab === 'tasks' ? 'ring-4 ring-offset-4 ring-emerald-500 scale-105' : 'hover:scale-105 opacity-90 hover:opacity-100'}`}
+                    >
                         <div className="flex items-center gap-4 mb-4">
                             <div className="p-3 bg-white/20 rounded-2xl">
                                 <CheckSquare size={32} />
@@ -958,6 +961,24 @@ export default function RoleBasedDashboard() {
                                 </div>
                             )}
                         </div>
+                    </motion.div>
+                )}
+
+                {activeTab === 'tasks' && (
+                    <motion.div
+                        key="tasks"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm flex flex-col items-center justify-center py-24 text-center"
+                    >
+                        <div className="bg-emerald-50 p-6 rounded-full mb-6">
+                            <CheckSquare size={64} className="text-emerald-500" weight="duotone" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-800 mb-2">Gestión de Tareas</h3>
+                        <p className="text-slate-500 max-w-md mx-auto">
+                            Este panel está actualmente en desarrollo. Próximamente podrás gestionar todas las entregas y calificaciones desde aquí.
+                        </p>
                     </motion.div>
                 )}
             </AnimatePresence>
