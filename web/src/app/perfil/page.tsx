@@ -144,10 +144,7 @@ export default function ProfilePage() {
                     <div className="text-center md:text-left flex-1">
                         <div className="flex flex-col md:flex-row md:items-center gap-2 mb-1">
                             <h1 className="text-3xl font-bold text-slate-800">{fullName || 'Usuario'}</h1>
-                            <div className={`mt-1 md:mt-0 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm w-fit mx-auto md:mx-0 ${user.user_metadata?.role === 'teacher'
-                                ? 'bg-purple-500/10 text-purple-600 border-purple-500/20'
-                                : 'bg-teal-500/10 text-teal-600 border-teal-500/20'
-                                }`}>
+                            <div className={`mt-1 md:mt-0 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm w-fit mx-auto md:mx-0 bg-teal-500 text-white border-teal-400 shadow-teal-500/20`}>
                                 {user.user_metadata?.role === 'teacher' ? 'Profesor' : 'Alumno'}
                             </div>
                         </div>
