@@ -66,6 +66,7 @@ export default function RoleBasedDashboard() {
     const [myTasks, setMyTasks] = useState<Task[]>([]);
     const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set());
     const [studentClasses, setStudentClasses] = useState<Record<string, Class[]>>({});
+    const [enrolledStudentsByClass, setEnrolledStudentsByClass] = useState<Record<string, Profile[]>>({});
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
     // UI states
@@ -182,8 +183,25 @@ export default function RoleBasedDashboard() {
         }
     };
 
+    const fetchClassMembers = async (classIds: string[]) => {
+        if (classIds.length === 0) return;
+
+        const { data } = await supabase
+            .from('class_students')
+            .select('class_id, profiles:student_id(*)') // Updated to use correct relation name if possible, or assume profiles joined on student_id
+            .in('class_id', classIds);
+
+        if (data) {
+            const map: Record<string, Profile[]> = {};
+            data.forEach((item: any) => {
+                if (!map[item.class_id]) map[item.class_id] = [];
+                if (item.profiles) map[item.class_id].push(item.profiles);
+            });
+            setEnrolledStudentsByClass(map);
+        }
+    };
+
     const fetchClassesAsTeacher = async (teacherId: string) => {
-        console.log("Fetching classes for teacher:", teacherId);
         const { data, error } = await supabase
             .from('classes')
             .select('*')
@@ -191,7 +209,6 @@ export default function RoleBasedDashboard() {
 
         if (error) console.error("Error fetching classes:", error);
         if (data) {
-            console.log("Classes fetched:", data);
             setMyClasses(data);
             // Also refresh student enrollments if connections exist
             if (myConnections.length > 0) {
@@ -200,6 +217,7 @@ export default function RoleBasedDashboard() {
             const classIds = data.map((c: any) => c.id);
             if (classIds.length > 0) {
                 fetchTasks(classIds);
+                fetchClassMembers(classIds);
             }
         }
     };
@@ -455,7 +473,6 @@ export default function RoleBasedDashboard() {
     };
 
     const createClass = async () => {
-        console.log("Attempting to create class...", { myProfile, newClassName });
         if (!myProfile || !newClassName) {
             console.error("Missing profile or class name");
             return;
@@ -466,7 +483,6 @@ export default function RoleBasedDashboard() {
             name: newClassName,
             description: newClassDesc
         };
-        console.log("Payload:", payload);
 
         const { data, error } = await supabase.from('classes').insert(payload).select();
 
@@ -474,8 +490,7 @@ export default function RoleBasedDashboard() {
             console.error('Error creating class:', error);
             alert('Error al crear la clase: ' + error.message);
         } else {
-            console.log("Class created successfully:", data);
-            alert("Clase creada correctamente (Revisa la consola si no aparece)");
+            alert("Clase creada correctamente");
             if (myProfile.id) await fetchClassesAsTeacher(myProfile.id);
             setIsCreatingClass(false);
             setNewClassName('');
@@ -914,164 +929,193 @@ export default function RoleBasedDashboard() {
                                         )}
                                     </div>
 
-                                    <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <h5 className="font-bold text-slate-700 flex items-center gap-2">
-                                                <CheckSquare size={18} className="text-purple-500" />
-                                                Tareas Activas
-                                            </h5>
-                                            {isTeacher && (
-                                                <button
-                                                    onClick={() => {
-                                                        setTargetClassId(cls.id);
-                                                        setIsCreatingTask(true);
-                                                    }}
-                                                    className="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-200"
-                                                >
-                                                    + Nueva Tarea
-                                                </button>
-                                            )}
-                                        </div>
-
-                                        {isCreatingTask && targetClassId === cls.id && (
-                                            <div className="bg-white p-4 rounded-xl border border-purple-100 mb-4 shadow-sm animate-in fade-in zoom-in duration-200">
-                                                <h6 className="text-xs font-bold text-purple-600 mb-2 uppercase">Crear Tarea</h6>
-                                                <div className="space-y-3">
-                                                    <input
-                                                        className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
-                                                        placeholder="Título de la tarea..."
-                                                        value={newTaskTitle}
-                                                        onChange={e => setNewTaskTitle(e.target.value)}
-                                                    />
-                                                    <textarea
-                                                        className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
-                                                        placeholder="Descripción..."
-                                                        rows={2}
-                                                        value={newTaskDesc}
-                                                        onChange={e => setNewTaskDesc(e.target.value)}
-                                                    />
-                                                    <div className="flex justify-end gap-2">
-                                                        <button onClick={() => setIsCreatingTask(false)} className="text-xs px-3 py-1 text-slate-400 font-bold">Cancelar</button>
-                                                        <button onClick={createTask} className="text-xs px-4 py-1.5 bg-purple-600 text-white rounded-lg font-bold shadow-md shadow-purple-200">Guardar Tarea</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className="space-y-3">
-                                            {myTasks
-                                                .filter(t => t.class_id === cls.id)
-                                                .filter(t => isTeacher || !completedTaskIds.has(t.id))
-                                                .map(task => (
-                                                    <div key={task.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                                        {!isTeacher && (
-                                                            <button
-                                                                onClick={() => toggleTaskCompletion(task.id, completedTaskIds.has(task.id))}
-                                                                className="mt-1 text-slate-300 hover:text-green-500 transition-colors"
-                                                                title="Marcar como completada"
-                                                            >
-                                                                {completedTaskIds.has(task.id) ? (
-                                                                    <CheckCircle size={24} weight="fill" className="text-green-500" />
-                                                                ) : (
-                                                                    <Square size={24} />
-                                                                )}
-                                                            </button>
-                                                        )}
-                                                        <div className="flex-1">
-                                                            <h6 className={`font-bold text-slate-800 ${completedTaskIds.has(task.id) ? 'line-through text-slate-400' : ''}`}>{task.title}</h6>
-                                                            {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
-                                                        </div>
-                                                        {isTeacher && (
-                                                            <div className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold">
-                                                                Docente
-                                                            </div>
-                                                        )}
+                                    {/* Student Avatars Display */}
+                                    {isTeacher && (
+                                        <div className="mb-6 flex items-center gap-2">
+                                            <div className="flex -space-x-3 overflow-hidden p-1">
+                                                {(enrolledStudentsByClass[cls.id] || []).slice(0, 5).map((student, i) => (
+                                                    <div key={i} className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600" title={student.full_name}>
+                                                        {student.full_name?.[0] || '?'}
                                                     </div>
                                                 ))}
-                                            {myTasks.filter(t => t.class_id === cls.id).filter(t => isTeacher || !completedTaskIds.has(t.id)).length === 0 && (
-                                                <p className="text-center text-xs text-slate-400 italic py-4">No hay tareas activas en este momento.</p>
+                                                {(enrolledStudentsByClass[cls.id] || []).length > 5 && (
+                                                    <div className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
+                                                        +{(enrolledStudentsByClass[cls.id] || []).length - 5}
+                                                    </div>
+                                                )}
+                                                {(enrolledStudentsByClass[cls.id] || []).length === 0 && (
+                                                    <span className="text-slate-400 text-xs italic pl-2">Sin alumnos aún</span>
+                                                )}
+                                            </div>
+                                            {(enrolledStudentsByClass[cls.id] || []).length > 0 && (
+                                                <span className="text-xs text-slate-400 font-medium ml-2">
+                                                    {(enrolledStudentsByClass[cls.id] || []).length} alumnos
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Tasks List */}
+                                    <div className="space-y-3 mb-4 flex-1">
+
+                                        <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100">
+                                            <div className="flex justify-between items-center mb-4">
+                                                <h5 className="font-bold text-slate-700 flex items-center gap-2">
+                                                    <CheckSquare size={18} className="text-purple-500" />
+                                                    Tareas Activas
+                                                </h5>
+                                                {isTeacher && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setTargetClassId(cls.id);
+                                                            setIsCreatingTask(true);
+                                                        }}
+                                                        className="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-200"
+                                                    >
+                                                        + Nueva Tarea
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            {isCreatingTask && targetClassId === cls.id && (
+                                                <div className="bg-white p-4 rounded-xl border border-purple-100 mb-4 shadow-sm animate-in fade-in zoom-in duration-200">
+                                                    <h6 className="text-xs font-bold text-purple-600 mb-2 uppercase">Crear Tarea</h6>
+                                                    <div className="space-y-3">
+                                                        <input
+                                                            className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
+                                                            placeholder="Título de la tarea..."
+                                                            value={newTaskTitle}
+                                                            onChange={e => setNewTaskTitle(e.target.value)}
+                                                        />
+                                                        <textarea
+                                                            className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
+                                                            placeholder="Descripción..."
+                                                            rows={2}
+                                                            value={newTaskDesc}
+                                                            onChange={e => setNewTaskDesc(e.target.value)}
+                                                        />
+                                                        <div className="flex justify-end gap-2">
+                                                            <button onClick={() => setIsCreatingTask(false)} className="text-xs px-3 py-1 text-slate-400 font-bold">Cancelar</button>
+                                                            <button onClick={createTask} className="text-xs px-4 py-1.5 bg-purple-600 text-white rounded-lg font-bold shadow-md shadow-purple-200">Guardar Tarea</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="space-y-3">
+                                                {myTasks
+                                                    .filter(t => t.class_id === cls.id)
+                                                    .filter(t => isTeacher || !completedTaskIds.has(t.id))
+                                                    .map(task => (
+                                                        <div key={task.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                                            {!isTeacher && (
+                                                                <button
+                                                                    onClick={() => toggleTaskCompletion(task.id, completedTaskIds.has(task.id))}
+                                                                    className="mt-1 text-slate-300 hover:text-green-500 transition-colors"
+                                                                    title="Marcar como completada"
+                                                                >
+                                                                    {completedTaskIds.has(task.id) ? (
+                                                                        <CheckCircle size={24} weight="fill" className="text-green-500" />
+                                                                    ) : (
+                                                                        <Square size={24} />
+                                                                    )}
+                                                                </button>
+                                                            )}
+                                                            <div className="flex-1">
+                                                                <h6 className={`font-bold text-slate-800 ${completedTaskIds.has(task.id) ? 'line-through text-slate-400' : ''}`}>{task.title}</h6>
+                                                                {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
+                                                            </div>
+                                                            {isTeacher && (
+                                                                <div className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold">
+                                                                    Docente
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                {myTasks.filter(t => t.class_id === cls.id).filter(t => isTeacher || !completedTaskIds.has(t.id)).length === 0 && (
+                                                    <p className="text-center text-xs text-slate-400 italic py-4">No hay tareas activas en este momento.</p>
+                                                )}
+                                            </div>
+
+                                            {!isTeacher && completedTaskIds.size > 0 && (
+                                                <div className="mt-4 pt-4 border-t border-slate-200">
+                                                    <p className="text-xs text-slate-400 text-center">
+                                                        {myTasks.filter(t => t.class_id === cls.id && completedTaskIds.has(t.id)).length} tareas completadas ocultas.
+                                                    </p>
+                                                </div>
                                             )}
                                         </div>
 
-                                        {!isTeacher && completedTaskIds.size > 0 && (
-                                            <div className="mt-4 pt-4 border-t border-slate-200">
-                                                <p className="text-xs text-slate-400 text-center">
-                                                    {myTasks.filter(t => t.class_id === cls.id && completedTaskIds.has(t.id)).length} tareas completadas ocultas.
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {isTeacher && selectedClassId === cls.id ? (
-                                        <div className="space-y-4 border-t border-slate-100 pt-4">
-                                            <div className="bg-slate-50 p-4 rounded-2xl">
-                                                <h5 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Alumnos en esta clase</h5>
-                                                <div className="space-y-2">
-                                                    {classStudents.map(student => (
-                                                        <div key={student.id} className="flex items-center justify-between text-sm bg-white p-2 rounded-xl border border-slate-100">
-                                                            <span className="font-bold text-slate-700">{student.full_name}</span>
-                                                            <button onClick={() => removeStudentFromClass(cls.id, student.id)} className="text-red-500 hover:text-red-700">
-                                                                <Trash size={16} />
-                                                            </button>
-                                                        </div>
-                                                    ))}
-                                                    {classStudents.length === 0 && <p className="text-slate-400 text-xs text-center py-2 italic">Sin alumnos asignados</p>}
+                                        {isTeacher && selectedClassId === cls.id ? (
+                                            <div className="space-y-4 border-t border-slate-100 pt-4">
+                                                <div className="bg-slate-50 p-4 rounded-2xl">
+                                                    <h5 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Alumnos en esta clase</h5>
+                                                    <div className="space-y-2">
+                                                        {classStudents.map(student => (
+                                                            <div key={student.id} className="flex items-center justify-between text-sm bg-white p-2 rounded-xl border border-slate-100">
+                                                                <span className="font-bold text-slate-700">{student.full_name}</span>
+                                                                <button onClick={() => removeStudentFromClass(cls.id, student.id)} className="text-red-500 hover:text-red-700">
+                                                                    <Trash size={16} />
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                        {classStudents.length === 0 && <p className="text-slate-400 text-xs text-center py-2 italic">Sin alumnos asignados</p>}
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="bg-blue-50 p-4 rounded-2xl">
-                                                <h5 className="text-xs font-black text-blue-400 uppercase tracking-widest mb-3">Añadir de mis contactos</h5>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {myConnections
-                                                        .filter(conn => !classStudents.find(s => s.id === conn.id))
-                                                        .map(conn => (
-                                                            <button
-                                                                key={conn.id}
-                                                                onClick={() => addStudentToClass(cls.id, conn.id)}
-                                                                className="px-3 py-1.5 bg-white text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all"
-                                                            >
-                                                                + {conn.full_name}
-                                                            </button>
-                                                        ))
-                                                    }
-                                                </div>
-                                            </div>
-                                            <button
-                                                onClick={() => setSelectedClassId(null)}
-                                                className="w-full py-2 text-slate-400 text-xs font-bold hover:text-slate-600"
-                                            >
-                                                Cerrar gestor
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        isTeacher && (
-                                            <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
-                                                <div className="flex -space-x-2">
-                                                    <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase">
-                                                        {cls.name[0]}
+                                                <div className="bg-blue-50 p-4 rounded-2xl">
+                                                    <h5 className="text-xs font-black text-blue-400 uppercase tracking-widest mb-3">Añadir de mis contactos</h5>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {myConnections
+                                                            .filter(conn => !classStudents.find(s => s.id === conn.id))
+                                                            .map(conn => (
+                                                                <button
+                                                                    key={conn.id}
+                                                                    onClick={() => addStudentToClass(cls.id, conn.id)}
+                                                                    className="px-3 py-1.5 bg-white text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all"
+                                                                >
+                                                                    + {conn.full_name}
+                                                                </button>
+                                                            ))
+                                                        }
                                                     </div>
                                                 </div>
                                                 <button
-                                                    onClick={() => {
-                                                        setSelectedClassId(cls.id);
-                                                        fetchClassStudents(cls.id);
-                                                    }}
-                                                    className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-100 transition-colors"
+                                                    onClick={() => setSelectedClassId(null)}
+                                                    className="w-full py-2 text-slate-400 text-xs font-bold hover:text-slate-600"
                                                 >
-                                                    Ver y gestionar alumnos
+                                                    Cerrar gestor
                                                 </button>
                                             </div>
-                                        )
-                                    )}
-                                </div>
+                                        ) : (
+                                            isTeacher && (
+                                                <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
+                                                    <div className="flex -space-x-2">
+                                                        <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase">
+                                                            {cls.name[0]}
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedClassId(cls.id);
+                                                            fetchClassStudents(cls.id);
+                                                        }}
+                                                        className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-100 transition-colors"
+                                                    >
+                                                        Ver y gestionar alumnos
+                                                    </button>
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
                             ))}
 
-                            {myClasses.length === 0 && (
-                                <div className="text-center py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                                    <p className="text-slate-400 font-bold">No estás inscrito en ninguna clase todavía.</p>
+                                    {myClasses.length === 0 && (
+                                        <div className="text-center py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                                            <p className="text-slate-400 font-bold">No estás inscrito en ninguna clase todavía.</p>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
                     </motion.div>
                 )}
 
@@ -1138,6 +1182,6 @@ export default function RoleBasedDashboard() {
             </AnimatePresence>
 
 
-        </div>
+        </div >
     );
 }
