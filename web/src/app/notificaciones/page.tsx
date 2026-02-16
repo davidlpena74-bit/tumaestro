@@ -51,7 +51,12 @@ export default function NotificationsPage() {
         setLoading(false);
     };
 
-    const markAsRead = async (id: string) => {
+    const markAsRead = async (id: string, e?: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
         const { error } = await supabase.rpc('mark_notification_read', { notif_id: id });
         if (error) {
             await supabase.from('notifications').update({ read: true }).eq('id', id);
@@ -75,7 +80,11 @@ export default function NotificationsPage() {
         }
     };
 
-    const deleteNotification = async (id: string) => {
+    const deleteNotification = async (id: string, e?: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         const { error } = await supabase
             .from('notifications')
             .delete()
@@ -225,7 +234,7 @@ export default function NotificationsPage() {
                                                 <div className="flex gap-4">
                                                     {!n.read && (
                                                         <button
-                                                            onClick={() => markAsRead(n.id)}
+                                                            onClick={(e) => markAsRead(n.id, e)}
                                                             className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-teal-600 hover:text-teal-700 transition-colors bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100 shadow-sm"
                                                         >
                                                             <Check size={14} weight="bold" />
@@ -233,7 +242,7 @@ export default function NotificationsPage() {
                                                         </button>
                                                     )}
                                                     <button
-                                                        onClick={() => deleteNotification(n.id)}
+                                                        onClick={(e) => deleteNotification(n.id, e)}
                                                         className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors bg-slate-50/50 px-3 py-1.5 rounded-lg border border-slate-100"
                                                     >
                                                         <Trash size={14} weight="bold" />
