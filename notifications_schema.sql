@@ -140,7 +140,14 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  student_ident text;
 begin
+  -- 0. Get student identity (name or email) for the notification
+  select coalesce(full_name, email) into student_ident 
+  from public.profiles 
+  where id = auth.uid();
+
   -- 1. Update status to accepted in student_teachers
   update public.student_teachers
   set status = 'accepted'
@@ -152,5 +159,15 @@ begin
     values (target_class_id, auth.uid())
     on conflict (class_id, student_id) do nothing;
   end if;
+
+  -- 3. Notify teacher
+  insert into public.notifications (user_id, type, title, message, data)
+  values (
+    target_teacher_id,
+    'connection_accepted',
+    '¡Solicitud aceptada!',
+    student_ident || ' ha aceptado tu invitación.',
+    jsonb_build_object('student_id', auth.uid())
+  );
 end;
 $$;
