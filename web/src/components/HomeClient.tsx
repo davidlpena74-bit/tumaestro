@@ -59,7 +59,7 @@ export default function HomeClient() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
                     {/* OPCIÓN A: PROFESORES */}
                     <motion.div
-                        onClick={() => window.location.href = '/profesores'}
+                        onClick={() => window.location.href = '/clases'}
                         initial="initial"
                         whileHover="hover"
                         variants={{
@@ -143,7 +143,7 @@ export default function HomeClient() {
 
 
                 {/* Flecha */}
-                <div className="absolute bottom-8 animate-bounce text-white/50 cursor-pointer" onClick={() => scrollTo('profesores')}>
+                <div className="absolute bottom-8 animate-bounce text-white/50 cursor-pointer" onClick={() => scrollTo('clases')}>
                     <CaretDown className="w-8 h-8" weight="bold" />
                 </div>
             </div>
@@ -155,7 +155,7 @@ export default function HomeClient() {
 
                     {/* SECCIÓN PROFESORES */}
                     <section className="w-full max-w-6xl mx-auto px-4 mb-24">
-                        <div id="profesores" className="scroll-mt-32 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
+                        <div id="clases" className="scroll-mt-32 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
                             <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4">
                                 <div>
                                     <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-4 flex items-center gap-4">
@@ -164,7 +164,7 @@ export default function HomeClient() {
                                     </h2>
                                     <p className="text-gray-300 text-lg leading-relaxed">{t.home.featuredTeachersDesc}</p>
                                 </div>
-                                <a href="/profesores" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 hover:-translate-y-1 transition-all group">
+                                <a href="/clases" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 hover:-translate-y-1 transition-all group">
                                     {t.home.viewAll}
                                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" weight="bold" />
                                 </a>

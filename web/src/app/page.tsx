@@ -19,7 +19,7 @@ export default function Home() {
     description: 'Plataforma líder en educación con profesores, recursos y juegos interactivos.',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://tumaestro.es/profesores?q={search_term_string}',
+      target: 'https://tumaestro.es/clases?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };

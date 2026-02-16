@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     description: 'Gestiona tus clases, crea actividades personalizadas y accede a recursos didácticos exclusivos para potenciar la enseñanza en TuMaestro.es.',
     keywords: ['profesores particulares', 'herramientas docentes', 'gestion de clases', 'actividades educativas', 'recursos profesores', 'tumaestro profesores'],
     alternates: {
-        canonical: 'https://tumaestro.es/profesores',
+        canonical: 'https://tumaestro.es/clases',
     },
 };
 
