@@ -28,7 +28,7 @@ export const TRANSLATIONS = {
         },
         header: {
             games: 'Juegos',
-            resources: 'Recursos',
+            resources: 'Material',
             teachers: 'Clases',
             login: 'Acceso Usuarios',
             teaching: 'Docencia',
@@ -383,7 +383,7 @@ export const TRANSLATIONS = {
         },
         header: {
             games: 'Games',
-            resources: 'Resources',
+            resources: 'Support Material',
             teachers: 'Classes',
             login: 'User Login',
             teaching: 'Teaching',
@@ -738,7 +738,7 @@ export const TRANSLATIONS = {
         },
         header: {
             games: 'Jeux',
-            resources: 'Ressources',
+            resources: 'Matériel',
             teachers: 'Cours',
             login: 'Connexion Utilisateurs',
             teaching: 'Enseignement',
@@ -1087,7 +1087,7 @@ export const TRANSLATIONS = {
         },
         header: {
             games: 'Spiele',
-            resources: 'Ressourcen',
+            resources: 'Material',
             teachers: 'Kurse',
             login: 'Benutzer-Login',
             teaching: 'Lehre',

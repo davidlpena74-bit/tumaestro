@@ -199,21 +199,21 @@ export default function Header() {
                         />
                     </Link>
                     <Link
-                        href="/juegos"
-                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/juegos') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
-                    >
-                        <span>{t.header.games}</span>
-                        <motion.div
-                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/juegos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
-                        />
-                    </Link>
-                    <Link
                         href="/recursos"
                         className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/recursos') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
                     >
                         <span>{t.header.resources}</span>
                         <motion.div
                             className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/recursos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
+                        />
+                    </Link>
+                    <Link
+                        href="/juegos"
+                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/juegos') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
+                    >
+                        <span>{t.header.games}</span>
+                        <motion.div
+                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/juegos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
                         />
                     </Link>
 
