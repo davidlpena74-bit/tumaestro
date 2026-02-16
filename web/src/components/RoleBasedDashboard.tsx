@@ -43,10 +43,21 @@ type Task = {
     created_at: string;
 };
 
+type Notification = {
+    id: string;
+    user_id: string;
+    type: string;
+    title: string;
+    message: string;
+    data: any;
+    is_read: boolean;
+    created_at: string;
+};
+
 export default function RoleBasedDashboard() {
     const [myProfile, setMyProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'connections' | 'classes' | 'tasks'>('connections');
+    const [activeTab, setActiveTab] = useState<'connections' | 'classes' | 'tasks' | 'notifications'>('connections');
 
     // Data lists
     const [profiles, setProfiles] = useState<Profile[]>([]); // For searching
@@ -55,6 +66,7 @@ export default function RoleBasedDashboard() {
     const [myTasks, setMyTasks] = useState<Task[]>([]);
     const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set());
     const [studentClasses, setStudentClasses] = useState<Record<string, Class[]>>({});
+    const [notifications, setNotifications] = useState<Notification[]>([]);
 
     // UI states
     const [searchTerm, setSearchTerm] = useState('');
@@ -100,6 +112,7 @@ export default function RoleBasedDashboard() {
             } else {
                 fetchClassesAsStudent(profile.id);
             }
+            fetchNotifications(profile.id);
         }
         setLoading(false);
     };
@@ -111,20 +124,34 @@ export default function RoleBasedDashboard() {
         const filterCol = role === 'student' ? 'student_id' : 'teacher_id';
         const selectCol = role === 'student' ? 'teacher_id' : 'student_id';
 
+        // Fetch connections with status
         const { data } = await supabase
             .from(table)
-            .select(`profiles!${table}_${selectCol}_fkey(*)`)
+            .select(`status, profiles!${table}_${selectCol}_fkey(*)`)
             .eq(filterCol, userId);
 
         if (data) {
-            const profiles = data.map((item: any) => item.profiles);
-            setMyConnections(profiles);
+            // Map to profile but include status attached to the profile object for UI logic
+            const profilesWithStatus = data.map((item: any) => ({
+                ...item.profiles,
+                connection_status: item.status // 'pending' | 'accepted'
+            }));
+            setMyConnections(profilesWithStatus);
 
-            // If teacher, fetch classes for these students
-            if (role === 'teacher' && profiles.length > 0) {
-                fetchStudentEnrollments(profiles.map((p: any) => p.id));
+            // If teacher, fetch classes for these students (only accepted ones ideally, but let's fetch all for now)
+            if (role === 'teacher' && profilesWithStatus.length > 0) {
+                fetchStudentEnrollments(profilesWithStatus.map((p: any) => p.id));
             }
         }
+    };
+
+    const fetchNotifications = async (userId: string) => {
+        const { data } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false });
+        if (data) setNotifications(data);
     };
 
     const fetchStudentEnrollments = async (studentIds: string[]) => {
@@ -252,34 +279,41 @@ export default function RoleBasedDashboard() {
     const addConnection = async (targetId: string, classId: string | null) => {
         if (!myProfile) return;
 
-        // 1. Create the connection (student_teachers)
+        // 1. Create connection request (pending)
         const payload = myProfile.role === 'student'
-            ? { student_id: myProfile.id, teacher_id: targetId }
-            : { student_id: targetId, teacher_id: myProfile.id };
+            ? { student_id: myProfile.id, teacher_id: targetId, status: 'pending' }
+            : { student_id: targetId, teacher_id: myProfile.id, status: 'pending' };
 
-        // Use send_connection_request function if available, or direct insert for now as per previous logic
-        const { error: connError } = await supabase.from('student_teachers').insert(payload);
+        const { error: connError, data: connData } = await supabase
+            .from('student_teachers')
+            .insert(payload)
+            .select();
 
-        if (!connError || connError.code === '23505') { // 23505 is unique violation (already connected), which is fine
+        if (!connError) {
+            // 2. Send Notification
+            // If I am a teacher adding a student
+            if (myProfile.role === 'teacher') {
+                const { data: cls } = classId
+                    ? await supabase.from('classes').select('name').eq('id', classId).single()
+                    : { data: null };
 
-            // 2. If teacher and class selected, add to class_students
-            if (myProfile.role === 'teacher' && classId) {
-                const { error: classError } = await supabase
-                    .from('class_students')
-                    .insert({ class_id: classId, student_id: targetId });
+                const className = cls ? cls.name : 'una clase';
 
-                if (classError) {
-                    console.error("Error adding to class:", classError);
-                    alert("Se creó la conexión pero hubo un error al añadir a la clase.");
-                } else {
-                    alert("Alumno añadido a la clase y vinculado correctamente.");
-                }
+                await supabase.from('notifications').insert({
+                    user_id: targetId,
+                    type: 'connection_request',
+                    title: 'Solicitud de Profesor',
+                    message: `${myProfile.full_name} quiere añadirte como alumno${classId ? ` a la clase "${className}"` : ''}.`,
+                    data: {
+                        teacher_id: myProfile.id,
+                        class_id: classId,
+                        teacher_name: myProfile.full_name
+                    }
+                });
+                alert("Solicitud enviada al alumno. Debe aprobarla para que aparezca en la clase.");
             } else {
-                if (!classId && myProfile.role === 'teacher') {
-                    // Should not start here if logic is correct, but safe fallback
-                } else {
-                    alert("Solicitud de conexión enviada."); // Or just "Vinculado"
-                }
+                // Student adding teacher - usually implies direct follow or request
+                alert("Solicitud enviada.");
             }
 
             fetchConnections(myProfile.id, myProfile.role);
@@ -287,8 +321,62 @@ export default function RoleBasedDashboard() {
             setShowClassSelector(false);
             setPendingStudentId(null);
         } else {
-            alert("Error al vincular: " + connError.message);
+            if (connError.code === '23505') {
+                alert("Ya existe una vinculación con este usuario.");
+            } else {
+                alert("Error al vincular: " + connError.message);
+            }
         }
+    };
+
+    const approveConnection = async (notification: Notification) => {
+        if (!myProfile) return;
+        const { teacher_id, class_id } = notification.data;
+
+        // 1. Update status to accepted
+        const { error: updateError } = await supabase
+            .from('student_teachers')
+            .update({ status: 'accepted' })
+            .eq('student_id', myProfile.id)
+            .eq('teacher_id', teacher_id);
+
+        if (!updateError) {
+            // 2. If there was a class involved, add to class_students
+            if (class_id) {
+                await supabase.from('class_students').insert({
+                    class_id: class_id,
+                    student_id: myProfile.id
+                });
+            }
+
+            // 3. Delete notification
+            await supabase.from('notifications').delete().eq('id', notification.id);
+
+            // Refresh
+            fetchNotifications(myProfile.id);
+            fetchConnections(myProfile.id, myProfile.role);
+            if (class_id) fetchClassesAsStudent(myProfile.id);
+
+            alert("¡Solicitud aceptada!");
+        } else {
+            alert("Error al aceptar: " + updateError.message);
+        }
+    };
+
+    const rejectConnection = async (notification: Notification) => {
+        if (!myProfile) return;
+        const { teacher_id } = notification.data;
+
+        // Delete the pending connection
+        await supabase.from('student_teachers').delete()
+            .eq('student_id', myProfile.id)
+            .eq('teacher_id', teacher_id); // Assuming we delete it on reject
+
+        // Delete notification
+        await supabase.from('notifications').delete().eq('id', notification.id);
+
+        fetchNotifications(myProfile.id);
+        alert("Solicitud rechazada.");
     };
 
     const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
@@ -521,6 +609,25 @@ export default function RoleBasedDashboard() {
                         <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Total Tareas</p>
                     </div>
                 )}
+
+                {!isTeacher && (
+                    <div
+                        onClick={() => setActiveTab('notifications')}
+                        className={`group bg-gradient-to-br from-orange-400 to-pink-500 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'notifications' ? 'ring-4 ring-offset-4 ring-orange-400 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
+                    >
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
+                                <Users size={32} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-lg">Avisos</h3>
+                                <p className="text-white/80 text-sm">Solicitudes pendientes</p>
+                            </div>
+                        </div>
+                        <div className="text-3xl font-black">{notifications.length}</div>
+                        <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Notificaciones</p>
+                    </div>
+                )}
             </div>
 
             {/* Navigation Tabs Removed as per request, using Top Cards for navigation */}
@@ -621,108 +728,114 @@ export default function RoleBasedDashboard() {
                                             {conn.full_name?.[0] || conn.email[0]}
                                         </div>
                                         <div className="flex-1">
-                                            <h4 className="font-bold text-slate-800">{conn.full_name || 'Sin nombre'}</h4>
-                                            <p className="text-slate-400 text-sm">{conn.email}</p>
-                                        </div>
-                                        <div className="text-green-500 bg-green-50 p-2 rounded-full">
-                                            <CheckCircle size={20} weight="fill" />
-                                        </div>
-                                    </div>
-
-                                    {/* Display Classes (Teacher View) */}
-                                    {isTeacher && (
-                                        <div className="mb-4 relative">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clases inscritas</p>
-                                                <button
-                                                    onClick={() => setOpenedDropdownId(openedDropdownId === conn.id ? null : conn.id)}
-                                                    className="bg-blue-50 text-blue-600 p-1 rounded-md hover:bg-blue-100 transition-colors"
-                                                    title="Añadir a otra clase"
-                                                >
-                                                    <Plus size={14} weight="bold" />
-                                                </button>
+                                            <div className="flex-1">
+                                                <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                                                    {conn.full_name || 'Sin nombre'}
+                                                    {(conn as any).connection_status === 'pending' && (
+                                                        <span className="bg-yellow-100 text-yellow-700 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide">Pendiente</span>
+                                                    )}
+                                                </h4>
+                                                <p className="text-slate-400 text-sm">{conn.email}</p>
                                             </div>
+                                            <div className="text-green-500 bg-green-50 p-2 rounded-full">
+                                                <CheckCircle size={20} weight="fill" />
+                                            </div>
+                                        </div>
 
-                                            {/* Add Class Dropdown */}
-                                            {openedDropdownId === conn.id && (
-                                                <div className="absolute top-8 right-0 bg-white border border-slate-100 shadow-xl rounded-xl z-20 w-48 overflow-hidden animate-in fade-in zoom-in duration-200">
-                                                    <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] uppercase font-bold text-slate-400">
-                                                        Añadir a clase
-                                                    </div>
-                                                    <div className="max-h-40 overflow-y-auto">
-                                                        {myClasses.filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id)).length > 0 ? (
-                                                            myClasses
-                                                                .filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id))
-                                                                .map(c => (
-                                                                    <button
-                                                                        key={c.id}
-                                                                        onClick={() => {
-                                                                            addStudentToClass(c.id, conn.id);
-                                                                            // Update local state optimsitically or wait for fetch
-                                                                            // Helper to update local state avoiding full reload
-                                                                            const currentClasses = studentClasses[conn.id] || [];
-                                                                            setStudentClasses({
-                                                                                ...studentClasses,
-                                                                                [conn.id]: [...currentClasses, c]
-                                                                            });
-                                                                            setOpenedDropdownId(null);
-                                                                        }}
-                                                                        className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
-                                                                    >
-                                                                        {c.name}
-                                                                    </button>
-                                                                ))
-                                                        ) : (
-                                                            <p className="px-4 py-3 text-[10px] text-slate-400 italic text-center">
-                                                                Ya está en todas tus clases
-                                                            </p>
-                                                        )}
-                                                    </div>
+                                        {/* Display Classes (Teacher View) */}
+                                        {isTeacher && (
+                                            <div className="mb-4 relative">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clases inscritas</p>
+                                                    <button
+                                                        onClick={() => setOpenedDropdownId(openedDropdownId === conn.id ? null : conn.id)}
+                                                        className="bg-blue-50 text-blue-600 p-1 rounded-md hover:bg-blue-100 transition-colors"
+                                                        title="Añadir a otra clase"
+                                                    >
+                                                        <Plus size={14} weight="bold" />
+                                                    </button>
                                                 </div>
-                                            )}
-                                            <div className="flex flex-wrap gap-2">
-                                                {(studentClasses[conn.id] || []).map(cls => (
-                                                    <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
-                                                        <span className="max-w-[100px] truncate">{cls.name}</span>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                if (confirm(`¿Quitar a ${conn.full_name} de ${cls.name}?`)) {
-                                                                    removeStudentFromClass(cls.id, conn.id)
-                                                                }
-                                                            }}
-                                                            className="hover:bg-purple-200 rounded p-0.5 transition-colors"
-                                                        >
-                                                            <Trash size={12} />
-                                                        </button>
+
+                                                {/* Add Class Dropdown */}
+                                                {openedDropdownId === conn.id && (
+                                                    <div className="absolute top-8 right-0 bg-white border border-slate-100 shadow-xl rounded-xl z-20 w-48 overflow-hidden animate-in fade-in zoom-in duration-200">
+                                                        <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] uppercase font-bold text-slate-400">
+                                                            Añadir a clase
+                                                        </div>
+                                                        <div className="max-h-40 overflow-y-auto">
+                                                            {myClasses.filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id)).length > 0 ? (
+                                                                myClasses
+                                                                    .filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id))
+                                                                    .map(c => (
+                                                                        <button
+                                                                            key={c.id}
+                                                                            onClick={() => {
+                                                                                addStudentToClass(c.id, conn.id);
+                                                                                // Update local state optimsitically or wait for fetch
+                                                                                // Helper to update local state avoiding full reload
+                                                                                const currentClasses = studentClasses[conn.id] || [];
+                                                                                setStudentClasses({
+                                                                                    ...studentClasses,
+                                                                                    [conn.id]: [...currentClasses, c]
+                                                                                });
+                                                                                setOpenedDropdownId(null);
+                                                                            }}
+                                                                            className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+                                                                        >
+                                                                            {c.name}
+                                                                        </button>
+                                                                    ))
+                                                            ) : (
+                                                                <p className="px-4 py-3 text-[10px] text-slate-400 italic text-center">
+                                                                    Ya está en todas tus clases
+                                                                </p>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                ))}
-                                                {(!studentClasses[conn.id] || studentClasses[conn.id].length === 0) && (
-                                                    <span className="text-xs text-slate-400 italic">Sin clases asignadas</span>
                                                 )}
+                                                <div className="flex flex-wrap gap-2">
+                                                    {(studentClasses[conn.id] || []).map(cls => (
+                                                        <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
+                                                            <span className="max-w-[100px] truncate">{cls.name}</span>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (confirm(`¿Quitar a ${conn.full_name} de ${cls.name}?`)) {
+                                                                        removeStudentFromClass(cls.id, conn.id)
+                                                                    }
+                                                                }}
+                                                                className="hover:bg-purple-200 rounded p-0.5 transition-colors"
+                                                            >
+                                                                <Trash size={12} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                    {(!studentClasses[conn.id] || studentClasses[conn.id].length === 0) && (
+                                                        <span className="text-xs text-slate-400 italic">Sin clases asignadas</span>
+                                                    )}
+                                                </div>
                                             </div>
+                                        )}
+
+                                        <button
+                                            onClick={() => {
+                                                if (confirm('¿Seguro que quieres eliminar este vínculo? Se eliminará al usuario de todas tus clases.')) {
+                                                    removeConnection(conn.id);
+                                                }
+                                            }}
+                                            className="w-full py-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl text-xs font-bold transition-colors"
+                                        >
+                                            Eliminar vínculo
+                                        </button>
+                                    </div>
+                            ))}
+                                    {myConnections.length === 0 && (
+                                        <div className="col-span-full py-12 text-center bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                                            <Users size={48} className="mx-auto text-slate-300 mb-3" />
+                                            <p className="text-slate-400 font-medium tracking-tight">Todavía no tienes {isTeacher ? 'alumnos' : 'profesores'} vinculados.</p>
                                         </div>
                                     )}
-
-                                    <button
-                                        onClick={() => {
-                                            if (confirm('¿Seguro que quieres eliminar este vínculo? Se eliminará al usuario de todas tus clases.')) {
-                                                removeConnection(conn.id);
-                                            }
-                                        }}
-                                        className="w-full py-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl text-xs font-bold transition-colors"
-                                    >
-                                        Eliminar vínculo
-                                    </button>
                                 </div>
-                            ))}
-                            {myConnections.length === 0 && (
-                                <div className="col-span-full py-12 text-center bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                                    <Users size={48} className="mx-auto text-slate-300 mb-3" />
-                                    <p className="text-slate-400 font-medium tracking-tight">Todavía no tienes {isTeacher ? 'alumnos' : 'profesores'} vinculados.</p>
-                                </div>
-                            )}
-                        </div>
                     </motion.div>
                 ) : (
                     <motion.div
@@ -979,6 +1092,49 @@ export default function RoleBasedDashboard() {
                         <p className="text-slate-500 max-w-md mx-auto">
                             Este panel está actualmente en desarrollo. Próximamente podrás gestionar todas las entregas y calificaciones desde aquí.
                         </p>
+                    </motion.div>
+                )}
+
+                {activeTab === 'notifications' && (
+                    <motion.div
+                        key="notifications"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="space-y-4"
+                    >
+                        <h3 className="font-bold text-xl text-slate-800 mb-4">Tus Notificaciones</h3>
+                        {notifications.length === 0 ? (
+                            <div className="bg-white p-12 rounded-3xl border border-slate-100 text-center text-slate-400">
+                                No tienes notificaciones nuevas.
+                            </div>
+                        ) : (
+                            notifications.map(notif => (
+                                <div key={notif.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                                    <div>
+                                        <h4 className="font-bold text-slate-800 text-lg">{notif.title}</h4>
+                                        <p className="text-slate-500">{notif.message}</p>
+                                        <p className="text-slate-300 text-xs mt-2">{new Date(notif.created_at).toLocaleDateString()}</p>
+                                    </div>
+                                    {notif.type === 'connection_request' && (
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => rejectConnection(notif)}
+                                                className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors"
+                                            >
+                                                Rechazar
+                                            </button>
+                                            <button
+                                                onClick={() => approveConnection(notif)}
+                                                className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
+                                            >
+                                                Aprobar
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
