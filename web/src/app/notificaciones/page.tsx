@@ -121,121 +121,136 @@ export default function NotificationsPage() {
     }
 
     return (
-        <main className="relative min-h-screen">
-            {/* BACKGROUND VIDEO (Fixed) */}
-            <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
-                <div className="absolute inset-0 bg-black/60 z-10" />
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                >
-                    <source src="/background.mp4" type="video/mp4" />
-                </video>
-            </div>
+        <main className="min-h-screen pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto relative z-10">
+                <header className="mb-16 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="inline-flex items-center gap-2 text-slate-500 hover:text-teal-600 font-bold text-sm mb-6 transition-colors group cursor-pointer"
+                        onClick={() => router.push('/dashboard')}
+                    >
+                        <ArrowLeft className="group-hover:-translate-x-1 transition-transform" weight="bold" />
+                        Volver al Panel
+                    </motion.div>
 
-            <div className="relative z-10 pt-32 pb-12 px-4">
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
+                    >
+                        Notificaciones
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-xl text-slate-700 font-medium max-w-2xl mx-auto mt-2"
+                    >
+                        Gestiona tus avisos y solicitudes de conexión de forma centralizada.
+                    </motion.p>
+                </header>
+
                 <div className="max-w-4xl mx-auto">
                     <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <Link href="/dashboard" className="inline-flex items-center gap-2 text-white/60 hover:text-teal-400 font-bold text-sm mb-4 transition-colors group">
-                                <ArrowLeft className="group-hover:-translate-x-1 transition-transform" weight="bold" />
-                                Volver al Panel
-                            </Link>
-                            <h1 className="text-4xl font-black text-white drop-shadow-lg">Centro de Notificaciones</h1>
-                            <p className="text-white/70 mt-1">Gestiona tus avisos y solicitudes de conexión.</p>
-                        </div>
-
                         <div className="flex gap-2">
                             <button
-                                onClick={markAllAsRead}
-                                className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs font-bold text-white hover:bg-white/20 transition-all shadow-xl flex items-center gap-2"
-                            >
-                                <Check size={16} weight="bold" />
-                                Marcar todo como leído
-                            </button>
-                            <button
-                                onClick={clearAllRead}
-                                className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/20 transition-all shadow-xl flex items-center gap-2"
-                            >
-                                <Trash size={16} weight="bold" />
-                                Limpiar leídos
-                            </button>
-                        </div>
-                    </header>
-
-                    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] shadow-2xl overflow-hidden">
-                        <div className="border-b border-white/10 p-6 flex gap-4">
-                            <button
                                 onClick={() => setFilter('all')}
-                                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'all' ? 'bg-white text-slate-900 shadow-xl' : 'text-white/50 hover:bg-white/5'}`}
+                                className={`px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'all' ? 'bg-slate-900 text-white shadow-lg' : 'bg-white/50 text-slate-500 hover:bg-white/80 border border-slate-200/50'}`}
                             >
                                 Todas ({notifications.length})
                             </button>
                             <button
                                 onClick={() => setFilter('unread')}
-                                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'unread' ? 'bg-teal-500 text-white shadow-xl' : 'text-white/50 hover:bg-white/5'}`}
+                                className={`px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'unread' ? 'bg-teal-500 text-white shadow-lg' : 'bg-white/50 text-slate-500 hover:bg-white/80 border border-slate-200/50'}`}
                             >
                                 No leídas ({notifications.filter(n => !n.read).length})
                             </button>
                         </div>
 
-                        <div className="divide-y divide-white/5">
+                        <div className="flex gap-2">
+                            <button
+                                onClick={markAllAsRead}
+                                title="Marcar todo como leído"
+                                className="p-2.5 bg-white/50 backdrop-blur-md border border-slate-200/50 rounded-xl text-slate-600 hover:bg-white hover:text-teal-600 transition-all shadow-sm"
+                            >
+                                <Check size={20} weight="bold" />
+                            </button>
+                            <button
+                                onClick={clearAllRead}
+                                title="Limpiar leídos"
+                                className="p-2.5 bg-white/50 backdrop-blur-md border border-slate-200/50 rounded-xl text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all shadow-sm"
+                            >
+                                <Trash size={20} weight="bold" />
+                            </button>
+                        </div>
+                    </header>
+
+                    <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-1 md:p-2 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                        <div className="divide-y divide-slate-200/30">
                             {filteredNotifications.length === 0 ? (
-                                <div className="py-20 text-center">
-                                    <Bell size={64} weight="duotone" className="mx-auto text-white/10 mb-4" />
-                                    <p className="text-white/40 font-medium">No hay notificaciones para mostrar.</p>
+                                <div className="py-24 text-center">
+                                    <Bell size={64} weight="duotone" className="mx-auto text-slate-300 mb-4 opacity-50" />
+                                    <p className="text-slate-500 font-bold text-lg">No hay notificaciones para mostrar.</p>
+                                    <p className="text-slate-400 text-sm mt-1">¡Todo al día por aquí!</p>
                                 </div>
                             ) : (
                                 filteredNotifications.map((n) => (
                                     <motion.div
                                         layout
                                         key={n.id}
-                                        className={`p-6 flex items-start gap-4 transition-colors ${!n.read ? 'bg-white/5' : 'hover:bg-white/5'}`}
+                                        className={`p-6 md:p-8 flex items-start gap-4 md:gap-6 transition-all ${!n.read ? 'bg-teal-500/5' : 'hover:bg-white/20'}`}
                                     >
-                                        <div className={`p-3 rounded-2xl ${n.type === 'connection_request' ? 'bg-blue-500/20' :
-                                                n.type === 'connection_accepted' ? 'bg-teal-500/20' : 'bg-white/10'
+                                        <div className={`p-4 rounded-2xl shadow-sm ${n.type === 'connection_request' ? 'bg-blue-100 text-blue-600' :
+                                            n.type === 'connection_accepted' ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-600'
                                             }`}>
                                             {getIcon(n.type)}
                                         </div>
 
                                         <div className="flex-1">
-                                            <div className="flex justify-between items-start mb-1">
-                                                <h3 className={`font-bold transition-colors ${!n.read ? 'text-white' : 'text-white/60'}`}>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className={`text-lg font-black transition-colors ${!n.read ? 'text-slate-900 underline decoration-teal-500/30 decoration-4 underline-offset-4' : 'text-slate-600'}`}>
                                                     {n.title}
                                                 </h3>
-                                                <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white/50 px-2 py-1 rounded-md border border-slate-200/30">
                                                     {new Date(n.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
                                                 </span>
                                             </div>
-                                            <p className={`text-sm leading-relaxed ${!n.read ? 'text-white/80 font-medium' : 'text-white/50'}`}>
+                                            <p className={`text-base leading-relaxed mb-6 ${!n.read ? 'text-slate-700 font-medium' : 'text-slate-500'}`}>
                                                 {n.message}
                                             </p>
 
-                                            <div className="mt-4 flex gap-3">
-                                                {!n.read && (
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex gap-4">
+                                                    {!n.read && (
+                                                        <button
+                                                            onClick={() => markAsRead(n.id)}
+                                                            className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-teal-600 hover:text-teal-700 transition-colors bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100 shadow-sm"
+                                                        >
+                                                            <Check size={14} weight="bold" />
+                                                            Marcar como leída
+                                                        </button>
+                                                    )}
                                                     <button
-                                                        onClick={() => markAsRead(n.id)}
-                                                        className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-teal-400 hover:text-teal-300 transition-colors"
+                                                        onClick={() => deleteNotification(n.id)}
+                                                        className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors bg-slate-50/50 px-3 py-1.5 rounded-lg border border-slate-100"
                                                     >
-                                                        <Check size={14} weight="bold" />
-                                                        Marcar como leída
+                                                        <Trash size={14} weight="bold" />
+                                                        Eliminar
                                                     </button>
+                                                </div>
+                                                {!n.read && (
+                                                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-600 text-[10px] font-black border border-teal-500/20">
+                                                        <span className="relative flex h-2 w-2">
+                                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                                                        </span>
+                                                        NUEVA
+                                                    </div>
                                                 )}
-                                                <button
-                                                    onClick={() => deleteNotification(n.id)}
-                                                    className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-red-400 transition-colors"
-                                                >
-                                                    <Trash size={14} weight="bold" />
-                                                    Eliminar
-                                                </button>
                                             </div>
                                         </div>
-                                        {!n.read && (
-                                            <div className="w-2.5 h-2.5 bg-blue-400 rounded-full mt-2 shadow-lg shadow-blue-500/50" />
-                                        )}
                                     </motion.div>
                                 ))
                             )}
