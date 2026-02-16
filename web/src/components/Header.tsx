@@ -23,6 +23,7 @@ export default function Header() {
     const { t, language, setLanguage } = useLanguage();
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
+    const [profile, setProfile] = useState<any>(null);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [authModalOpen, setAuthModalOpen] = useState(false);
 
@@ -42,18 +43,25 @@ export default function Header() {
             setUser(currentUser);
             if (currentUser) {
                 fetchNotifications(currentUser.id);
+                // Fetch profile for role
+                const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
+                if (p) setProfile(p);
             }
         };
         checkUser();
 
         // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
                 fetchNotifications(currentUser.id);
+                // Fetch profile for role
+                const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
+                if (p) setProfile(p);
             } else {
                 setNotifications([]);
+                setProfile(null);
             }
         });
 
@@ -341,7 +349,7 @@ export default function Header() {
                                     >
                                         <div className="pt-3 pb-0.5 flex justify-center">
                                             <span className="px-3 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-teal-500 text-white border border-teal-400 shadow-sm">
-                                                {user.user_metadata?.role === 'teacher' ? (language === 'es' ? 'Profesor' : 'Teacher') : (language === 'es' ? 'Alumno' : 'Student')}
+                                                {(profile?.role || user.user_metadata?.role) === 'teacher' ? (language === 'es' ? 'Profesor' : 'Teacher') : (language === 'es' ? 'Alumno' : 'Student')}
                                             </span>
                                         </div>
 

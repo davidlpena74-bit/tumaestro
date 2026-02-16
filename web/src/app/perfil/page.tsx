@@ -9,6 +9,7 @@ import { User, Envelope, Lock, FloppyDisk, SignOut, CircleNotch, Trash } from '@
 export default function ProfilePage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
+    const [profile, setProfile] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
 
@@ -35,7 +36,21 @@ export default function ProfilePage() {
                 return;
             }
             setUser(session.user);
-            setFullName(session.user.user_metadata?.full_name || '');
+
+            // Fetch profile for reliable role
+            const { data: profileData } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            if (profileData) {
+                setProfile(profileData);
+                setFullName(profileData.full_name || session.user.user_metadata?.full_name || '');
+            } else {
+                setFullName(session.user.user_metadata?.full_name || '');
+            }
+
             setEmail(session.user.email || '');
             setLoading(false);
         };
@@ -145,7 +160,7 @@ export default function ProfilePage() {
                         <div className="flex flex-col md:flex-row md:items-center gap-2 mb-1">
                             <h1 className="text-3xl font-bold text-slate-800">{fullName || 'Usuario'}</h1>
                             <div className={`mt-1 md:mt-0 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm w-fit mx-auto md:mx-0 bg-teal-500 text-white border-teal-400 shadow-teal-500/20`}>
-                                {user.user_metadata?.role === 'teacher' ? 'Profesor' : 'Alumno'}
+                                {(profile?.role || user.user_metadata?.role) === 'teacher' ? 'Profesor' : 'Alumno'}
                             </div>
                         </div>
                         <p className="text-slate-500">{email}</p>
@@ -173,7 +188,7 @@ export default function ProfilePage() {
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">Tipo de Cuenta</label>
                                 <div className="px-4 py-2 bg-slate-100 border border-slate-200 rounded-lg text-slate-500 font-medium cursor-not-allowed">
-                                    {user.user_metadata?.role === 'teacher' ? 'Profesor / Maestro' : 'Alumno / Estudiante'}
+                                    {(profile?.role || user.user_metadata?.role) === 'teacher' ? 'Profesor / Maestro' : 'Alumno / Estudiante'}
                                 </div>
                                 <p className="mt-1 text-[10px] text-slate-400">El tipo de cuenta no se puede cambiar después del registro.</p>
                             </div>
