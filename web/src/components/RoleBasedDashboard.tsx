@@ -602,7 +602,7 @@ export default function RoleBasedDashboard() {
 
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-            <div className={`grid grid-cols-1 ${isTeacher ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div
                     onClick={() => setActiveTab('connections')}
                     className={`group bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'connections' ? 'ring-4 ring-offset-4 ring-blue-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
@@ -637,43 +637,22 @@ export default function RoleBasedDashboard() {
                     <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Activas</p>
                 </div>
 
-                {isTeacher && (
-                    <div
-                        onClick={() => setActiveTab('tasks')}
-                        className={`group bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'tasks' ? 'ring-4 ring-offset-4 ring-emerald-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
-                    >
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
-                                <CheckSquare size={32} />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-lg">Tareas</h3>
-                                <p className="text-white/80 text-sm">Actividades asignadas</p>
-                            </div>
+                <div
+                    onClick={() => setActiveTab('tasks')}
+                    className={`group bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'tasks' ? 'ring-4 ring-offset-4 ring-emerald-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
+                >
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
+                            <CheckSquare size={32} />
                         </div>
-                        <div className="text-3xl font-black">{myTasks.length}</div>
-                        <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Total Tareas</p>
-                    </div>
-                )}
-
-                {!isTeacher && (
-                    <div
-                        onClick={() => setActiveTab('notifications')}
-                        className={`group bg-gradient-to-br from-orange-400 to-pink-500 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'notifications' ? 'ring-4 ring-offset-4 ring-orange-400 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
-                    >
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
-                                <Users size={32} />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-lg">Avisos</h3>
-                                <p className="text-white/80 text-sm">Solicitudes pendientes</p>
-                            </div>
+                        <div>
+                            <h3 className="font-bold text-lg">Tareas</h3>
+                            <p className="text-white/80 text-sm">{isTeacher ? 'Actividades asignadas' : 'Tus entregas'}</p>
                         </div>
-                        <div className="text-3xl font-black">{notifications.length}</div>
-                        <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Notificaciones</p>
                     </div>
-                )}
+                    <div className="text-3xl font-black">{isTeacher ? myTasks.length : myTasks.length}</div>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Total Tareas' : 'Pendientes'}</p>
+                </div>
             </div>
 
             {/* Navigation Tabs Removed as per request, using Top Cards for navigation */}

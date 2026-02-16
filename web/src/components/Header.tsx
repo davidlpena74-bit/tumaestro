@@ -31,6 +31,7 @@ export default function Header() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [notifMenuOpen, setNotifMenuOpen] = useState(false);
+    const [showAllNotifs, setShowAllNotifs] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -263,12 +264,15 @@ export default function Header() {
                         <div className="relative">
                             <button
                                 onClick={() => setNotifMenuOpen(!notifMenuOpen)}
-                                className="relative p-2 rounded-full hover:bg-white/10 text-white transition-colors"
+                                className="relative flex items-center gap-1 p-2 rounded-full hover:bg-white/10 text-white transition-colors"
                             >
-                                <Bell size={24} weight="fill" />
-                                {unreadCount > 0 && (
-                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse" />
-                                )}
+                                <div className="relative">
+                                    <Bell size={24} weight="fill" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse" />
+                                    )}
+                                </div>
+                                <CaretDown className={`w-3 h-3 text-white/50 transition-transform ${notifMenuOpen ? 'rotate-180' : ''}`} weight="bold" />
                             </button>
 
                             <AnimatePresence>
@@ -284,46 +288,56 @@ export default function Header() {
                                             {unreadCount > 0 && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">{unreadCount} nuevas</span>}
                                         </div>
                                         <div className="max-h-[350px] overflow-y-auto">
-                                            {notifications.length === 0 ? (
+                                            {notifications.filter(n => showAllNotifs || !n.read).length === 0 ? (
                                                 <div className="px-4 py-12 text-center">
                                                     <Bell size={32} className="mx-auto text-slate-200 mb-2" weight="duotone" />
-                                                    <p className="text-slate-400 text-xs">No tienes notificaciones</p>
+                                                    <p className="text-slate-400 text-xs">No tienes {showAllNotifs ? 'notificaciones' : 'notificaciones nuevas'}</p>
                                                 </div>
                                             ) : (
-                                                notifications.map(n => (
-                                                    <div
-                                                        key={n.id}
-                                                        onClick={() => !n.read && markAsRead(n.id)}
-                                                        className={`px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer ${!n.read ? 'bg-blue-50/40' : ''}`}
-                                                    >
-                                                        <div className="flex justify-between items-start gap-2">
-                                                            <div className="flex-1">
-                                                                <p className="font-bold text-slate-800 text-sm leading-tight mb-1">{n.title}</p>
-                                                                <p className="text-slate-500 text-xs leading-relaxed">{n.message}</p>
-                                                                <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
+                                                notifications
+                                                    .filter(n => showAllNotifs || !n.read)
+                                                    .map(n => (
+                                                        <div
+                                                            key={n.id}
+                                                            onClick={() => !n.read && markAsRead(n.id)}
+                                                            className={`px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer ${!n.read ? 'bg-blue-50/40' : ''}`}
+                                                        >
+                                                            <div className="flex justify-between items-start gap-2">
+                                                                <div className="flex-1">
+                                                                    <p className="font-bold text-slate-800 text-sm leading-tight mb-1">{n.title}</p>
+                                                                    <p className="text-slate-500 text-xs leading-relaxed">{n.message}</p>
+                                                                    <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
+                                                                </div>
+                                                                {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />}
                                                             </div>
-                                                            {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />}
-                                                        </div>
 
-                                                        {n.type === 'connection_request' && !n.read && (
-                                                            <div className="mt-3 flex gap-2">
-                                                                <button
-                                                                    onClick={(e) => handleAcceptRequest(n, e)}
-                                                                    className="flex-1 text-xs bg-slate-900 text-white px-3 py-2 rounded-lg font-bold hover:bg-slate-800 transition-colors shadow-sm"
-                                                                >
-                                                                    Aceptar
-                                                                </button>
-                                                                <button
-                                                                    onClick={(e) => markAsRead(n.id, e)}
-                                                                    className="flex-1 text-xs bg-white border border-slate-200 text-slate-600 px-3 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors"
-                                                                >
-                                                                    Ignorar
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ))
+                                                            {n.type === 'connection_request' && !n.read && (
+                                                                <div className="mt-3 flex gap-2">
+                                                                    <button
+                                                                        onClick={(e) => handleAcceptRequest(n, e)}
+                                                                        className="flex-1 text-xs bg-slate-900 text-white px-3 py-2 rounded-lg font-bold hover:bg-slate-800 transition-colors shadow-sm"
+                                                                    >
+                                                                        Aceptar
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={(e) => markAsRead(n.id, e)}
+                                                                        className="flex-1 text-xs bg-white border border-slate-200 text-slate-600 px-3 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors"
+                                                                    >
+                                                                        Ignorar
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ))
                                             )}
+                                        </div>
+                                        <div className="p-2 border-t border-slate-100 bg-slate-50">
+                                            <button
+                                                onClick={() => setShowAllNotifs(!showAllNotifs)}
+                                                className="w-full py-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-800 transition-colors"
+                                            >
+                                                {showAllNotifs ? 'Ocultar leídas' : 'Ver mensajes antiguos'}
+                                            </button>
                                         </div>
                                     </motion.div>
                                 )}
