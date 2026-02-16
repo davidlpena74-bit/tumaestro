@@ -397,6 +397,14 @@ export default function Header() {
                                                 </svg>
                                                 Mi Panel
                                             </Link>
+                                            <Link
+                                                href="/notificaciones"
+                                                onClick={() => setUserMenuOpen(false)}
+                                                className="w-full text-left px-4 py-2.5 text-sm font-medium text-white hover:bg-white/5 flex items-center gap-2 transition-colors"
+                                            >
+                                                <Bell size={16} weight="bold" />
+                                                Notificaciones
+                                            </Link>
                                         </div>
 
                                         <div className="py-1">
