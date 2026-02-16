@@ -156,15 +156,29 @@ export default function Header() {
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10 py-2' : 'bg-transparent py-4'}`}>
             <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
                 {/* LOGO */}
-                <Link href="/" className="relative flex items-center group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                    <div className="relative">
-                        <img
-                            src="/images/icons/logo-text-brush.png"
-                            alt="TuMaestro.es"
-                            className="h-32 w-auto object-contain drop-shadow-md -my-10"
-                        />
-                    </div>
-                </Link>
+                <div className="flex items-center gap-4">
+                    <Link href="/" className="relative flex items-center group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                        <div className="relative">
+                            <img
+                                src="/images/icons/logo-text-brush.png"
+                                alt="TuMaestro.es"
+                                className="h-32 w-auto object-contain drop-shadow-md -my-10"
+                            />
+                        </div>
+                    </Link>
+                    {user && (
+                        <motion.div
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${user.user_metadata?.role === 'teacher'
+                                ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                                : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
+                                }`}
+                        >
+                            {user.user_metadata?.role === 'teacher' ? (language === 'es' ? 'Profesor' : 'Teacher') : (language === 'es' ? 'Alumno' : 'Student')}
+                        </motion.div>
+                    )}
+                </div>
 
                 {/* ACTIONS */}
                 <div className="flex items-center gap-4">
