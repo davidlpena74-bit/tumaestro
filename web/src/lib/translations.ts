@@ -37,7 +37,7 @@ export const TRANSLATIONS = {
         home: {
             heroTitle: 'Tu futuro empieza aquí',
             heroSubtitle: 'Elige cómo quieres aprender hoy',
-            findTeacher: 'Busco Profesor',
+            findTeacher: 'Clases Particulares',
             findTeacherDesc: 'Encuentra clases particulares presenciales u online con expertos verificados.',
             findTeacherBtn: 'Ver Profesores',
             resources: 'Material Didáctico',
@@ -392,7 +392,7 @@ export const TRANSLATIONS = {
         home: {
             heroTitle: 'Your future starts here',
             heroSubtitle: 'Choose how you want to learn today',
-            findTeacher: 'Find a Teacher',
+            findTeacher: 'Private Lessons',
             findTeacherDesc: 'Find in-person or online private lessons with verified experts.',
             findTeacherBtn: 'View Teachers',
             resources: 'Educational Material',
@@ -747,7 +747,7 @@ export const TRANSLATIONS = {
         home: {
             heroTitle: 'Votre avenir commence ici',
             heroSubtitle: 'Choisissez comment vous voulez apprendre aujourd\'hui',
-            findTeacher: 'Trouver un Professeur',
+            findTeacher: 'Cours Particuliers',
             findTeacherDesc: 'Trouvez des cours particuliers en personne ou en ligne avec des experts vérifiés.',
             findTeacherBtn: 'Voir les Professeurs',
             resources: 'Matériel Pédagogique',
@@ -1096,7 +1096,7 @@ export const TRANSLATIONS = {
         home: {
             heroTitle: 'Deine Zukunft beginnt hier',
             heroSubtitle: 'Wähle, wie du heute lernen möchtest',
-            findTeacher: 'Lehrer finden',
+            findTeacher: 'Privatunterricht',
             findTeacherDesc: 'Finde privaten Unterricht persönlich oder online mit geprüften Experten.',
             findTeacherBtn: 'Lehrer ansehen',
             resources: 'Lehrmaterial',
