@@ -365,17 +365,17 @@ export default function RoleBasedDashboard() {
 
     const approveConnection = async (notification: Notification) => {
         if (!myProfile) return;
-        const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
+        const other_party_id = notification.data?.teacher_id || notification.data?.sender_id || notification.data?.student_id;
         const class_id = notification.data?.class_id;
 
-        if (!teacher_id) {
-            console.error("No teacher_id found in notification data", notification);
+        if (!other_party_id) {
+            console.error("No target ID found in notification data", notification);
             return;
         }
 
         // Use RPC to accept both connection and class invitation atomically (bypasses student RLS)
         const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
-            target_teacher_id: teacher_id,
+            target_user_id: other_party_id,
             target_class_id: class_id || null
         });
 
@@ -383,7 +383,10 @@ export default function RoleBasedDashboard() {
             // Mark notification as read so it stays in "All" history
             const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
             if (readError) {
-                await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
+                await supabase.from('notifications')
+                    .update({ read: true })
+                    .eq('id', notification.id)
+                    .eq('user_id', myProfile.id);
             }
 
             // Refresh data
@@ -394,7 +397,7 @@ export default function RoleBasedDashboard() {
             alert("¡Solicitud aceptada!");
         } else {
             console.error("Error accepting connection:", acceptError);
-            alert("Error al aceptar: " + acceptError.message);
+            alert("Error al aceptar: " + (acceptError.message || 'Error desconocido'));
         }
     };
 

@@ -80,11 +80,17 @@ export default function NotificationsPage() {
             e.stopPropagation();
         }
 
+        // Optimistic update
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+
         const { error } = await supabase.rpc('mark_notification_read', { notif_id: id });
         if (error) {
-            await supabase.from('notifications').update({ read: true }).eq('id', id);
+            // Fallback to direct update
+            await supabase.from('notifications')
+                .update({ read: true })
+                .eq('id', id)
+                .eq('user_id', user?.id);
         }
-        setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     };
 
     const handleAcceptRequest = async (notification: Notification, e: React.MouseEvent) => {
@@ -94,33 +100,27 @@ export default function NotificationsPage() {
         }
         if (!user) return;
 
-        const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
+        const other_party_id = notification.data?.teacher_id || notification.data?.sender_id || notification.data?.student_id;
         const class_id = notification.data?.class_id;
 
-        if (!teacher_id) {
-            console.error("No teacher_id found in notification data", notification);
+        if (!other_party_id) {
+            console.error("No target ID found in notification data", notification);
             return;
         }
 
         // Use RPC to accept both connection and class invitation atomically
         const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
-            target_teacher_id: teacher_id,
+            target_user_id: other_party_id,
             target_class_id: class_id || null
         });
 
         if (!acceptError) {
-            // Mark notification as read so it stays in history
-            const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
-            if (readError) {
-                await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
-            }
-
-            // Update local state
-            setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
+            // Mark notification as read via our robust function
+            await markAsRead(notification.id);
             alert('¡Solicitud aceptada correctamente!');
         } else {
             console.error("Error accepting connection:", acceptError);
-            alert('Error al aceptar la solicitud: ' + acceptError.message);
+            alert('Error al aceptar la solicitud: ' + (acceptError.message || 'Error desconocido'));
         }
     };
 

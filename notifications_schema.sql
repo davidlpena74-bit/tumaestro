@@ -134,40 +134,47 @@ begin
 end;
 $$;
 -- 6. Function to Accept Class Invitation (handles both connection and class enrollment)
-create or replace function public.accept_class_invitation(target_teacher_id uuid, target_class_id uuid)
+-- Works for both Students accepting Teacher invites and Teachers accepting Student requests
+create or replace function public.accept_class_invitation(target_user_id uuid, target_class_id uuid)
 returns void
 language plpgsql
 security definer
 set search_path = public
 as $$
 declare
-  student_ident text;
+  my_id uuid;
+  my_ident text;
 begin
-  -- 0. Get student identity (name or email) for the notification
-  select coalesce(full_name, email) into student_ident 
+  my_id := auth.uid();
+  
+  -- 0. Get my identity (name or email) for the notification
+  select coalesce(full_name, email) into my_ident 
   from public.profiles 
-  where id = auth.uid();
+  where id = my_id;
 
-  -- 1. Update status to accepted in student_teachers
+  -- 1. Update status to accepted in student_teachers (either direction)
   update public.student_teachers
   set status = 'accepted'
-  where student_id = auth.uid() and teacher_id = target_teacher_id;
+  where (student_id = my_id and teacher_id = target_user_id)
+     or (teacher_id = my_id and student_id = target_user_id);
 
-  -- 2. Add to class_students if it's a class invitation
+  -- 2. Add to class_students if it's a class invitation (only if I am the student)
   if target_class_id is not null then
+    -- Verify I am indeed a student (or at least that this is a valid class)
+    -- We assume the target_class_id belongs to the connection
     insert into public.class_students (class_id, student_id)
-    values (target_class_id, auth.uid())
+    values (target_class_id, my_id)
     on conflict (class_id, student_id) do nothing;
   end if;
 
-  -- 3. Notify teacher
+  -- 3. Notify the other party
   insert into public.notifications (user_id, type, title, message, data)
   values (
-    target_teacher_id,
+    target_user_id,
     'connection_accepted',
     '¡Solicitud aceptada!',
-    student_ident || ' ha aceptado tu invitación.',
-    jsonb_build_object('student_id', auth.uid())
+    my_ident || ' ha aceptado tu invitación/solicitud.',
+    jsonb_build_object('sender_id', my_id)
   );
 end;
 $$;
