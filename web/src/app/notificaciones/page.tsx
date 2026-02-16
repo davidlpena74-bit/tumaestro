@@ -121,109 +121,125 @@ export default function NotificationsPage() {
     }
 
     return (
-        <main className="min-h-screen pt-32 pb-12 bg-slate-50">
-            <div className="max-w-4xl mx-auto px-4">
-                <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-teal-600 font-bold text-sm mb-4 transition-colors group">
-                            <ArrowLeft className="group-hover:-translate-x-1 transition-transform" weight="bold" />
-                            Volver al Panel
-                        </Link>
-                        <h1 className="text-4xl font-black text-slate-800">Centro de Notificaciones</h1>
-                        <p className="text-slate-500 mt-1">Gestiona tus avisos y solicitudes de conexión.</p>
-                    </div>
+        <main className="relative min-h-screen">
+            {/* BACKGROUND VIDEO (Fixed) */}
+            <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
+                <div className="absolute inset-0 bg-black/60 z-10" />
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                >
+                    <source src="/background.mp4" type="video/mp4" />
+                </video>
+            </div>
 
-                    <div className="flex gap-2">
-                        <button
-                            onClick={markAllAsRead}
-                            className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2"
-                        >
-                            <Check size={16} weight="bold" />
-                            Marcar todo como leído
-                        </button>
-                        <button
-                            onClick={clearAllRead}
-                            className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-all shadow-sm flex items-center gap-2"
-                        >
-                            <Trash size={16} weight="bold" />
-                            Limpiar leídos
-                        </button>
-                    </div>
-                </header>
+            <div className="relative z-10 pt-32 pb-12 px-4">
+                <div className="max-w-4xl mx-auto">
+                    <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <Link href="/dashboard" className="inline-flex items-center gap-2 text-white/60 hover:text-teal-400 font-bold text-sm mb-4 transition-colors group">
+                                <ArrowLeft className="group-hover:-translate-x-1 transition-transform" weight="bold" />
+                                Volver al Panel
+                            </Link>
+                            <h1 className="text-4xl font-black text-white drop-shadow-lg">Centro de Notificaciones</h1>
+                            <p className="text-white/70 mt-1">Gestiona tus avisos y solicitudes de conexión.</p>
+                        </div>
 
-                <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-                    <div className="border-b border-slate-100 p-6 flex gap-4">
-                        <button
-                            onClick={() => setFilter('all')}
-                            className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'all' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'}`}
-                        >
-                            Todas ({notifications.length})
-                        </button>
-                        <button
-                            onClick={() => setFilter('unread')}
-                            className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'unread' ? 'bg-teal-500 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'}`}
-                        >
-                            No leídas ({notifications.filter(n => !n.read).length})
-                        </button>
-                    </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={markAllAsRead}
+                                className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs font-bold text-white hover:bg-white/20 transition-all shadow-xl flex items-center gap-2"
+                            >
+                                <Check size={16} weight="bold" />
+                                Marcar todo como leído
+                            </button>
+                            <button
+                                onClick={clearAllRead}
+                                className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/20 transition-all shadow-xl flex items-center gap-2"
+                            >
+                                <Trash size={16} weight="bold" />
+                                Limpiar leídos
+                            </button>
+                        </div>
+                    </header>
 
-                    <div className="divide-y divide-slate-50">
-                        {filteredNotifications.length === 0 ? (
-                            <div className="py-20 text-center">
-                                <Bell size={64} weight="duotone" className="mx-auto text-slate-100 mb-4" />
-                                <p className="text-slate-400 font-medium">No hay notificaciones para mostrar.</p>
-                            </div>
-                        ) : (
-                            filteredNotifications.map((n) => (
-                                <motion.div
-                                    layout
-                                    key={n.id}
-                                    className={`p-6 flex items-start gap-4 transition-colors ${!n.read ? 'bg-blue-50/30' : 'hover:bg-slate-50/50'}`}
-                                >
-                                    <div className={`p-3 rounded-2xl ${n.type === 'connection_request' ? 'bg-blue-100' :
-                                            n.type === 'connection_accepted' ? 'bg-teal-100' : 'bg-slate-100'
-                                        }`}>
-                                        {getIcon(n.type)}
-                                    </div>
+                    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] shadow-2xl overflow-hidden">
+                        <div className="border-b border-white/10 p-6 flex gap-4">
+                            <button
+                                onClick={() => setFilter('all')}
+                                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'all' ? 'bg-white text-slate-900 shadow-xl' : 'text-white/50 hover:bg-white/5'}`}
+                            >
+                                Todas ({notifications.length})
+                            </button>
+                            <button
+                                onClick={() => setFilter('unread')}
+                                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === 'unread' ? 'bg-teal-500 text-white shadow-xl' : 'text-white/50 hover:bg-white/5'}`}
+                            >
+                                No leídas ({notifications.filter(n => !n.read).length})
+                            </button>
+                        </div>
 
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start mb-1">
-                                            <h3 className={`font-bold transition-colors ${!n.read ? 'text-slate-900' : 'text-slate-600'}`}>
-                                                {n.title}
-                                            </h3>
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                                {new Date(n.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
-                                            </span>
+                        <div className="divide-y divide-white/5">
+                            {filteredNotifications.length === 0 ? (
+                                <div className="py-20 text-center">
+                                    <Bell size={64} weight="duotone" className="mx-auto text-white/10 mb-4" />
+                                    <p className="text-white/40 font-medium">No hay notificaciones para mostrar.</p>
+                                </div>
+                            ) : (
+                                filteredNotifications.map((n) => (
+                                    <motion.div
+                                        layout
+                                        key={n.id}
+                                        className={`p-6 flex items-start gap-4 transition-colors ${!n.read ? 'bg-white/5' : 'hover:bg-white/5'}`}
+                                    >
+                                        <div className={`p-3 rounded-2xl ${n.type === 'connection_request' ? 'bg-blue-500/20' :
+                                                n.type === 'connection_accepted' ? 'bg-teal-500/20' : 'bg-white/10'
+                                            }`}>
+                                            {getIcon(n.type)}
                                         </div>
-                                        <p className={`text-sm leading-relaxed ${!n.read ? 'text-slate-700 font-medium' : 'text-slate-500'}`}>
-                                            {n.message}
-                                        </p>
 
-                                        <div className="mt-4 flex gap-3">
-                                            {!n.read && (
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-start mb-1">
+                                                <h3 className={`font-bold transition-colors ${!n.read ? 'text-white' : 'text-white/60'}`}>
+                                                    {n.title}
+                                                </h3>
+                                                <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">
+                                                    {new Date(n.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
+                                                </span>
+                                            </div>
+                                            <p className={`text-sm leading-relaxed ${!n.read ? 'text-white/80 font-medium' : 'text-white/50'}`}>
+                                                {n.message}
+                                            </p>
+
+                                            <div className="mt-4 flex gap-3">
+                                                {!n.read && (
+                                                    <button
+                                                        onClick={() => markAsRead(n.id)}
+                                                        className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-teal-400 hover:text-teal-300 transition-colors"
+                                                    >
+                                                        <Check size={14} weight="bold" />
+                                                        Marcar como leída
+                                                    </button>
+                                                )}
                                                 <button
-                                                    onClick={() => markAsRead(n.id)}
-                                                    className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-teal-600 hover:text-teal-700 transition-colors"
+                                                    onClick={() => deleteNotification(n.id)}
+                                                    className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-red-400 transition-colors"
                                                 >
-                                                    <Check size={14} weight="bold" />
-                                                    Marcar como leída
+                                                    <Trash size={14} weight="bold" />
+                                                    Eliminar
                                                 </button>
-                                            )}
-                                            <button
-                                                onClick={() => deleteNotification(n.id)}
-                                                className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors"
-                                            >
-                                                <Trash size={14} weight="bold" />
-                                                Eliminar
-                                            </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    {!n.read && (
-                                        <div className="w-2.5 h-2.5 bg-blue-500 rounded-full mt-2 shadow-sm shadow-blue-500/50" />
-                                    )}
-                                </motion.div>
-                            ))
-                        )}
+                                        {!n.read && (
+                                            <div className="w-2.5 h-2.5 bg-blue-400 rounded-full mt-2 shadow-lg shadow-blue-500/50" />
+                                        )}
+                                    </motion.div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
