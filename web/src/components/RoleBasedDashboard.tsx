@@ -471,10 +471,10 @@ export default function RoleBasedDashboard() {
             <div className={`grid grid-cols-1 ${isTeacher ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
                 <div
                     onClick={() => setActiveTab('connections')}
-                    className={`bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all ${activeTab === 'connections' ? 'ring-4 ring-offset-4 ring-blue-500 scale-105' : 'hover:scale-105 opacity-90 hover:opacity-100'}`}
+                    className={`group bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'connections' ? 'ring-4 ring-offset-4 ring-blue-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
                 >
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-white/20 rounded-2xl">
+                        <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
                             {isTeacher ? <ChalkboardTeacher size={32} /> : <IdentificationBadge size={32} />}
                         </div>
                         <div>
@@ -488,10 +488,10 @@ export default function RoleBasedDashboard() {
 
                 <div
                     onClick={() => setActiveTab('classes')}
-                    className={`bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all ${activeTab === 'classes' ? 'ring-4 ring-offset-4 ring-purple-500 scale-105' : 'hover:scale-105 opacity-90 hover:opacity-100'}`}
+                    className={`group bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'classes' ? 'ring-4 ring-offset-4 ring-purple-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
                 >
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-white/20 rounded-2xl">
+                        <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
                             <Books size={32} />
                         </div>
                         <div>
@@ -506,10 +506,10 @@ export default function RoleBasedDashboard() {
                 {isTeacher && (
                     <div
                         onClick={() => setActiveTab('tasks')}
-                        className={`bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all ${activeTab === 'tasks' ? 'ring-4 ring-offset-4 ring-emerald-500 scale-105' : 'hover:scale-105 opacity-90 hover:opacity-100'}`}
+                        className={`group bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'tasks' ? 'ring-4 ring-offset-4 ring-emerald-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
                     >
                         <div className="flex items-center gap-4 mb-4">
-                            <div className="p-3 bg-white/20 rounded-2xl">
+                            <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
                                 <CheckSquare size={32} />
                             </div>
                             <div>
