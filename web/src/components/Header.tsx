@@ -4,9 +4,19 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
-import { User as UserIcon, Globe, CaretDown, Check, SignOut } from '@phosphor-icons/react';
+import { User as UserIcon, CaretDown, Check, SignOut, Bell } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AuthModal from './AuthModal';
+
+type Notification = {
+    id: string;
+    type: 'connection_request' | 'connection_accepted';
+    title: string;
+    message: string;
+    data: any;
+    read: boolean;
+    created_at: string;
+};
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);
@@ -16,6 +26,11 @@ export default function Header() {
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [authModalOpen, setAuthModalOpen] = useState(false);
 
+    // Notifications state
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [notifMenuOpen, setNotifMenuOpen] = useState(false);
+
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
@@ -23,28 +38,82 @@ export default function Header() {
         // Check active session
         const checkUser = async () => {
             const { data: { session } } = await supabase.auth.getSession();
-            setUser(session?.user ?? null);
+            const currentUser = session?.user ?? null;
+            setUser(currentUser);
+            if (currentUser) {
+                fetchNotifications(currentUser.id);
+            }
         };
         checkUser();
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
+            const currentUser = session?.user ?? null;
+            setUser(currentUser);
+            if (currentUser) {
+                fetchNotifications(currentUser.id);
+            } else {
+                setNotifications([]);
+            }
         });
+
+        // Optional: Polling for notifications every 30s
+        const interval = setInterval(() => {
+            if (user) fetchNotifications(user.id);
+        }, 30000);
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
             subscription.unsubscribe();
+            clearInterval(interval);
         };
-    }, []);
+    }, [user?.id]); // Re-run if user ID changes
+
+    const fetchNotifications = async (userId: string) => {
+        const { data } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+        if (data) {
+            setNotifications(data as Notification[]);
+            setUnreadCount(data.filter((n: any) => !n.read).length);
+        }
+    };
+
+    const markAsRead = async (id: string, e?: React.MouseEvent) => {
+        e?.stopPropagation();
+        await supabase.from('notifications').update({ read: true }).eq('id', id);
+        setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
+        setUnreadCount(prev => Math.max(0, prev - 1));
+    };
+
+    const handleAcceptRequest = async (notification: Notification, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (notification.type === 'connection_request' && notification.data?.sender_id) {
+            // Call RPC to accept
+            const { error } = await supabase.rpc('accept_connection_request', {
+                requester_id: notification.data.sender_id
+            });
+
+            if (!error) {
+                alert('Solicitud aceptada correctamente');
+                // Mark as read after accepting
+                markAsRead(notification.id);
+            } else {
+                console.error(error);
+                alert('Error al aceptar la solicitud');
+            }
+        }
+    };
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
         setUserMenuOpen(false);
         window.location.reload();
     };
-
-    // Close menu on click outside could be added here, but simple toggle is enough for now.
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10 py-2' : 'bg-transparent py-4'}`}>
@@ -135,6 +204,79 @@ export default function Header() {
                             )}
                         </AnimatePresence>
                     </div>
+
+                    {/* Notifications Bell */}
+                    {user && (
+                        <div className="relative">
+                            <button
+                                onClick={() => setNotifMenuOpen(!notifMenuOpen)}
+                                className="relative p-2 rounded-full hover:bg-white/10 text-white transition-colors"
+                            >
+                                <Bell size={24} weight="fill" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse" />
+                                )}
+                            </button>
+
+                            <AnimatePresence>
+                                {notifMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl overflow-hidden py-1 z-50 border border-slate-100"
+                                    >
+                                        <div className="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                                            <span className="font-bold text-slate-800 text-sm">Notificaciones</span>
+                                            {unreadCount > 0 && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">{unreadCount} nuevas</span>}
+                                        </div>
+                                        <div className="max-h-[350px] overflow-y-auto">
+                                            {notifications.length === 0 ? (
+                                                <div className="px-4 py-12 text-center">
+                                                    <Bell size={32} className="mx-auto text-slate-200 mb-2" weight="duotone" />
+                                                    <p className="text-slate-400 text-xs">No tienes notificaciones</p>
+                                                </div>
+                                            ) : (
+                                                notifications.map(n => (
+                                                    <div
+                                                        key={n.id}
+                                                        onClick={() => !n.read && markAsRead(n.id)}
+                                                        className={`px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer ${!n.read ? 'bg-blue-50/40' : ''}`}
+                                                    >
+                                                        <div className="flex justify-between items-start gap-2">
+                                                            <div className="flex-1">
+                                                                <p className="font-bold text-slate-800 text-sm leading-tight mb-1">{n.title}</p>
+                                                                <p className="text-slate-500 text-xs leading-relaxed">{n.message}</p>
+                                                                <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
+                                                            </div>
+                                                            {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />}
+                                                        </div>
+
+                                                        {n.type === 'connection_request' && !n.read && (
+                                                            <div className="mt-3 flex gap-2">
+                                                                <button
+                                                                    onClick={(e) => handleAcceptRequest(n, e)}
+                                                                    className="flex-1 text-xs bg-slate-900 text-white px-3 py-2 rounded-lg font-bold hover:bg-slate-800 transition-colors shadow-sm"
+                                                                >
+                                                                    Aceptar
+                                                                </button>
+                                                                <button
+                                                                    onClick={(e) => markAsRead(n.id, e)}
+                                                                    className="flex-1 text-xs bg-white border border-slate-200 text-slate-600 px-3 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors"
+                                                                >
+                                                                    Ignorar
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
 
                     {/* Auth Section */}
                     {user ? (
