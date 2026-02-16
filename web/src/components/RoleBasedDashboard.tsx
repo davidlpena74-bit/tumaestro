@@ -66,6 +66,10 @@ export default function RoleBasedDashboard() {
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskDesc, setNewTaskDesc] = useState('');
     const [targetClassId, setTargetClassId] = useState<string | null>(null);
+    // Class Selection Modal State
+    const [showClassSelector, setShowClassSelector] = useState(false);
+    const [pendingStudentId, setPendingStudentId] = useState<string | null>(null);
+
 
 
 
@@ -182,16 +186,66 @@ export default function RoleBasedDashboard() {
         if (data) setProfiles(data);
     };
 
-    const addConnection = async (targetId: string) => {
+    const initiateAddStudent = (studentId: string) => {
         if (!myProfile) return;
+
+        // If teacher, must select a class first
+        if (myProfile.role === 'teacher') {
+            if (myClasses.length === 0) {
+                alert("Debes crear al menos una clase antes de añadir alumnos.");
+                setActiveTab('classes');
+                setIsCreatingClass(true);
+                return;
+            }
+            setPendingStudentId(studentId);
+            setShowClassSelector(true);
+        } else {
+            // Student adding a teacher - simple connection
+            addConnection(studentId, null);
+        }
+    };
+
+    const addConnection = async (targetId: string, classId: string | null) => {
+        if (!myProfile) return;
+
+        // 1. Create the connection (student_teachers)
         const payload = myProfile.role === 'student'
             ? { student_id: myProfile.id, teacher_id: targetId }
             : { student_id: targetId, teacher_id: myProfile.id };
 
-        const { error } = await supabase.from('student_teachers').insert(payload);
-        if (!error) {
+        // Use send_connection_request function if available, or direct insert for now as per previous logic
+        // But here we keep the existing direct insert logic for simplicity unless user requested request-flow update in this specific block
+        // Re-using the direct insert logic from before for consistency with existing code
+        const { error: connError } = await supabase.from('student_teachers').insert(payload);
+
+        if (!connError || connError.code === '23505') { // 23505 is unique violation (already connected), which is fine
+
+            // 2. If teacher and class selected, add to class_students
+            if (myProfile.role === 'teacher' && classId) {
+                const { error: classError } = await supabase
+                    .from('class_students')
+                    .insert({ class_id: classId, student_id: targetId });
+
+                if (classError) {
+                    console.error("Error adding to class:", classError);
+                    alert("Se creó la conexión pero hubo un error al añadir a la clase.");
+                } else {
+                    alert("Alumno añadido a la clase y vinculado correctamente.");
+                }
+            } else {
+                if (!classId && myProfile.role === 'teacher') {
+                    // Should not start here if logic is correct, but safe fallback
+                } else {
+                    alert("Solicitud de conexión enviada."); // Or just "Vinculado"
+                }
+            }
+
             fetchConnections(myProfile.id, myProfile.role);
             setProfiles(profiles.filter(p => p.id !== targetId));
+            setShowClassSelector(false);
+            setPendingStudentId(null);
+        } else {
+            alert("Error al vincular: " + connError.message);
         }
     };
 
@@ -408,13 +462,45 @@ export default function RoleBasedDashboard() {
                                                 </div>
                                             </div>
                                             <button
-                                                onClick={() => addConnection(p.id)}
+                                                onClick={() => initiateAddStudent(p.id)}
                                                 className="p-2 bg-white text-blue-600 rounded-xl border border-blue-100 hover:bg-blue-50 transition-colors"
                                             >
                                                 <UserPlus size={20} weight="bold" />
                                             </button>
                                         </div>
                                     ))}
+                                </div>
+                            )}
+
+                            {/* Class Selection Modal */}
+                            {showClassSelector && (
+                                <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                                    <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl">
+                                        <h3 className="font-bold text-lg text-slate-800 mb-4">Selecciona una clase</h3>
+                                        <p className="text-slate-500 text-sm mb-4">Debes asignar al alumno a una de tus clases para vincularlo.</p>
+
+                                        <div className="space-y-2 max-h-60 overflow-y-auto mb-6">
+                                            {myClasses.map(cls => (
+                                                <button
+                                                    key={cls.id}
+                                                    onClick={() => pendingStudentId && addConnection(pendingStudentId, cls.id)}
+                                                    className="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-purple-500 hover:bg-purple-50 transition-all font-bold text-slate-700"
+                                                >
+                                                    {cls.name}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <button
+                                            onClick={() => {
+                                                setShowClassSelector(false);
+                                                setPendingStudentId(null);
+                                            }}
+                                            className="w-full py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-slate-200"
+                                        >
+                                            Cancelar
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>
