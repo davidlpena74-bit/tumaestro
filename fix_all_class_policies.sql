@@ -21,6 +21,8 @@ create policy "Teachers can manage their own classes."
 -- 2. Class Students Table Policies (Managing enrollments)
 drop policy if exists "Class students are viewable by the teacher and the students in that class." on public.class_students;
 drop policy if exists "Teachers can add/remove students from their classes." on public.class_students;
+drop policy if exists "Teachers can add students to their classes." on public.class_students;
+drop policy if exists "Teachers can remove students from their classes." on public.class_students;
 
 create policy "Class students are viewable by the teacher and the students in that class."
   on public.class_students for select
