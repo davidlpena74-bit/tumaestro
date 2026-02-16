@@ -337,19 +337,17 @@ export default function Header() {
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full right-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50"
+                                        className="absolute top-full right-0 mt-2 w-48 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50"
                                     >
+                                        <div className="pt-3 pb-0.5 flex justify-center">
+                                            <span className="px-3 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-teal-500 text-white border border-teal-400 shadow-sm">
+                                                {user.user_metadata?.role === 'teacher' ? (language === 'es' ? 'Profesor' : 'Teacher') : (language === 'es' ? 'Alumno' : 'Student')}
+                                            </span>
+                                        </div>
+
                                         <div className="px-4 py-3 border-b border-white/10">
-                                            <div className="flex justify-between items-center mb-1">
-                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Conectado como</p>
-                                                <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${user.user_metadata?.role === 'teacher'
-                                                    ? 'bg-purple-500/20 text-purple-400 border-purple-500/20'
-                                                    : 'bg-teal-500/20 text-teal-400 border-teal-500/20'
-                                                    }`}>
-                                                    {user.user_metadata?.role === 'teacher' ? (language === 'es' ? 'Profesor' : 'Teacher') : (language === 'es' ? 'Alumno' : 'Student')}
-                                                </span>
-                                            </div>
-                                            <p className="text-sm font-bold text-white truncate">{user.email}</p>
+                                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5 text-center">Conectado como</p>
+                                            <p className="text-xs font-bold text-white truncate text-center">{user.email}</p>
                                         </div>
 
                                         <div className="py-1">
