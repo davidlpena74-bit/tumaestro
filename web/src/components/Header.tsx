@@ -165,42 +165,42 @@ export default function Header() {
                 return;
             }
 
-            // 1. Update status to accepted
-            const { error: updateError } = await supabase
-                .from('student_teachers')
-                .update({ status: 'accepted' })
-                .eq('student_id', user.id)
-                .eq('teacher_id', teacher_id);
+            // Use RPC to accept both connection and class invitation atomically (bypasses student RLS for joining classes)
+            const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
+                target_teacher_id: teacher_id,
+                target_class_id: class_id || null
+            });
 
-            if (!updateError) {
-                // 2. If there was a class involved, add to class_students
-                if (class_id) {
-                    const { error: classError } = await supabase.from('class_students').insert({
-                        class_id: class_id,
-                        student_id: user.id
-                    });
-
-                    if (classError) console.error("Error adding to class:", classError);
-                }
-
-                // 3. Delete notification so it doesn't appear again
+            if (!acceptError) {
+                // Delete notification so it doesn't appear again
                 const { error: deleteError } = await supabase.from('notifications').delete().eq('id', notification.id);
 
-                if (deleteError) {
-                    console.error("Error deleting notification:", deleteError);
-                    // Optimistic update even if delete failed (for UI consistency)
+                if (deleteError) console.error("Error deleting notification:", deleteError);
+
+                // Update local state by removing the notification
+                setNotifications(prev => prev.filter(n => n.id !== notification.id));
+                setUnreadCount(prev => Math.max(0, prev - 1));
+                alert('¡Solicitud aceptada correctamente!');
+            } else {
+                console.error("Error accepting connection:", acceptError);
+                // Fallback to old method if RPC doesn't exist yet (for safety)
+                const { error: updateError } = await supabase
+                    .from('student_teachers')
+                    .update({ status: 'accepted' })
+                    .eq('student_id', user.id)
+                    .eq('teacher_id', teacher_id);
+
+                if (!updateError) {
+                    if (class_id) {
+                        await supabase.from('class_students').insert({ class_id, student_id: user.id });
+                    }
+                    await supabase.from('notifications').delete().eq('id', notification.id);
                     setNotifications(prev => prev.filter(n => n.id !== notification.id));
                     setUnreadCount(prev => Math.max(0, prev - 1));
                     alert('¡Solicitud aceptada correctamente!');
                 } else {
-                    // Update local state by removing the notification
-                    setNotifications(prev => prev.filter(n => n.id !== notification.id));
-                    setUnreadCount(prev => Math.max(0, prev - 1));
-                    alert('¡Solicitud aceptada correctamente!');
+                    alert('Error al aceptar la solicitud: ' + (acceptError?.message || updateError?.message));
                 }
-            } else {
-                console.error("Error accepting connection:", updateError);
-                alert('Error al aceptar la solicitud: ' + updateError.message);
             }
         }
     };

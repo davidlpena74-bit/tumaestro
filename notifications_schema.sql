@@ -133,3 +133,24 @@ begin
   where id = notif_id and user_id = auth.uid();
 end;
 $$;
+-- 6. Function to Accept Class Invitation (handles both connection and class enrollment)
+create or replace function public.accept_class_invitation(target_teacher_id uuid, target_class_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  -- 1. Update status to accepted in student_teachers
+  update public.student_teachers
+  set status = 'accepted'
+  where student_id = auth.uid() and teacher_id = target_teacher_id;
+
+  -- 2. Add to class_students if it's a class invitation
+  if target_class_id is not null then
+    insert into public.class_students (class_id, student_id)
+    values (target_class_id, auth.uid())
+    on conflict (class_id, student_id) do nothing;
+  end if;
+end;
+$$;
