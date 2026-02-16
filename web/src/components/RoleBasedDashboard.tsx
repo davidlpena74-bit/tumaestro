@@ -271,6 +271,9 @@ export default function RoleBasedDashboard() {
     };
 
     const removeStudentFromClass = async (classId: string, studentId: string) => {
+        // Get class name for notification
+        const { data: cls } = await supabase.from('classes').select('name').eq('id', classId).single();
+
         const { error } = await supabase
             .from('class_students')
             .delete()
@@ -278,6 +281,16 @@ export default function RoleBasedDashboard() {
             .eq('student_id', studentId);
 
         if (!error) {
+            // Notify student
+            if (myProfile && cls) {
+                await supabase.from('notifications').insert({
+                    user_id: studentId,
+                    type: 'class_removal',
+                    title: 'Te han quitado de una clase',
+                    message: `${myProfile.full_name} te ha eliminado de la clase "${cls.name}".`,
+                    data: { teacher_id: myProfile.id, class_id: classId }
+                });
+            }
             fetchClassStudents(classId);
         }
     };
