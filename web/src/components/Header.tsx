@@ -191,29 +191,29 @@ export default function Header() {
                 <div className="flex items-center gap-6">
                     <Link
                         href="/juegos"
-                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/juegos') ? 'text-teal-400 font-black' : 'text-white/80 hover:text-teal-400 font-medium'}`}
+                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/juegos') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
                     >
                         <span>{t.header.games}</span>
                         <motion.div
-                            className={`h-0.5 bg-teal-400 rounded-full transition-all ${pathname.startsWith('/juegos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
+                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/juegos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
                         />
                     </Link>
                     <Link
                         href="/recursos"
-                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/recursos') ? 'text-teal-400 font-black' : 'text-white/80 hover:text-teal-400 font-medium'}`}
+                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/recursos') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
                     >
                         <span>{t.header.resources}</span>
                         <motion.div
-                            className={`h-0.5 bg-teal-400 rounded-full transition-all ${pathname.startsWith('/recursos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
+                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/recursos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
                         />
                     </Link>
                     <Link
                         href="/profesores"
-                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/profesores') ? 'text-teal-400 font-black' : 'text-white/80 hover:text-teal-400 font-medium'}`}
+                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/profesores') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
                     >
                         <span>{t.header.teachers}</span>
                         <motion.div
-                            className={`h-0.5 bg-teal-400 rounded-full transition-all ${pathname.startsWith('/profesores') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
+                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/profesores') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
                         />
                     </Link>
 
