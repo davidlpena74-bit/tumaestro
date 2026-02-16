@@ -30,6 +30,8 @@ type Class = {
     id: string;
     name: string;
     description: string;
+    subject?: string;
+    grade?: string;
     teacher_id: string;
     created_at: string;
 };
@@ -75,6 +77,8 @@ export default function RoleBasedDashboard() {
     const [isCreatingClass, setIsCreatingClass] = useState(false);
     const [newClassName, setNewClassName] = useState('');
     const [newClassDesc, setNewClassDesc] = useState('');
+    const [newClassSubject, setNewClassSubject] = useState('');
+    const [newClassGrade, setNewClassGrade] = useState('');
 
     // Teacher Task Creation UI
     const [isCreatingTask, setIsCreatingTask] = useState(false);
@@ -508,7 +512,9 @@ export default function RoleBasedDashboard() {
         const payload = {
             teacher_id: myProfile.id,
             name: newClassName,
-            description: newClassDesc
+            description: newClassDesc,
+            subject: newClassSubject,
+            grade: newClassGrade
         };
 
         const { data, error } = await supabase.from('classes').insert(payload).select();
@@ -522,6 +528,8 @@ export default function RoleBasedDashboard() {
             setIsCreatingClass(false);
             setNewClassName('');
             setNewClassDesc('');
+            setNewClassSubject('');
+            setNewClassGrade('');
         }
     };
 
@@ -887,7 +895,7 @@ export default function RoleBasedDashboard() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <input
                                         type="text"
-                                        placeholder="Nombre de la clase (ej: Matemáticas 3º ESO)"
+                                        placeholder="Nombre de la clase (ej: Ciencia y Futuro)"
                                         className="bg-white border-2 border-purple-100 rounded-2xl px-5 py-3 text-slate-700 outline-none focus:border-purple-500"
                                         value={newClassName}
                                         onChange={(e) => setNewClassName(e.target.value)}
@@ -899,6 +907,48 @@ export default function RoleBasedDashboard() {
                                         value={newClassDesc}
                                         onChange={(e) => setNewClassDesc(e.target.value)}
                                     />
+                                    <select
+                                        className="bg-white border-2 border-purple-100 rounded-2xl px-5 py-3 text-slate-700 outline-none focus:border-purple-500"
+                                        value={newClassSubject}
+                                        onChange={(e) => setNewClassSubject(e.target.value)}
+                                    >
+                                        <option value="">Seleccionar Materia...</option>
+                                        <option value="Matemáticas">Matemáticas</option>
+                                        <option value="Lengua">Lengua y Literatura</option>
+                                        <option value="Inglés">Inglés</option>
+                                        <option value="Ciencias Naturales">Ciencias Naturales</option>
+                                        <option value="Ciencias Sociales">Ciencias Sociales</option>
+                                        <option value="Biología">Biología</option>
+                                        <option value="Química">Química</option>
+                                        <option value="Física">Física</option>
+                                        <option value="Geografía">Geografía</option>
+                                        <option value="Historia">Historia</option>
+                                        <option value="Economía">Economía</option>
+                                        <option value="Música">Música</option>
+                                        <option value="Arte">Arte</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                    <select
+                                        className="bg-white border-2 border-purple-100 rounded-2xl px-5 py-3 text-slate-700 outline-none focus:border-purple-500"
+                                        value={newClassGrade}
+                                        onChange={(e) => setNewClassGrade(e.target.value)}
+                                    >
+                                        <option value="">Seleccionar Nivel/Curso...</option>
+                                        <option value="1º Primaria">1º Primaria</option>
+                                        <option value="2º Primaria">2º Primaria</option>
+                                        <option value="3º Primaria">3º Primaria</option>
+                                        <option value="4º Primaria">4º Primaria</option>
+                                        <option value="5º Primaria">5º Primaria</option>
+                                        <option value="6º Primaria">6º Primaria</option>
+                                        <option value="1º ESO">1º ESO</option>
+                                        <option value="2º ESO">2º ESO</option>
+                                        <option value="3º ESO">3º ESO</option>
+                                        <option value="4º ESO">4º ESO</option>
+                                        <option value="1º Bachillerato">1º Bachillerato</option>
+                                        <option value="2º Bachillerato">2º Bachillerato</option>
+                                        <option value="Universidad">Universidad</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
                                 </div>
                                 <div className="flex justify-end gap-3">
                                     <button
@@ -922,6 +972,18 @@ export default function RoleBasedDashboard() {
                                 <div key={cls.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col group relative overflow-hidden">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
+                                            <div className="flex gap-2 mb-2">
+                                                {cls.subject && (
+                                                    <span className="bg-purple-100 text-purple-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-purple-200">
+                                                        {cls.subject}
+                                                    </span>
+                                                )}
+                                                {cls.grade && (
+                                                    <span className="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-200">
+                                                        {cls.grade}
+                                                    </span>
+                                                )}
+                                            </div>
                                             <h4 className="font-bold text-slate-800 text-2xl mb-1">{cls.name}</h4>
                                             <p className="text-slate-500 text-sm">{cls.description}</p>
                                         </div>
