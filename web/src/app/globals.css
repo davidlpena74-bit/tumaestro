@@ -20,14 +20,28 @@ body {
 }
 
 button,
+a,
 [role="button"],
+[role="tab"],
+[role="menuitem"],
+[role="link"],
 .cursor-pointer,
+select,
+label,
+summary,
 input[type="submit"],
 input[type="button"],
-input[type="reset"] {
-  cursor: pointer;
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"] {
+  cursor: pointer !important;
 }
 
-a {
-  cursor: pointer;
+/* Ensure children elements (like icons and text) inside interactives inherit the pointer */
+a *,
+button *,
+[role="button"] *,
+.cursor-pointer * {
+  cursor: inherit !important;
 }
