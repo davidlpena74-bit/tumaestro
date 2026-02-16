@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
 import { User as UserIcon, CaretDown, Check, SignOut, Bell } from '@phosphor-icons/react';
@@ -168,6 +169,8 @@ export default function Header() {
         window.location.href = '/';
     };
 
+    const pathname = usePathname();
+
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-white/10 py-2' : 'bg-transparent py-4'}`}>
             <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
@@ -186,13 +189,22 @@ export default function Header() {
 
                 {/* ACTIONS */}
                 <div className="flex items-center gap-4">
-                    <Link href="/juegos" className="hidden md:block text-white/80 hover:text-teal-400 font-medium transition-colors text-sm">
+                    <Link
+                        href="/juegos"
+                        className={`hidden md:block transition-colors text-sm font-medium ${pathname === '/juegos' ? 'text-teal-400 font-bold' : 'text-white/80 hover:text-teal-400'}`}
+                    >
                         {t.header.games}
                     </Link>
-                    <Link href="/recursos" className="hidden md:block text-white/80 hover:text-teal-400 font-medium transition-colors text-sm">
+                    <Link
+                        href="/recursos"
+                        className={`hidden md:block transition-colors text-sm font-medium ${pathname === '/recursos' ? 'text-teal-400 font-bold' : 'text-white/80 hover:text-teal-400'}`}
+                    >
                         {t.header.resources}
                     </Link>
-                    <Link href="/profesores" className="hidden md:block text-white/80 hover:text-teal-400 font-medium transition-colors text-sm">
+                    <Link
+                        href="/profesores"
+                        className={`hidden md:block transition-colors text-sm font-medium ${pathname === '/profesores' ? 'text-teal-400 font-bold' : 'text-white/80 hover:text-teal-400'}`}
+                    >
                         {t.header.teachers}
                     </Link>
 
