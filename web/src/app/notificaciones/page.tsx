@@ -87,6 +87,43 @@ export default function NotificationsPage() {
         setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     };
 
+    const handleAcceptRequest = async (notification: Notification, e: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (!user) return;
+
+        const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
+        const class_id = notification.data?.class_id;
+
+        if (!teacher_id) {
+            console.error("No teacher_id found in notification data", notification);
+            return;
+        }
+
+        // Use RPC to accept both connection and class invitation atomically
+        const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
+            target_teacher_id: teacher_id,
+            target_class_id: class_id || null
+        });
+
+        if (!acceptError) {
+            // Mark notification as read so it stays in history
+            const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
+            if (readError) {
+                await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
+            }
+
+            // Update local state
+            setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
+            alert('¡Solicitud aceptada correctamente!');
+        } else {
+            console.error("Error accepting connection:", acceptError);
+            alert('Error al aceptar la solicitud: ' + acceptError.message);
+        }
+    };
+
     const markAllAsRead = async () => {
         if (!user) return;
         const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
@@ -255,13 +292,22 @@ export default function NotificationsPage() {
 
                                             <div className="flex items-center justify-between">
                                                 <div className="flex gap-4">
+                                                    {!n.read && n.type === 'connection_request' && (
+                                                        <button
+                                                            onClick={(e) => handleAcceptRequest(n, e)}
+                                                            className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-teal-500 hover:bg-teal-600 transition-all px-4 py-2 rounded-lg shadow-md hover:shadow-lg active:scale-95"
+                                                        >
+                                                            <UserPlus size={14} weight="bold" />
+                                                            Aceptar Solicitud
+                                                        </button>
+                                                    )}
                                                     {!n.read && (
                                                         <button
                                                             onClick={(e) => markAsRead(n.id, e)}
                                                             className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-teal-600 hover:text-teal-700 transition-colors bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100 shadow-sm"
                                                         >
                                                             <Check size={14} weight="bold" />
-                                                            Marcar como leída
+                                                            {n.type === 'connection_request' ? 'Ignorar' : 'Marcar como leída'}
                                                         </button>
                                                     )}
                                                     <button

@@ -172,13 +172,14 @@ export default function Header() {
             });
 
             if (!acceptError) {
-                // Delete notification so it doesn't appear again
-                const { error: deleteError } = await supabase.from('notifications').delete().eq('id', notification.id);
+                // Mark notification as read so it stays in "All" history but leaves "Unread"
+                const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
+                if (readError) {
+                    await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
+                }
 
-                if (deleteError) console.error("Error deleting notification:", deleteError);
-
-                // Update local state by removing the notification
-                setNotifications(prev => prev.filter(n => n.id !== notification.id));
+                // Update local state without removing it
+                setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
                 setUnreadCount(prev => Math.max(0, prev - 1));
                 alert('¡Solicitud aceptada correctamente!');
             } else {
@@ -194,8 +195,8 @@ export default function Header() {
                     if (class_id) {
                         await supabase.from('class_students').insert({ class_id, student_id: user.id });
                     }
-                    await supabase.from('notifications').delete().eq('id', notification.id);
-                    setNotifications(prev => prev.filter(n => n.id !== notification.id));
+                    await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
+                    setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
                     setUnreadCount(prev => Math.max(0, prev - 1));
                     alert('¡Solicitud aceptada correctamente!');
                 } else {

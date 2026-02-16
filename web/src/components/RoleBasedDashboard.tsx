@@ -361,52 +361,36 @@ export default function RoleBasedDashboard() {
 
     const approveConnection = async (notification: Notification) => {
         if (!myProfile) return;
-        // Support both data structures (manual insert and RPC insert)
         const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
         const class_id = notification.data?.class_id;
 
         if (!teacher_id) {
-            console.error("No teacher_id or sender_id found in notification data", notification);
+            console.error("No teacher_id found in notification data", notification);
             return;
         }
 
-        // 1. Update status to accepted
-        const { error: updateError } = await supabase
-            .from('student_teachers')
-            .update({ status: 'accepted' })
-            .eq('student_id', myProfile.id)
-            .eq('teacher_id', teacher_id);
+        // Use RPC to accept both connection and class invitation atomically (bypasses student RLS)
+        const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
+            target_teacher_id: teacher_id,
+            target_class_id: class_id || null
+        });
 
-        if (!updateError) {
-            // 2. If there was a class involved, add to class_students
-            if (class_id) {
-                const { error: classError } = await supabase.from('class_students').insert({
-                    class_id: class_id,
-                    student_id: myProfile.id
-                });
-                if (classError) console.error("Error adding to class:", classError);
+        if (!acceptError) {
+            // Mark notification as read so it stays in "All" history
+            const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
+            if (readError) {
+                await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
             }
 
-            // 3. Delete notification
-            const { error: deleteError } = await supabase.from('notifications').delete().eq('id', notification.id);
-
-            if (deleteError) {
-                console.error("Error deleting notification:", deleteError);
-                // Even if deletion fails (likely RLS), we should probably hide it from state 
-                // to avoid confusing the user, but it will come back on refresh until RLS is fixed.
-                setNotifications(prev => prev.filter(n => n.id !== notification.id));
-            } else {
-                fetchNotifications(myProfile.id);
-            }
-
-            // Refresh other data
+            // Refresh data
+            fetchNotifications(myProfile.id);
             fetchConnections(myProfile.id, myProfile.role);
             if (class_id) fetchClassesAsStudent(myProfile.id);
 
             alert("¡Solicitud aceptada!");
         } else {
-            console.error("Error updating connection status:", updateError);
-            alert("Error al aceptar: " + updateError.message);
+            console.error("Error accepting connection:", acceptError);
+            alert("Error al aceptar: " + acceptError.message);
         }
     };
 
