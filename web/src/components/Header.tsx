@@ -350,20 +350,24 @@ export default function Header() {
                                                             className={`relative px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors ${!n.read ? 'bg-blue-50/40' : ''}`}
                                                         >
                                                             <div className="flex justify-between items-start gap-2">
-                                                                <div className="flex-1">
+                                                                <Link
+                                                                    href="/notificaciones"
+                                                                    onClick={() => setNotifMenuOpen(false)}
+                                                                    className="flex-1 group/card"
+                                                                >
                                                                     <div className="flex items-center gap-2 mb-1">
-                                                                        <p className="font-bold text-slate-800 text-sm leading-tight">{n.title}</p>
+                                                                        <p className="font-bold text-slate-800 text-sm leading-tight group-hover/card:text-teal-600 transition-colors uppercase tracking-tight">{n.title}</p>
                                                                         {!n.read && (
-                                                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                                                            <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                                                                         )}
                                                                     </div>
-                                                                    <p className="text-slate-500 text-xs leading-relaxed">{n.message}</p>
+                                                                    <p className="text-slate-500 text-xs leading-relaxed group-hover/card:text-slate-600">{n.message}</p>
                                                                     <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
-                                                                </div>
+                                                                </Link>
                                                                 {!n.read && (
                                                                     <button
                                                                         onClick={(e) => markAsRead(n.id, e)}
-                                                                        className="p-1.5 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                                                        className="p-1.5 text-slate-300 hover:text-teal-500 hover:bg-teal-50 rounded-lg transition-all flex-shrink-0"
                                                                         title="Marcar como leída"
                                                                     >
                                                                         <Check size={14} weight="bold" />
@@ -391,13 +395,20 @@ export default function Header() {
                                                     ))
                                             )}
                                         </div>
-                                        <div className="p-2 border-t border-slate-100 bg-slate-50">
+                                        <div className="p-2 border-t border-slate-100 bg-slate-50 flex gap-2">
                                             <button
                                                 onClick={() => setShowAllNotifs(!showAllNotifs)}
-                                                className="w-full py-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-800 transition-colors"
+                                                className="flex-1 py-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-800 transition-colors border border-slate-200 rounded-lg hover:bg-white"
                                             >
-                                                {showAllNotifs ? 'Ocultar leídas' : 'Ver mensajes antiguos'}
+                                                {showAllNotifs ? 'Ocultar leídas' : 'Ver antiguos'}
                                             </button>
+                                            <Link
+                                                href="/notificaciones"
+                                                onClick={() => setNotifMenuOpen(false)}
+                                                className="flex-1 py-2 text-[10px] font-black uppercase tracking-widest bg-teal-500 text-white text-center rounded-lg hover:bg-teal-600 shadow-sm transition-all"
+                                            >
+                                                Gestionar Todas
+                                            </Link>
                                         </div>
                                     </motion.div>
                                 )}
