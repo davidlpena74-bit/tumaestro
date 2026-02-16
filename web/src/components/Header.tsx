@@ -66,15 +66,30 @@ export default function Header() {
             }
         });
 
-        // Optional: Polling for notifications every 30s
-        const interval = setInterval(() => {
-            if (user) fetchNotifications(user.id);
-        }, 30000);
+        // Supabase Realtime for notifications
+        let realtimeChannel: any;
+        if (currentUser) {
+            realtimeChannel = supabase
+                .channel(`notifs-${currentUser.id}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'notifications',
+                        filter: `user_id=eq.${currentUser.id}`
+                    },
+                    () => {
+                        fetchNotifications(currentUser.id);
+                    }
+                )
+                .subscribe();
+        }
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
             subscription.unsubscribe();
-            clearInterval(interval);
+            if (realtimeChannel) realtimeChannel.unsubscribe();
         };
     }, [user?.id]); // Re-run if user ID changes
 

@@ -25,6 +25,7 @@ export default function NotificationsPage() {
     const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
     useEffect(() => {
+        let subscription: any;
         const checkUser = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
@@ -32,13 +33,35 @@ export default function NotificationsPage() {
                 return;
             }
             setUser(session.user);
-            fetchNotifications(session.user.id);
+            fetchNotifications(session.user.id, true);
+
+            // Subscribe to realtime changes
+            subscription = supabase
+                .channel(`notifs-page-${session.user.id}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'notifications',
+                        filter: `user_id=eq.${session.user.id}`
+                    },
+                    () => {
+                        // Re-fetch when anything changes
+                        fetchNotifications(session.user.id);
+                    }
+                )
+                .subscribe();
         };
         checkUser();
+
+        return () => {
+            if (subscription) subscription.unsubscribe();
+        };
     }, [router]);
 
-    const fetchNotifications = async (userId: string) => {
-        setLoading(true);
+    const fetchNotifications = async (userId: string, isInitial = false) => {
+        if (isInitial) setLoading(true);
         const { data, error } = await supabase
             .from('notifications')
             .select('*')
