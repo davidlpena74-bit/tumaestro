@@ -376,6 +376,9 @@ export default function RoleBasedDashboard() {
             setIsCreatingClass(false);
             setNewClassName('');
             setNewClassDesc('');
+        } else {
+            console.error('Error creating class:', error);
+            alert('Error al crear la clase: ' + error.message);
         }
     };
 
