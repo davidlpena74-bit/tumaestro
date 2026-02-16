@@ -22,6 +22,11 @@ create policy "Users can update own notifications"
   on notifications for update
   using ( auth.uid() = user_id );
 
+drop policy if exists "Users can delete own notifications" on notifications;
+create policy "Users can delete own notifications"
+  on notifications for delete
+  using ( auth.uid() = user_id );
+
 -- 2. Modify student_teachers to support 'pending' status
 -- We add the column if it doesn't exist. Existing rows get 'accepted' by default to maintain current behavior.
 do $$ 

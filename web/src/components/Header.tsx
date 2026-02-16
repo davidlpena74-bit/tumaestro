@@ -93,8 +93,14 @@ export default function Header() {
 
     const markAsRead = async (id: string, e?: React.MouseEvent) => {
         e?.stopPropagation();
-        await supabase.from('notifications').update({ read: true }).eq('id', id);
-        setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
+        const { error } = await supabase.rpc('mark_notification_read', { notif_id: id });
+
+        if (error) {
+            // Fallback to direct update if RPC fails (backward compatibility)
+            await supabase.from('notifications').update({ read: true }).eq('id', id);
+        }
+
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
         setUnreadCount(prev => Math.max(0, prev - 1));
     };
 
