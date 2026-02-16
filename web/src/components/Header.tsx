@@ -66,32 +66,36 @@ export default function Header() {
             }
         });
 
-        // Supabase Realtime for notifications
-        let realtimeChannel: any;
-        if (currentUser) {
-            realtimeChannel = supabase
-                .channel(`notifs-${currentUser.id}`)
-                .on(
-                    'postgres_changes',
-                    {
-                        event: '*',
-                        schema: 'public',
-                        table: 'notifications',
-                        filter: `user_id=eq.${currentUser.id}`
-                    },
-                    () => {
-                        fetchNotifications(currentUser.id);
-                    }
-                )
-                .subscribe();
-        }
-
         return () => {
             window.removeEventListener('scroll', handleScroll);
             subscription.unsubscribe();
+        };
+    }, []);
+
+    // Dedicated effect for Realtime Notifications
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const realtimeChannel = supabase
+            .channel(`notifs-${user.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'notifications',
+                    filter: `user_id=eq.${user.id}`
+                },
+                () => {
+                    fetchNotifications(user.id);
+                }
+            )
+            .subscribe();
+
+        return () => {
             if (realtimeChannel) realtimeChannel.unsubscribe();
         };
-    }, [user?.id]); // Re-run if user ID changes
+    }, [user?.id]);
 
     const fetchNotifications = async (userId: string) => {
         const { data } = await supabase
