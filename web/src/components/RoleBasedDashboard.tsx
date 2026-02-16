@@ -754,101 +754,102 @@ export default function RoleBasedDashboard() {
                                         <div className="text-green-500 bg-green-50 p-2 rounded-full">
                                             <CheckCircle size={20} weight="fill" />
                                         </div>
-
-                                        {/* Display Classes (Teacher View) */}
-                                        {isTeacher && (
-                                            <div className="mb-4 relative">
-                                                <div className="flex justify-between items-center mb-2">
-                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clases inscritas</p>
-                                                    <button
-                                                        onClick={() => setOpenedDropdownId(openedDropdownId === conn.id ? null : conn.id)}
-                                                        className="bg-blue-50 text-blue-600 p-1 rounded-md hover:bg-blue-100 transition-colors"
-                                                        title="Añadir a otra clase"
-                                                    >
-                                                        <Plus size={14} weight="bold" />
-                                                    </button>
-                                                </div>
-
-                                                {/* Add Class Dropdown */}
-                                                {openedDropdownId === conn.id && (
-                                                    <div className="absolute top-8 right-0 bg-white border border-slate-100 shadow-xl rounded-xl z-20 w-48 overflow-hidden animate-in fade-in zoom-in duration-200">
-                                                        <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] uppercase font-bold text-slate-400">
-                                                            Añadir a clase
-                                                        </div>
-                                                        <div className="max-h-40 overflow-y-auto">
-                                                            {myClasses.filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id)).length > 0 ? (
-                                                                myClasses
-                                                                    .filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id))
-                                                                    .map(c => (
-                                                                        <button
-                                                                            key={c.id}
-                                                                            onClick={() => {
-                                                                                addStudentToClass(c.id, conn.id);
-                                                                                // Update local state optimsitically or wait for fetch
-                                                                                // Helper to update local state avoiding full reload
-                                                                                const currentClasses = studentClasses[conn.id] || [];
-                                                                                setStudentClasses({
-                                                                                    ...studentClasses,
-                                                                                    [conn.id]: [...currentClasses, c]
-                                                                                });
-                                                                                setOpenedDropdownId(null);
-                                                                            }}
-                                                                            className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
-                                                                        >
-                                                                            {c.name}
-                                                                        </button>
-                                                                    ))
-                                                            ) : (
-                                                                <p className="px-4 py-3 text-[10px] text-slate-400 italic text-center">
-                                                                    Ya está en todas tus clases
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                                <div className="flex flex-wrap gap-2">
-                                                    {(studentClasses[conn.id] || []).map(cls => (
-                                                        <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
-                                                            <span className="max-w-[100px] truncate">{cls.name}</span>
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    if (confirm(`¿Quitar a ${conn.full_name} de ${cls.name}?`)) {
-                                                                        removeStudentFromClass(cls.id, conn.id)
-                                                                    }
-                                                                }}
-                                                                className="hover:bg-purple-200 rounded p-0.5 transition-colors"
-                                                            >
-                                                                <Trash size={12} />
-                                                            </button>
-                                                        </div>
-                                                    ))}
-                                                    {(!studentClasses[conn.id] || studentClasses[conn.id].length === 0) && (
-                                                        <span className="text-xs text-slate-400 italic">Sin clases asignadas</span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <button
-                                            onClick={() => {
-                                                if (confirm('¿Seguro que quieres eliminar este vínculo? Se eliminará al usuario de todas tus clases.')) {
-                                                    removeConnection(conn.id);
-                                                }
-                                            }}
-                                            className="w-full py-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl text-xs font-bold transition-colors"
-                                        >
-                                            Eliminar vínculo
-                                        </button>
                                     </div>
-                            ))}
-                                    {myConnections.length === 0 && (
-                                        <div className="col-span-full py-12 text-center bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                                            <Users size={48} className="mx-auto text-slate-300 mb-3" />
-                                            <p className="text-slate-400 font-medium tracking-tight">Todavía no tienes {isTeacher ? 'alumnos' : 'profesores'} vinculados.</p>
+
+                                    {/* Display Classes (Teacher View) */}
+                                    {isTeacher && (
+                                        <div className="mb-4 relative">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clases inscritas</p>
+                                                <button
+                                                    onClick={() => setOpenedDropdownId(openedDropdownId === conn.id ? null : conn.id)}
+                                                    className="bg-blue-50 text-blue-600 p-1 rounded-md hover:bg-blue-100 transition-colors"
+                                                    title="Añadir a otra clase"
+                                                >
+                                                    <Plus size={14} weight="bold" />
+                                                </button>
+                                            </div>
+
+                                            {/* Add Class Dropdown */}
+                                            {openedDropdownId === conn.id && (
+                                                <div className="absolute top-8 right-0 bg-white border border-slate-100 shadow-xl rounded-xl z-20 w-48 overflow-hidden animate-in fade-in zoom-in duration-200">
+                                                    <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] uppercase font-bold text-slate-400">
+                                                        Añadir a clase
+                                                    </div>
+                                                    <div className="max-h-40 overflow-y-auto">
+                                                        {myClasses.filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id)).length > 0 ? (
+                                                            myClasses
+                                                                .filter(c => !(studentClasses[conn.id] || []).find(sc => sc.id === c.id))
+                                                                .map(c => (
+                                                                    <button
+                                                                        key={c.id}
+                                                                        onClick={() => {
+                                                                            addStudentToClass(c.id, conn.id);
+                                                                            // Update local state optimsitically or wait for fetch
+                                                                            // Helper to update local state avoiding full reload
+                                                                            const currentClasses = studentClasses[conn.id] || [];
+                                                                            setStudentClasses({
+                                                                                ...studentClasses,
+                                                                                [conn.id]: [...currentClasses, c]
+                                                                            });
+                                                                            setOpenedDropdownId(null);
+                                                                        }}
+                                                                        className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+                                                                    >
+                                                                        {c.name}
+                                                                    </button>
+                                                                ))
+                                                        ) : (
+                                                            <p className="px-4 py-3 text-[10px] text-slate-400 italic text-center">
+                                                                Ya está en todas tus clases
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <div className="flex flex-wrap gap-2">
+                                                {(studentClasses[conn.id] || []).map(cls => (
+                                                    <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
+                                                        <span className="max-w-[100px] truncate">{cls.name}</span>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (confirm(`¿Quitar a ${conn.full_name} de ${cls.name}?`)) {
+                                                                    removeStudentFromClass(cls.id, conn.id)
+                                                                }
+                                                            }}
+                                                            className="hover:bg-purple-200 rounded p-0.5 transition-colors"
+                                                        >
+                                                            <Trash size={12} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                                {(!studentClasses[conn.id] || studentClasses[conn.id].length === 0) && (
+                                                    <span className="text-xs text-slate-400 italic">Sin clases asignadas</span>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
+
+                                    <button
+                                        onClick={() => {
+                                            if (confirm('¿Seguro que quieres eliminar este vínculo? Se eliminará al usuario de todas tus clases.')) {
+                                                removeConnection(conn.id);
+                                            }
+                                        }}
+                                        className="w-full py-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl text-xs font-bold transition-colors"
+                                    >
+                                        Eliminar vínculo
+                                    </button>
                                 </div>
+                            ))}
+                            {myConnections.length === 0 && (
+                                <div className="col-span-full py-12 text-center bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                                    <Users size={48} className="mx-auto text-slate-300 mb-3" />
+                                    <p className="text-slate-400 font-medium tracking-tight">Todavía no tienes {isTeacher ? 'alumnos' : 'profesores'} vinculados.</p>
+                                </div>
+                            )}
+                        </div>
                     </motion.div>
                 ) : (
                     <motion.div
@@ -929,9 +930,8 @@ export default function RoleBasedDashboard() {
                                         )}
                                     </div>
 
-                                    {/* Tasks List */}
+                                    {/* SECTION 1: TASKS */}
                                     <div className="space-y-3 mb-4 flex-1">
-
                                         <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100">
                                             <div className="flex justify-between items-center mb-4">
                                                 <h5 className="font-bold text-slate-700 flex items-center gap-2">
@@ -1020,6 +1020,7 @@ export default function RoleBasedDashboard() {
                                             )}
                                         </div>
 
+                                        {/* SECTION 2: STUDENTS (Unified) */}
                                         {isTeacher && (
                                             <div className="mt-6 border-t border-slate-100 pt-6">
                                                 <div className="flex justify-between items-center mb-4">
@@ -1083,9 +1084,7 @@ export default function RoleBasedDashboard() {
                                                         <div>
                                                             <h6 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">Añadir Alumno Existente</h6>
                                                             <div className="flex flex-wrap gap-2">
-                                                                {myConnections
-                                                                    .filter(conn => !classStudents.find(s => s.id === conn.id))
-                                                                    .length > 0 ? (
+                                                                {myConnections.filter(conn => !classStudents.find(s => s.id === conn.id)).length > 0 ? (
                                                                     myConnections
                                                                         .filter(conn => !classStudents.find(s => s.id === conn.id))
                                                                         .map(conn => (
@@ -1099,8 +1098,7 @@ export default function RoleBasedDashboard() {
                                                                         ))
                                                                 ) : (
                                                                     <p className="text-slate-400 text-xs italic">No tienes alumnos disponibles para añadir.</p>
-                                                                )
-                                                                }
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
