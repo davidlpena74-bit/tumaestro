@@ -469,32 +469,38 @@ export default function RoleBasedDashboard() {
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
             <div className={`grid grid-cols-1 ${isTeacher ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
-                <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl">
+                <div
+                    onClick={() => setActiveTab('connections')}
+                    className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer hover:scale-105 transition-transform"
+                >
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-white/20 rounded-2xl">
                             {isTeacher ? <ChalkboardTeacher size={32} /> : <IdentificationBadge size={32} />}
                         </div>
                         <div>
-                            <h3 className="font-bold text-lg">{isTeacher ? 'Panel de Profesor' : 'Panel de Alumno'}</h3>
+                            <h3 className="font-bold text-lg">{isTeacher ? 'Alumnos' : 'Profesores'}</h3>
                             <p className="text-white/80 text-sm">{myProfile.full_name}</p>
                         </div>
                     </div>
                     <div className="text-3xl font-black">{myConnections.length}</div>
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Alumnos vinculados' : 'Profesores seleccionados'}</p>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Vinculados' : 'Seleccionados'}</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl">
+                <div
+                    onClick={() => setActiveTab('classes')}
+                    className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer hover:scale-105 transition-transform"
+                >
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-white/20 rounded-2xl">
                             <Books size={32} />
                         </div>
                         <div>
-                            <h3 className="font-bold text-lg">{isTeacher ? 'Mis Clases' : 'Clases Inscritas'}</h3>
-                            <p className="text-white/80 text-sm">{isTeacher ? 'Organiza tu enseñanza' : 'Tus grupos de aprendizaje'}</p>
+                            <h3 className="font-bold text-lg">Clases</h3>
+                            <p className="text-white/80 text-sm">{isTeacher ? 'Organiza tu enseñanza' : 'Tus grupos'}</p>
                         </div>
                     </div>
                     <div className="text-3xl font-black">{myClasses.length}</div>
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Clases activas' : 'Clases'}</p>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Activas</p>
                 </div>
 
                 {isTeacher && (
@@ -514,22 +520,7 @@ export default function RoleBasedDashboard() {
                 )}
             </div>
 
-            <div className="flex gap-4 border-b border-slate-200 overflow-x-auto">
-                <button
-                    onClick={() => setActiveTab('connections')}
-                    className={`pb-4 px-2 font-bold text-sm transition-all relative whitespace-nowrap ${activeTab === 'connections' ? 'text-blue-600' : 'text-slate-400'}`}
-                >
-                    {isTeacher ? 'Mis Alumnos' : 'Mis Profesores'}
-                    {activeTab === 'connections' && <motion.div layoutId="tab" className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600 rounded-t-full" />}
-                </button>
-                <button
-                    onClick={() => setActiveTab('classes')}
-                    className={`pb-4 px-2 font-bold text-sm transition-all relative whitespace-nowrap ${activeTab === 'classes' ? 'text-purple-600' : 'text-slate-400'}`}
-                >
-                    {isTeacher ? 'Gestión de Clases' : 'Mis Clases y Tareas'}
-                    {activeTab === 'classes' && <motion.div layoutId="tab" className="absolute bottom-0 left-0 right-0 h-1 bg-purple-600 rounded-t-full" />}
-                </button>
-            </div>
+            {/* Navigation Tabs Removed as per request, using Top Cards for navigation */}
 
             <AnimatePresence mode="wait">
                 {activeTab === 'connections' ? (
