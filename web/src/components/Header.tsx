@@ -137,7 +137,10 @@ export default function Header() {
     };
 
     const markAsRead = async (id: string, e?: React.MouseEvent) => {
-        e?.stopPropagation();
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         const { error } = await supabase.rpc('mark_notification_read', { notif_id: id });
 
         if (error) {
@@ -344,29 +347,41 @@ export default function Header() {
                                                     .map(n => (
                                                         <div
                                                             key={n.id}
-                                                            onClick={() => !n.read && markAsRead(n.id)}
-                                                            className={`px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer ${!n.read ? 'bg-blue-50/40' : ''}`}
+                                                            className={`relative px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors ${!n.read ? 'bg-blue-50/40' : ''}`}
                                                         >
                                                             <div className="flex justify-between items-start gap-2">
                                                                 <div className="flex-1">
-                                                                    <p className="font-bold text-slate-800 text-sm leading-tight mb-1">{n.title}</p>
+                                                                    <div className="flex items-center gap-2 mb-1">
+                                                                        <p className="font-bold text-slate-800 text-sm leading-tight">{n.title}</p>
+                                                                        {!n.read && (
+                                                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                                                        )}
+                                                                    </div>
                                                                     <p className="text-slate-500 text-xs leading-relaxed">{n.message}</p>
                                                                     <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
                                                                 </div>
-                                                                {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />}
+                                                                {!n.read && (
+                                                                    <button
+                                                                        onClick={(e) => markAsRead(n.id, e)}
+                                                                        className="p-1.5 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                                                        title="Marcar como leída"
+                                                                    >
+                                                                        <Check size={14} weight="bold" />
+                                                                    </button>
+                                                                )}
                                                             </div>
 
                                                             {n.type === 'connection_request' && !n.read && (
                                                                 <div className="mt-3 flex gap-2">
                                                                     <button
                                                                         onClick={(e) => handleAcceptRequest(n, e)}
-                                                                        className="flex-1 text-xs bg-slate-900 text-white px-3 py-2 rounded-lg font-bold hover:bg-slate-800 transition-colors shadow-sm"
+                                                                        className="flex-1 text-[10px] bg-slate-900 text-white px-2 py-1.5 rounded-lg font-black uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-sm active:scale-95"
                                                                     >
                                                                         Aceptar
                                                                     </button>
                                                                     <button
                                                                         onClick={(e) => markAsRead(n.id, e)}
-                                                                        className="flex-1 text-xs bg-white border border-slate-200 text-slate-600 px-3 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors"
+                                                                        className="flex-1 text-[10px] bg-white border border-slate-200 text-slate-600 px-2 py-1.5 rounded-lg font-black uppercase tracking-widest hover:bg-slate-50 transition-colors active:scale-95"
                                                                     >
                                                                         Ignorar
                                                                     </button>
