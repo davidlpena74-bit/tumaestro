@@ -929,32 +929,6 @@ export default function RoleBasedDashboard() {
                                         )}
                                     </div>
 
-                                    {/* Student Avatars Display */}
-                                    {isTeacher && (
-                                        <div className="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                            <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Alumnos Inscritos ({(enrolledStudentsByClass[cls.id] || []).length})</h5>
-
-                                            {(enrolledStudentsByClass[cls.id] || []).length > 0 ? (
-                                                <div className="flex flex-wrap gap-4">
-                                                    {(enrolledStudentsByClass[cls.id] || []).map((student, i) => (
-                                                        <div key={student.id} className="flex flex-col items-center group/student">
-                                                            <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-sm font-bold text-purple-600 mb-1 group-hover/student:scale-110 group-hover/student:border-purple-200 transition-all">
-                                                                {student.full_name?.[0] || '?'}
-                                                            </div>
-                                                            <span className="text-[10px] font-medium text-slate-500 max-w-[60px] truncate text-center leading-tight group-hover/student:text-purple-600">
-                                                                {student.full_name?.split(' ')[0]}
-                                                            </span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <div className="text-center py-2">
-                                                    <span className="text-slate-400 text-xs italic">No hay alumnos inscritos todavía.</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
                                     {/* Tasks List */}
                                     <div className="space-y-3 mb-4 flex-1">
 
@@ -1046,66 +1020,92 @@ export default function RoleBasedDashboard() {
                                             )}
                                         </div>
 
-                                        {isTeacher && selectedClassId === cls.id ? (
-                                            <div className="space-y-4 border-t border-slate-100 pt-4">
-                                                <div className="bg-slate-50 p-4 rounded-2xl">
-                                                    <h5 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Alumnos en esta clase</h5>
-                                                    <div className="space-y-2">
-                                                        {classStudents.map(student => (
-                                                            <div key={student.id} className="flex items-center justify-between text-sm bg-white p-2 rounded-xl border border-slate-100">
-                                                                <span className="font-bold text-slate-700">{student.full_name}</span>
-                                                                <button onClick={() => removeStudentFromClass(cls.id, student.id)} className="text-red-500 hover:text-red-700">
-                                                                    <Trash size={16} />
-                                                                </button>
-                                                            </div>
-                                                        ))}
-                                                        {classStudents.length === 0 && <p className="text-slate-400 text-xs text-center py-2 italic">Sin alumnos asignados</p>}
-                                                    </div>
-                                                </div>
-
-                                                <div className="bg-blue-50 p-4 rounded-2xl">
-                                                    <h5 className="text-xs font-black text-blue-400 uppercase tracking-widest mb-3">Añadir de mis contactos</h5>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {myConnections
-                                                            .filter(conn => !classStudents.find(s => s.id === conn.id))
-                                                            .map(conn => (
-                                                                <button
-                                                                    key={conn.id}
-                                                                    onClick={() => addStudentToClass(cls.id, conn.id)}
-                                                                    className="px-3 py-1.5 bg-white text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all"
-                                                                >
-                                                                    + {conn.full_name}
-                                                                </button>
-                                                            ))
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    onClick={() => setSelectedClassId(null)}
-                                                    className="w-full py-2 text-slate-400 text-xs font-bold hover:text-slate-600"
-                                                >
-                                                    Cerrar gestor
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            isTeacher && (
-                                                <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
-                                                    <div className="flex -space-x-2">
-                                                        <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase">
-                                                            {cls.name[0]}
-                                                        </div>
-                                                    </div>
+                                        {isTeacher && (
+                                            <div className="mt-6 border-t border-slate-100 pt-6">
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <h5 className="font-bold text-slate-700 flex items-center gap-2">
+                                                        <Users size={18} className="text-blue-500" />
+                                                        Alumnos ({enrolledStudentsByClass[cls.id]?.length || 0})
+                                                    </h5>
                                                     <button
                                                         onClick={() => {
-                                                            setSelectedClassId(cls.id);
-                                                            fetchClassStudents(cls.id);
+                                                            if (selectedClassId === cls.id) {
+                                                                setSelectedClassId(null);
+                                                            } else {
+                                                                setSelectedClassId(cls.id);
+                                                                fetchClassStudents(cls.id);
+                                                            }
                                                         }}
-                                                        className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-100 transition-colors"
+                                                        className="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
                                                     >
-                                                        Ver y gestionar alumnos
+                                                        {selectedClassId === cls.id ? 'Cerrar Gestión' : 'Gestionar'}
                                                     </button>
                                                 </div>
-                                            )
+
+                                                {/* Student Grid (Always Visible) */}
+                                                <div className="mb-4">
+                                                    {(enrolledStudentsByClass[cls.id] || []).length > 0 ? (
+                                                        <div className="flex flex-wrap gap-4">
+                                                            {(enrolledStudentsByClass[cls.id] || []).map((student) => (
+                                                                <div key={student.id} className="flex flex-col items-center group/student">
+                                                                    <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-sm font-bold text-blue-600 mb-1 group-hover/student:scale-110 group-hover/student:border-blue-200 transition-all">
+                                                                        {student.full_name?.[0] || '?'}
+                                                                    </div>
+                                                                    <span className="text-[10px] font-medium text-slate-500 max-w-[60px] truncate text-center leading-tight group-hover/student:text-blue-600">
+                                                                        {student.full_name?.split(' ')[0]}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-slate-400 text-xs italic">No hay alumnos inscritos.</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Management Area (Expandable) */}
+                                                {selectedClassId === cls.id && (
+                                                    <div className="bg-slate-50 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-200">
+                                                        <div className="bg-white p-4 rounded-xl border border-slate-100 mb-4">
+                                                            <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Eliminar Alumnos</h6>
+                                                            <div className="space-y-2">
+                                                                {classStudents.map(student => (
+                                                                    <div key={student.id} className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-slate-50">
+                                                                        <span className="font-bold text-slate-700">{student.full_name}</span>
+                                                                        <button onClick={() => removeStudentFromClass(cls.id, student.id)} className="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-md">
+                                                                            <Trash size={14} />
+                                                                        </button>
+                                                                    </div>
+                                                                ))}
+                                                                {classStudents.length === 0 && <p className="text-slate-400 text-xs italic">Lista vacía</p>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <h6 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">Añadir Alumno Existente</h6>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {myConnections
+                                                                    .filter(conn => !classStudents.find(s => s.id === conn.id))
+                                                                    .length > 0 ? (
+                                                                    myConnections
+                                                                        .filter(conn => !classStudents.find(s => s.id === conn.id))
+                                                                        .map(conn => (
+                                                                            <button
+                                                                                key={conn.id}
+                                                                                onClick={() => addStudentToClass(cls.id, conn.id)}
+                                                                                className="px-3 py-1.5 bg-white text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                                                                            >
+                                                                                + {conn.full_name}
+                                                                            </button>
+                                                                        ))
+                                                                ) : (
+                                                                    <p className="text-slate-400 text-xs italic">No tienes alumnos disponibles para añadir.</p>
+                                                                )
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
                                 </div>
