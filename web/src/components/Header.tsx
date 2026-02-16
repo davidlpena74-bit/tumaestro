@@ -190,6 +190,15 @@ export default function Header() {
                 {/* ACTIONS */}
                 <div className="flex items-center gap-6">
                     <Link
+                        href="/clases"
+                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/clases') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
+                    >
+                        <span>{t.header.teachers}</span>
+                        <motion.div
+                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/clases') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
+                        />
+                    </Link>
+                    <Link
                         href="/juegos"
                         className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/juegos') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
                     >
@@ -205,15 +214,6 @@ export default function Header() {
                         <span>{t.header.resources}</span>
                         <motion.div
                             className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/recursos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
-                        />
-                    </Link>
-                    <Link
-                        href="/clases"
-                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/clases') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
-                    >
-                        <span>{t.header.teachers}</span>
-                        <motion.div
-                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/clases') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
                         />
                     </Link>
 
