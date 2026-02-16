@@ -90,7 +90,19 @@ export default function RoleBasedDashboard() {
 
     useEffect(() => {
         fetchInitialData();
-    }, []);
+
+        // Click outside to close dropdowns
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Element;
+            // If it's not a dropdown button and not inside a dropdown, close them
+            if (!target.closest('.dropdown-trigger') && !target.closest('.dropdown-content')) {
+                setOpenedDropdownId(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [openedDropdownId]);
 
     const fetchInitialData = async () => {
         setLoading(true);
@@ -773,7 +785,7 @@ export default function RoleBasedDashboard() {
                                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clases inscritas</p>
                                                 <button
                                                     onClick={() => setOpenedDropdownId(openedDropdownId === conn.id ? null : conn.id)}
-                                                    className="bg-blue-50 text-blue-600 p-1 rounded-md hover:bg-blue-100 transition-colors"
+                                                    className="bg-blue-50 text-blue-600 p-1 rounded-md hover:bg-blue-100 transition-colors dropdown-trigger"
                                                     title="Añadir a otra clase"
                                                 >
                                                     <Plus size={14} weight="bold" />
@@ -782,7 +794,7 @@ export default function RoleBasedDashboard() {
 
                                             {/* Add Class Dropdown */}
                                             {openedDropdownId === conn.id && (
-                                                <div className="absolute top-8 right-0 bg-white border border-slate-100 shadow-xl rounded-xl z-20 w-48 overflow-hidden animate-in fade-in zoom-in duration-200">
+                                                <div className="absolute top-8 right-0 bg-white border border-slate-100 shadow-xl rounded-xl z-20 w-48 overflow-hidden animate-in fade-in zoom-in duration-200 dropdown-content">
                                                     <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 text-[10px] uppercase font-bold text-slate-400">
                                                         Añadir a clase
                                                     </div>

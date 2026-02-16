@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
@@ -32,6 +32,31 @@ export default function Header() {
     const [unreadCount, setUnreadCount] = useState(0);
     const [notifMenuOpen, setNotifMenuOpen] = useState(false);
     const [showAllNotifs, setShowAllNotifs] = useState(false);
+
+    // Refs for click outside
+    const langMenuRef = useRef<HTMLDivElement>(null);
+    const notifMenuRef = useRef<HTMLDivElement>(null);
+    const userMenuRef = useRef<HTMLDivElement>(null);
+
+    // Global click-outside listener
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node;
+
+            if (langMenuOpen && langMenuRef.current && !langMenuRef.current.contains(target)) {
+                setLangMenuOpen(false);
+            }
+            if (notifMenuOpen && notifMenuRef.current && !notifMenuRef.current.contains(target)) {
+                setNotifMenuOpen(false);
+            }
+            if (userMenuOpen && userMenuRef.current && !userMenuRef.current.contains(target)) {
+                setUserMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [langMenuOpen, notifMenuOpen, userMenuOpen]);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -215,7 +240,7 @@ export default function Header() {
                     </Link>
 
                     {/* Language Selector Dropdown */}
-                    <div className="relative">
+                    <div className="relative" ref={langMenuRef}>
                         <button
                             onClick={() => setLangMenuOpen(!langMenuOpen)}
                             className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 pl-2.5 pr-2.5 py-1.5 rounded-full text-sm font-bold text-white transition-all"
@@ -280,7 +305,7 @@ export default function Header() {
 
                     {/* Notifications Bell */}
                     {user && (
-                        <div className="relative">
+                        <div className="relative" ref={notifMenuRef}>
                             <button
                                 onClick={() => setNotifMenuOpen(!notifMenuOpen)}
                                 className="relative flex items-center gap-1 p-2 rounded-full hover:bg-white/10 text-white transition-colors"
@@ -366,7 +391,7 @@ export default function Header() {
 
                     {/* Auth Section */}
                     {user ? (
-                        <div className="relative">
+                        <div className="relative" ref={userMenuRef}>
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                                 className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-800 border border-white/10 text-white pl-2 pr-4 py-1.5 rounded-full font-bold text-sm transition-all shadow-lg group"

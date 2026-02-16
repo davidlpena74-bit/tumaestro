@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -55,6 +55,20 @@ export default function JuegosClient() {
     const [selectedGrade, setSelectedGrade] = useState<string>('all');
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [filterOpen, setFilterOpen] = useState(false);
+
+    const filterRef = useRef<HTMLDivElement>(null);
+
+    // Global click-outside listener
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (filterOpen && filterRef.current && !filterRef.current.contains(event.target as Node)) {
+                setFilterOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [filterOpen]);
 
     const categories: Category[] = [
         {
@@ -619,7 +633,7 @@ export default function JuegosClient() {
 
                 {/* GRADE FILTER DROPDOWN */}
                 <div className="mb-12 flex justify-center">
-                    <div className="relative">
+                    <div className="relative" ref={filterRef}>
                         <button
                             onClick={() => setFilterOpen(!filterOpen)}
                             className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
