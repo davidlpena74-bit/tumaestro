@@ -31,7 +31,6 @@ export default function Header() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [notifMenuOpen, setNotifMenuOpen] = useState(false);
-    const [showAllNotifs, setShowAllNotifs] = useState(false);
 
     // Refs for click outside
     const langMenuRef = useRef<HTMLDivElement>(null);
@@ -123,6 +122,7 @@ export default function Header() {
     }, [user?.id]);
 
     const fetchNotifications = async (userId: string) => {
+        // Fetch last 10 for the list
         const { data } = await supabase
             .from('notifications')
             .select('*')
@@ -130,84 +130,37 @@ export default function Header() {
             .order('created_at', { ascending: false })
             .limit(10);
 
+        // Fetch actual total unread count (not just from the top 10)
+        const { count } = await supabase
+            .from('notifications')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .eq('read', false);
+
         if (data) {
             setNotifications(data as Notification[]);
-            setUnreadCount(data.filter((n: any) => !n.read).length);
+        }
+        if (count !== null) {
+            setUnreadCount(count);
         }
     };
 
-    const markAsRead = async (id: string, e?: React.MouseEvent) => {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+    const markAsRead = async (id: string) => {
+        // Optimistic update
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+        setUnreadCount(prev => Math.max(0, prev - 1));
+
         const { error } = await supabase.rpc('mark_notification_read', { notif_id: id });
 
         if (error) {
-            // Fallback to direct update if RPC fails (backward compatibility)
-            await supabase.from('notifications').update({ read: true }).eq('id', id);
-        }
-
-        setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-        setUnreadCount(prev => Math.max(0, prev - 1));
-    };
-
-    const handleAcceptRequest = async (notification: Notification, e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (!user) return;
-
-        // Verify it's a connection request
-        if (notification.type === 'connection_request') {
-            // Get teacher_id from data (it was stored as teacher_id in RoleBasedDashboard)
-            // Fallback to sender_id just in case, though teacher_id is the standard now
-            const teacher_id = notification.data?.teacher_id || notification.data?.sender_id;
-            const class_id = notification.data?.class_id;
-
-            if (!teacher_id) {
-                console.error("No teacher_id found in notification data", notification);
-                return;
-            }
-
-            // Use RPC to accept both connection and class invitation atomically (bypasses student RLS for joining classes)
-            const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
-                target_teacher_id: teacher_id,
-                target_class_id: class_id || null
-            });
-
-            if (!acceptError) {
-                // Mark notification as read so it stays in "All" history but leaves "Unread"
-                const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
-                if (readError) {
-                    await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
-                }
-
-                // Update local state without removing it
-                setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
-                setUnreadCount(prev => Math.max(0, prev - 1));
-                alert('¡Solicitud aceptada correctamente!');
-            } else {
-                console.error("Error accepting connection:", acceptError);
-                // Fallback to old method if RPC doesn't exist yet (for safety)
-                const { error: updateError } = await supabase
-                    .from('student_teachers')
-                    .update({ status: 'accepted' })
-                    .eq('student_id', user.id)
-                    .eq('teacher_id', teacher_id);
-
-                if (!updateError) {
-                    if (class_id) {
-                        await supabase.from('class_students').insert({ class_id, student_id: user.id });
-                    }
-                    await supabase.from('notifications').update({ read: true }).eq('id', notification.id);
-                    setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
-                    setUnreadCount(prev => Math.max(0, prev - 1));
-                    alert('¡Solicitud aceptada correctamente!');
-                } else {
-                    alert('Error al aceptar la solicitud: ' + (acceptError?.message || updateError?.message));
-                }
-            }
+            // Fallback to direct update
+            await supabase.from('notifications')
+                .update({ read: true })
+                .eq('id', id)
+                .eq('user_id', user?.id);
         }
     };
+
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
@@ -315,7 +268,7 @@ export default function Header() {
                                 className="relative flex items-center gap-1 p-2 rounded-full hover:bg-white/10 text-white transition-colors"
                             >
                                 <div className="relative">
-                                    <Bell size={24} weight="fill" />
+                                    <Bell size={24} weight={unreadCount > 0 ? "fill" : "regular"} />
                                     {unreadCount > 0 && (
                                         <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse" />
                                     )}
@@ -336,79 +289,33 @@ export default function Header() {
                                             {unreadCount > 0 && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">{unreadCount} nuevas</span>}
                                         </div>
                                         <div className="max-h-[350px] overflow-y-auto">
-                                            {notifications.filter(n => showAllNotifs || !n.read).length === 0 ? (
+                                            {notifications.filter(n => !n.read).length === 0 ? (
                                                 <div className="px-4 py-12 text-center">
                                                     <Bell size={32} className="mx-auto text-slate-200 mb-2" weight="duotone" />
-                                                    <p className="text-slate-400 text-xs">No tienes {showAllNotifs ? 'notificaciones' : 'notificaciones nuevas'}</p>
+                                                    <p className="text-slate-400 text-xs">No tienes notificaciones nuevas</p>
                                                 </div>
                                             ) : (
                                                 notifications
-                                                    .filter(n => showAllNotifs || !n.read)
+                                                    .filter(n => !n.read)
                                                     .map(n => (
-                                                        <div
+                                                        <Link
                                                             key={n.id}
-                                                            className={`relative px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors ${!n.read ? 'bg-blue-50/40' : ''}`}
+                                                            href="/notificaciones"
+                                                            onClick={async () => {
+                                                                setNotifMenuOpen(false);
+                                                                await markAsRead(n.id);
+                                                            }}
+                                                            className="block relative px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors bg-blue-50/40"
                                                         >
-                                                            <div className="flex justify-between items-start gap-2">
-                                                                <Link
-                                                                    href="/notificaciones"
-                                                                    onClick={() => setNotifMenuOpen(false)}
-                                                                    className="flex-1 group/card"
-                                                                >
-                                                                    <div className="flex items-center gap-2 mb-1">
-                                                                        <p className="font-bold text-slate-800 text-sm leading-tight group-hover/card:text-teal-600 transition-colors uppercase tracking-tight">{n.title}</p>
-                                                                        {!n.read && (
-                                                                            <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                                                                        )}
-                                                                    </div>
-                                                                    <p className="text-slate-500 text-xs leading-relaxed group-hover/card:text-slate-600">{n.message}</p>
-                                                                    <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
-                                                                </Link>
-                                                                {!n.read && (
-                                                                    <button
-                                                                        onClick={(e) => markAsRead(n.id, e)}
-                                                                        className="p-1.5 text-slate-300 hover:text-teal-500 hover:bg-teal-50 rounded-lg transition-all flex-shrink-0"
-                                                                        title="Marcar como leída"
-                                                                    >
-                                                                        <Check size={14} weight="bold" />
-                                                                    </button>
-                                                                )}
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <p className="font-bold text-slate-800 text-sm leading-tight uppercase tracking-tight">{n.title}</p>
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                                                             </div>
-
-                                                            {n.type === 'connection_request' && !n.read && (
-                                                                <div className="mt-3 flex gap-2">
-                                                                    <button
-                                                                        onClick={(e) => handleAcceptRequest(n, e)}
-                                                                        className="flex-1 text-[10px] bg-slate-900 text-white px-2 py-1.5 rounded-lg font-black uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-sm active:scale-95"
-                                                                    >
-                                                                        Aceptar
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={(e) => markAsRead(n.id, e)}
-                                                                        className="flex-1 text-[10px] bg-white border border-slate-200 text-slate-600 px-2 py-1.5 rounded-lg font-black uppercase tracking-widest hover:bg-slate-50 transition-colors active:scale-95"
-                                                                    >
-                                                                        Ignorar
-                                                                    </button>
-                                                                </div>
-                                                            )}
-                                                        </div>
+                                                            <p className="text-slate-500 text-xs leading-relaxed">{n.message}</p>
+                                                            <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
+                                                        </Link>
                                                     ))
                                             )}
-                                        </div>
-                                        <div className="p-2 border-t border-slate-100 bg-slate-50 flex gap-2">
-                                            <button
-                                                onClick={() => setShowAllNotifs(!showAllNotifs)}
-                                                className="flex-1 py-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-800 transition-colors border border-slate-200 rounded-lg hover:bg-white"
-                                            >
-                                                {showAllNotifs ? 'Ocultar leídas' : 'Ver antiguos'}
-                                            </button>
-                                            <Link
-                                                href="/notificaciones"
-                                                onClick={() => setNotifMenuOpen(false)}
-                                                className="flex-1 py-2 text-[10px] font-black uppercase tracking-widest bg-teal-500 text-white text-center rounded-lg hover:bg-teal-600 shadow-sm transition-all"
-                                            >
-                                                Gestionar Todas
-                                            </Link>
                                         </div>
                                     </motion.div>
                                 )}
