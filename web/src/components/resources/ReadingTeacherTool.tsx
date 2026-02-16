@@ -239,32 +239,31 @@ export default function ReadingTeacherTool() {
             canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Draw bars
-            const barWidth = (canvas.width / bufferLength) * 0.8;
-            let barHeight;
-            let x = 0;
+            // Draw bars
+            const slotWidth = canvas.width / bufferLength;
+            const barWidth = Math.max(2, slotWidth * 0.2); // Thinner bars (20% of slot or min 2px)
 
             // Center bars vertically
             const centerY = canvas.height / 2;
 
             for (let i = 0; i < bufferLength; i++) {
-                barHeight = (dataArray[i] / 255) * canvas.height * 0.8; // Scale height
+                let barHeight = (dataArray[i] / 255) * canvas.height * 0.8; // Scale height
 
-                // Color based on height/intensity
-                const r = 16 + (dataArray[i] / 255) * 50; // Dark to lighter green
-                const g = 185;
-                const b = 129;
+                // Color based on height/intensity - Dynamic Green
+                // Base: Emerald 500 (16, 185, 129)
+                // Logarithmic/Exponetial color shift for more vibrancy
+                const intensity = dataArray[i] / 255;
+                const r = 16 + intensity * 20;
+                const g = 185 + intensity * 30;
+                const b = 129 + intensity * 30;
 
-                canvasCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                canvasCtx.fillStyle = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
 
-                // Draw rounded rect (simulated with standard rect for performance or roundRect if supported)
-                // Using simple rect for now, centered vertically
-                canvasCtx.fillStyle = '#10b981'; // Emerald 500
-                if (dataArray[i] > 100) canvasCtx.fillStyle = '#059669'; // Emerald 600 for loud
+                // Calculate x position to center the bar within its slot
+                const x = i * slotWidth + (slotWidth - barWidth) / 2;
 
-                // Draw pill shape
-                roundRect(canvasCtx, x, centerY - barHeight / 2, barWidth, Math.max(4, barHeight), 4);
-
-                x += barWidth + (canvas.width / bufferLength) * 0.2; // Space between bars
+                // Draw pill shape with fully rounded corners (radius = half width)
+                roundRect(canvasCtx, x, centerY - barHeight / 2, barWidth, Math.max(barWidth, barHeight), barWidth / 2);
             }
         };
 

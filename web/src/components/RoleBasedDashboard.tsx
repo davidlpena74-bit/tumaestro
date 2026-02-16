@@ -13,7 +13,9 @@ import {
     MagnifyingGlass,
     IdentificationBadge,
     CheckCircle,
-    CircleNotch
+    CircleNotch,
+    CheckSquare,
+    Square
 } from '@phosphor-icons/react';
 
 type Profile = {
@@ -32,21 +34,38 @@ type Class = {
     created_at: string;
 };
 
+type Task = {
+    id: string;
+    class_id: string;
+    title: string;
+    description: string;
+    due_date?: string;
+    created_at: string;
+};
+
 export default function RoleBasedDashboard() {
     const [myProfile, setMyProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'connections' | 'classes'>('connections');
+    const [activeTab, setActiveTab] = useState<'connections' | 'classes' | 'tasks'>('connections');
 
     // Data lists
     const [profiles, setProfiles] = useState<Profile[]>([]); // For searching
     const [myConnections, setMyConnections] = useState<Profile[]>([]);
     const [myClasses, setMyClasses] = useState<Class[]>([]);
+    const [myTasks, setMyTasks] = useState<Task[]>([]);
+    const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set());
 
     // UI states
     const [searchTerm, setSearchTerm] = useState('');
     const [isCreatingClass, setIsCreatingClass] = useState(false);
     const [newClassName, setNewClassName] = useState('');
     const [newClassDesc, setNewClassDesc] = useState('');
+
+    // Teacher Task Creation UI
+    const [isCreatingTask, setIsCreatingTask] = useState(false);
+    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskDesc, setNewTaskDesc] = useState('');
+    const [targetClassId, setTargetClassId] = useState<string | null>(null);
 
     useEffect(() => {
         fetchInitialData();
@@ -69,7 +88,9 @@ export default function RoleBasedDashboard() {
         if (profile) {
             fetchConnections(profile.id, profile.role);
             if (profile.role === 'teacher') {
-                fetchClasses(profile.id);
+                fetchClassesAsTeacher(profile.id);
+            } else {
+                fetchClassesAsStudent(profile.id);
             }
         }
         setLoading(false);
@@ -90,12 +111,57 @@ export default function RoleBasedDashboard() {
         }
     };
 
-    const fetchClasses = async (teacherId: string) => {
+    const fetchClassesAsTeacher = async (teacherId: string) => {
         const { data } = await supabase
             .from('classes')
             .select('*')
             .eq('teacher_id', teacherId);
-        if (data) setMyClasses(data);
+        if (data) {
+            setMyClasses(data);
+            const classIds = data.map((c: any) => c.id);
+            if (classIds.length > 0) {
+                fetchTasks(classIds);
+            }
+        }
+    };
+
+    const fetchClassesAsStudent = async (studentId: string) => {
+        const { data } = await supabase
+            .from('class_students')
+            .select('classes(*)')
+            .eq('student_id', studentId);
+
+        if (data) {
+            const classes = data.map((item: any) => item.classes);
+            setMyClasses(classes);
+            if (classes.length > 0) {
+                const classIds = classes.map((c: any) => c.id);
+                fetchTasks(classIds);
+                fetchCompletions(studentId);
+            }
+        }
+    };
+
+    const fetchTasks = async (classIds: string[]) => {
+        const { data } = await supabase
+            .from('tasks')
+            .select('*')
+            .in('class_id', classIds)
+            .order('created_at', { ascending: false });
+
+        if (data) setMyTasks(data);
+    };
+
+    const fetchCompletions = async (studentId: string) => {
+        const { data } = await supabase
+            .from('student_task_completions')
+            .select('task_id')
+            .eq('student_id', studentId);
+
+        if (data) {
+            const ids = new Set(data.map((item: any) => item.task_id));
+            setCompletedTaskIds(ids);
+        }
     };
 
     const searchProfiles = async () => {
@@ -167,10 +233,59 @@ export default function RoleBasedDashboard() {
         });
 
         if (!error) {
-            fetchClasses(myProfile.id);
+            if (myProfile.id) fetchClassesAsTeacher(myProfile.id);
             setIsCreatingClass(false);
             setNewClassName('');
             setNewClassDesc('');
+        }
+    };
+
+    const createTask = async () => {
+        if (!targetClassId || !newTaskTitle) return;
+
+        const { error } = await supabase.from('tasks').insert({
+            class_id: targetClassId,
+            title: newTaskTitle,
+            description: newTaskDesc
+        });
+
+        if (!error) {
+            const currentClasses = myClasses.map(c => c.id);
+            if (currentClasses.length > 0) fetchTasks(currentClasses);
+            setIsCreatingTask(false);
+            setNewTaskTitle('');
+            setNewTaskDesc('');
+        }
+    };
+
+    const toggleTaskCompletion = async (taskId: string, isCompleted: boolean) => {
+        if (!myProfile) return;
+
+        if (isCompleted) {
+            const { error } = await supabase
+                .from('student_task_completions')
+                .delete()
+                .eq('task_id', taskId)
+                .eq('student_id', myProfile.id);
+
+            if (!error) {
+                const newSet = new Set(completedTaskIds);
+                newSet.delete(taskId);
+                setCompletedTaskIds(newSet);
+            }
+        } else {
+            const { error } = await supabase
+                .from('student_task_completions')
+                .insert({
+                    task_id: taskId,
+                    student_id: myProfile.id
+                });
+
+            if (!error) {
+                const newSet = new Set(completedTaskIds);
+                newSet.add(taskId);
+                setCompletedTaskIds(newSet);
+            }
         }
     };
 
@@ -181,8 +296,7 @@ export default function RoleBasedDashboard() {
 
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-            {/* Header / Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className={`grid grid-cols-1 ${isTeacher ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
                 <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl">
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-white/20 rounded-2xl">
@@ -197,44 +311,54 @@ export default function RoleBasedDashboard() {
                     <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Alumnos vinculados' : 'Profesores seleccionados'}</p>
                 </div>
 
+                <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl">
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="p-3 bg-white/20 rounded-2xl">
+                            <Books size={32} />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-lg">{isTeacher ? 'Mis Clases' : 'Clases Inscritas'}</h3>
+                            <p className="text-white/80 text-sm">{isTeacher ? 'Organiza tu enseñanza' : 'Tus grupos de aprendizaje'}</p>
+                        </div>
+                    </div>
+                    <div className="text-3xl font-black">{myClasses.length}</div>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Clases activas' : 'Clases'}</p>
+                </div>
+
                 {isTeacher && (
-                    <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl">
+                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl">
                         <div className="flex items-center gap-4 mb-4">
                             <div className="p-3 bg-white/20 rounded-2xl">
-                                <Books size={32} />
+                                <CheckSquare size={32} />
                             </div>
                             <div>
-                                <h3 className="font-bold text-lg">Mis Clases</h3>
-                                <p className="text-white/80 text-sm">Organiza tu enseñanza</p>
+                                <h3 className="font-bold text-lg">Tareas</h3>
+                                <p className="text-white/80 text-sm">Actividades asignadas</p>
                             </div>
                         </div>
-                        <div className="text-3xl font-black">{myClasses.length}</div>
-                        <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Clases activas</p>
+                        <div className="text-3xl font-black">{myTasks.length}</div>
+                        <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Total Tareas</p>
                     </div>
                 )}
             </div>
 
-            {/* Main Tabs */}
-            <div className="flex gap-4 border-b border-slate-200">
+            <div className="flex gap-4 border-b border-slate-200 overflow-x-auto">
                 <button
                     onClick={() => setActiveTab('connections')}
-                    className={`pb-4 px-2 font-bold text-sm transition-all relative ${activeTab === 'connections' ? 'text-blue-600' : 'text-slate-400'}`}
+                    className={`pb-4 px-2 font-bold text-sm transition-all relative whitespace-nowrap ${activeTab === 'connections' ? 'text-blue-600' : 'text-slate-400'}`}
                 >
                     {isTeacher ? 'Mis Alumnos' : 'Mis Profesores'}
                     {activeTab === 'connections' && <motion.div layoutId="tab" className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600 rounded-t-full" />}
                 </button>
-                {isTeacher && (
-                    <button
-                        onClick={() => setActiveTab('classes')}
-                        className={`pb-4 px-2 font-bold text-sm transition-all relative ${activeTab === 'classes' ? 'text-purple-600' : 'text-slate-400'}`}
-                    >
-                        Gestión de Clases
-                        {activeTab === 'classes' && <motion.div layoutId="tab" className="absolute bottom-0 left-0 right-0 h-1 bg-purple-600 rounded-t-full" />}
-                    </button>
-                )}
+                <button
+                    onClick={() => setActiveTab('classes')}
+                    className={`pb-4 px-2 font-bold text-sm transition-all relative whitespace-nowrap ${activeTab === 'classes' ? 'text-purple-600' : 'text-slate-400'}`}
+                >
+                    {isTeacher ? 'Gestión de Clases' : 'Mis Clases y Tareas'}
+                    {activeTab === 'classes' && <motion.div layoutId="tab" className="absolute bottom-0 left-0 right-0 h-1 bg-purple-600 rounded-t-full" />}
+                </button>
             </div>
 
-            {/* Tab Content */}
             <AnimatePresence mode="wait">
                 {activeTab === 'connections' ? (
                     <motion.div
@@ -244,7 +368,6 @@ export default function RoleBasedDashboard() {
                         exit={{ opacity: 0, y: -10 }}
                         className="space-y-6"
                     >
-                        {/* Search Section */}
                         <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
                             <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
                                 <MagnifyingGlass size={20} className="text-blue-500" />
@@ -292,7 +415,6 @@ export default function RoleBasedDashboard() {
                             )}
                         </div>
 
-                        {/* Connections List */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {myConnections.map(conn => (
                                 <div key={conn.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
@@ -330,17 +452,19 @@ export default function RoleBasedDashboard() {
                         className="space-y-6"
                     >
                         <div className="flex justify-between items-center">
-                            <h3 className="font-black text-slate-800 text-2xl">Gestionar mis Clases</h3>
-                            <button
-                                onClick={() => setIsCreatingClass(true)}
-                                className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-2xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
-                            >
-                                <Plus size={20} weight="bold" />
-                                Nueva Clase
-                            </button>
+                            <h3 className="font-black text-slate-800 text-2xl">{isTeacher ? 'Gestionar mis Clases' : 'Mis Clases y Tareas'}</h3>
+                            {isTeacher && (
+                                <button
+                                    onClick={() => setIsCreatingClass(true)}
+                                    className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-2xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+                                >
+                                    <Plus size={20} weight="bold" />
+                                    Nueva Clase
+                                </button>
+                            )}
                         </div>
 
-                        {isCreatingClass && (
+                        {isCreatingClass && isTeacher && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -379,19 +503,111 @@ export default function RoleBasedDashboard() {
                             </motion.div>
                         )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 gap-8">
                             {myClasses.map(cls => (
                                 <div key={cls.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col group relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                                        <button className="text-red-400 hover:text-red-600 p-2 bg-red-50 rounded-xl">
-                                            <Trash size={20} />
-                                        </button>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h4 className="font-bold text-slate-800 text-2xl mb-1">{cls.name}</h4>
+                                            <p className="text-slate-500 text-sm">{cls.description}</p>
+                                        </div>
+                                        {isTeacher && (
+                                            <button className="text-red-400 hover:text-red-600 p-2 bg-red-50 rounded-xl">
+                                                <Trash size={20} />
+                                            </button>
+                                        )}
                                     </div>
-                                    <h4 className="font-bold text-slate-800 text-xl mb-1">{cls.name}</h4>
-                                    <p className="text-slate-500 text-sm mb-6">{cls.description}</p>
 
-                                    {selectedClassId === cls.id ? (
-                                        <div className="space-y-4">
+                                    <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h5 className="font-bold text-slate-700 flex items-center gap-2">
+                                                <CheckSquare size={18} className="text-purple-500" />
+                                                Tareas Activas
+                                            </h5>
+                                            {isTeacher && (
+                                                <button
+                                                    onClick={() => {
+                                                        setTargetClassId(cls.id);
+                                                        setIsCreatingTask(true);
+                                                    }}
+                                                    className="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-200"
+                                                >
+                                                    + Nueva Tarea
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {isCreatingTask && targetClassId === cls.id && (
+                                            <div className="bg-white p-4 rounded-xl border border-purple-100 mb-4 shadow-sm animate-in fade-in zoom-in duration-200">
+                                                <h6 className="text-xs font-bold text-purple-600 mb-2 uppercase">Crear Tarea</h6>
+                                                <div className="space-y-3">
+                                                    <input
+                                                        className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
+                                                        placeholder="Título de la tarea..."
+                                                        value={newTaskTitle}
+                                                        onChange={e => setNewTaskTitle(e.target.value)}
+                                                    />
+                                                    <textarea
+                                                        className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
+                                                        placeholder="Descripción..."
+                                                        rows={2}
+                                                        value={newTaskDesc}
+                                                        onChange={e => setNewTaskDesc(e.target.value)}
+                                                    />
+                                                    <div className="flex justify-end gap-2">
+                                                        <button onClick={() => setIsCreatingTask(false)} className="text-xs px-3 py-1 text-slate-400 font-bold">Cancelar</button>
+                                                        <button onClick={createTask} className="text-xs px-4 py-1.5 bg-purple-600 text-white rounded-lg font-bold shadow-md shadow-purple-200">Guardar Tarea</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div className="space-y-3">
+                                            {myTasks
+                                                .filter(t => t.class_id === cls.id)
+                                                .filter(t => isTeacher || !completedTaskIds.has(t.id))
+                                                .map(task => (
+                                                    <div key={task.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                                        {!isTeacher && (
+                                                            <button
+                                                                onClick={() => toggleTaskCompletion(task.id, completedTaskIds.has(task.id))}
+                                                                className="mt-1 text-slate-300 hover:text-green-500 transition-colors"
+                                                                title="Marcar como completada"
+                                                            >
+                                                                {completedTaskIds.has(task.id) ? (
+                                                                    <CheckCircle size={24} weight="fill" className="text-green-500" />
+                                                                ) : (
+                                                                    <Square size={24} />
+                                                                )}
+                                                            </button>
+                                                        )}
+                                                        <div className="flex-1">
+                                                            <h6 className={`font-bold text-slate-800 ${completedTaskIds.has(task.id) ? 'line-through text-slate-400' : ''}`}>{task.title}</h6>
+                                                            {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
+                                                        </div>
+                                                        {isTeacher && (
+                                                            <div className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold">
+                                                                Docente
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            {myTasks.filter(t => t.class_id === cls.id).filter(t => isTeacher || !completedTaskIds.has(t.id)).length === 0 && (
+                                                <p className="text-center text-xs text-slate-400 italic py-4">No hay tareas activas en este momento.</p>
+                                            )}
+                                        </div>
+
+                                        {!isTeacher && completedTaskIds.size > 0 && (
+                                            <div className="mt-4 pt-4 border-t border-slate-200">
+                                                <p className="text-xs text-slate-400 text-center">
+                                                    {myTasks.filter(t => t.class_id === cls.id && completedTaskIds.has(t.id)).length} tareas completadas ocultas.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {isTeacher && selectedClassId === cls.id ? (
+                                        <div className="space-y-4 border-t border-slate-100 pt-4">
                                             <div className="bg-slate-50 p-4 rounded-2xl">
                                                 <h5 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Alumnos en esta clase</h5>
                                                 <div className="space-y-2">
@@ -432,26 +648,33 @@ export default function RoleBasedDashboard() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
-                                            <div className="flex -space-x-2">
-                                                {/* Placeholder for student avatars in class */}
-                                                <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase">
-                                                    {cls.name[0]}
+                                        isTeacher && (
+                                            <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
+                                                <div className="flex -space-x-2">
+                                                    <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase">
+                                                        {cls.name[0]}
+                                                    </div>
                                                 </div>
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedClassId(cls.id);
+                                                        fetchClassStudents(cls.id);
+                                                    }}
+                                                    className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-100 transition-colors"
+                                                >
+                                                    Ver y gestionar alumnos
+                                                </button>
                                             </div>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedClassId(cls.id);
-                                                    fetchClassStudents(cls.id);
-                                                }}
-                                                className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-100 transition-colors"
-                                            >
-                                                Ver y gestionar alumnos
-                                            </button>
-                                        </div>
+                                        )
                                     )}
                                 </div>
                             ))}
+
+                            {myClasses.length === 0 && (
+                                <div className="text-center py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                                    <p className="text-slate-400 font-bold">No estás inscrito en ninguna clase todavía.</p>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 )}
