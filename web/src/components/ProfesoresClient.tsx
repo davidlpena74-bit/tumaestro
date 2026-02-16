@@ -1,88 +1,25 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowRight } from 'lucide-react';
-import { Funnel, CaretDown, Student } from '@phosphor-icons/react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
-import CarouselAutoScroll from '@/components/CarouselAutoScroll';
-
-const COMMON_SUBJECTS = [
-    'Matemáticas', 'Inglés', 'Física', 'Química', 'Lengua', 'Historia', 'Francés', 'Alemán', 'Biología', 'Economía', 'Geografía', 'Programación'
-];
-
-const categories = [
-    {
-        id: 'natural-science',
-        title: 'Natural Science',
-        description: 'Expertos en Biología, Física, Química y Ciencias Naturales.',
-        iconSrc: '/icons/math.svg',
-        color: 'from-blue-500 to-cyan-600',
-        count: '45 Profesores',
-        grades: ['Primaria', 'ESO', '1º ESO', '3º ESO']
-    },
-    {
-        id: 'languages',
-        title: 'Languages',
-        description: 'Aprende Inglés, Francés, Alemán o Lengua con nativos.',
-        iconSrc: '/icons/english.svg',
-        color: 'from-pink-500 to-rose-600',
-        count: '32 Profesores',
-        grades: ['Primaria', '5º Prim.', 'ESO', '1º ESO', '3º ESO']
-    },
-    {
-        id: 'social-science',
-        title: 'Social Science',
-        description: 'Historia, Geografía, Filosofía y Humanidades.',
-        iconSrc: '/icons/language.svg',
-        color: 'from-emerald-500 to-teal-600',
-        count: '28 Profesores',
-        grades: ['Primaria', '5º Prim.', 'ESO']
-    },
-    {
-        id: 'math',
-        title: 'Matemáticas',
-        description: 'Refuerzo de Matemáticas, Álgebra, Cálculo y ESO.',
-        iconSrc: '/icons/geography.svg',
-        color: 'from-orange-500 to-amber-600',
-        count: '50 Profesores',
-        grades: ['Primaria', '3º Prim.', '5º Prim.', 'ESO']
-    }
-];
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import { BookOpen, GraduationCap, Sparkle, ChalkboardTeacher, MonitorPlay, ChartLineUp } from '@phosphor-icons/react';
 
 export default function ProfesoresClient() {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showSuggestions, setShowSuggestions] = useState(false);
-    const [selectedGrade, setSelectedGrade] = useState<string>('all');
-    const [filterOpen, setFilterOpen] = useState(false);
-
-    const availableGrades = ['Primaria', '3º Prim.', '5º Prim.', 'ESO', '1º ESO', '3º ESO'].sort();
-
-    const filteredCategories = selectedGrade === 'all'
-        ? categories
-        : categories.filter(c => c.grades.includes(selectedGrade));
-
-    const filteredSubjects = COMMON_SUBJECTS.filter(subject =>
-        subject.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
     return (
         <main className="min-h-screen pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
+
+
             <div className="max-w-7xl mx-auto relative z-10">
                 <header className="mb-16 text-center">
+
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
                     >
-                        Encuentra a tu Profe Ideal
+                        Para Profesores
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -90,163 +27,215 @@ export default function ProfesoresClient() {
                         transition={{ delay: 0.2 }}
                         className="text-xl text-slate-700 font-medium max-w-2xl mx-auto mt-2"
                     >
-                        Conecta con profesores expertos verificados. Elige la modalidad que prefieras: online o presencial.
+                        Potencia tu enseñanza con herramientas digitales diseñadas para ahorrar tiempo y mejorar el aprendizaje de tus alumnos.
                     </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="mt-10 max-w-md mx-auto"
-                    >
-                        <div className="relative group">
-                            <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full blur opacity-25 group-hover:opacity-40 transition duration-500" />
-                            <div className="relative flex items-center bg-white/40 backdrop-blur-xl border border-slate-200/50 rounded-full px-6 py-4 shadow-2xl z-20">
-                                <Search className="w-5 h-5 text-slate-400 mr-4" />
-                                <input
-                                    type="text"
-                                    value={searchTerm || ''}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    onFocus={() => setShowSuggestions(true)}
-                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                                    placeholder="¿Qué quieres aprender hoy?"
-                                    className="bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 w-full text-lg font-medium"
-                                />
-                            </div>
-
-                            <AnimatePresence>
-                                {showSuggestions && filteredSubjects.length > 0 && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-full left-0 right-0 mt-2 bg-slate-800/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl overflow-hidden z-20"
-                                    >
-                                        <ul>
-                                            {filteredSubjects.map((subject, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    onClick={() => {
-                                                        setSearchTerm(subject);
-                                                        setShowSuggestions(false);
-                                                    }}
-                                                    className="px-6 py-3 hover:bg-white/10 cursor-pointer text-gray-200 transition-colors flex items-center gap-2"
-                                                >
-                                                    <Search className="w-4 h-4 text-gray-500" />
-                                                    {subject}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        {/* GRADE FILTER DROPDOWN */}
-                        <div className="mt-8 flex justify-center pb-2">
-                            <div className="relative">
-                                <button
-                                    onClick={() => setFilterOpen(!filterOpen)}
-                                    className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
-                                >
-                                    <Funnel className="w-4 h-4 text-slate-400" />
-                                    <span className="flex-grow text-left">
-                                        {selectedGrade === 'all' ? 'Todos los Cursos' : selectedGrade}
-                                    </span>
-                                    <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
-                                </button>
-
-                                <AnimatePresence>
-                                    {filterOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-slate-700"
-                                        >
-                                            <button
-                                                onClick={() => { setSelectedGrade('all'); setFilterOpen(false); }}
-                                                className={cn(
-                                                    "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
-                                                    selectedGrade === 'all' && "bg-teal-50 text-teal-600"
-                                                )}
-                                            >
-                                                Todos los Cursos
-                                            </button>
-                                            {availableGrades.map((grade) => (
-                                                <button
-                                                    key={grade}
-                                                    onClick={() => { setSelectedGrade(grade); setFilterOpen(false); }}
-                                                    className={cn(
-                                                        "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
-                                                        selectedGrade === grade && "bg-teal-50 text-teal-600"
-                                                    )}
-                                                >
-                                                    {grade}
-                                                </button>
-                                            ))}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        </div>
-                    </motion.div>
                 </header>
 
-                <div className="bg-white/40 backdrop-blur-md border border-slate-200/50 shadow-2xl rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden mb-20">
-                    <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-transparent pointer-events-none" />
-                    <div className="relative z-10">
-                        <div className="flex flex-col md:flex-row justify-between items-end mb-8">
-                            <div>
-                                <h2 className="text-3xl font-black mb-2 text-slate-800">Explora por Categoría</h2>
-                                <p className="text-slate-600 font-medium">Encuentra la materia que necesitas reforzar.</p>
-                            </div>
-                            <button className="hidden md:flex items-center text-teal-400 font-bold hover:text-teal-300 transition mt-4 md:mt-0">
-                                Ver todas las categorías <ArrowRight className="w-5 h-5 ml-2" />
-                            </button>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {filteredCategories.map((cat, idx) => (
-                                <motion.div
-                                    key={cat.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 * idx + 0.4 }}
-                                    className="h-full"
-                                >
-                                    <Link href={`/profesores/${cat.id}`} className="block h-full group">
-                                        <div className="bg-white/40 backdrop-blur-md border border-slate-200/60 py-4 px-5 rounded-3xl h-full transition-all duration-300 group-hover:bg-white/60 group-hover:scale-105 group-hover:border-slate-300 flex flex-col items-center text-center shadow-lg hover:shadow-2xl relative overflow-hidden">
-                                            <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
-                                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} p-2 mb-1.5 shadow-lg group-hover:rotate-6 transition-transform`}>
-                                                <img src={cat.iconSrc} alt={cat.title} className="w-full h-full object-contain" />
-                                            </div>
-                                            <h4 className="font-bold text-sm mb-0.5 text-slate-800 drop-shadow-sm line-clamp-1">{cat.title}</h4>
-                                            <p className="text-slate-600 text-[11px] mb-2 line-clamp-3 min-h-[2.2rem] font-medium">{cat.description}</p>
-                                            <span className="mt-auto inline-block text-xs font-bold text-teal-400 bg-teal-400/10 px-3 py-1 rounded-full border border-teal-400/20">
-                                                {cat.count}
-                                            </span>
-                                        </div>
-                                    </Link>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                <div className="flex flex-col gap-24">
+                    {/* SECCIÓN GESTIÓN DE CLASES */}
+                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
+                        <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 rounded-3xl blur-3xl -z-10" />
 
-                <div className="bg-white/40 backdrop-blur-md border border-slate-200/50 shadow-2xl rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-transparent pointer-events-none" />
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-8 relative z-10">
-                        <div>
-                            <h2 className="text-3xl font-black mb-2 text-slate-800">Profesores Mejor Valorados</h2>
-                            <p className="text-slate-600 font-medium">Basado en opiniones reales de alumnos.</p>
+                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            {/* Decorative Glow */}
+                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-teal-500/10 rounded-full blur-[100px] group-hover:bg-teal-500/20 transition-all duration-700" />
+
+                            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                                <div className="w-full md:w-1/3 flex justify-center">
+                                    <motion.div
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(20,184,166,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(20,184,166,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
+                                    >
+                                        <div className="absolute inset-0 bg-teal-500/20 rounded-3xl blur-2xl group-hover/img:bg-teal-500/30 transition-all -z-10" />
+                                        <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-3xl border-4 border-white/50 shadow-2xl flex items-center justify-center transform -rotate-3 group-hover:rotate-0 transition-all duration-500 relative">
+                                            <ChalkboardTeacher className="w-32 h-32 text-white/90" weight="duotone" />
+                                            {/* Floating Particles/Icons */}
+                                            <motion.div
+                                                animate={{ y: [0, -10, 0] }}
+                                                transition={{ duration: 2, repeat: Infinity }}
+                                                className="absolute -top-4 -right-4 p-3 bg-white rounded-2xl shadow-xl text-teal-600"
+                                            >
+                                                <GraduationCap className="w-8 h-8" weight="fill" />
+                                            </motion.div>
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <div className="w-full md:w-2/3 text-center md:text-left">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 text-teal-600 text-xs font-black mb-6 border border-teal-500/20 uppercase tracking-widest">
+                                        Gestión Eficiente
+                                    </div>
+
+                                    <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                                        Clases y Alumnos
+                                    </h2>
+                                    <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
+                                        Crea tus propias clases y gestiona los alumnos y tareas dentro de ellas de forma sencilla y centralizada.
+                                    </p>
+
+                                    <Link
+                                        href="/registro"
+                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-black rounded-2xl shadow-xl shadow-teal-500/20 hover:shadow-teal-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                    >
+                                        CREAR MI CLASE AHORA
+                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
-                        <button className="hidden md:flex items-center text-teal-400 font-bold hover:text-teal-300 transition mt-4 md:mt-0">
-                            Ver todos los profesores <ArrowRight className="w-5 h-5 ml-2" />
-                        </button>
-                    </div>
-                    <div className="relative z-10 mt-8">
-                        <CarouselAutoScroll />
-                    </div>
+                    </section>
+
+                    {/* SECCIÓN ACTIVIDADES Y TAREAS */}
+                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
+                        <div className="absolute inset-0 bg-gradient-to-l from-indigo-500/10 to-blue-500/10 rounded-3xl blur-3xl -z-10" />
+
+                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            {/* Decorative Glow */}
+                            <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] group-hover:bg-indigo-500/20 transition-all duration-700" />
+
+                            <div className="flex flex-col md:flex-row-reverse items-center gap-12 relative z-10">
+                                <div className="w-full md:w-1/3 flex justify-center">
+                                    <motion.div
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(99,102,241,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(99,102,241,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
+                                    >
+                                        <div className="absolute inset-0 bg-indigo-500/20 rounded-3xl blur-2xl group-hover/img:bg-indigo-500/30 transition-all -z-10" />
+                                        <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-3xl border-4 border-white/50 shadow-2xl flex items-center justify-center transform rotate-3 group-hover:rotate-0 transition-all duration-500 relative">
+                                            <MonitorPlay className="w-32 h-32 text-white/90" weight="duotone" />
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <div className="w-full md:w-2/3 text-center md:text-right">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 text-xs font-black mb-6 border border-indigo-500/20 uppercase tracking-widest md:flex-row-reverse">
+                                        Personalización Total
+                                    </div>
+
+                                    <div className="flex flex-col md:items-end w-full">
+                                        <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                                            Actividades Propias
+                                        </h2>
+                                        <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
+                                            Crea tus propias actividades, súbelas y asígnalas a tus alumnos con un solo clic. Mantén todo organizado.
+                                        </p>
+
+                                        <Link
+                                            href="/registro"
+                                            className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                        >
+                                            CREAR ACTIVIDADES
+                                            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* SECCIÓN REPORTES Y SEGUIMIENTO */}
+                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
+                        <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-pink-500/10 rounded-3xl blur-3xl -z-10" />
+
+                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            {/* Decorative Glow */}
+                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-rose-500/10 rounded-full blur-[100px] group-hover:bg-rose-500/20 transition-all duration-700" />
+
+                            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                                <div className="w-full md:w-1/3 flex justify-center">
+                                    <motion.div
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(244,63,94,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(244,63,94,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
+                                    >
+                                        <div className="absolute inset-0 bg-rose-500/20 rounded-3xl blur-2xl group-hover/img:bg-rose-500/30 transition-all -z-10" />
+                                        <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-rose-500 to-pink-600 rounded-3xl border-4 border-white/50 shadow-2xl flex items-center justify-center transform -rotate-3 group-hover:rotate-0 transition-all duration-500 relative">
+                                            <ChartLineUp className="w-32 h-32 text-white/90" weight="duotone" />
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <div className="w-full md:w-2/3 text-center md:text-left">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-600 text-xs font-black mb-6 border border-rose-500/20 uppercase tracking-widest">
+                                        Análisis Inteligente
+                                    </div>
+
+                                    <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                                        Reportes de Progreso
+                                    </h2>
+                                    <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
+                                        Visualiza el resultado y utiliza nuestros reportes automáticos para identificar áreas de refuerzo y mejorar el rendimiento.
+                                    </p>
+
+                                    <Link
+                                        href="/registro"
+                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-black rounded-2xl shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                    >
+                                        VER DEMOSTRACIÓN
+                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* SECCIÓN RECURSOS DIDÁCTICOS */}
+                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 rounded-3xl blur-3xl -z-10" />
+
+                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            {/* Decorative Glow */}
+                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-amber-500/10 rounded-full blur-[100px] group-hover:bg-amber-500/20 transition-all duration-700" />
+
+                            <div className="flex flex-col md:flex-row-reverse items-center gap-12 relative z-10">
+                                <div className="w-full md:w-1/3 flex justify-center">
+                                    <motion.div
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(245,158,11,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(245,158,11,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
+                                    >
+                                        <div className="absolute inset-0 bg-amber-500/20 rounded-3xl blur-2xl group-hover/img:bg-amber-500/30 transition-all -z-10" />
+                                        <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-3xl border-4 border-white/50 shadow-2xl flex items-center justify-center transform rotate-3 group-hover:rotate-0 transition-all duration-500 relative">
+                                            <Sparkle className="w-32 h-32 text-white/90" weight="duotone" />
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <div className="w-full md:w-2/3 text-center md:text-right">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-black mb-6 border border-amber-500/20 uppercase tracking-widest md:flex-row-reverse">
+                                        Biblioteca Premium
+                                    </div>
+
+                                    <div className="flex flex-col md:items-end w-full">
+                                        <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                                            Recursos Didácticos
+                                        </h2>
+                                        <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
+                                            Usa todos nuestros recursos didácticos, contenidos temáticos, cuentos y juegos para enriquecer tus clases sin esfuerzo extra.
+                                        </p>
+
+                                        <Link
+                                            href="/recursos"
+                                            className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                        >
+                                            EXPLORAR RECURSOS
+                                            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                 </div>
             </div>
         </main>
