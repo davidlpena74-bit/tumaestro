@@ -54,6 +54,7 @@ export default function RoleBasedDashboard() {
     const [myClasses, setMyClasses] = useState<Class[]>([]);
     const [myTasks, setMyTasks] = useState<Task[]>([]);
     const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set());
+    const [studentClasses, setStudentClasses] = useState<Record<string, Class[]>>({});
 
     // UI states
     const [searchTerm, setSearchTerm] = useState('');
@@ -115,7 +116,41 @@ export default function RoleBasedDashboard() {
             .eq(filterCol, userId);
 
         if (data) {
-            setMyConnections(data.map((item: any) => item.profiles));
+            const profiles = data.map((item: any) => item.profiles);
+            setMyConnections(profiles);
+
+            // If teacher, fetch classes for these students
+            if (role === 'teacher' && profiles.length > 0) {
+                fetchStudentEnrollments(profiles.map((p: any) => p.id));
+            }
+        }
+    };
+
+    const fetchStudentEnrollments = async (studentIds: string[]) => {
+        // Get all class_students where class belongs to this teacher and student is in list
+        // First get my classes keys
+        if (myClasses.length === 0) return; // Wait for classes to load?
+        // Actually, better to just query class_students and filter by my classes
+
+        // We need to know which of *my* classes they are in. 
+        // We already have myClasses.
+        const myClassIds = myClasses.map(c => c.id);
+
+        if (myClassIds.length === 0) return;
+
+        const { data } = await supabase
+            .from('class_students')
+            .select('student_id, classes(*)')
+            .in('class_id', myClassIds)
+            .in('student_id', studentIds);
+
+        if (data) {
+            const map: Record<string, Class[]> = {};
+            data.forEach((item: any) => {
+                if (!map[item.student_id]) map[item.student_id] = [];
+                map[item.student_id].push(item.classes);
+            });
+            setStudentClasses(map);
         }
     };
 
@@ -126,6 +161,10 @@ export default function RoleBasedDashboard() {
             .eq('teacher_id', teacherId);
         if (data) {
             setMyClasses(data);
+            // Also refresh student enrollments if connections exist
+            if (myConnections.length > 0) {
+                fetchStudentEnrollments(myConnections.map(c => c.id));
+            }
             const classIds = data.map((c: any) => c.id);
             if (classIds.length > 0) {
                 fetchTasks(classIds);
@@ -292,6 +331,35 @@ export default function RoleBasedDashboard() {
                 });
             }
             fetchClassStudents(classId);
+            // Also update global map
+            fetchStudentEnrollments([studentId]);
+        }
+    };
+
+    const removeConnection = async (targetId: string) => {
+        if (!myProfile) return;
+        const payload = myProfile.role === 'student'
+            ? { student_id: myProfile.id, teacher_id: targetId }
+            : { student_id: targetId, teacher_id: myProfile.id };
+
+        // Also remove from all classes (if teacher removing student)
+        if (myProfile.role === 'teacher') {
+            const userClasses = studentClasses[targetId] || [];
+            for (const cls of userClasses) {
+                await removeStudentFromClass(cls.id, targetId);
+            }
+        }
+
+        const { error } = await supabase
+            .from('student_teachers')
+            .delete()
+            .match(payload);
+
+        if (!error) {
+            setMyConnections(myConnections.filter(c => c.id !== targetId));
+            const newMap = { ...studentClasses };
+            delete newMap[targetId];
+            setStudentClasses(newMap);
         }
     };
 
@@ -533,7 +601,43 @@ export default function RoleBasedDashboard() {
                                             <CheckCircle size={20} weight="fill" />
                                         </div>
                                     </div>
-                                    <button className="w-full py-2 bg-slate-50 text-slate-500 rounded-xl text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+
+                                    {/* Display Classes (Teacher View) */}
+                                    {isTeacher && (
+                                        <div className="mb-4">
+                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Clases inscritas</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {(studentClasses[conn.id] || []).map(cls => (
+                                                    <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
+                                                        <span className="max-w-[100px] truncate">{cls.name}</span>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (confirm(`¿Quitar a ${conn.full_name} de ${cls.name}?`)) {
+                                                                    removeStudentFromClass(cls.id, conn.id)
+                                                                }
+                                                            }}
+                                                            className="hover:bg-purple-200 rounded p-0.5 transition-colors"
+                                                        >
+                                                            <Trash size={12} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                                {(!studentClasses[conn.id] || studentClasses[conn.id].length === 0) && (
+                                                    <span className="text-xs text-slate-400 italic">Sin clases asignadas</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <button
+                                        onClick={() => {
+                                            if (confirm('¿Seguro que quieres eliminar este vínculo? Se eliminará al usuario de todas tus clases.')) {
+                                                removeConnection(conn.id);
+                                            }
+                                        }}
+                                        className="w-full py-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl text-xs font-bold transition-colors"
+                                    >
                                         Eliminar vínculo
                                     </button>
                                 </div>
