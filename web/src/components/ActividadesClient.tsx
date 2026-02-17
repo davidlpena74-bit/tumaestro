@@ -161,6 +161,48 @@ export default function ActividadesClient() {
 
     const categories: Category[] = [
         {
+            id: 'intelligence',
+            title: t.gamesPage.categories.intelligence,
+            icon: Brain,
+            colorTheme: 'from-amber-400 to-orange-600',
+            subsections: [
+                {
+                    games: [
+                        {
+                            id: 'riddles',
+                            title: t.gamesPage.gameTitles.riddles,
+                            description: t.gamesPage.gameTitles.riddlesDesc,
+                            href: '/actividades/riddles',
+                            icon: Brain,
+                            color: 'from-amber-400 to-orange-500',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.logic
+                        },
+                        {
+                            id: 'logic',
+                            title: t.gamesPage.gameTitles.logic,
+                            description: t.gamesPage.gameTitles.logicDesc,
+                            href: '/actividades/logic',
+                            icon: PuzzlePiece,
+                            color: 'from-cyan-400 to-emerald-500',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.logic
+                        },
+                        {
+                            id: 'quiz',
+                            title: t.gamesPage.gameTitles.quiz,
+                            description: t.gamesPage.gameTitles.quizDesc,
+                            href: '/actividades/quiz-cultura',
+                            icon: Brain,
+                            color: 'from-violet-500 to-indigo-600',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.quiz
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             id: 'geography',
             title: t.gamesPage.categories.geography,
             icon: MapTrifold,
@@ -698,7 +740,8 @@ export default function ActividadesClient() {
                                 category.id === 'geography' && (selectedSubject === 'geography' ? "ring-2 ring-emerald-500/20" : ""),
                                 category.id === 'biology' && (selectedSubject === 'biology' ? "ring-2 ring-blue-500/20" : ""),
                                 category.id === 'math' && (selectedSubject === 'math' ? "ring-2 ring-orange-500/20" : ""),
-                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "ring-2 ring-pink-500/20" : "")
+                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "ring-2 ring-pink-500/20" : ""),
+                                category.id === 'intelligence' && (selectedSubject === 'intelligence' ? "ring-2 ring-amber-500/20" : "")
                             )}>
                                 {/* Shine Effect */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -711,7 +754,8 @@ export default function ActividadesClient() {
                                     category.id === 'geography' && "text-emerald-600",
                                     category.id === 'biology' && "text-blue-600",
                                     category.id === 'math' && "text-orange-600",
-                                    category.id === 'idiomas' && "text-pink-600"
+                                    category.id === 'idiomas' && "text-pink-600",
+                                    category.id === 'intelligence' && "text-amber-600"
                                 )} weight="duotone" />
 
                                 <span className="relative z-10 tracking-tight text-center whitespace-nowrap">{category.title}</span>

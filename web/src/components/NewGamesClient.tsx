@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { GlobeHemisphereWest, Calculator, Dna, Translate, GameController } from '@phosphor-icons/react';
+import { GlobeHemisphereWest, Calculator, Dna, Translate, GameController, Brain } from '@phosphor-icons/react';
 
 export default function NewGamesClient() {
     return (
@@ -29,53 +29,49 @@ export default function NewGamesClient() {
                 </header>
 
                 <div className="flex flex-col gap-24">
-                    {/* SECCIÓN GEOGRAFÍA */}
+                    {/* SECCIÓN RETOS DE INTELIGENCIA */}
                     <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-3xl blur-3xl -z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-3xl blur-3xl -z-10" />
 
                         <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] group-hover:bg-emerald-500/20 transition-all duration-700" />
+                            {/* Decorative Glow */}
+                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-amber-500/10 rounded-full blur-[100px] group-hover:bg-amber-500/20 transition-all duration-700" />
 
                             <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
                                 <div className="w-full md:w-1/3 flex justify-center">
                                     <motion.div
-                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(16,185,129,0))', scale: 0.9, opacity: 0 }}
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(245,158,11,0))', scale: 0.9, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
-                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(16,185,129,0.4))', scale: 1.05 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(245,158,11,0.4))', scale: 1.05 }}
                                         transition={{ duration: 0.5 }}
                                         className="relative group/img"
                                     >
-                                        <div className="absolute inset-0 bg-emerald-500/20 rounded-3xl blur-2xl group-hover/img:bg-emerald-500/30 transition-all -z-10" />
-
-                                        {/* Glass Container for Icon */}
-                                        <div className="relative bg-white/10 backdrop-blur-md border border-white/40 p-10 rounded-[2.5rem] shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-all duration-500 border-b-white/10 border-r-white/10">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-[2.5rem] -z-10" />
-                                            <GlobeHemisphereWest className="w-40 h-40 text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" weight="duotone" />
-                                        </div>
+                                        <div className="absolute inset-0 bg-amber-500/20 rounded-3xl blur-2xl group-hover/img:bg-amber-500/30 transition-all -z-10" />
+                                        <img
+                                            src="/images/resources/intelligence-main.png"
+                                            alt="Retos de Inteligencia"
+                                            className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform -rotate-3 group-hover/img:rotate-0 transition-all duration-500"
+                                        />
                                     </motion.div>
                                 </div>
 
                                 <div className="w-full md:w-2/3 text-center md:text-left">
-                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-black mb-6 border border-emerald-500/20 uppercase tracking-widest">
-                                        <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                        </span>
-                                        Explora el Mundo
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-black mb-6 border border-amber-500/20 uppercase tracking-widest">
+                                        Entrenamiento Mental
                                     </div>
 
                                     <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                        Geografía Interactiva
+                                        Retos de Inteligencia
                                     </h2>
                                     <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                        Viaja por el mundo sin salir de casa. Aprende países, capitales, ríos y montañas con nuestros mapas interactivos.
+                                        Desafía tu mente con acertijos, juegos de lógica y problemas de razonamiento lateral. Ideal para desarrollar el pensamiento crítico de forma divertida.
                                     </p>
 
                                     <Link
-                                        href="/actividades#geography"
-                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                        href="/actividades#intelligence"
+                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
-                                        VER MAPAS
+                                        VER DESAFÍOS
                                         <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
@@ -139,6 +135,62 @@ export default function NewGamesClient() {
                         </div>
                     </section>
 
+                    {/* SECCIÓN GEOGRAFÍA */}
+                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
+                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-3xl blur-3xl -z-10" />
+
+                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] group-hover:bg-emerald-500/20 transition-all duration-700" />
+
+                            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                                <div className="w-full md:w-1/3 flex justify-center">
+                                    <motion.div
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(16,185,129,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(16,185,129,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
+                                    >
+                                        <div className="absolute inset-0 bg-emerald-500/20 rounded-3xl blur-2xl group-hover/img:bg-emerald-500/30 transition-all -z-10" />
+
+                                        {/* Glass Container for Icon */}
+                                        <div className="relative bg-white/10 backdrop-blur-md border border-white/40 p-10 rounded-[2.5rem] shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-all duration-500 border-b-white/10 border-r-white/10">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-[2.5rem] -z-10" />
+                                            <GlobeHemisphereWest className="w-40 h-40 text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" weight="duotone" />
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <div className="w-full md:w-2/3 text-center md:text-left">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-black mb-6 border border-emerald-500/20 uppercase tracking-widest">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                        </span>
+                                        Explora el Mundo
+                                    </div>
+
+                                    <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                                        Geografía Interactiva
+                                    </h2>
+                                    <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
+                                        Viaja por el mundo sin salir de casa. Aprende países, capitales, ríos y montañas con nuestros mapas interactivos.
+                                    </p>
+
+                                    <Link
+                                        href="/actividades#geography"
+                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                    >
+                                        VER MAPAS
+                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+
+
                     {/* SECCIÓN MATEMÁTICAS */}
                     <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
                         <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-amber-500/10 rounded-3xl blur-3xl -z-10" />
@@ -146,7 +198,7 @@ export default function NewGamesClient() {
                         <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
                             <div className="absolute -right-24 -top-24 w-96 h-96 bg-orange-500/10 rounded-full blur-[100px] group-hover:bg-orange-500/20 transition-all duration-700" />
 
-                            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                            <div className="flex flex-col md:flex-row-reverse items-center gap-12 relative z-10">
                                 <div className="w-full md:w-1/3 flex justify-center">
                                     <motion.div
                                         initial={{ filter: 'drop-shadow(0 0 0px rgba(249,115,22,0))', scale: 0.9, opacity: 0 }}
@@ -158,32 +210,34 @@ export default function NewGamesClient() {
                                         <div className="absolute inset-0 bg-orange-500/20 rounded-3xl blur-2xl group-hover/img:bg-orange-500/30 transition-all -z-10" />
 
                                         {/* Glass Container for Icon */}
-                                        <div className="relative bg-white/10 backdrop-blur-md border border-white/40 p-10 rounded-[2.5rem] shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-all duration-500 border-b-white/10 border-r-white/10">
+                                        <div className="relative bg-white/10 backdrop-blur-md border border-white/40 p-10 rounded-[2.5rem] shadow-2xl transform rotate-3 group-hover:rotate-0 transition-all duration-500 border-b-white/10 border-l-white/10">
                                             <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-amber-600/20 rounded-[2.5rem] -z-10" />
                                             <Calculator className="w-40 h-40 text-orange-500 drop-shadow-[0_0_15px_rgba(249,115,22,0.5)]" weight="duotone" />
                                         </div>
                                     </motion.div>
                                 </div>
 
-                                <div className="w-full md:w-2/3 text-center md:text-left">
-                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-600 text-xs font-black mb-6 border border-orange-500/20 uppercase tracking-widest">
+                                <div className="w-full md:w-2/3 text-center md:text-right">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-600 text-xs font-black mb-6 border border-orange-500/20 uppercase tracking-widest md:flex-row-reverse">
                                         Números Divertidos
                                     </div>
 
-                                    <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                        Matemáticas Visuales
-                                    </h2>
-                                    <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                        Olvídate de las aburridas hojas de cálculo. Aprende a dividir repartiendo pizzas y a multiplicar dibujando líneas.
-                                    </p>
+                                    <div className="flex flex-col md:items-end w-full">
+                                        <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight text-center md:text-right">
+                                            Matemáticas Visuales
+                                        </h2>
+                                        <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl text-center md:text-right">
+                                            Olvídate de las aburridas hojas de cálculo. Aprende a dividir repartiendo pizzas y a multiplicar dibujando líneas.
+                                        </p>
 
-                                    <Link
-                                        href="/actividades#math"
-                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all group active:scale-95"
-                                    >
-                                        JUGAR CON NÚMEROS
-                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
-                                    </Link>
+                                        <Link
+                                            href="/actividades#math"
+                                            className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                        >
+                                            JUGAR CON NÚMEROS
+                                            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
