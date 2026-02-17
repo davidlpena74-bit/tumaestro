@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -58,6 +59,9 @@ export default function ActividadesClient() {
     const { t, language } = useLanguage();
     const { success, error, warning, info } = useToast();
     const [selectedGrade, setSelectedGrade] = useState<string>('all');
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => { setMounted(true); }, []);
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [filterOpen, setFilterOpen] = useState(false);
 
@@ -756,285 +760,112 @@ export default function ActividadesClient() {
                         </AnimatePresence>
                     </div>
 
+
                     {/* Assignment Modal */}
-                    <AnimatePresence>
-                        {isAssigning && (
-                            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    onClick={() => setIsAssigning(null)}
-                                    className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
-                                />
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                    className="relative bg-white rounded-[2.5rem] p-8 w-full max-w-lg shadow-2xl overflow-hidden border border-slate-100"
-                                >
-                                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 to-indigo-600" />
+                    {mounted && createPortal(
+                        <AnimatePresence>
+                            {isAssigning && (
+                                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        onClick={() => setIsAssigning(null)}
+                                        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+                                    />
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                        className="relative bg-white rounded-[2.5rem] p-8 w-full max-w-lg shadow-2xl overflow-hidden border border-slate-100"
+                                    >
+                                        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 to-indigo-600" />
 
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div>
-                                            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Asignar Actividad</h3>
-                                            <p className="text-slate-500 font-medium">Selecciona la clase para enviar "{isAssigning.title}"</p>
-                                        </div>
-                                        <button
-                                            onClick={() => setIsAssigning(null)}
-                                            className="p-2 hover:bg-slate-100 rounded-full transition-colors"
-                                        >
-                                            <X size={24} className="text-slate-400" />
-                                        </button>
-                                    </div>
-
-                                    <div className="space-y-6">
-                                        <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                                            <div className="flex items-center gap-4 mb-4">
-                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${isAssigning.color} flex items-center justify-center shadow-lg`}>
-                                                    <isAssigning.icon className="w-6 h-6 text-white" weight="duotone" />
-                                                </div>
-                                                <div>
-                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isAssigning.grade}</div>
-                                                    <div className="font-bold text-slate-700">{isAssigning.title}</div>
-                                                </div>
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div>
+                                                <h3 className="text-2xl font-black text-slate-800 tracking-tight">Asignar Actividad</h3>
+                                                <p className="text-slate-500 font-medium">Selecciona la clase para enviar "{isAssigning.title}"</p>
                                             </div>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">Tu Clase</label>
-                                            <div className="relative">
-                                                <select
-                                                    value={selectedClassId}
-                                                    onChange={(e) => setSelectedClassId(e.target.value)}
-                                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-slate-700 font-bold focus:border-blue-500 outline-none appearance-none transition-all cursor-pointer"
-                                                >
-                                                    <option value="">Selecciona una clase...</option>
-                                                    {classes.map(cls => (
-                                                        <option key={cls.id} value={cls.id}>
-                                                            {cls.name} {cls.grade ? `(${cls.grade})` : ''}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                    <CaretDown size={20} className="text-slate-400" weight="bold" />
-                                                </div>
-                                            </div>
-                                            {classes.length === 0 && (
-                                                <p className="text-[10px] text-red-400 font-bold mt-2 px-1">
-                                                    No tienes clases creadas. Ve al panel para crear una.
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="flex gap-4 pt-4">
                                             <button
                                                 onClick={() => setIsAssigning(null)}
-                                                className="flex-1 py-4 bg-slate-100 text-slate-500 font-black rounded-2xl hover:bg-slate-200 transition-all"
+                                                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
                                             >
-                                                Cancelar
+                                                <X size={24} className="text-slate-400" />
                                             </button>
-                                            <button
-                                                disabled={!selectedClassId || isSubmitting}
-                                                onClick={handleAssign}
-                                                className={cn(
-                                                    "flex-1 py-4 text-white font-black rounded-2xl transition-all shadow-xl",
-                                                    !selectedClassId || isSubmitting
-                                                        ? "bg-slate-300 shadow-none cursor-not-allowed"
-                                                        : "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-blue-200 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]"
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${isAssigning.color} flex items-center justify-center shadow-lg`}>
+                                                        <isAssigning.icon className="w-6 h-6 text-white" weight="duotone" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isAssigning.grade}</div>
+                                                        <div className="font-bold text-slate-700">{isAssigning.title}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">Tu Clase</label>
+                                                <div className="relative">
+                                                    <select
+                                                        value={selectedClassId}
+                                                        onChange={(e) => setSelectedClassId(e.target.value)}
+                                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-slate-700 font-bold focus:border-blue-500 outline-none appearance-none transition-all cursor-pointer"
+                                                    >
+                                                        <option value="">Selecciona una clase...</option>
+                                                        {classes.map(cls => (
+                                                            <option key={cls.id} value={cls.id}>
+                                                                {cls.name} {cls.grade ? `(${cls.grade})` : ''}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                        <CaretDown size={20} className="text-slate-400" weight="bold" />
+                                                    </div>
+                                                </div>
+                                                {classes.length === 0 && (
+                                                    <p className="text-[10px] text-red-400 font-bold mt-2 px-1">
+                                                        No tienes clases creadas. Ve al panel para crear una.
+                                                    </p>
                                                 )}
-                                            >
-                                                {isSubmitting ? (
-                                                    <div className="flex items-center justify-center gap-2">
-                                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                        Asignando...
-                                                    </div>
-                                                ) : "Confirmar Asignación"}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            </div>
-                        )}
-                    </AnimatePresence>
-                </div>
+                                            </div>
 
-                <div className="space-y-24">
-                    {filteredCategories.map((category, catIdx) => (
-                        <div key={category.id} id={category.id} className="scroll-mt-32">
-                            {/* Main Category Title */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 + (catIdx * 0.1) }}
-                                className="flex items-center gap-4 mb-1 pb-0"
-                            >
-                                <h2 className="text-4xl font-black text-slate-800 mb-1 pb-2">{category.title}</h2>
-                            </motion.div>
-                            <div className="w-full h-0.5 bg-slate-800/30 mt-0" />
-
-                            <div className="space-y-12 mt-8">
-                                {category.subsections.map((sub, subIdx) => (
-                                    <div key={subIdx}>
-                                        {/* Subsection Title */}
-                                        {sub.title && (
-                                            <motion.h3
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                className="text-xl font-bold mb-6 flex items-center gap-3"
-                                            >
-                                                <div className="w-2 h-2 rounded-full bg-slate-700/50" />
-                                                <span className="text-slate-700">
-                                                    {sub.title}
-                                                </span>
-                                            </motion.h3>
-                                        )}
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                                            {sub.games.map((game, idx) => (
-                                                <motion.div
-                                                    key={game.id}
-                                                    initial={{ opacity: 0, scale: 0.9 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: 0.4 + (idx * 0.05) }}
-                                                    whileHover={{
-                                                        y: -12,
-                                                        rotateX: 4,
-                                                        rotateY: -2,
-                                                        transition: { duration: 0.3 }
-                                                    }}
-                                                    className="perspective-1000 h-full"
+                                            <div className="flex gap-4 pt-4">
+                                                <button
+                                                    onClick={() => setIsAssigning(null)}
+                                                    className="flex-1 py-4 bg-slate-100 text-slate-500 font-black rounded-2xl hover:bg-slate-200 transition-all"
                                                 >
-                                                    <div className="group relative block h-full preserve-3d">
-                                                        <Link href={game.href} className="absolute inset-0 z-0" />
-                                                        {/* 3D Shadow/Glow Background */}
-                                                        <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-[2rem] blur-3xl -z-10`} />
-
-                                                        <div className={cn(
-                                                            "h-full border border-white/10 py-5 px-5 rounded-3xl transition-all duration-500 transform-gpu relative overflow-hidden flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)] group-hover:border-white/25",
-                                                            "bg-slate-950/80 backdrop-blur-sm",
-                                                            "relative z-10",
-                                                            game.color.includes('emerald') && "bg-emerald-950/70",
-                                                            game.color.includes('blue') && "bg-blue-950/70",
-                                                            game.color.includes('orange') && "bg-orange-950/70",
-                                                            game.color.includes('violet') && "bg-violet-950/70",
-                                                            game.color.includes('pink') && "bg-pink-950/70",
-                                                            game.color.includes('rose') && "bg-rose-950/70",
-                                                            game.color.includes('amber') && "bg-amber-950/70",
-                                                            game.color.includes('yellow') && "bg-yellow-950/70"
-                                                        )}>
-                                                            {/* 3D Top Glare Effect */}
-                                                            <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                                                            <div className="mb-3 flex items-start gap-3 pointer-events-none">
-                                                                <div className={`w-12 h-12 flex-shrink-0 rounded-xl relative flex items-center justify-center group-hover:scale-110 transition-transform duration-500`}>
-                                                                    <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-40 blur-md rounded-xl`} />
-                                                                    <div className="relative w-full h-full bg-white/10 backdrop-blur-md border border-white/30 rounded-xl flex items-center justify-center shadow-inner overflow-hidden">
-                                                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                                        <game.icon className="w-6 h-6 text-white drop-shadow-md" weight="duotone" />
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex flex-col gap-1.5 pt-0.5">
-                                                                    {game.gameType && (
-                                                                        <div className={cn(
-                                                                            "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
-                                                                            "bg-white/40 text-slate-700 border-white/20"
-                                                                        )}>
-                                                                            {(() => {
-                                                                                if (game.gameType === t.gamesPage.gameTypes.map) return <MapTrifold className="w-3 h-3" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.puzzle) return <PuzzlePiece className="w-3 h-3" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.quiz) return <Brain className="w-3 h-3" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.math) return <Calculator className="w-3 h-3" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.verbs) return <Translate className="w-3 h-3" weight="regular" />;
-                                                                                if (game.gameType === t.gamesPage.gameTypes.logic) return <Brain className="w-3 h-3" weight="regular" />;
-                                                                                return <MapTrifold className="w-3 h-3" weight="regular" />;
-                                                                            })()}
-                                                                            {game.gameType}
-                                                                        </div>
-                                                                    )}
-
-                                                                    <div className="flex gap-1.5">
-                                                                        <div className={cn(
-                                                                            "px-2.5 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-300 w-fit backdrop-blur-md whitespace-nowrap",
-                                                                            "bg-white/40 text-slate-700 border-white/20"
-                                                                        )}>
-                                                                            <Student className="w-3 h-3" weight="regular" />
-                                                                            {game.grade}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <h3 className="text-lg font-bold text-white mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-100 transition-colors drop-shadow-md line-clamp-2 min-h-[2.4rem] pointer-events-none">
-                                                                {game.title}
-                                                            </h3>
-                                                            <p className="text-gray-400 mb-4 leading-relaxed text-xs line-clamp-3 min-h-[2.8rem] pointer-events-none">
-                                                                {game.description}
-                                                            </p>
-
-                                                            <div className="flex items-center justify-between mt-auto">
-                                                                <div className="flex items-center text-xs font-bold text-white/50 group-hover:text-white transition-colors">
-                                                                    {t.gamesPage.playBtn} <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                                                                </div>
-
-                                                                {profile?.role === 'teacher' && (
-                                                                    <button
-                                                                        onClick={(e) => {
-                                                                            e.preventDefault();
-                                                                            e.stopPropagation();
-                                                                            setIsAssigning(game);
-                                                                        }}
-                                                                        className="relative z-20 px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white rounded-lg border border-blue-500/30 transition-all text-xs font-bold flex items-center gap-1.5"
-                                                                        title="Asignar a una clase"
-                                                                    >
-                                                                        <Plus size={14} weight="bold" />
-                                                                        Asignar
-                                                                    </button>
-                                                                )}
-                                                            </div>
+                                                    Cancelar
+                                                </button>
+                                                <button
+                                                    disabled={!selectedClassId || isSubmitting}
+                                                    onClick={handleAssign}
+                                                    className={cn(
+                                                        "flex-1 py-4 text-white font-black rounded-2xl transition-all shadow-xl",
+                                                        !selectedClassId || isSubmitting
+                                                            ? "bg-slate-300 shadow-none cursor-not-allowed"
+                                                            : "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-blue-200 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]"
+                                                    )}
+                                                >
+                                                    {isSubmitting ? (
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                            Asignando...
                                                         </div>
-                                                    </div>
-                                                </motion.div>
-                                            ))}
+                                                    ) : "Confirmar Asignación"}
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
+                                    </motion.div>
+                                </div>
+                            )}
+                        </AnimatePresence>,
+                        document.body
+                    )}
                 </div>
-
-                {filteredCategories.length === 0 && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="py-20 text-center"
-                    >
-                        <p className="text-slate-500 text-lg">{t.gamesPage.regions.noGames}</p>
-                        <button
-                            onClick={() => { setSelectedGrade('all'); setSelectedSubject(null); }}
-                            className="mt-4 text-teal-600 font-bold hover:underline"
-                        >
-                            {t.gamesPage.regions.viewAll}
-                        </button>
-                    </motion.div>
-                )}
-
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    className="mt-24 pt-10 border-t border-white/5 text-center"
-                >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-100 text-sm font-medium shadow-lg">
-                        <Student className="w-4 h-4 text-emerald-400" />
-                        <span>{t.gamesPage.comingSoon}</span>
-                    </div>
-                </motion.div>
-
-            </div>
         </main>
     );
 }
-
