@@ -27,6 +27,7 @@ export const TRANSLATIONS = {
             }
         },
         header: {
+            activities: 'Actividades',
             games: 'Juegos',
             resources: 'Material',
             teachers: 'Clases',
@@ -43,9 +44,12 @@ export const TRANSLATIONS = {
             resources: 'Material Didáctico',
             resourcesDesc: 'Descarga apuntes, exámenes resueltos y ejercicios de refuerzo.',
             resourcesBtn: 'Explorar Recursos',
-            learnPlaying: 'Aprende Jugando',
-            learnPlayingDesc: 'Diviértete mientras aprendes geografía, matemáticas y cultura general.',
+            learnPlaying: 'Juegos Educativos',
+            learnPlayingDesc: 'Diviértete mientras aprendes geografía, matemáticas y ciencia con nuestros juegos interactivos.',
             learnPlayingBtn: 'Jugar Ahora',
+            activities: 'Actividades',
+            activitiesDesc: 'Pon a prueba tus conocimientos con retos de repaso y ejercicios interactivos.',
+            activitiesBtn: 'Explorar Actividades',
             featuredTeachers: 'Profesores Destacados',
             featuredTeachersDesc: 'Clases particulares a tu medida',
             viewAll: 'Ver todos',
@@ -60,9 +64,9 @@ export const TRANSLATIONS = {
             },
             trending: 'NUEVO',
             updated: 'ACTUALIZADO',
-            gamesHeroTitle: 'Aprende Jugando',
-            gamesHeroDesc: 'Descubre nuestra nueva zona de juegos interactivos. Pon a prueba tus conocimientos de geografía y cultura general con retos diseñados para aprender divirtiéndote.',
-            exploreGames: 'Explorar Juegos',
+            gamesHeroTitle: 'Actividades Interactivas',
+            gamesHeroDesc: 'Descubre nuestra nueva zona de actividades interactivas. Pon a prueba tus conocimientos de geografía y cultura general con retos diseñados para aprender divirtiéndote.',
+            exploreGames: 'Explorar Actividades',
             gameVisuals: {
                 map: 'Mapa',
                 quiz: 'Quiz',
@@ -76,7 +80,7 @@ export const TRANSLATIONS = {
             }
         },
         gamesPage: {
-            title: 'Aprende Jugando',
+            title: 'Actividades Interactivas',
             subtitle: 'Selecciona un desafío de nuestra colección educativa.',
             categories: {
                 geography: 'Ciencias Sociales',
@@ -382,6 +386,7 @@ export const TRANSLATIONS = {
             }
         },
         header: {
+            activities: 'Activities',
             games: 'Games',
             resources: 'Support Material',
             teachers: 'Classes',
@@ -398,9 +403,12 @@ export const TRANSLATIONS = {
             resources: 'Educational Material',
             resourcesDesc: 'Download notes, solved exams, and reinforcement exercises.',
             resourcesBtn: 'Explore Resources',
-            learnPlaying: 'Learn by Playing',
-            learnPlayingDesc: 'Have fun while learning geography, math, and general culture.',
+            learnPlaying: 'Educational Games',
+            learnPlayingDesc: 'Have fun while learning geography, math, and science with our interactive games.',
             learnPlayingBtn: 'Play Now',
+            activities: 'Activities',
+            activitiesDesc: 'Test your knowledge with review challenges and interactive exercises.',
+            activitiesBtn: 'Explore Activities',
             featuredTeachers: 'Featured Teachers',
             featuredTeachersDesc: 'Private lessons tailored to you',
             viewAll: 'View all',
@@ -431,7 +439,7 @@ export const TRANSLATIONS = {
             }
         },
         gamesPage: {
-            title: 'Learn by Playing',
+            title: 'Interactive Activities',
             subtitle: 'Select a challenge from our educational collection.',
             categories: {
                 geography: 'Social Science',
@@ -737,6 +745,7 @@ export const TRANSLATIONS = {
             }
         },
         header: {
+            activities: 'Activités',
             games: 'Jeux',
             resources: 'Matériel',
             teachers: 'Cours',
@@ -753,9 +762,12 @@ export const TRANSLATIONS = {
             resources: 'Matériel Pédagogique',
             resourcesDesc: 'Téléchargez des notes, des examens corrigés et des exercices de renforcement.',
             resourcesBtn: 'Explorer les Ressources',
-            learnPlaying: 'Apprendre en Jouant',
-            learnPlayingDesc: 'Amusez-vous tout en apprenant la géographie, les mathématiques et la culture générale.',
+            learnPlaying: 'Jeux Éducatifs',
+            learnPlayingDesc: 'Amusez-vous tout en apprenant la géographie, les mathématiques et les sciences.',
             learnPlayingBtn: 'Jouer Maintenant',
+            activities: 'Activités',
+            activitiesDesc: 'Testez vos connaissances avec des défis de révision et des exercices interactifs.',
+            activitiesBtn: 'Explorer les Activités',
             featuredTeachers: 'Professeurs en Vedette',
             featuredTeachersDesc: 'Des cours particuliers adaptés à vos besoins',
             viewAll: 'Voir tout',
@@ -770,7 +782,7 @@ export const TRANSLATIONS = {
             },
             trending: 'NOUVEAU',
             updated: 'MIS À JOUR',
-            gamesHeroTitle: 'Apprendre en Jouant',
+            gamesHeroTitle: 'Activités Interactives',
             gamesHeroDesc: 'Découvrez notre nouvelle zone de jeux interactifs. Testez vos connaissances en géographie et culture générale avec des défis conçus pour apprendre en s\'amusant.',
             exploreGames: 'Explorer les Jeux',
             gameVisuals: {
@@ -786,7 +798,7 @@ export const TRANSLATIONS = {
             }
         },
         gamesPage: {
-            title: 'Apprendre en Jouant',
+            title: 'Activités Interactives',
             subtitle: 'Sélectionnez un défi dans notre collection éducative.',
             categories: {
                 geography: 'Sciences Sociales',
@@ -1087,6 +1099,7 @@ export const TRANSLATIONS = {
         },
         header: {
             games: 'Spiele',
+            activities: 'Aktivitäten',
             resources: 'Material',
             teachers: 'Kurse',
             login: 'Benutzer-Login',
@@ -1102,9 +1115,12 @@ export const TRANSLATIONS = {
             resources: 'Lehrmaterial',
             resourcesDesc: 'Lade Notizen, gelöste Prüfungen und Verstärkungsübungen herunter.',
             resourcesBtn: 'Ressourcen erkunden',
-            learnPlaying: 'Spielend lernen',
-            learnPlayingDesc: 'Habe Spaß beim Lernen von Geographie, Mathematik und Allgemeinwissen.',
+            learnPlaying: 'Lernspiele',
+            learnPlayingDesc: 'Habe Spaß beim Lernen von Geographie, Mathematik und Naturwissenschaften.',
             learnPlayingBtn: 'Jetzt spielen',
+            activities: 'Aktivitäten',
+            activitiesDesc: 'Teste dein Wissen mit Wiederholungsaufgaben und interaktiven Übungen.',
+            activitiesBtn: 'Aktivitäten erkunden',
             featuredTeachers: 'Hervorgehobene Lehrer',
             featuredTeachersDesc: 'Privatunterricht, auf dich zugeschnitten',
             viewAll: 'Alle ansehen',
@@ -1119,7 +1135,7 @@ export const TRANSLATIONS = {
             },
             trending: 'NEU',
             updated: 'AKTUALISIERT',
-            gamesHeroTitle: 'Spielend lernen',
+            gamesHeroTitle: 'Interaktive Aktivitäten',
             gamesHeroDesc: 'Entdecke unseren neuen Bereich mit interaktiven Spielen. Teste dein Wissen in Geographie und Allgemeinwissen mit Herausforderungen, die zum Lernen mit Spaß entwickelt wurden.',
             exploreGames: 'Spiele erkunden',
             gameVisuals: {

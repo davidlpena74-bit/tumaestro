@@ -107,7 +107,7 @@ const PLANT_CELL_PARTS: CellPart[] = [
     }
 ];
 
-export default function PlantCellGame() {
+export default function PlantCellGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
     const [dragState, setDragState] = useState<{
@@ -141,8 +141,9 @@ export default function PlantCellGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -255,7 +256,7 @@ export default function PlantCellGame() {
                     colors: ['#34d399', '#ffffff']
                 });
                 if (Object.keys(newMatches).length === PLANT_CELL_PARTS.length) {
-                    finishGame();
+                    handleFinish();
                 }
             } else {
                 addError();

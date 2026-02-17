@@ -46,7 +46,7 @@ const BONE_PARTS: BonePart[] = [
     { id: 'scapula', nameKey: 'scapula', view: 'back', x: 450, y: 320, lx: 700, ly: 315 },
 ];
 
-export default function HumanSkeletonGame() {
+export default function HumanSkeletonGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [rotation, setRotation] = useState(0); // 0 to 180 degrees
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
@@ -115,8 +115,9 @@ export default function HumanSkeletonGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -137,7 +138,7 @@ export default function HumanSkeletonGame() {
     const checkCompletion = (newMatches: Record<string, string>) => {
         const partsCount = currentParts.length;
         if (Object.keys(newMatches).length === partsCount) {
-            finishGame();
+            handleFinish();
         }
     };
 

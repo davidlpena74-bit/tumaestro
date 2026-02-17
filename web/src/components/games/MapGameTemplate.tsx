@@ -36,6 +36,7 @@ interface MapGameTemplateProps {
     insetBox?: InsetBoxConfig;
     specialTransforms?: Record<string, string>;
     svgTransform?: string;
+    taskId?: string | null;
 }
 
 export default function MapGameTemplate({
@@ -50,7 +51,8 @@ export default function MapGameTemplate({
     icon = <MapPin className="w-8 h-8" />,
     insetBox,
     specialTransforms = {},
-    svgTransform
+    svgTransform,
+    taskId = null
 }: MapGameTemplateProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -63,8 +65,9 @@ export default function MapGameTemplate({
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId });
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
@@ -108,7 +111,7 @@ export default function MapGameTemplate({
         const availableKeys = allKeys.filter(k => !currentSolved.includes(k));
 
         if (availableKeys.length === 0) {
-            setGameState('finished');
+            handleFinish();
             confetti({ particleCount: 200, spread: 100 });
             return;
         }

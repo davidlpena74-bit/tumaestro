@@ -8,8 +8,11 @@ import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export default function MultiplicationPageClient() {
+    const searchParams = useSearchParams();
+    const taskId = searchParams.get('taskId');
     const { t } = useLanguage();
 
     return (
@@ -20,7 +23,7 @@ export default function MultiplicationPageClient() {
             <ContentWrapper className="pt-24 pb-12 relative z-10">
                 <div className="mb-8">
                     <Link
-                        href="/juegos"
+                        href="/actividades"
                         className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors group mb-6"
                     >
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -48,7 +51,7 @@ export default function MultiplicationPageClient() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <MultiplicationGame />
+                    <MultiplicationGame taskId={taskId} />
                 </motion.div>
 
                 {/* Info Section */}

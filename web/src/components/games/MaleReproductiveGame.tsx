@@ -37,7 +37,7 @@ const REPRODUCTIVE_PARTS: ReproductivePart[] = [
     { id: 'epididymis', nameKey: 'epididymis', x: 460, y: 589, lx: 700, ly: 660 },
 ];
 
-export default function MaleReproductiveGame() {
+export default function MaleReproductiveGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
     const [dragState, setDragState] = useState<{
@@ -70,8 +70,9 @@ export default function MaleReproductiveGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -184,7 +185,7 @@ export default function MaleReproductiveGame() {
                 });
                 addScore(100);
                 if (Object.keys(newMatches).length === REPRODUCTIVE_PARTS.length) {
-                    finishGame();
+                    handleFinish();
                 }
             } else {
                 addError();

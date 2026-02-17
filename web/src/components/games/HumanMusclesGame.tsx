@@ -49,7 +49,7 @@ const MUSCLE_PARTS: MusclePart[] = [
     { id: 'gastrocnemius', nameKey: 'gastrocnemius', view: 'back', x: 362, y: 694, lx: 700, ly: 694 },
 ];
 
-export default function HumanMusclesGame() {
+export default function HumanMusclesGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
@@ -116,8 +116,9 @@ export default function HumanMusclesGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -137,8 +138,7 @@ export default function HumanMusclesGame() {
     const checkCompletion = (newMatches: Record<string, string>) => {
         const partsCount = currentParts.length;
         if (Object.keys(newMatches).length === partsCount) {
-            // Check if all are correct (implied by the logic that prevents incorrect matches)
-            finishGame();
+            handleFinish();
         }
     };
 

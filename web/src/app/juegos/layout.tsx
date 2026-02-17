@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Juegos Educativos Interactivos | TuMaestro.es',
-    description: 'Aprende geografía, matemáticas e idiomas jugando. Mapas interactivos de España y Europa, cálculo mental y más.',
+    title: 'Recursos y Apuntes Gratuitos | TuMaestro.es',
+    description: 'Descarga apuntes de matemáticas, lengua, historia y más. Cuentos infantiles narrados en cuatro idiomas gratis y material didáctico verificado por profesores.',
 };
 
-export default function JuegosLayout({
+export default function RecursosLayout({
     children,
 }: {
     children: React.ReactNode;

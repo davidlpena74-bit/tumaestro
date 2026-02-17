@@ -9,8 +9,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Configuration map
 const IMAGES_TO_PROCESS = [
     {
-        src: "c:/Users/david/Desktop/Projects-Antigravity/Tu Maestro/web/public/images/icons/icon-resources-3d-source-v4.png",
-        dest: "icon-resources-3d.png"
+        src: "c:/Users/david/Desktop/Projects-Antigravity/Tu Maestro/web/public/images/icons/icon-activities-3d-source.png",
+        dest: "icon-activities-3d.png"
     }
 ];
 

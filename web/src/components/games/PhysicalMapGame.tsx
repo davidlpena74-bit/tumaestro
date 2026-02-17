@@ -33,7 +33,9 @@ interface PhysicalMapGameProps {
     viewBox?: string;
     initialZoom?: number;
     initialPan?: { x: number; y: number };
+    elevationHeight?: number;
     colorTheme?: "teal" | "emerald" | "blue" | "purple" | "orange" | "cyan";
+    taskId?: string | null;
 }
 
 export default function PhysicalMapGame({
@@ -46,7 +48,9 @@ export default function PhysicalMapGame({
     viewBox = "0 0 800 600",
     initialZoom = 1,
     initialPan = { x: 0, y: 0 },
-    colorTheme = "teal"
+    elevationHeight = 8,
+    colorTheme = "teal",
+    taskId = null
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -59,8 +63,9 @@ export default function PhysicalMapGame({
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const [targetItem, setTargetItem] = useState('');
     const [remainingItems, setRemainingItems] = useState<string[]>([]);
@@ -109,8 +114,7 @@ export default function PhysicalMapGame({
 
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
-            setGameState('finished');
-            confetti({ particleCount: 200, spread: 100 });
+            handleFinish();
             return;
         }
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);
@@ -336,7 +340,6 @@ export default function PhysicalMapGame({
                                         onMouseLeave={() => setHoveredItem(null)}
                                         onClick={(e) => handleItemClick(name, e)}
                                     >
-                                        {/* Hit Area */}
                                         <path d={d} fill={itemType === 'polygon' ? "transparent" : "none"} stroke="transparent" strokeWidth="20" />
 
                                         {/* Visual Path */}

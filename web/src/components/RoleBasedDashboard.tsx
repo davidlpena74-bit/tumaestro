@@ -19,7 +19,8 @@ import {
     Square,
     CaretDown,
     Info,
-    ArrowCounterClockwise
+    ArrowCounterClockwise,
+    Archive
 } from '@phosphor-icons/react';
 
 type Profile = {
@@ -48,6 +49,17 @@ type Task = {
     description: string;
     due_date?: string;
     created_at: string;
+    activity_slug?: string;
+};
+
+type TaskCompletion = {
+    task_id: string;
+    student_id: string;
+    completed_at: string;
+    score?: number;
+    errors?: number;
+    time_spent?: number;
+    student_name?: string; // Optional for teacher view
 };
 
 type Notification = {
@@ -73,9 +85,10 @@ export default function RoleBasedDashboard() {
     const [myClasses, setMyClasses] = useState<Class[]>([]);
     const [myTasks, setMyTasks] = useState<Task[]>([]);
     const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set());
-    const [studentClasses, setStudentClasses] = useState<Record<string, Class[]>>({});
+    const [studentClasses, setStudentClasses] = useState<Record<string, { id: string; name: string; status: string }[]>>({});
     const [enrolledStudentsByClass, setEnrolledStudentsByClass] = useState<Record<string, Profile[]>>({});
     const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [allCompletions, setAllCompletions] = useState<TaskCompletion[]>([]);
 
     // UI states
     const [searchTerm, setSearchTerm] = useState('');
@@ -117,7 +130,6 @@ export default function RoleBasedDashboard() {
 
 
 
-
     useEffect(() => {
         fetchInitialData();
 
@@ -133,6 +145,10 @@ export default function RoleBasedDashboard() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [openedDropdownId]);
+
+    // Helper to get active classes
+    const getActiveClasses = () => myClasses.filter((c: any) => !c.enrollment_status || c.enrollment_status === 'active');
+    const getArchivedClasses = () => myClasses.filter((c: any) => c.enrollment_status === 'archived');
 
     const fetchInitialData = async () => {
         setLoading(true);
@@ -217,11 +233,15 @@ export default function RoleBasedDashboard() {
             .eq('status', 'active');
 
         if (data) {
-            const map: Record<string, Class[]> = {};
-            data.forEach((item: any) => {
-                if (!map[item.student_id]) map[item.student_id] = [];
-                map[item.student_id].push(item.classes);
-            });
+            const map: Record<string, { id: string; name: string; status: string }[]> = data.reduce((acc: Record<string, { id: string; name: string; status: string }[]>, curr: any) => {
+                if (!acc[curr.student_id]) acc[curr.student_id] = [];
+                acc[curr.student_id].push({
+                    id: curr.classes.id,
+                    name: curr.classes.name,
+                    status: curr.status // Store status
+                });
+                return acc;
+            }, {});
             setStudentClasses(map);
         }
     };
@@ -269,12 +289,16 @@ export default function RoleBasedDashboard() {
     const fetchClassesAsStudent = async (studentId: string) => {
         const { data } = await supabase
             .from('class_students')
-            .select('classes(*)')
-            .eq('student_id', studentId)
-            .eq('status', 'active');
+            .select('status, classes(*)')
+            .eq('student_id', studentId);
+        // .eq('status', 'active'); // Removed to allow history
 
         if (data) {
-            const classes = data.map((item: any) => item.classes);
+            // Map classes and attach status
+            const classes = data.map((item: any) => ({
+                ...item.classes,
+                enrollment_status: item.status // Use this to filter in UI
+            }));
             setMyClasses(classes);
             if (classes.length > 0) {
                 const classIds = classes.map((c: any) => c.id);
@@ -291,7 +315,26 @@ export default function RoleBasedDashboard() {
             .in('class_id', classIds)
             .order('created_at', { ascending: false });
 
-        if (data) setMyTasks(data);
+        if (data) {
+            setMyTasks(data);
+            // If teacher, also fetch all completions for these tasks
+            if (myProfile?.role === 'teacher') {
+                const taskIds = data.map(t => t.id);
+                if (taskIds.length > 0) {
+                    const { data: completions } = await supabase
+                        .from('student_task_completions')
+                        .select('*, profiles(full_name)')
+                        .in('task_id', taskIds);
+
+                    if (completions) {
+                        setAllCompletions(completions.map((c: any) => ({
+                            ...c,
+                            student_name: c.profiles?.full_name
+                        })));
+                    }
+                }
+            }
+        }
     };
 
     const fetchCompletions = async (studentId: string) => {
@@ -397,6 +440,9 @@ export default function RoleBasedDashboard() {
                 success("Solicitud enviada al profesor.");
             }
 
+            // Sync Header
+            window.dispatchEvent(new Event('notification-updated'));
+
             fetchConnections(myProfile.id, myProfile.role);
             setProfiles(profiles.filter(p => p.id !== targetId));
             setShowClassSelector(false);
@@ -470,6 +516,25 @@ export default function RoleBasedDashboard() {
         }
     };
 
+    const markNotificationHandled = async (notification: Notification) => {
+        // Optimistic update
+        setNotifications(prev => prev.filter(n => n.id !== notification.id));
+
+        // DB update
+        const { error } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
+        if (error) {
+            await supabase.from('notifications')
+                .update({ read: true })
+                .eq('id', notification.id);
+        }
+
+        // Sync Header
+        window.dispatchEvent(new CustomEvent('notification-processed', { detail: { countChange: -1 } }));
+
+        // Refresh Connections just in case
+        if (myProfile) fetchConnections(myProfile.id, myProfile.role);
+    };
+
     const finalizeAcceptance = async (notification: Notification, class_id?: string) => {
         // Mark notification as read
         const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
@@ -486,6 +551,8 @@ export default function RoleBasedDashboard() {
         if (class_id && myProfile!.role === 'student') fetchClassesAsStudent(myProfile!.id);
 
         success("¡Solicitud aceptada!");
+        // Sync Header Optimistically
+        window.dispatchEvent(new CustomEvent('notification-processed', { detail: { countChange: -1 } }));
     };
 
     const rejectConnection = async (notification: Notification) => {
@@ -516,6 +583,8 @@ export default function RoleBasedDashboard() {
         }
 
         info("Solicitud rechazada.");
+        // Sync Header Optimistically
+        window.dispatchEvent(new CustomEvent('notification-processed', { detail: { countChange: -1 } }));
     };
 
     const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
@@ -558,6 +627,12 @@ export default function RoleBasedDashboard() {
 
             fetchClassStudents(classId);
             success('Alumno añadido/restaurado a la clase');
+            fetchClassStudents(classId);
+            success('Alumno añadido/restaurado a la clase');
+            // If this action was triggered by a notification (e.g. request access), decrement count
+            // However, this function is usually manual. If it was from a notif, logic would be elsewhere.
+            // Assuming manual for now, just refresh just in case.
+            window.dispatchEvent(new Event('notification-updated'));
         } else {
             error('Error al añadir alumno: ' + apiError.message);
         }
@@ -596,6 +671,7 @@ export default function RoleBasedDashboard() {
             fetchClassStudents(classId);
             // Also update global map
             fetchStudentEnrollments([studentId]);
+            window.dispatchEvent(new Event('notification-updated'));
         }
     };
 
@@ -665,7 +741,27 @@ export default function RoleBasedDashboard() {
     };
 
     const deleteClass = async (classId: string) => {
-        if (!confirm('¿Seguro que quieres eliminar esta clase? Se borrarán todas las tareas y el acceso de los alumnos.')) return;
+        if (!confirm('¿Seguro que quieres eliminar esta clase? Se borrarán todas las actividades y el acceso de los alumnos.')) return;
+
+        // Notify students before deletion
+        const classObj = myClasses.find(c => c.id === classId);
+        if (classObj && myProfile) {
+            const { data: students } = await supabase
+                .from('class_students')
+                .select('student_id')
+                .eq('class_id', classId);
+
+            if (students && students.length > 0) {
+                const notifications = students.map((s: any) => ({
+                    user_id: s.student_id,
+                    type: 'class_deleted',
+                    title: 'Clase Eliminada',
+                    message: `${myProfile.full_name} ha eliminado la clase "${classObj.name}". Tu historial ha sido borrado.`,
+                    data: { teacher_id: myProfile.id, reason: 'deletion' }
+                }));
+                await supabase.from('notifications').insert(notifications);
+            }
+        }
 
         const { error: apiError } = await supabase.from('classes').delete().eq('id', classId);
 
@@ -678,6 +774,7 @@ export default function RoleBasedDashboard() {
             if (selectedClassId === classId) {
                 setSelectedClassId(null);
             }
+            window.dispatchEvent(new Event('notification-updated'));
         }
     };
 
@@ -705,7 +802,7 @@ export default function RoleBasedDashboard() {
                     const notifications = students.map((s: any) => ({
                         user_id: s.student_id,
                         type: 'new_task',
-                        title: 'Nueva Tarea Asignada',
+                        title: 'Nueva Actividad Asignada',
                         message: `${myProfile.full_name} ha publicado: "${newTaskTitle}" en ${classObj.name}.`,
                         data: { class_id: targetClassId, task_id: 'new' } // task_id not returned by insert unless select(), but not critical
                     }));
@@ -718,7 +815,8 @@ export default function RoleBasedDashboard() {
             setIsCreatingTask(false);
             setNewTaskTitle('');
             setNewTaskDesc('');
-            success('Tarea creada y notificada');
+            success('Actividad creada y notificada');
+            window.dispatchEvent(new Event('notification-updated'));
         }
     };
 
@@ -757,6 +855,299 @@ export default function RoleBasedDashboard() {
     if (!myProfile) return <div className="p-8 text-center text-slate-500">Inicia sesión para ver tu panel.</div>;
 
     const isTeacher = myProfile.role === 'teacher';
+
+    const renderClassCard = (cls: Class, isArchivedClass: boolean = false) => (
+        <div key={cls.id} className={`bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col group relative overflow-hidden ${isArchivedClass ? 'opacity-70' : ''}`}>
+            <div className="flex justify-between items-start mb-4">
+                <div>
+                    <div className="flex gap-2 mb-2">
+                        {cls.subject && (
+                            <span className="bg-purple-100 text-purple-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-purple-200">
+                                {cls.subject}
+                            </span>
+                        )}
+                        {cls.grade && (
+                            <span className="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-200">
+                                {cls.grade}
+                            </span>
+                        )}
+                        {isArchivedClass && (
+                            <span className="bg-slate-100 text-slate-500 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-slate-200">
+                                Archivada
+                            </span>
+                        )}
+                    </div>
+                    <h4 className="font-bold text-slate-800 text-2xl mb-1">{cls.name}</h4>
+                    <p className="text-slate-500 text-sm">{cls.description}</p>
+                </div>
+                {isTeacher && (
+                    <button
+                        onClick={() => deleteClass(cls.id)}
+                        className="text-red-400 hover:text-red-600 p-2 bg-red-50 rounded-xl"
+                        title="Eliminar clase"
+                    >
+                        <Trash size={20} />
+                    </button>
+                )}
+            </div>
+
+            {/* SECTION 1: ACTIVITIES */}
+            <div className="space-y-3 mb-4 flex-1">
+                <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100 min-h-[140px] flex flex-col">
+                    <div className="flex justify-between items-center mb-4">
+                        <h5 className="font-bold text-slate-700 flex items-center gap-2">
+                            <CheckSquare size={18} className="text-purple-500" />
+                            Actividades Activas
+                        </h5>
+                        {isTeacher && (
+                            <button
+                                onClick={() => {
+                                    setTargetClassId(cls.id);
+                                    setIsCreatingTask(true);
+                                }}
+                                className="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-200"
+                            >
+                                + Nueva Actividad
+                            </button>
+                        )}
+                    </div>
+
+                    {isCreatingTask && targetClassId === cls.id && (
+                        <div className="bg-white p-4 rounded-xl border border-purple-100 mb-4 shadow-sm animate-in fade-in zoom-in duration-200">
+                            <h6 className="text-xs font-bold text-purple-600 mb-2 uppercase">Crear Actividad</h6>
+                            <div className="space-y-3">
+                                <input
+                                    className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
+                                    placeholder="Título de la actividad..."
+                                    value={newTaskTitle}
+                                    onChange={e => setNewTaskTitle(e.target.value)}
+                                />
+                                <textarea
+                                    className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
+                                    placeholder="Descripción..."
+                                    rows={2}
+                                    value={newTaskDesc}
+                                    onChange={e => setNewTaskDesc(e.target.value)}
+                                />
+                                <div className="flex justify-end gap-2">
+                                    <button onClick={() => setIsCreatingTask(false)} className="text-xs px-3 py-1 text-slate-400 font-bold">Cancelar</button>
+                                    <button onClick={createTask} className="text-xs px-4 py-1.5 bg-purple-600 text-white rounded-lg font-bold shadow-md shadow-purple-200">Guardar Actividad</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="space-y-3">
+                        {myTasks
+                            .filter(t => t.class_id === cls.id)
+                            .filter(t => isTeacher || !completedTaskIds.has(t.id))
+                            .map(task => (
+                                <div key={task.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                    {!isTeacher && (
+                                        <button
+                                            onClick={() => toggleTaskCompletion(task.id, completedTaskIds.has(task.id))}
+                                            className="mt-1 text-slate-300 hover:text-green-500 transition-colors"
+                                            title="Marcar como completada"
+                                        >
+                                            {completedTaskIds.has(task.id) ? (
+                                                <CheckCircle size={24} weight="fill" className="text-green-500" />
+                                            ) : (
+                                                <Square size={24} />
+                                            )}
+                                        </button>
+                                    )}
+                                    <div className="flex-1">
+                                        <h6 className={`font-bold text-slate-800 ${completedTaskIds.has(task.id) ? 'line-through text-slate-400' : ''}`}>{task.title}</h6>
+                                        {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
+                                    </div>
+                                    {isTeacher && (
+                                        <div className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold">
+                                            Docente
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        {myTasks.filter(t => t.class_id === cls.id).filter(t => isTeacher || !completedTaskIds.has(t.id)).length === 0 && (
+                            <div className="flex-1 flex items-center justify-center">
+                                <p className="text-slate-400 text-xs italic">No hay actividades activas en este momento.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {!isTeacher && completedTaskIds.size > 0 && (
+                        <div className="mt-4 pt-4 border-t border-slate-200">
+                            <p className="text-xs text-slate-400 text-center">
+                                {myTasks.filter(t => t.class_id === cls.id && completedTaskIds.has(t.id)).length} actividades completadas ocultas.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* SECTION 2: STUDENTS (Unified) */}
+                {isTeacher && (
+                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-h-[140px] flex flex-col">
+                        <div className="flex justify-between items-center mb-4">
+                            <h5 className="font-bold text-slate-700 flex items-center gap-2">
+                                <Users size={18} className="text-blue-500" />
+                                Alumnos ({enrolledStudentsByClass[cls.id]?.length || 0})
+                            </h5>
+                            <button
+                                onClick={() => {
+                                    if (selectedClassId === cls.id) {
+                                        setSelectedClassId(null);
+                                    } else {
+                                        setSelectedClassId(cls.id);
+                                        fetchClassStudents(cls.id);
+                                    }
+                                }}
+                                className="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
+                            >
+                                {selectedClassId === cls.id ? 'Cerrar Gestión' : 'Gestionar'}
+                            </button>
+                        </div>
+
+                        {/* Student Grid (Always Visible) */}
+                        <div className="mb-4">
+                            {(enrolledStudentsByClass[cls.id] || []).length > 0 ? (
+                                <div className="flex flex-wrap gap-4">
+                                    {(enrolledStudentsByClass[cls.id] || []).map((student) => (
+                                        <div key={student.id} className="flex flex-col items-center group/student">
+                                            <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-sm font-bold text-blue-600 mb-1 group-hover/student:scale-110 group-hover/student:border-blue-200 transition-all">
+                                                {student.full_name?.[0] || '?'}
+                                            </div>
+                                            <span className="text-[10px] font-medium text-slate-500 max-w-[60px] truncate text-center leading-tight group-hover/student:text-blue-600">
+                                                {student.full_name?.split(' ')[0]}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="flex-1 flex items-center justify-center py-6">
+                                    <p className="text-slate-400 text-xs italic">No hay alumnos inscritos.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Management Area (Expandable) */}
+                        {selectedClassId === cls.id && (
+                            <div className="bg-slate-50 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="bg-white p-4 rounded-xl border border-slate-100 mb-4">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                            Alumnos Activos
+                                        </h6>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        {/* Only show ACTIVE students in Class Card */}
+                                        {classStudents.filter(s => s.status === 'active' || !s.status).map(student => (
+                                            <div key={student.id} className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-bold text-slate-700">{student.full_name}</span>
+                                                </div>
+
+                                                <button
+                                                    onClick={() => removeStudentFromClass(cls.id, student.id)}
+                                                    className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors group"
+                                                    title="Archivar alumno"
+                                                >
+                                                    <Trash size={14} className="group-hover:animate-pulse" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {classStudents.filter(s => s.status === 'active' || !s.status).length === 0 && (
+                                            <div className="text-center py-4">
+                                                <p className="text-slate-400 text-xs italic">No hay alumnos activos</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h6 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">Añadir Alumno Existente</h6>
+                                    <div className="flex flex-wrap gap-2">
+                                        {myConnections.filter(conn => !classStudents.find(s => s.id === conn.id)).length > 0 ? (
+                                            myConnections
+                                                .filter(conn => !classStudents.find(s => s.id === conn.id))
+                                                .map(conn => (
+                                                    <button
+                                                        key={conn.id}
+                                                        onClick={() => addStudentToClass(cls.id, conn.id)}
+                                                        className="px-3 py-1.5 bg-white text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                                                    >
+                                                        + {conn.full_name}
+                                                    </button>
+                                                ))
+                                        ) : (
+                                            <p className="text-slate-400 text-xs italic">No tienes alumnos disponibles para añadir.</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Add New Student Search */}
+                                <div className="mt-4 pt-4 border-t border-slate-200">
+                                    <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Buscar nuevo alumno</h6>
+                                    <div className="relative">
+                                        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                                        <input
+                                            type="text"
+                                            placeholder="Nombre del alumno..."
+                                            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                            value={classSearchTerm}
+                                            onChange={(e) => {
+                                                setClassSearchTerm(e.target.value);
+                                                searchClassStudents(e.target.value);
+                                            }}
+                                        />
+                                    </div>
+                                    {classSearchResults.length > 0 && (
+                                        <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden z-10 relative">
+                                            {classSearchResults.map(student => {
+                                                const isEnrolled = enrolledStudentsByClass[cls.id]?.some(s => s.id === student.id);
+                                                const isConnected = myConnections.some(c => c.id === student.id);
+
+                                                return (
+                                                    <button
+                                                        key={student.id}
+                                                        disabled={isEnrolled}
+                                                        onClick={() => {
+                                                            if (isConnected) {
+                                                                addStudentToClass(cls.id, student.id);
+                                                            } else {
+                                                                // New connection flow
+                                                                addConnection(student.id, cls.id);
+                                                            }
+                                                            setClassSearchTerm('');
+                                                            setClassSearchResults([]);
+                                                        }}
+                                                        className="w-full text-left px-4 py-2 hover:bg-slate-50 flex items-center justify-between text-sm disabled:opacity-50 border-b border-slate-100 last:border-0"
+                                                    >
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-600">
+                                                                {student.full_name?.[0]}
+                                                            </div>
+                                                            <span className="font-medium text-slate-700">{student.full_name}</span>
+                                                        </div>
+                                                        {isEnrolled ? (
+                                                            <span className="text-[10px] text-green-500 font-bold">Inscrito</span>
+                                                        ) : (
+                                                            <div className="bg-blue-50 text-blue-600 p-1 rounded-md">
+                                                                <Plus size={14} weight="bold" />
+                                                            </div>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
@@ -825,8 +1216,8 @@ export default function RoleBasedDashboard() {
                                 </div>
                                 <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
                                     <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold mb-3">3</div>
-                                    <h5 className="font-bold text-slate-800 mb-2">Gestiona Tareas</h5>
-                                    <p className="text-slate-500 text-sm">Asigna tareas a tus clases y monitorea el progreso de tus alumnos fácilmente.</p>
+                                    <h5 className="font-bold text-slate-800 mb-2">Gestiona Actividades</h5>
+                                    <p className="text-slate-500 text-sm">Asigna actividades a tus clases y monitorea el progreso de tus alumnos fácilmente.</p>
                                 </div>
                             </div>
                         </div>
@@ -848,7 +1239,7 @@ export default function RoleBasedDashboard() {
                             <p className="text-white/80 text-sm">{isTeacher ? 'Organiza tu enseñanza' : 'Tus grupos'}</p>
                         </div>
                     </div>
-                    <div className="text-3xl font-black">{myClasses.length}</div>
+                    <div className="text-3xl font-black">{isTeacher ? myClasses.length : getActiveClasses().length}</div>
                     <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Activas</p>
                 </div>
 
@@ -878,12 +1269,12 @@ export default function RoleBasedDashboard() {
                             <CheckSquare size={32} />
                         </div>
                         <div>
-                            <h3 className="font-bold text-lg">Tareas</h3>
+                            <h3 className="font-bold text-lg">Actividades</h3>
                             <p className="text-white/80 text-sm">{isTeacher ? 'Actividades asignadas' : 'Tus entregas'}</p>
                         </div>
                     </div>
                     <div className="text-3xl font-black">{isTeacher ? myTasks.length : myTasks.length}</div>
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Total Tareas' : 'Pendientes'}</p>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Total Actividades' : 'Pendientes'}</p>
                 </div>
             </div>
 
@@ -1058,7 +1449,7 @@ export default function RoleBasedDashboard() {
                                                                             const currentClasses = studentClasses[conn.id] || [];
                                                                             setStudentClasses({
                                                                                 ...studentClasses,
-                                                                                [conn.id]: [...currentClasses, c]
+                                                                                [conn.id]: [...currentClasses, { ...c, status: 'active' }]
                                                                             });
                                                                             setOpenedDropdownId(null);
                                                                         }}
@@ -1075,78 +1466,35 @@ export default function RoleBasedDashboard() {
                                                     </div>
                                                 </div>
                                             )}
-                                            {/* Add New Student Search */}
-                                            <div className="mt-4 pt-4 border-t border-slate-200">
-                                                <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Buscar nuevo alumno</h6>
-                                                <div className="relative">
-                                                    <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Nombre del alumno..."
-                                                        className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                                                        value={classSearchTerm}
-                                                        onChange={(e) => {
-                                                            setClassSearchTerm(e.target.value);
-                                                            searchClassStudents(e.target.value);
-                                                        }}
-                                                    />
-                                                </div>
-                                                {classSearchResults.length > 0 && (
-                                                    <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden z-10 relative">
-                                                        {classSearchResults.map(student => {
-                                                            const isEnrolled = enrolledStudentsByClass[conn.id]?.some(s => s.id === student.id);
-                                                            const isConnected = myConnections.some(c => c.id === student.id);
-
-                                                            return (
-                                                                <button
-                                                                    key={student.id}
-                                                                    disabled={isEnrolled}
-                                                                    onClick={() => {
-                                                                        if (isConnected) {
-                                                                            addStudentToClass(conn.id, student.id);
-                                                                        } else {
-                                                                            // New connection flow
-                                                                            addConnection(student.id, conn.id);
-                                                                        }
-                                                                        setClassSearchTerm('');
-                                                                        setClassSearchResults([]);
-                                                                    }}
-                                                                    className="w-full text-left px-4 py-2 hover:bg-slate-50 flex items-center justify-between text-sm disabled:opacity-50 border-b border-slate-100 last:border-0"
-                                                                >
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-600">
-                                                                            {student.full_name?.[0]}
-                                                                        </div>
-                                                                        <span className="font-medium text-slate-700">{student.full_name}</span>
-                                                                    </div>
-                                                                    {isEnrolled ? (
-                                                                        <span className="text-[10px] text-green-500 font-bold">Inscrito</span>
-                                                                    ) : (
-                                                                        <div className="bg-blue-50 text-blue-600 p-1 rounded-md">
-                                                                            <Plus size={14} weight="bold" />
-                                                                        </div>
-                                                                    )}
-                                                                </button>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                )}
-                                            </div>
                                             <div className="flex flex-wrap gap-2">
-                                                {(studentClasses[conn.id] || []).map(cls => (
-                                                    <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
+                                                {(studentClasses[conn.id] || []).map((cls: any) => (
+                                                    <div key={cls.id} className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold border ${cls.status === 'archived' ? 'bg-slate-100 text-slate-500 border-slate-200' : 'bg-purple-50 text-purple-700 border-purple-100'}`}>
                                                         <span className="max-w-[100px] truncate">{cls.name}</span>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                if (confirm(`¿Quitar a ${conn.full_name} de ${cls.name}?`)) {
-                                                                    removeStudentFromClass(cls.id, conn.id)
-                                                                }
-                                                            }}
-                                                            className="hover:bg-purple-200 rounded p-0.5 transition-colors"
-                                                        >
-                                                            <Trash size={12} />
-                                                        </button>
+                                                        {cls.status === 'archived' ? (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    restoreStudentToClass(cls.id, conn.id);
+                                                                }}
+                                                                className="hover:bg-slate-200 rounded p-0.5 transition-colors text-slate-400 hover:text-green-600"
+                                                                title="Restaurar a clase"
+                                                            >
+                                                                <ArrowCounterClockwise size={12} weight="bold" />
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (confirm(`¿Archivar a ${conn.full_name} de ${cls.name}?`)) {
+                                                                        removeStudentFromClass(cls.id, conn.id)
+                                                                    }
+                                                                }}
+                                                                className="hover:bg-purple-200 rounded p-0.5 transition-colors"
+                                                                title="Archivar de clase"
+                                                            >
+                                                                <Trash size={12} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 ))}
                                                 {(!studentClasses[conn.id] || studentClasses[conn.id].length === 0) && (
@@ -1185,7 +1533,7 @@ export default function RoleBasedDashboard() {
                         className="space-y-6"
                     >
                         <div className="flex justify-between items-center">
-                            <h3 className="font-black text-slate-800 text-2xl">{isTeacher ? 'Gestionar mis Clases' : 'Mis Clases y Tareas'}</h3>
+                            <h3 className="font-black text-slate-800 text-2xl">{isTeacher ? 'Gestionar mis Clases' : 'Mis Clases y Actividades'}</h3>
                             {isTeacher && (
                                 <button
                                     onClick={() => setIsCreatingClass(true)}
@@ -1279,314 +1627,39 @@ export default function RoleBasedDashboard() {
                         )}
 
                         <div className="grid grid-cols-1 gap-8">
-                            {myClasses.map(cls => (
-                                <div key={cls.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col group relative overflow-hidden">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div>
-                                            <div className="flex gap-2 mb-2">
-                                                {cls.subject && (
-                                                    <span className="bg-purple-100 text-purple-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-purple-200">
-                                                        {cls.subject}
-                                                    </span>
-                                                )}
-                                                {cls.grade && (
-                                                    <span className="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-200">
-                                                        {cls.grade}
-                                                    </span>
-                                                )}
+                            {isTeacher ? (
+                                // Teacher View: All classes
+                                myClasses.map(cls => renderClassCard(cls))
+                            ) : (
+                                // Student View: Active + History
+                                <>
+                                    {getActiveClasses().length > 0 && (
+                                        <div className="mb-8">
+                                            <h4 className="font-bold text-slate-400 mb-4 px-2 uppercase text-xs tracking-wider">Clases Activas</h4>
+                                            <div className="space-y-6">
+                                                {getActiveClasses().map((cls: any) => renderClassCard(cls))}
                                             </div>
-                                            <h4 className="font-bold text-slate-800 text-2xl mb-1">{cls.name}</h4>
-                                            <p className="text-slate-500 text-sm">{cls.description}</p>
                                         </div>
-                                        {isTeacher && (
-                                            <button
-                                                onClick={() => deleteClass(cls.id)}
-                                                className="text-red-400 hover:text-red-600 p-2 bg-red-50 rounded-xl"
-                                                title="Eliminar clase"
-                                            >
-                                                <Trash size={20} />
-                                            </button>
-                                        )}
-                                    </div>
+                                    )}
 
-                                    {/* SECTION 1: TASKS */}
-                                    <div className="space-y-3 mb-4 flex-1">
-                                        <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100 min-h-[140px] flex flex-col">
-                                            <div className="flex justify-between items-center mb-4">
-                                                <h5 className="font-bold text-slate-700 flex items-center gap-2">
-                                                    <CheckSquare size={18} className="text-purple-500" />
-                                                    Tareas Activas
-                                                </h5>
-                                                {isTeacher && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setTargetClassId(cls.id);
-                                                            setIsCreatingTask(true);
-                                                        }}
-                                                        className="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-200"
-                                                    >
-                                                        + Nueva Tarea
-                                                    </button>
-                                                )}
+                                    {getArchivedClasses().length > 0 && (
+                                        <div className="mb-8 opacity-75">
+                                            <h4 className="font-bold text-slate-400 mb-4 px-2 uppercase text-xs tracking-wider flex items-center gap-2">
+                                                <Archive size={16} />
+                                                Historial Académico (Archivado)
+                                            </h4>
+                                            <div className="space-y-6">
+                                                {getArchivedClasses().map((cls: any) => renderClassCard(cls, true))}
                                             </div>
-
-                                            {isCreatingTask && targetClassId === cls.id && (
-                                                <div className="bg-white p-4 rounded-xl border border-purple-100 mb-4 shadow-sm animate-in fade-in zoom-in duration-200">
-                                                    <h6 className="text-xs font-bold text-purple-600 mb-2 uppercase">Crear Tarea</h6>
-                                                    <div className="space-y-3">
-                                                        <input
-                                                            className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
-                                                            placeholder="Título de la tarea..."
-                                                            value={newTaskTitle}
-                                                            onChange={e => setNewTaskTitle(e.target.value)}
-                                                        />
-                                                        <textarea
-                                                            className="w-full bg-slate-50 px-3 py-2 rounded-lg text-sm border-none focus:ring-2 focus:ring-purple-200"
-                                                            placeholder="Descripción..."
-                                                            rows={2}
-                                                            value={newTaskDesc}
-                                                            onChange={e => setNewTaskDesc(e.target.value)}
-                                                        />
-                                                        <div className="flex justify-end gap-2">
-                                                            <button onClick={() => setIsCreatingTask(false)} className="text-xs px-3 py-1 text-slate-400 font-bold">Cancelar</button>
-                                                            <button onClick={createTask} className="text-xs px-4 py-1.5 bg-purple-600 text-white rounded-lg font-bold shadow-md shadow-purple-200">Guardar Tarea</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <div className="space-y-3">
-                                                {myTasks
-                                                    .filter(t => t.class_id === cls.id)
-                                                    .filter(t => isTeacher || !completedTaskIds.has(t.id))
-                                                    .map(task => (
-                                                        <div key={task.id} className="bg-white p-4 rounded-xl border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                                            {!isTeacher && (
-                                                                <button
-                                                                    onClick={() => toggleTaskCompletion(task.id, completedTaskIds.has(task.id))}
-                                                                    className="mt-1 text-slate-300 hover:text-green-500 transition-colors"
-                                                                    title="Marcar como completada"
-                                                                >
-                                                                    {completedTaskIds.has(task.id) ? (
-                                                                        <CheckCircle size={24} weight="fill" className="text-green-500" />
-                                                                    ) : (
-                                                                        <Square size={24} />
-                                                                    )}
-                                                                </button>
-                                                            )}
-                                                            <div className="flex-1">
-                                                                <h6 className={`font-bold text-slate-800 ${completedTaskIds.has(task.id) ? 'line-through text-slate-400' : ''}`}>{task.title}</h6>
-                                                                {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
-                                                            </div>
-                                                            {isTeacher && (
-                                                                <div className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold">
-                                                                    Docente
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
-                                                {myTasks.filter(t => t.class_id === cls.id).filter(t => isTeacher || !completedTaskIds.has(t.id)).length === 0 && (
-                                                    <div className="flex-1 flex items-center justify-center">
-                                                        <p className="text-slate-400 text-xs italic">No hay tareas activas en este momento.</p>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {!isTeacher && completedTaskIds.size > 0 && (
-                                                <div className="mt-4 pt-4 border-t border-slate-200">
-                                                    <p className="text-xs text-slate-400 text-center">
-                                                        {myTasks.filter(t => t.class_id === cls.id && completedTaskIds.has(t.id)).length} tareas completadas ocultas.
-                                                    </p>
-                                                </div>
-                                            )}
                                         </div>
+                                    )}
 
-                                        {/* SECTION 2: STUDENTS (Unified) */}
-                                        {isTeacher && (
-                                            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-h-[140px] flex flex-col">
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <h5 className="font-bold text-slate-700 flex items-center gap-2">
-                                                        <Users size={18} className="text-blue-500" />
-                                                        Alumnos ({enrolledStudentsByClass[cls.id]?.length || 0})
-                                                    </h5>
-                                                    <button
-                                                        onClick={() => {
-                                                            if (selectedClassId === cls.id) {
-                                                                setSelectedClassId(null);
-                                                            } else {
-                                                                setSelectedClassId(cls.id);
-                                                                fetchClassStudents(cls.id);
-                                                            }
-                                                        }}
-                                                        className="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
-                                                    >
-                                                        {selectedClassId === cls.id ? 'Cerrar Gestión' : 'Gestionar'}
-                                                    </button>
-                                                </div>
-
-                                                {/* Student Grid (Always Visible) */}
-                                                <div className="mb-4">
-                                                    {(enrolledStudentsByClass[cls.id] || []).length > 0 ? (
-                                                        <div className="flex flex-wrap gap-4">
-                                                            {(enrolledStudentsByClass[cls.id] || []).map((student) => (
-                                                                <div key={student.id} className="flex flex-col items-center group/student">
-                                                                    <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-sm font-bold text-blue-600 mb-1 group-hover/student:scale-110 group-hover/student:border-blue-200 transition-all">
-                                                                        {student.full_name?.[0] || '?'}
-                                                                    </div>
-                                                                    <span className="text-[10px] font-medium text-slate-500 max-w-[60px] truncate text-center leading-tight group-hover/student:text-blue-600">
-                                                                        {student.full_name?.split(' ')[0]}
-                                                                    </span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex-1 flex items-center justify-center py-6">
-                                                            <p className="text-slate-400 text-xs italic">No hay alumnos inscritos.</p>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* Management Area (Expandable) */}
-                                                {selectedClassId === cls.id && (
-                                                    <div className="bg-slate-50 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-200">
-                                                        <div className="bg-white p-4 rounded-xl border border-slate-100 mb-4">
-                                                            <div className="flex justify-between items-center mb-3">
-                                                                <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                                                    {showArchived ? 'Antiguos Alumnos' : 'Alumnos Activos'}
-                                                                </h6>
-                                                                <button
-                                                                    onClick={() => setShowArchived(!showArchived)}
-                                                                    className="text-[10px] font-bold text-blue-500 hover:text-blue-700 underline"
-                                                                >
-                                                                    {showArchived ? 'Ver Activos' : 'Ver Antiguos'}
-                                                                </button>
-                                                            </div>
-
-                                                            <div className="space-y-2">
-                                                                {classStudents.filter(s => showArchived ? s.status === 'archived' : (s.status === 'active' || !s.status)).map(student => (
-                                                                    <div key={student.id} className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                                                                        <div className="flex items-center gap-2">
-                                                                            <span className={`font-bold ${showArchived ? 'text-slate-400' : 'text-slate-700'}`}>{student.full_name}</span>
-                                                                            {showArchived && <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200">Archivado</span>}
-                                                                        </div>
-
-                                                                        {showArchived ? (
-                                                                            <button
-                                                                                onClick={() => restoreStudentToClass(cls.id, student.id)}
-                                                                                className="text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-2 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-bold transition-all shadow-sm border border-green-100"
-                                                                                title="Restaurar alumno"
-                                                                            >
-                                                                                <ArrowCounterClockwise size={14} weight="bold" />
-                                                                                Restaurar
-                                                                            </button>
-                                                                        ) : (
-                                                                            <button
-                                                                                onClick={() => removeStudentFromClass(cls.id, student.id)}
-                                                                                className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors group"
-                                                                                title="Archivar alumno"
-                                                                            >
-                                                                                <Trash size={14} className="group-hover:animate-pulse" />
-                                                                            </button>
-                                                                        )}
-                                                                    </div>
-                                                                ))}
-                                                                {classStudents.filter(s => showArchived ? s.status === 'archived' : (s.status === 'active' || !s.status)).length === 0 && (
-                                                                    <div className="text-center py-4">
-                                                                        <p className="text-slate-400 text-xs italic">{showArchived ? 'No hay alumnos archivados' : 'No hay alumnos activos'}</p>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-
-                                                        <div>
-                                                            <h6 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">Añadir Alumno Existente</h6>
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {myConnections.filter(conn => !classStudents.find(s => s.id === conn.id)).length > 0 ? (
-                                                                    myConnections
-                                                                        .filter(conn => !classStudents.find(s => s.id === conn.id))
-                                                                        .map(conn => (
-                                                                            <button
-                                                                                key={conn.id}
-                                                                                onClick={() => addStudentToClass(cls.id, conn.id)}
-                                                                                className="px-3 py-1.5 bg-white text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                                                                            >
-                                                                                + {conn.full_name}
-                                                                            </button>
-                                                                        ))
-                                                                ) : (
-                                                                    <p className="text-slate-400 text-xs italic">No tienes alumnos disponibles para añadir.</p>
-                                                                )}
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Add New Student Search */}
-                                                        <div className="mt-4 pt-4 border-t border-slate-200">
-                                                            <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Buscar nuevo alumno</h6>
-                                                            <div className="relative">
-                                                                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder="Nombre del alumno..."
-                                                                    className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                                                                    value={classSearchTerm}
-                                                                    onChange={(e) => {
-                                                                        setClassSearchTerm(e.target.value);
-                                                                        searchClassStudents(e.target.value);
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                            {classSearchResults.length > 0 && (
-                                                                <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden z-10 relative">
-                                                                    {classSearchResults.map(student => {
-                                                                        const isEnrolled = enrolledStudentsByClass[cls.id]?.some(s => s.id === student.id);
-                                                                        const isConnected = myConnections.some(c => c.id === student.id);
-
-                                                                        return (
-                                                                            <button
-                                                                                key={student.id}
-                                                                                disabled={isEnrolled}
-                                                                                onClick={() => {
-                                                                                    if (isConnected) {
-                                                                                        addStudentToClass(cls.id, student.id);
-                                                                                    } else {
-                                                                                        // New connection flow
-                                                                                        addConnection(student.id, cls.id);
-                                                                                    }
-                                                                                    setClassSearchTerm('');
-                                                                                    setClassSearchResults([]);
-                                                                                }}
-                                                                                className="w-full text-left px-4 py-2 hover:bg-slate-50 flex items-center justify-between text-sm disabled:opacity-50 border-b border-slate-100 last:border-0"
-                                                                            >
-                                                                                <div className="flex items-center gap-2">
-                                                                                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-600">
-                                                                                        {student.full_name?.[0]}
-                                                                                    </div>
-                                                                                    <span className="font-medium text-slate-700">{student.full_name}</span>
-                                                                                </div>
-                                                                                {isEnrolled ? (
-                                                                                    <span className="text-[10px] text-green-500 font-bold">Inscrito</span>
-                                                                                ) : (
-                                                                                    <div className="bg-blue-50 text-blue-600 p-1 rounded-md">
-                                                                                        <Plus size={14} weight="bold" />
-                                                                                    </div>
-                                                                                )}
-                                                                            </button>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                            {myClasses.length === 0 && (
-                                <div className="text-center py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                                    <p className="text-slate-400 font-bold">No estás inscrito en ninguna clase todavía.</p>
-                                </div>
+                                    {myClasses.length === 0 && (
+                                        <div className="text-center py-12 bg-white rounded-3xl border border-slate-100">
+                                            <p className="text-slate-400">No estás inscrito en ninguna clase.</p>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </motion.div >
@@ -1600,15 +1673,104 @@ export default function RoleBasedDashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm flex flex-col items-center justify-center py-24 text-center"
+                            className="space-y-6"
                         >
-                            <div className="bg-emerald-50 p-6 rounded-full mb-6">
-                                <CheckSquare size={64} className="text-emerald-500" weight="duotone" />
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="font-black text-slate-800 text-2xl">Seguimiento de Actividades</h3>
+                                {isTeacher && (
+                                    <p className="text-slate-400 text-sm font-medium">Actividades asignadas a tus alumnos</p>
+                                )}
                             </div>
-                            <h3 className="text-2xl font-black text-slate-800 mb-2">Gestión de Tareas</h3>
-                            <p className="text-slate-500 max-w-md mx-auto">
-                                Este panel está actualmente en desarrollo. Próximamente podrás gestionar todas las entregas y calificaciones desde aquí.
-                            </p>
+
+                            {myTasks.length === 0 ? (
+                                <div className="bg-white rounded-[2.5rem] border border-slate-100 p-16 text-center shadow-sm">
+                                    <div className="bg-emerald-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <CheckSquare size={40} className="text-emerald-500" weight="duotone" />
+                                    </div>
+                                    <h4 className="text-xl font-bold text-slate-800 mb-2">No hay actividades aún</h4>
+                                    <p className="text-slate-500 max-w-sm mx-auto mb-8">
+                                        {isTeacher
+                                            ? 'Ve a la sección de Actividades del menú principal para asignar tareas a tus clases.'
+                                            : 'Tus profesores todavía no han asignado ninguna actividad a tus clases.'}
+                                    </p>
+                                    <button
+                                        onClick={() => window.location.href = '/actividades'}
+                                        className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-slate-800 transition-all"
+                                    >
+                                        Explorar Actividades
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 gap-6">
+                                    {myTasks.map(task => {
+                                        const taskCompletions = allCompletions.filter(c => c.task_id === task.id);
+                                        const isCompleted = completedTaskIds.has(task.id);
+                                        const myCompletion = allCompletions.find(c => c.task_id === task.id && c.student_id === myProfile?.id);
+
+                                        return (
+                                            <div key={task.id} className="bg-white rounded-[2rem] border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+                                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                                                {myClasses.find(c => c.id === task.class_id)?.name || 'Clase'}
+                                                            </div>
+                                                            <span className="text-slate-300 text-xs">·</span>
+                                                            <span className="text-slate-400 text-xs">{new Date(task.created_at).toLocaleDateString()}</span>
+                                                        </div>
+                                                        <h4 className="text-xl font-black text-slate-800 mb-1">{task.title}</h4>
+                                                        <p className="text-slate-500 text-sm line-clamp-2 mb-4">{task.description}</p>
+
+                                                        {!isTeacher && (
+                                                            <div className="flex items-center gap-4">
+                                                                {isCompleted ? (
+                                                                    <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl text-sm font-bold">
+                                                                        <CheckCircle size={20} weight="fill" />
+                                                                        ¡Completado! - Puntuación: {myCompletion?.score || 0}
+                                                                    </div>
+                                                                ) : (
+                                                                    <button
+                                                                        onClick={() => window.location.href = `${task.activity_slug || '/actividades'}?taskId=${task.id}`}
+                                                                        className="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 flex items-center gap-2"
+                                                                    >
+                                                                        Realizar Actividad
+                                                                        <Plus size={18} weight="bold" />
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {isTeacher && (
+                                                        <div className="bg-slate-50 rounded-2xl p-4 md:w-64">
+                                                            <div className="flex justify-between items-center mb-3">
+                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado</span>
+                                                                <span className="text-xs font-bold text-blue-600">{taskCompletions.length} Entregas</span>
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                {taskCompletions.slice(0, 3).map((comp, idx) => (
+                                                                    <div key={idx} className="flex justify-between items-center text-xs">
+                                                                        <span className="font-bold text-slate-600 truncate mr-2">{comp.student_name}</span>
+                                                                        <span className="text-emerald-500 font-black">{comp.score} pts</span>
+                                                                    </div>
+                                                                ))}
+                                                                {taskCompletions.length > 3 && (
+                                                                    <p className="text-[10px] text-slate-400 text-center italic mt-1">
+                                                                        y {taskCompletions.length - 3} alumnos más...
+                                                                    </p>
+                                                                )}
+                                                                {taskCompletions.length === 0 && (
+                                                                    <p className="text-xs text-slate-400 italic text-center py-2">Sin entregas todavía</p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </motion.div>
                     )
                 }
@@ -1650,6 +1812,16 @@ export default function RoleBasedDashboard() {
                                                     className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
                                                 >
                                                     Aprobar
+                                                </button>
+                                            </div>
+                                        )}
+                                        {notif.type === 'connection_accepted' && (
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => markNotificationHandled(notif)}
+                                                    className="px-4 py-2 bg-purple-50 text-purple-600 rounded-xl font-bold hover:bg-purple-100 transition-colors border border-purple-100"
+                                                >
+                                                    Marcar como leída
                                                 </button>
                                             </div>
                                         )}

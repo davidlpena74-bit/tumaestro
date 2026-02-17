@@ -8,6 +8,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
 import { QUESTIONS, type Question } from './data/quiz-questions';
+import { useGameLogic } from '@/hooks/useGameLogic';
 
 // Utility for cleaner classes
 function cn(...inputs: ClassValue[]) {
@@ -16,14 +17,23 @@ function cn(...inputs: ClassValue[]) {
 
 const QUESTIONS_PER_GAME = 10;
 
-export default function QuizGame() {
+export default function QuizGame({ taskId = null }: { taskId?: string | null }) {
     const { language, t } = useLanguage();
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
-    const [score, setScore] = useState(0);
-    const [gameState, setGameState] = useState<'intro' | 'playing' | 'finished'>('intro');
     const [gameQuestions, setGameQuestions] = useState<Question[]>([]);
+
+    const {
+        gameState, setGameState,
+        score, addScore,
+        timeLeft,
+        elapsedTime,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 0, penaltyTime: 0, gameMode: 'practice', taskId });
 
     useEffect(() => {
         if (gameState === 'playing') {
@@ -42,9 +52,8 @@ export default function QuizGame() {
     }, [currentQuestionIdx, gameState, currentQuestion, language]);
 
     const handleStart = () => {
-        setGameState('playing');
+        hookStartGame();
         setCurrentQuestionIdx(0);
-        setScore(0);
         resetQuestionState();
     };
 
@@ -59,7 +68,7 @@ export default function QuizGame() {
         setIsAnswered(true);
 
         if (index === currentQuestion.correct) {
-            setScore((prev) => prev + 1);
+            addScore(1);
         }
     };
 
@@ -68,7 +77,7 @@ export default function QuizGame() {
             setCurrentQuestionIdx((prev) => prev + 1);
             resetQuestionState();
         } else {
-            setGameState('finished');
+            handleFinish();
         }
     };
 
@@ -102,7 +111,7 @@ export default function QuizGame() {
                 <AnimatePresence mode="wait">
 
                     {/* START OVERLAY - Unified with Map style */}
-                    {gameState === 'intro' && (
+                    {gameState === 'start' && (
                         <motion.div
                             key="intro"
                             initial={{ opacity: 0 }}
@@ -235,7 +244,7 @@ export default function QuizGame() {
                             </p>
 
                             <button
-                                onClick={handleStart}
+                                onClick={hookResetGame}
                                 className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
                             >
                                 <RefreshCcw className="w-5 h-5" /> Jugar de nuevo

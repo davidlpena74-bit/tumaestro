@@ -32,7 +32,7 @@ const FEMALE_PARTS: SciencePart[] = [
     { id: 'vulva', nameKey: 'vulva', x: 373, y: 671 },
 ];
 
-export default function FemaleReproductiveGame() {
+export default function FemaleReproductiveGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
     const [dragState, setDragState] = useState<{
@@ -65,8 +65,9 @@ export default function FemaleReproductiveGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -179,7 +180,7 @@ export default function FemaleReproductiveGame() {
                 });
                 addScore(100);
                 if (Object.keys(newMatches).length === FEMALE_PARTS.length) {
-                    finishGame();
+                    handleFinish();
                 }
             } else {
                 addError();

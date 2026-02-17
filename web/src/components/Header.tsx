@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
-import { User as UserIcon, CaretDown, Check, SignOut, Bell } from '@phosphor-icons/react';
+import { User as UserIcon, CaretDown, Check, SignOut, Bell, List, X } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AuthModal from './AuthModal';
 
@@ -27,6 +27,7 @@ export default function Header() {
     const [profile, setProfile] = useState<any>(null);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [authModalOpen, setAuthModalOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     // Notifications state
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -122,6 +123,30 @@ export default function Header() {
         };
     }, [user?.id]);
 
+    // Listen for local updates triggers (optimistic and refresh)
+    useEffect(() => {
+        const handleRefresh = () => {
+            if (user?.id) fetchNotifications(user.id);
+        };
+
+        const handleProcessed = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            if (customEvent.detail && typeof customEvent.detail.countChange === 'number') {
+                setUnreadCount(prev => Math.max(0, prev + customEvent.detail.countChange));
+            }
+            // Also fetch to be sure
+            if (user?.id) fetchNotifications(user.id);
+        };
+
+        window.addEventListener('notification-updated', handleRefresh);
+        window.addEventListener('notification-processed', handleProcessed);
+
+        return () => {
+            window.removeEventListener('notification-updated', handleRefresh);
+            window.removeEventListener('notification-processed', handleProcessed);
+        };
+    }, [user?.id]);
+
     const fetchNotifications = async (userId: string) => {
         // Fetch last 20 for the list
         const { data } = await supabase
@@ -137,7 +162,10 @@ export default function Header() {
             .from('notifications')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', userId)
-            .or('read.eq.false,read.is.null');
+            .eq('user_id', userId)
+            // Fix: Explicitly check for read=false. 'or' syntax can be tricky with types if read can be null.
+            // But normally boolean is false.
+            .eq('read', false);
 
         if (data) {
             setNotifications(data as Notification[]);
@@ -223,6 +251,23 @@ export default function Header() {
                             className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/juegos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
                         />
                     </Link>
+                    <Link
+                        href="/actividades"
+                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/actividades') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
+                    >
+                        <span>{t.header.activities}</span>
+                        <motion.div
+                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/actividades') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
+                        />
+                    </Link>
+
+                    {/* Mobile Menu Toggle */}
+                    <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="flex md:hidden items-center justify-center p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all border border-white/10"
+                    >
+                        {mobileMenuOpen ? <X size={24} weight="bold" /> : <List size={24} weight="bold" />}
+                    </button>
 
                     {/* Language Selector Dropdown */}
                     <div className="relative" ref={langMenuRef}>
@@ -441,6 +486,98 @@ export default function Header() {
             </div>
 
             <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, x: '100%' }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: '100%' }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="fixed inset-0 z-[60] bg-slate-900/95 backdrop-blur-2xl flex flex-col p-8 pt-24 md:hidden"
+                    >
+                        <button
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="absolute top-6 right-6 p-2 rounded-xl bg-white/10 text-white"
+                        >
+                            <X size={32} weight="bold" />
+                        </button>
+
+                        <div className="flex flex-col gap-6 items-center w-full">
+                            <Link
+                                href="/"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="w-full"
+                            >
+                                <img
+                                    src="/images/icons/logo-text-brush.png"
+                                    alt="TuMaestro.es"
+                                    className="h-24 w-auto object-contain mx-auto mb-8"
+                                />
+                            </Link>
+
+                            <Link
+                                href="/clases"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`w-full text-center py-4 rounded-2xl border transition-all text-xl font-black ${pathname.startsWith('/clases') ? 'bg-white text-slate-900 border-white' : 'bg-white/5 text-white border-white/10'}`}
+                            >
+                                {t.header.teachers}
+                            </Link>
+                            <Link
+                                href="/material"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`w-full text-center py-4 rounded-2xl border transition-all text-xl font-black ${pathname.startsWith('/material') ? 'bg-white text-slate-900 border-white' : 'bg-white/5 text-white border-white/10'}`}
+                            >
+                                {t.header.resources}
+                            </Link>
+                            <Link
+                                href="/juegos"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`w-full text-center py-4 rounded-2xl border transition-all text-xl font-black ${pathname.startsWith('/juegos') ? 'bg-white text-slate-900 border-white' : 'bg-white/5 text-white border-white/10'}`}
+                            >
+                                {t.header.games}
+                            </Link>
+                            <Link
+                                href="/actividades"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`w-full text-center py-4 rounded-2xl border transition-all text-xl font-black ${pathname.startsWith('/actividades') ? 'bg-white text-slate-900 border-white' : 'bg-white/5 text-white border-white/10'}`}
+                            >
+                                {t.header.activities}
+                            </Link>
+
+                            <div className="mt-8 flex flex-col items-center gap-4 w-full">
+                                <div className="text-slate-500 text-xs font-bold uppercase tracking-widest">{t.header.language || 'Language'}</div>
+                                <div className="flex gap-4">
+                                    {[
+                                        { code: 'es', flag: 'es.svg' },
+                                        { code: 'en', flag: 'gb.svg' },
+                                        { code: 'fr', flag: 'fr.svg' },
+                                        { code: 'de', flag: 'de.svg' }
+                                    ].map((lang) => (
+                                        <button
+                                            key={lang.code}
+                                            onClick={() => { setLanguage(lang.code as any); setMobileMenuOpen(false); }}
+                                            className={`p-2 rounded-xl border transition-all ${language === lang.code ? 'bg-teal-500/20 border-teal-500 shadow-[0_0_15px_rgba(20,184,166,0.3)]' : 'bg-white/5 border-white/10'}`}
+                                        >
+                                            <img src={`https://flagcdn.com/${lang.flag}`} className="w-8 h-6 object-cover rounded shadow-sm" alt={lang.code} />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {!user && (
+                                <button
+                                    onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false); }}
+                                    className="mt-8 w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-black text-xl shadow-xl shadow-teal-500/20"
+                                >
+                                    {t.header.login}
+                                </button>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </header>
     );
 }

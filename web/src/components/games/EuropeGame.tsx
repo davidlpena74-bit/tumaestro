@@ -6,7 +6,7 @@ import { EUROPE_MAPPING } from './data/country-translations'; // I'll add Europe
 import { useLanguage } from '@/context/LanguageContext';
 import { useMemo } from 'react';
 
-export default function EuropeGame() {
+export default function EuropeGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
 
     const mapping = useMemo(() => {
@@ -32,6 +32,7 @@ export default function EuropeGame() {
             initialZoom={1.53}
             initialPan={{ x: -40, y: -100 }}
             elevationHeight={6}
+            taskId={taskId}
         />
     );
 }

@@ -15,7 +15,7 @@ const GAMES = [
         title: 'Célula Animal',
         category: 'Biología',
         image: '/images/games/animal-cell-hq.png',
-        href: '/juegos/celula-animal',
+        href: '/actividades/celula-animal',
         color: 'from-blue-500 to-indigo-600',
         icon: Dna
     },
@@ -24,7 +24,7 @@ const GAMES = [
         title: 'Célula Vegetal',
         category: 'Biología',
         image: '/images/games/plant-cell-hq.png',
-        href: '/juegos/celula-vegetal',
+        href: '/actividades/celula-vegetal',
         color: 'from-green-500 to-emerald-600',
         icon: Dna
     },
@@ -33,7 +33,7 @@ const GAMES = [
         title: 'Esqueleto Humano',
         category: 'Anatomía',
         image: '/images/games/skeleton-combined-hq.png',
-        href: '/juegos/esqueleto',
+        href: '/actividades/esqueleto',
         color: 'from-slate-500 to-slate-700',
         icon: Dna
     },
@@ -42,7 +42,7 @@ const GAMES = [
         title: 'Capitales de Europa',
         category: 'Geografía',
         image: null,
-        href: '/juegos/capitales-europa',
+        href: '/actividades/capitales-europa',
         color: 'from-emerald-500 to-teal-600',
         icon: MapTrifold
     },
@@ -51,7 +51,7 @@ const GAMES = [
         title: 'Músculos del Cuerpo',
         category: 'Anatomía',
         image: '/images/games/muscles-combined-hq-v2.png',
-        href: '/juegos/musculos',
+        href: '/actividades/musculos',
         color: 'from-rose-500 to-red-600',
         icon: Dna
     },
@@ -60,7 +60,7 @@ const GAMES = [
         title: 'Aprende a Dividir',
         category: 'Matemáticas',
         image: null,
-        href: '/juegos/divisiones',
+        href: '/actividades/divisiones',
         color: 'from-orange-500 to-amber-600',
         icon: Calculator
     },
@@ -69,7 +69,7 @@ const GAMES = [
         title: 'Multiplicación Visual',
         category: 'Matemáticas',
         image: '/images/games/multiplication-hq.png',
-        href: '/juegos/multiplicaciones',
+        href: '/actividades/multiplicaciones',
         color: 'from-blue-500 to-indigo-600',
         icon: Calculator
     },
@@ -78,7 +78,7 @@ const GAMES = [
         title: 'Quiz de Cultura',
         category: 'Cultura General',
         image: null,
-        href: '/juegos/quiz-cultura',
+        href: '/actividades/quiz-cultura',
         color: 'from-violet-500 to-purple-600',
         icon: Brain
     }

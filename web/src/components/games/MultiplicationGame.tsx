@@ -10,7 +10,7 @@ import { Hash, CheckCircle, RefreshCw, Trophy, Timer, MousePointer2 } from 'luci
 
 type GameState = 'start' | 'playing' | 'feedback' | 'finished';
 
-export default function MultiplicationGame() {
+export default function MultiplicationGame({ taskId = null }: { taskId?: string | null }) {
     const { t } = useLanguage();
     const [level, setLevel] = useState(1);
     const [numA, setNumA] = useState(2);
@@ -29,8 +29,9 @@ export default function MultiplicationGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const generateProblem = (targetState: 'playing' | 'feedback' | 'start' = 'playing') => {
         let max = 4;
@@ -71,6 +72,10 @@ export default function MultiplicationGame() {
                 colors: ['#3B82F6', '#10B981', '#F59E0B']
             });
             setTimeout(() => {
+                if (level >= 10) {
+                    handleFinish();
+                    return;
+                }
                 setLevel(l => l + 1);
                 generateProblem();
             }, 4000);

@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { MapPin } from 'lucide-react';
 import { useMemo } from 'react';
 
-export default function ProvinceGame() {
+export default function ProvinceGame({ taskId = null }: { taskId?: string | null }) {
     const { language, t } = useLanguage();
 
     const { paths, names } = useMemo(() => {
@@ -42,6 +42,7 @@ export default function ProvinceGame() {
             colorTheme="teal"
             icon={<MapPin className="w-8 h-8" />}
             svgTransform="translateY(1cm)"
+            taskId={taskId}
             insetBox={{
                 x: -102,
                 y: 522,

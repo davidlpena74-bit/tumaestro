@@ -11,10 +11,12 @@ function cn(...inputs: ClassValue[]) {
 
 export default function ContentWrapper({
     children,
-    transparent = false
+    transparent = false,
+    className = ""
 }: {
     children: React.ReactNode;
     transparent?: boolean;
+    className?: string;
 }) {
     const pathname = usePathname();
     const { isImmersive } = useBackground();
@@ -31,7 +33,8 @@ export default function ContentWrapper({
                 isImmersive ? "z-[70]" : "z-0",
                 (transparent || isImmersive)
                     ? 'bg-transparent border-transparent shadow-none'
-                    : 'bg-white/10 backdrop-blur-3xl shadow-2xl border-x border-white/20'
+                    : 'bg-white/10 backdrop-blur-3xl shadow-2xl border-x border-white/20',
+                className
             )}>
                 {children}
             </div>

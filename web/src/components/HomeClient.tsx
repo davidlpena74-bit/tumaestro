@@ -56,7 +56,7 @@ export default function HomeClient() {
                 </p>
 
                 {/* TARJETAS DE SELECCIÓN (GLASSMORPHISM) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl px-4">
                     {/* OPCIÓN A: PROFESORES */}
                     <motion.div
                         onClick={() => window.location.href = '/clases'}
@@ -69,18 +69,20 @@ export default function HomeClient() {
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         className="group bg-white/20 backdrop-blur-xl border border-white/30 py-4 px-5 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
                     >
-                        {/* Interactive Background Glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(45,212,191,0.2)]">
-                            <img src="/images/icons/icon-teacher-3d.png" alt="Profesores" className="w-40 h-40 object-contain drop-shadow-2xl" />
+                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(45,212,191,0.3)]">
+                            <div className="w-32 h-32 flex items-center justify-center relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-teal-400/30 to-emerald-600/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                                <img src="/images/icons/icon-teacher-3d.png" alt="Profesores" className="relative z-10 w-32 h-32 object-contain drop-shadow-2xl transform rotate-6 group-hover:rotate-0 transition-transform duration-500" />
+                            </div>
                         </div>
 
                         <h2 className="relative z-10 text-lg font-black text-white group-hover:text-teal-300 mb-0.5 transition-colors duration-300">{t.home.findTeacher}</h2>
-                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300">
+                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300 line-clamp-2">
                             {t.home.findTeacherDesc}
                         </p>
-                        <button className="relative z-10 bg-white text-slate-950 px-8 py-3 rounded-2xl font-bold text-sm w-full max-w-[220px] group-hover:bg-teal-400 transition-all duration-300 shadow-xl">
+                        <button className="relative z-10 bg-white text-slate-950 px-6 py-2 rounded-2xl font-bold text-xs w-full max-w-[180px] group-hover:bg-teal-400 transition-all duration-300 shadow-xl">
                             {t.home.findTeacherBtn}
                         </button>
                     </motion.div>
@@ -95,24 +97,27 @@ export default function HomeClient() {
                             hover: { scale: 1.05, y: -6 }
                         }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-5 px-6 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-4 px-5 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(251,146,60,0.2)]">
-                            <img src="/images/icons/icon-resources-3d.png" alt="Recursos" className="w-40 h-40 object-contain drop-shadow-2xl" />
+                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(251,146,60,0.3)]">
+                            <div className="w-32 h-32 flex items-center justify-center relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-orange-400/30 to-amber-600/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                                <img src="/images/icons/icon-resources-3d.png" alt="Recursos" className="relative z-10 w-32 h-32 object-contain drop-shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-transform duration-500" />
+                            </div>
                         </div>
 
                         <h2 className="relative z-10 text-lg font-black text-white group-hover:text-orange-300 mb-0.5 transition-colors duration-300">{t.home.resources}</h2>
-                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300">
+                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300 line-clamp-2">
                             {t.home.resourcesDesc}
                         </p>
-                        <button className="relative z-10 bg-white text-slate-950 px-8 py-3 rounded-2xl font-bold text-sm w-full max-w-[220px] group-hover:bg-orange-400 transition-all duration-300 shadow-xl">
+                        <button className="relative z-10 bg-white text-slate-950 px-6 py-2 rounded-2xl font-bold text-xs w-full max-w-[180px] group-hover:bg-orange-400 transition-all duration-300 shadow-xl">
                             {t.home.resourcesBtn}
                         </button>
                     </motion.div>
 
-                    {/* OPCIÓN C: JUEGOS */}
+                    {/* OPCIÓN C: JUEGOS (NUEVA RUTA /juegos) */}
                     <motion.div
                         onClick={() => router.push('/juegos')}
                         initial="initial"
@@ -122,20 +127,61 @@ export default function HomeClient() {
                             hover: { scale: 1.05, y: -6 }
                         }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-5 px-6 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-4 px-5 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                        <div className="relative z-10 mb-3 drop-shadow-[0_0_30px_rgba(139,92,246,0.2)]">
-                            <img src="/images/icons/icon-games-3d.png" alt="Juegos" className="w-44 h-44 object-contain drop-shadow-2xl" />
+                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                            <div className="w-32 h-32 flex items-center justify-center relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-indigo-600/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                                <img src="/images/icons/icon-games-3d.png" alt="Juegos" className="relative z-10 w-32 h-32 object-contain drop-shadow-2xl transform rotate-3 group-hover:rotate-0 transition-transform duration-500" />
+                            </div>
                         </div>
 
                         <h2 className="relative z-10 text-lg font-black text-white group-hover:text-purple-300 mb-0.5 transition-colors duration-300">{t.home.learnPlaying}</h2>
-                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300">
+                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300 line-clamp-2">
                             {t.home.learnPlayingDesc}
                         </p>
-                        <button className="relative z-10 bg-white text-slate-950 px-8 py-3 rounded-2xl font-bold text-sm w-full max-w-[220px] group-hover:bg-purple-400 transition-all duration-300 shadow-xl">
+                        <button className="relative z-10 bg-white text-slate-950 px-6 py-2 rounded-2xl font-bold text-xs w-full max-w-[180px] group-hover:bg-purple-400 transition-all duration-300 shadow-xl">
                             {t.home.learnPlayingBtn}
+                        </button>
+                    </motion.div>
+
+                    {/* OPCIÓN D: ACTIVIDADES (NUEVO CHIP /actividades) */}
+                    <motion.div
+                        onClick={() => router.push('/actividades')}
+                        initial="initial"
+                        whileHover="hover"
+                        variants={{
+                            initial: { scale: 1, y: 0 },
+                            hover: { scale: 1.05, y: -6 }
+                        }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        className="group bg-white/20 backdrop-blur-xl border border-white/30 py-4 px-5 rounded-[1.5rem] cursor-pointer text-center flex flex-col items-center shadow-2xl relative overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                        <div className="relative z-10 mb-4 drop-shadow-[0_0_30px_rgba(236,72,153,0.3)]">
+                            <div className="w-32 h-32 flex items-center justify-center relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-pink-400/30 to-purple-600/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                                <img
+                                    src="/images/icons/icon-activities-3d.png"
+                                    alt="Activities"
+                                    className="relative z-10 w-32 h-32 object-contain drop-shadow-2xl transform -rotate-6 group-hover:rotate-0 transition-transform duration-500"
+                                    onError={(e) => {
+                                        // Use icon-games-3d as fallback until a proper activities icon is available
+                                        e.currentTarget.src = '/images/icons/icon-games-3d.png';
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <h2 className="relative z-10 text-lg font-black text-white group-hover:text-pink-300 mb-0.5 transition-colors duration-300">{t.home.activities}</h2>
+                        <p className="relative z-10 text-slate-200 text-xs mb-3 max-w-xs group-hover:text-white transition-colors duration-300 line-clamp-2">
+                            {t.home.activitiesDesc}
+                        </p>
+                        <button className="relative z-10 bg-white text-slate-950 px-6 py-2 rounded-2xl font-bold text-xs w-full max-w-[180px] group-hover:bg-pink-400 transition-all duration-300 shadow-xl">
+                            {t.home.activitiesBtn}
                         </button>
                     </motion.div>
                 </div>
@@ -230,7 +276,7 @@ export default function HomeClient() {
                                     <p className="text-gray-300 text-lg leading-relaxed max-w-2xl">{t.home.gamesHeroDesc || t.home.learnPlayingDesc}</p>
                                 </div>
                                 <a
-                                    href="/juegos"
+                                    href="/actividades"
                                     className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
                                 >
                                     {t.home.exploreGames}

@@ -39,8 +39,8 @@ export default function PhysicalGameLayout({
 
                 <div className="relative z-10 w-full max-w-6xl mx-auto">
                     <div className="px-4">
-                        <Link href="/juegos" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-6">
-                            <ArrowLeft className="w-4 h-4" /> {t.common.backToGames || 'Volver a Juegos'}
+                        <Link href="/actividades" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-6">
+                            <ArrowLeft className="w-4 h-4" /> {t.common.back || 'Volver'}
                         </Link>
                         <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">
                             {title}

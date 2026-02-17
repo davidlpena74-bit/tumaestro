@@ -7,7 +7,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 import { useMemo } from 'react';
 
-export default function AfricaMapGame() {
+export default function AfricaMapGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
 
     const mapping = useMemo(() => {
@@ -32,6 +32,7 @@ export default function AfricaMapGame() {
             initialTime={180}
             initialZoom={1.2} // Further 20% increase over optimized height
             initialPan={{ x: 0, y: 0 }}
+            taskId={taskId}
         />
     );
 }

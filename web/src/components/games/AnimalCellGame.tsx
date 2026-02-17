@@ -37,7 +37,7 @@ const CELL_PARTS: CellPart[] = [
     { id: 'centrioles', nameKey: 'centrioles', x: 522, y: 325, lx: 700, ly: 325 },
 ];
 
-export default function AnimalCellGame() {
+export default function AnimalCellGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
     const [dragState, setDragState] = useState<{
@@ -99,8 +99,9 @@ export default function AnimalCellGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -195,7 +196,7 @@ export default function AnimalCellGame() {
                     setMessage(language === 'es' ? `¡Correcto! ${partName} ✅` : `Correct! ${partName} ✅`);
                 }
                 if (Object.keys(newMatches).length === CELL_PARTS.length) {
-                    finishGame();
+                    handleFinish();
                 }
             } else {
                 addError();

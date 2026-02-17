@@ -3,8 +3,11 @@
 import DivisionGame from '@/components/games/DivisionGame';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export default function DivisionPageClient() {
+    const searchParams = useSearchParams();
+    const taskId = searchParams.get('taskId');
     return (
         <main className="min-h-screen bg-transparent pt-24 pb-12 px-4 relative overflow-hidden">
 
@@ -15,8 +18,8 @@ export default function DivisionPageClient() {
             </div>
 
             <div className="max-w-7xl mx-auto relative z-10">
-                <Link href="/juegos" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-8">
-                    <ArrowLeft className="w-4 h-4" /> Volver a Juegos
+                <Link href="/actividades" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-8">
+                    <ArrowLeft className="w-4 h-4" /> Volver a Actividades
                 </Link>
 
                 <div className="text-center mb-12">
@@ -28,7 +31,7 @@ export default function DivisionPageClient() {
                     </p>
                 </div>
 
-                <DivisionGame />
+                <DivisionGame taskId={taskId} />
             </div>
         </main>
     );

@@ -18,7 +18,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function RiversGame() {
+export default function RiversGame({ taskId = null }: { taskId?: string | null }) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
@@ -30,8 +30,9 @@ export default function RiversGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     const [targetRiver, setTargetRiver] = useState('');
     const [remainingRivers, setRemainingRivers] = useState<string[]>([]);
@@ -101,8 +102,7 @@ export default function RiversGame() {
 
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
-            setGameState('finished');
-            confetti({ particleCount: 200, spread: 100 });
+            handleFinish();
             return;
         }
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);

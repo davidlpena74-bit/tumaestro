@@ -7,64 +7,44 @@ import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
 import { IRREGULAR_VERBS, type IrregularVerb } from './data/irregular-verbs';
 
-export default function IrregularVerbsGame() {
+import { useGameLogic } from '@/hooks/useGameLogic';
+
+export default function IrregularVerbsGame({ taskId = null }: { taskId?: string | null }) {
     const { t } = useLanguage();
     const [verbs, setVerbs] = useState<IrregularVerb[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [score, setScore] = useState(0);
     const [inputs, setInputs] = useState({
         pastSimple: '',
         pastParticiple: ''
     });
     const [showResult, setShowResult] = useState<'correct' | 'incorrect' | null>(null);
-    const [gameOver, setGameOver] = useState(false);
     const [streak, setStreak] = useState(0);
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
-    const INITIAL_TIME = 120;
-    const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
-    const [elapsedTime, setElapsedTime] = useState(0);
-    const [gameStarted, setGameStarted] = useState(false);
 
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (gameStarted && !gameOver) {
-            interval = setInterval(() => {
-                setElapsedTime(prev => prev + 1);
-                if (gameMode === 'challenge') {
-                    setTimeLeft(prev => {
-                        if (prev <= 1) {
-                            clearInterval(interval);
-                            setGameOver(true);
-                            return 0;
-                        }
-                        return prev - 1;
-                    });
-                }
-            }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [gameStarted, gameOver, gameMode]);
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        elapsedTime,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 0, gameMode, taskId });
+
 
     const startNewGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
         const shuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
-        // In challenge mode we want an endless stream, but for simplicity we can just verify checks against the full list or a very large slice.
-        // Actually, let's just use the full shuffled list.
         setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 10));
         setCurrentIndex(0);
-        setScore(0);
         setStreak(0);
-        setGameOver(false);
-        setGameStarted(true);
-        setTimeLeft(INITIAL_TIME);
-        setElapsedTime(0);
+        hookStartGame();
         setInputs({ pastSimple: '', pastParticiple: '' });
         setShowResult(null);
     };
 
-    useEffect(() => {
-        startNewGame();
-    }, []);
 
     const currentVerb = verbs[currentIndex];
 
@@ -132,7 +112,7 @@ export default function IrregularVerbsGame() {
 
         if (correctSimple && correctParticiple) {
             setShowResult('correct');
-            setScore(prev => prev + 10 + (streak * 2));
+            addScore(10 + (streak * 2));
             setStreak(prev => prev + 1);
             confetti({
                 particleCount: 100,
@@ -142,12 +122,12 @@ export default function IrregularVerbsGame() {
         } else {
             setShowResult('incorrect');
             setStreak(0);
+            addError();
         }
     };
 
     const nextVerb = () => {
         if (gameMode === 'challenge') {
-            // In challenge mode, if we reach the end of the list, reshuffle and continue
             if (currentIndex >= verbs.length - 1) {
                 const reshuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
                 setVerbs(reshuffled);
@@ -158,23 +138,21 @@ export default function IrregularVerbsGame() {
             setInputs({ pastSimple: '', pastParticiple: '' });
             setShowResult(null);
         } else {
-            // Practice mode: End after the set (10 verbs)
             if (currentIndex < verbs.length - 1) {
                 setCurrentIndex(prev => prev + 1);
                 setInputs({ pastSimple: '', pastParticiple: '' });
                 setShowResult(null);
             } else {
-                setGameOver(true);
+                handleFinish();
             }
         }
     };
 
     if (!currentVerb) return null;
 
-    if (gameOver) {
+    if (gameState === 'finished') {
         return (
             <div className="w-full max-w-2xl mx-auto p-6">
-                {/* WON OVERLAY - Unified with Map style */}
                 <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl animate-in fade-in duration-500">
                     <div className="bg-rose-500/10 p-4 rounded-full mb-6 ring-1 ring-rose-500/30">
                         {gameMode === 'challenge' && timeLeft === 0 ? (
@@ -195,7 +173,7 @@ export default function IrregularVerbsGame() {
                     </div>
 
                     <button
-                        onClick={() => setGameStarted(false)}
+                        onClick={hookResetGame}
                         className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
                     >
                         <RefreshCw className="w-5 h-5" /> Jugar de nuevo
@@ -248,7 +226,7 @@ export default function IrregularVerbsGame() {
 
             <div className="grid md:grid-cols-2 gap-8 relative">
                 {/* START OVERLAY - Unified with Map style */}
-                {!gameStarted && (
+                {gameState === 'start' && (
                     <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
                         <div className="bg-rose-500/10 p-6 rounded-full mb-6 ring-1 ring-rose-500/30">
                             <BookOpen className="w-16 h-16 text-rose-400" />

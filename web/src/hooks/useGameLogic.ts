@@ -1,18 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
 export type GameState = 'start' | 'playing' | 'won' | 'finished' | 'feedback';
 
 interface UseGameLogicProps {
     initialTime?: number; // Default 120s
     penaltyTime?: number; // Default 10s
-    onFinish?: () => void;
+    onFinish?: (results: { score: number, errors: number, timeSpent: number }) => void;
+    taskId?: string | null;
 }
 
 export function useGameLogic({
     initialTime = 120,
     penaltyTime = 10,
     onFinish,
-    gameMode = 'challenge' // 'challenge' | 'practice'
+    gameMode = 'challenge', // 'challenge' | 'practice'
+    taskId = null
 }: UseGameLogicProps & { gameMode?: 'challenge' | 'practice' } = {}) {
     const [gameState, setGameState] = useState<GameState>('start');
     const [score, setScore] = useState(0);
@@ -27,10 +30,10 @@ export function useGameLogic({
             const timer = setInterval(() => {
                 if (gameMode === 'challenge') {
                     if (timeLeft > 0) {
+                        setElapsedTime(prev => prev + 1);
                         setTimeLeft((prev) => prev - 1);
                     } else {
-                        setGameState('finished');
-                        if (onFinish) onFinish();
+                        handleFinish();
                     }
                 } else {
                     setElapsedTime(prev => prev + 1);
@@ -38,7 +41,33 @@ export function useGameLogic({
             }, 1000);
             return () => clearInterval(timer);
         }
-    }, [gameState, timeLeft, onFinish, gameMode]);
+    }, [gameState, timeLeft, gameMode]);
+
+    const handleFinish = useCallback(async () => {
+        setGameState('finished');
+        const results = { score, errors, timeSpent: elapsedTime };
+
+        if (onFinish) onFinish(results);
+
+        // If it's an assigned task, save results to Supabase
+        if (taskId) {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    await supabase.from('student_task_completions').upsert({
+                        task_id: taskId,
+                        student_id: session.user.id,
+                        score: score,
+                        errors: errors,
+                        time_spent: elapsedTime,
+                        completed_at: new Date().toISOString()
+                    });
+                }
+            } catch (err) {
+                console.error("Error saving task completion:", err);
+            }
+        }
+    }, [score, errors, elapsedTime, taskId, onFinish]);
 
     // Auto clear message
     useEffect(() => {
@@ -67,7 +96,6 @@ export function useGameLogic({
             setScore(s => Math.max(0, s - 5)); // Fixed penalty score in challenge
             setTimeLeft(t => Math.max(0, t - penaltyTime));
         }
-        // In practice mode, we might just track errors without heavy penalties
     }, [penaltyTime, gameMode]);
 
     const resetGame = useCallback(() => {
@@ -80,15 +108,16 @@ export function useGameLogic({
         score,
         setScore,
         errors,
-        setErrors, // Expose setter if needed for custom logic
+        setErrors,
         timeLeft,
         setTimeLeft,
-        elapsedTime, // Start exposing elapsed time
+        elapsedTime,
         message,
         setMessage,
         startGame,
         resetGame,
         addScore,
-        addError
+        addError,
+        handleFinish
     };
 }

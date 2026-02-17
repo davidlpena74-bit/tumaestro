@@ -15,7 +15,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function RegionGame() {
+export default function RegionGame({ taskId = null }: { taskId?: string | null }) {
     const { language, t } = useLanguage();
 
     // Localized names mapping
@@ -33,13 +33,22 @@ export default function RegionGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 60, penaltyTime: 5, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 60, penaltyTime: 5, gameMode, taskId });
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
     const [solvedIds, setSolvedIds] = useState<string[]>([]);
     const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+    // Watch for win condition
+    useEffect(() => {
+        const allKeys = Object.keys(SPANISH_COMMUNITIES_PATHS);
+        if (gameState === 'playing' && solvedIds.length === allKeys.length && allKeys.length > 0) {
+            handleFinish();
+        }
+    }, [solvedIds, gameState, handleFinish]);
 
     // Zoom & Pan State
     const [zoom, setZoom] = useState(1);

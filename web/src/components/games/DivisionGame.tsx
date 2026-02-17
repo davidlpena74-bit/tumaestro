@@ -18,7 +18,7 @@ interface DivisionProblem {
     remainder: number; // Leftovers
 }
 
-export default function DivisionGame() {
+export default function DivisionGame({ taskId = null }: { taskId?: string | null }) {
     const { t } = useLanguage();
     const [level, setLevel] = useState(1);
     const [problem, setProblem] = useState<DivisionProblem>({ dividend: 6, divisor: 2, quotient: 3, remainder: 0 });
@@ -39,8 +39,9 @@ export default function DivisionGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     // Refs for drop zones
     const friendRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -160,6 +161,10 @@ export default function DivisionGame() {
                 origin: { y: 0.6 }
             });
             setTimeout(() => {
+                if (level >= 10) {
+                    handleFinish();
+                    return;
+                }
                 setLevel(l => l + 1);
                 generateProblem();
             }, 4000); // Longer wait to read feedback

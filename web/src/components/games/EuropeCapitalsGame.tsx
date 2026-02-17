@@ -16,7 +16,7 @@ type MatchItem = {
     id: string;
 };
 
-export default function EuropeCapitalsGame() {
+export default function EuropeCapitalsGame({ taskId = null }: { taskId?: string | null }) {
     const { language, t } = useLanguage();
 
     // We'll use useGameLogic score/errors/timer, but handle gameState locally if needed or map it
@@ -34,8 +34,9 @@ export default function EuropeCapitalsGame() {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode, taskId });
 
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
@@ -55,8 +56,7 @@ export default function EuropeCapitalsGame() {
     useEffect(() => {
         if (gameState === 'playing' && countries.length > 0) {
             if (Object.keys(matches).length === countries.length) {
-                setGameState('finished');
-                confettiEffect();
+                handleFinish();
             }
         }
     }, [matches, countries, gameState, setGameState]);

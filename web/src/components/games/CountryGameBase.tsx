@@ -26,6 +26,7 @@ interface CountryGameProps {
     initialZoom?: number;
     initialPan?: { x: number; y: number };
     elevationHeight?: number;
+    taskId?: string | null;
 }
 
 export default function CountryGameBase({
@@ -37,7 +38,8 @@ export default function CountryGameBase({
     colorTheme = "emerald",
     initialZoom = 1,
     initialPan = { x: 0, y: 0 },
-    elevationHeight = 8
+    elevationHeight = 8,
+    taskId = null
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -50,8 +52,9 @@ export default function CountryGameBase({
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId });
 
     const [targetCountry, setTargetCountry] = useState('');
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
@@ -98,8 +101,7 @@ export default function CountryGameBase({
 
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
-            setGameState('finished');
-            confetti({ particleCount: 200, spread: 100 });
+            handleFinish();
             return;
         }
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);

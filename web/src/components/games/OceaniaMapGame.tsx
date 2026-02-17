@@ -7,7 +7,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 import { useMemo } from 'react';
 
-export default function OceaniaMapGame() {
+export default function OceaniaMapGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
 
     const mapping = useMemo(() => {
@@ -30,6 +30,8 @@ export default function OceaniaMapGame() {
             nameMapping={mapping}
             colorTheme="blue"
             initialTime={120} // Fewer countries
+            initialPan={{ x: 0, y: 0 }}
+            taskId={taskId}
         />
     );
 }

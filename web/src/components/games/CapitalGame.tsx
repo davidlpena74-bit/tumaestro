@@ -25,6 +25,7 @@ interface CapitalGameProps {
     initialZoom?: number;
     initialPan?: { x: number; y: number };
     centroids?: Record<string, { x: number; y: number }>;
+    taskId?: string | null;
 }
 
 export default function CapitalGame({
@@ -33,7 +34,8 @@ export default function CapitalGame({
     title,
     initialZoom = 1.5,
     initialPan = { x: 0, y: 0 },
-    centroids
+    centroids,
+    taskId = null
 }: CapitalGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -46,8 +48,9 @@ export default function CapitalGame({
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
 
     // Dynamic Data based on Language
     const nameMapping = useMemo(() => language === 'es' ? PATH_TO_SPANISH_NAME : PATH_TO_ENGLISH_NAME, [language]);
@@ -121,8 +124,7 @@ export default function CapitalGame({
 
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
-            setGameState('finished');
-            confetti({ particleCount: 200, spread: 100 });
+            handleFinish();
             return;
         }
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);
