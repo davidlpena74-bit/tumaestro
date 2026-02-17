@@ -1,13 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft } from '@phosphor-icons/react';
 import HumanMusclesGame from '@/components/games/HumanMusclesGame';
 import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 export default function MusculosClient() {
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
+    const [tooltipOpen, setTooltipOpen] = useState(false);
     return (
         <div className="min-h-screen bg-transparent flex flex-col">
             <main className="flex-1 p-4 pt-24 pb-12 relative overflow-hidden">
@@ -18,9 +21,31 @@ export default function MusculosClient() {
 
                 <div className="relative z-10 w-full max-w-7xl mx-auto">
                     <div className="px-4 md:px-8">
-                        <Link href="/actividades" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-medium backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/40 mb-6">
-                            <ArrowLeft className="w-4 h-4" /> Volver a Actividades
-                        </Link>
+                        <div className="mb-8 relative w-fit">
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onMouseEnter={() => setTooltipOpen(true)}
+                                onMouseLeave={() => setTooltipOpen(false)}
+                                onClick={() => window.location.href = '/actividades'}
+                                className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-200 transition-all z-20 cursor-pointer"
+                            >
+                                <ArrowLeft size={24} weight="bold" />
+                                <AnimatePresence>
+                                    {tooltipOpen && (
+                                        <motion.span
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -10 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-[10px] font-black rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50 uppercase tracking-wider border border-white/10"
+                                        >
+                                            Volver a Actividades
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </motion.button>
+                        </div>
                         <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
                             Los Músculos del Cuerpo 💪
                         </h1>
