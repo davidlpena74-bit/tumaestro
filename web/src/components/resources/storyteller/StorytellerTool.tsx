@@ -63,6 +63,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
     const [charIndex, setCharIndex] = useState(0);
     const [isMaximized, setIsMaximized] = useState(false);
+    const [tooltipOpen, setTooltipOpen] = useState(false);
 
 
     const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -422,16 +423,35 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 {!isMaximized && (
                     <div className="flex relative pointer-events-none w-full transition-all duration-500 justify-center -mb-16 z-50 px-4">
                         <div className="w-full px-0 flex justify-start max-w-4xl">
-                            <button
+                            <motion.button
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onMouseEnter={() => setTooltipOpen(true)}
+                                onMouseLeave={() => setTooltipOpen(false)}
                                 onClick={() => {
                                     setIsMaximized(false);
                                     setSelectedBook(null);
                                     router.push('/material/cuentacuentos');
                                 }}
-                                className="inline-flex items-center gap-2 font-bold transition-all p-3 rounded-2xl border shadow-xl pointer-events-auto hover:scale-105 active:scale-95 group bg-white/80 hover:bg-white border-slate-200 text-slate-700"
+                                className="flex items-center justify-center w-11 h-11 bg-white rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-100 transition-all z-20 cursor-pointer pointer-events-auto"
                             >
-                                <ArrowLeft weight="bold" /> {t.storyteller.backToLibrary}
-                            </button>
+                                <ArrowLeft size={20} weight="bold" />
+                                <AnimatePresence>
+                                    {tooltipOpen && (
+                                        <motion.span
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -10 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50"
+                                        >
+                                            {t.storyteller.backToLibrary}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </motion.button>
                         </div>
                     </div>
                 )}
@@ -802,13 +822,34 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 {/* Gradient Overlay removed */}
 
                 <div className="relative z-10">
-                    <div className="mb-8">
-                        <Link
-                            href="/material"
-                            className="inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 font-bold transition-colors bg-white/60 hover:bg-white/80 px-4 py-2 rounded-2xl border border-white/50 shadow-sm backdrop-blur-sm"
-                        >
-                            <ArrowLeft weight="bold" /> {t.storyteller.backToResources}
-                        </Link>
+                    <div className="mb-8 flex items-center gap-4">
+                        <div className="relative flex items-center">
+                            <motion.button
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onMouseEnter={() => setTooltipOpen(true)}
+                                onMouseLeave={() => setTooltipOpen(false)}
+                                onClick={() => router.push('/material')}
+                                className="flex items-center justify-center w-11 h-11 bg-white rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-100 transition-all z-20 cursor-pointer"
+                            >
+                                <ArrowLeft size={20} weight="bold" />
+                                <AnimatePresence>
+                                    {tooltipOpen && (
+                                        <motion.span
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -10 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50"
+                                        >
+                                            {t.storyteller.backToResources}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </motion.button>
+                        </div>
                     </div>
 
                     <header className="text-center mb-12 -mt-24">
