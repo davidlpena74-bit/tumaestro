@@ -123,25 +123,32 @@ export default function Header() {
     }, [user?.id]);
 
     const fetchNotifications = async (userId: string) => {
-        // Fetch last 10 for the list
+        // Fetch last 20 for the list
         const { data } = await supabase
             .from('notifications')
             .select('*')
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
-            .limit(10);
+            .limit(20);
 
-        // Fetch actual total unread count (not just from the top 10)
+        // Fetch actual total unread count (not just from the top 20)
+        // using a robust filter for read=false OR read=null
         const { count } = await supabase
             .from('notifications')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', userId)
-            .eq('read', false);
+            .or('read.eq.false,read.is.null');
 
         if (data) {
             setNotifications(data as Notification[]);
-        }
-        if (count !== null) {
+
+            // Calculate unread from the loaded list to use as a minimum fallback
+            const unreadInList = data.filter(n => !n.read).length;
+
+            // Use server count if available, otherwise fallback to list count
+            // Also ensure we don't show 0 if we see unread items in the list
+            setUnreadCount(count !== null ? Math.max(count, unreadInList) : unreadInList);
+        } else if (count !== null) {
             setUnreadCount(count);
         }
     };
@@ -199,12 +206,12 @@ export default function Header() {
                         />
                     </Link>
                     <Link
-                        href="/recursos"
-                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/recursos') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
+                        href="/material"
+                        className={`hidden md:flex flex-col items-center gap-1 transition-all text-sm group ${pathname.startsWith('/material') ? 'text-white font-black' : 'text-white/80 hover:text-white font-medium'}`}
                     >
                         <span>{t.header.resources}</span>
                         <motion.div
-                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/recursos') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
+                            className={`h-0.5 bg-white rounded-full transition-all ${pathname.startsWith('/material') ? 'w-full' : 'w-0 group-hover:w-1/2'}`}
                         />
                     </Link>
                     <Link
@@ -285,13 +292,18 @@ export default function Header() {
                     {user && (
                         <div className="relative" ref={notifMenuRef}>
                             <button
-                                onClick={() => setNotifMenuOpen(!notifMenuOpen)}
+                                onClick={() => {
+                                    setNotifMenuOpen(!notifMenuOpen);
+                                    if (!notifMenuOpen && user?.id) fetchNotifications(user.id);
+                                }}
                                 className="relative flex items-center gap-1 p-2 rounded-full hover:bg-white/10 text-white transition-colors"
                             >
                                 <div className="relative">
                                     <Bell size={24} weight={unreadCount > 0 ? "fill" : "regular"} />
                                     {unreadCount > 0 && (
-                                        <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse" />
+                                        <span className="absolute -top-1 -right-0.5 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 pointer-events-none">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                                        </span>
                                     )}
                                 </div>
                                 <CaretDown className={`w-3 h-3 text-white/50 transition-transform ${notifMenuOpen ? 'rotate-180' : ''}`} weight="bold" />

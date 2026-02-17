@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     description: 'Descarga apuntes y ejercicios, y accede a herramientas de lectura como cuentacuentos infantiles narrados en cuatro idiomas (Español, Inglés, Francés y Alemán) gratis y dictados interactivos para mejorar la escritura.',
     keywords: ['apuntes gratis', 'material didactico', 'cuentos infantiles multiidioma', 'ejercicios resueltos', 'recursos educativos', 'primaria', 'secundaria', 'cuentos narrados gratis'],
     alternates: {
-        canonical: 'https://tumaestro.es/recursos',
+        canonical: 'https://tumaestro.es/material',
     },
 };
 

@@ -19,7 +19,7 @@ export default function ResourceSectionView({ title, subtitle, children, showCom
         <div className="w-full max-w-7xl mx-auto p-4">
             <div className="mb-8">
                 <Link
-                    href="/recursos"
+                    href="/material"
                     className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200"
                 >
                     <ArrowLeft weight="bold" /> {t.resources.backToLibrary}

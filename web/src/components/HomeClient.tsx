@@ -87,7 +87,7 @@ export default function HomeClient() {
 
                     {/* OPCIÓN B: MATERIAL DIDÁCTICO */}
                     <motion.div
-                        onClick={() => router.push('/recursos')}
+                        onClick={() => router.push('/material')}
                         initial="initial"
                         whileHover="hover"
                         variants={{
@@ -195,7 +195,7 @@ export default function HomeClient() {
                                     <p className="text-gray-300 text-lg leading-relaxed">{t.home.resourceLibraryDesc}</p>
                                 </div>
                                 <a
-                                    href="/recursos"
+                                    href="/material"
                                     className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-1 transition-all group whitespace-nowrap"
                                 >
                                     <ArrowRight className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform rotate-180" weight="bold" />

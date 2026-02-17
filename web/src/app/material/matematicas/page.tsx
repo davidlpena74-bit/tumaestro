@@ -9,7 +9,7 @@ export default function MatematicasPage() {
         <main className="min-h-screen bg-slate-950 text-white p-4 md:p-8 print:bg-white print:p-0">
             <div className="max-w-5xl mx-auto print:max-w-none">
                 <div className="print:hidden">
-                    <Link href="/recursos" className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 transition-colors mb-8">
+                    <Link href="/material" className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 transition-colors mb-8">
                         <ArrowLeft className="w-4 h-4" /> Volver a Biblioteca
                     </Link>
 

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { X, Envelope, Key, User, MagicWand } from '@phosphor-icons/react';
+import { useToast } from '@/context/ToastContext';
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -13,6 +14,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [view, setView] = useState<'magic_link' | 'password'>('password');
     const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+    const { success, error, warning, info } = useToast();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -38,7 +40,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             email,
             options: { emailRedirectTo: window.location.origin },
         });
-        if (error) alert('Error: ' + error.message);
+        if (error) error('Error: ' + error.message);
         else setSent(true);
         setLoading(false);
     };
@@ -52,7 +54,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             },
         });
         if (error) {
-            alert('Error con ' + provider + ': ' + error.message);
+            error('Error con ' + provider + ': ' + error.message);
             setLoading(false);
         }
     };
@@ -63,7 +65,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
         if (mode === 'signup') {
             if (!fullName) {
-                alert('Por favor, indica tu nombre completo.');
+                warning('Por favor, indica tu nombre completo.');
                 setLoading(false);
                 return;
             }
@@ -81,9 +83,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             });
 
             if (error) {
-                alert('Error al registrarse: ' + error.message);
+                error('Error al registrarse: ' + error.message);
             } else {
-                alert('Usuario registrado! ' + (data.session ? 'Sesión iniciada.' : 'Por favor revisa tu correo para confirmar.'));
+                success('Usuario registrado! ' + (data.session ? 'Sesión iniciada.' : 'Por favor revisa tu correo para confirmar.'));
                 if (data.session) onClose();
             }
         } else {
@@ -92,7 +94,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 password,
             });
             if (error) {
-                alert('Error al entrar: ' + error.message);
+                error('Error al entrar: ' + error.message);
             } else {
                 onClose();
             }
@@ -102,7 +104,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
     const handleResetPassword = async () => {
         if (!email) {
-            alert('Por favor, introduce tu correo electrónico primero.');
+            warning('Por favor, introduce tu correo electrónico primero.');
             return;
         }
         setLoading(true);
@@ -111,9 +113,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         });
 
         if (error) {
-            alert('Error: ' + error.message);
+            error('Error: ' + error.message);
         } else {
-            alert('Enlace de restablecimiento enviado. Revisa tu correo.');
+            success('Enlace de restablecimiento enviado. Revisa tu correo.');
             onClose();
         }
         setLoading(false);

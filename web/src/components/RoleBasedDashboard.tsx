@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { useToast } from '@/context/ToastContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
@@ -15,7 +16,9 @@ import {
     CheckCircle,
     CircleNotch,
     CheckSquare,
-    Square
+    Square,
+    CaretDown,
+    Info
 } from '@phosphor-icons/react';
 
 type Profile = {
@@ -60,6 +63,7 @@ export default function RoleBasedDashboard() {
     const [myProfile, setMyProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'connections' | 'classes' | 'tasks' | 'notifications'>('connections');
+    const { success, error, warning, info } = useToast();
 
     // Data lists
     const [profiles, setProfiles] = useState<Profile[]>([]); // For searching
@@ -85,9 +89,29 @@ export default function RoleBasedDashboard() {
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskDesc, setNewTaskDesc] = useState('');
     const [targetClassId, setTargetClassId] = useState<string | null>(null);
+    const [showHelp, setShowHelp] = useState(false);
     // Class Selection Modal State
     const [showClassSelector, setShowClassSelector] = useState(false);
     const [pendingStudentId, setPendingStudentId] = useState<string | null>(null);
+
+    // Class Management Search
+    const [classSearchTerm, setClassSearchTerm] = useState('');
+    const [classSearchResults, setClassSearchResults] = useState<Profile[]>([]);
+    const [selectedClassForConnection, setSelectedClassForConnection] = useState<string>("");
+
+    const searchClassStudents = async (term: string) => {
+        if (!term) {
+            setClassSearchResults([]);
+            return;
+        }
+        const { data } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('role', 'student')
+            .ilike('full_name', `%${term}%`)
+            .limit(5);
+        if (data) setClassSearchResults(data);
+    };
 
 
 
@@ -218,12 +242,12 @@ export default function RoleBasedDashboard() {
     };
 
     const fetchClassesAsTeacher = async (teacherId: string) => {
-        const { data, error } = await supabase
+        const { data, error: apiError } = await supabase
             .from('classes')
             .select('*')
             .eq('teacher_id', teacherId);
 
-        if (error) console.error("Error fetching classes:", error);
+        if (apiError) console.error("Error fetching classes:", apiError);
         if (data) {
             setMyClasses(data);
             // Also refresh student enrollments if connections exist
@@ -297,12 +321,13 @@ export default function RoleBasedDashboard() {
         // If teacher, must select a class first
         if (myProfile.role === 'teacher') {
             if (myClasses.length === 0) {
-                alert("Debes crear al menos una clase antes de añadir alumnos.");
+                warning("Debes crear al menos una clase antes de añadir alumnos.");
                 setActiveTab('classes');
                 setIsCreatingClass(true);
                 return;
             }
             setPendingStudentId(studentId);
+            setSelectedClassForConnection("");
             setShowClassSelector(true);
         } else {
             // Student adding a teacher - simple connection
@@ -328,26 +353,43 @@ export default function RoleBasedDashboard() {
             // If I am a teacher adding a student
             if (myProfile.role === 'teacher') {
                 const { data: cls } = classId
-                    ? await supabase.from('classes').select('name').eq('id', classId).single()
+                    ? await supabase.from('classes').select('name, subject, grade').eq('id', classId).single()
                     : { data: null };
 
-                const className = cls ? cls.name : 'una clase';
+                let classInfo = 'una clase';
+                if (cls) {
+                    if (cls.subject || cls.grade) {
+                        classInfo = [cls.subject, cls.grade].filter(Boolean).join(' - ');
+                    } else {
+                        classInfo = cls.name; // Fallback
+                    }
+                }
 
                 await supabase.from('notifications').insert({
                     user_id: targetId,
                     type: 'connection_request',
                     title: 'Solicitud de Profesor',
-                    message: `${myProfile.full_name} quiere añadirte como alumno${classId ? ` a la clase "${className}"` : ''}.`,
+                    message: `${myProfile.full_name} quiere añadirte como alumno${classId ? ` a ${classInfo}` : ''}.`,
                     data: {
                         teacher_id: myProfile.id,
                         class_id: classId,
                         teacher_name: myProfile.full_name
                     }
                 });
-                alert("Solicitud enviada al alumno. Debe aprobarla para que aparezca en la clase.");
+                success("Solicitud enviada al alumno. Debe aprobarla para que aparezca en la clase.");
             } else {
-                // Student adding teacher - usually implies direct follow or request
-                alert("Solicitud enviada.");
+                // Student adding teacher - send notification to teacher
+                await supabase.from('notifications').insert({
+                    user_id: targetId,
+                    type: 'connection_request',
+                    title: 'Solicitud de Alumno',
+                    message: `${myProfile.full_name} quiere conectar contigo como alumno.`,
+                    data: {
+                        student_id: myProfile.id,
+                        student_name: myProfile.full_name
+                    }
+                });
+                success("Solicitud enviada al profesor.");
             }
 
             fetchConnections(myProfile.id, myProfile.role);
@@ -356,9 +398,9 @@ export default function RoleBasedDashboard() {
             setPendingStudentId(null);
         } else {
             if (connError.code === '23505') {
-                alert("Ya existe una vinculación con este usuario.");
+                warning("Ya existe una vinculación con este usuario.");
             } else {
-                alert("Error al vincular: " + connError.message);
+                error("Error al vincular: " + connError.message);
             }
         }
     };
@@ -373,32 +415,72 @@ export default function RoleBasedDashboard() {
             return;
         }
 
-        // Use RPC to accept both connection and class invitation atomically (bypasses student RLS)
+        // Strategy 1: RPC Call
         const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
             target_user_id: other_party_id,
             target_class_id: class_id || null
         });
 
         if (!acceptError) {
-            // Mark notification as read so it stays in "All" history
-            const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
-            if (readError) {
-                await supabase.from('notifications')
-                    .update({ read: true })
-                    .eq('id', notification.id)
-                    .eq('user_id', myProfile.id);
+            await finalizeAcceptance(notification, class_id);
+            return;
+        }
+
+        console.error("RPC Error:", acceptError);
+
+        // Strategy 2: Direct Update
+        try {
+            const myId = myProfile.id;
+            const myRole = myProfile.role;
+
+            const matchQuery = myRole === 'student'
+                ? { student_id: myId, teacher_id: other_party_id }
+                : { student_id: other_party_id, teacher_id: myId };
+
+            const { error: directError } = await supabase
+                .from('student_teachers')
+                .update({ status: 'accepted' })
+                .match(matchQuery);
+
+            if (directError) throw directError;
+
+            // Class enrollment fallback
+            if (class_id && myRole === 'student') {
+                const { error: classError } = await supabase
+                    .from('class_students')
+                    .insert({ class_id: class_id, student_id: myId })
+                    .select();
+
+                if (classError && classError.code !== '23505') {
+                    console.error("Class enrollment failed:", classError);
+                    // Partial success
+                }
             }
 
-            // Refresh data
-            fetchNotifications(myProfile.id);
-            fetchConnections(myProfile.id, myProfile.role);
-            if (class_id) fetchClassesAsStudent(myProfile.id);
+            await finalizeAcceptance(notification, class_id);
 
-            alert("¡Solicitud aceptada!");
-        } else {
-            console.error("Error accepting connection:", acceptError);
-            alert("Error al aceptar: " + (acceptError.message || 'Error desconocido'));
+        } catch (err: any) {
+            console.error("Acceptance failed:", err);
+            error("Error al aceptar: " + (err.message || acceptError.message || 'Error desconocido'));
         }
+    };
+
+    const finalizeAcceptance = async (notification: Notification, class_id?: string) => {
+        // Mark notification as read
+        const { error: readError } = await supabase.rpc('mark_notification_read', { notif_id: notification.id });
+        if (readError) {
+            await supabase.from('notifications')
+                .update({ read: true })
+                .eq('id', notification.id)
+                .eq('user_id', myProfile!.id);
+        }
+
+        // Refresh data
+        fetchNotifications(myProfile!.id);
+        fetchConnections(myProfile!.id, myProfile!.role);
+        if (class_id && myProfile!.role === 'student') fetchClassesAsStudent(myProfile!.id);
+
+        success("¡Solicitud aceptada!");
     };
 
     const rejectConnection = async (notification: Notification) => {
@@ -428,7 +510,7 @@ export default function RoleBasedDashboard() {
             fetchNotifications(myProfile.id);
         }
 
-        alert("Solicitud rechazada.");
+        info("Solicitud rechazada.");
     };
 
     const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
@@ -443,18 +525,21 @@ export default function RoleBasedDashboard() {
     };
 
     const addStudentToClass = async (classId: string, studentId: string) => {
-        const { error } = await supabase
+        const { error: apiError } = await supabase
             .from('class_students')
             .insert({ class_id: classId, student_id: studentId });
 
-        if (!error) {
+        if (!apiError) {
             fetchClassStudents(classId);
+            success('Alumno añadido a la clase');
+        } else {
+            error('Error al añadir alumno: ' + apiError.message);
         }
     };
 
     const removeStudentFromClass = async (classId: string, studentId: string) => {
         // Get class name for notification
-        const { data: cls } = await supabase.from('classes').select('name').eq('id', classId).single();
+        const { data: cls } = await supabase.from('classes').select('name, subject, grade').eq('id', classId).single();
 
         const { error } = await supabase
             .from('class_students')
@@ -465,11 +550,16 @@ export default function RoleBasedDashboard() {
         if (!error) {
             // Notify student
             if (myProfile && cls) {
+                let classInfo = cls.name;
+                if (cls.subject || cls.grade) {
+                    classInfo = [cls.subject, cls.grade].filter(Boolean).join(' - ');
+                }
+
                 await supabase.from('notifications').insert({
                     user_id: studentId,
                     type: 'class_removal',
                     title: 'Te han quitado de una clase',
-                    message: `${myProfile.full_name} te ha eliminado de la clase "${cls.name}".`,
+                    message: `${myProfile.full_name} te ha eliminado de ${classInfo}.`,
                     data: { teacher_id: myProfile.id, class_id: classId }
                 });
             }
@@ -493,57 +583,65 @@ export default function RoleBasedDashboard() {
             }
         }
 
-        const { error } = await supabase
+        const { error: apiError } = await supabase
             .from('student_teachers')
             .delete()
             .match(payload);
 
-        if (!error) {
+        if (!apiError) {
             setMyConnections(myConnections.filter(c => c.id !== targetId));
             const newMap = { ...studentClasses };
             delete newMap[targetId];
             setStudentClasses(newMap);
+            success('Vínculo eliminado');
+        } else {
+            error('Error al eliminar vínculo: ' + apiError.message);
         }
     };
 
     const createClass = async () => {
-        if (!myProfile || !newClassName) {
-            console.error("Missing profile or class name");
-            return;
-        }
+        try {
+            if (!myProfile || !newClassName) {
+                error("Faltan datos para crear la clase.");
+                return;
+            }
 
-        const payload = {
-            teacher_id: myProfile.id,
-            name: newClassName,
-            description: newClassDesc,
-            subject: newClassSubject,
-            grade: newClassGrade
-        };
+            const payload = {
+                teacher_id: myProfile.id,
+                name: newClassName,
+                description: newClassDesc,
+                subject: newClassSubject,
+                grade: newClassGrade
+            };
 
-        const { data, error } = await supabase.from('classes').insert(payload).select();
+            const { data, error: apiError } = await supabase.from('classes').insert(payload).select();
 
-        if (error) {
-            console.error('Error creating class:', error);
-            alert('Error al crear la clase: ' + error.message);
-        } else {
-            alert("Clase creada correctamente");
-            if (myProfile.id) await fetchClassesAsTeacher(myProfile.id);
-            setIsCreatingClass(false);
-            setNewClassName('');
-            setNewClassDesc('');
-            setNewClassSubject('');
-            setNewClassGrade('');
+            if (apiError) {
+                console.error('Error creating class:', apiError);
+                error('Error al crear la clase: ' + (apiError.message || apiError.code || 'Error desconocido'));
+            } else {
+                success("Clase creada correctamente");
+                if (myProfile.id) await fetchClassesAsTeacher(myProfile.id);
+                setIsCreatingClass(false);
+                setNewClassName('');
+                setNewClassDesc('');
+                setNewClassSubject('');
+                setNewClassGrade('');
+            }
+        } catch (e: any) {
+            console.error('🔥 Exception in createClass:', e);
+            error('Error inesperado: ' + (e.message || e));
         }
     };
 
     const deleteClass = async (classId: string) => {
         if (!confirm('¿Seguro que quieres eliminar esta clase? Se borrarán todas las tareas y el acceso de los alumnos.')) return;
 
-        const { error } = await supabase.from('classes').delete().eq('id', classId);
+        const { error: apiError } = await supabase.from('classes').delete().eq('id', classId);
 
-        if (error) {
-            console.error('Error deleting class:', error);
-            alert('Error al eliminar la clase: ' + error.message);
+        if (apiError) {
+            console.error('Error deleting class:', apiError);
+            error('Error al eliminar la clase: ' + apiError.message);
         } else {
             setMyClasses(myClasses.filter(c => c.id !== classId));
             setMyTasks(myTasks.filter(t => t.class_id !== classId));
@@ -556,13 +654,13 @@ export default function RoleBasedDashboard() {
     const createTask = async () => {
         if (!targetClassId || !newTaskTitle) return;
 
-        const { error } = await supabase.from('tasks').insert({
+        const { error: apiError } = await supabase.from('tasks').insert({
             class_id: targetClassId,
             title: newTaskTitle,
             description: newTaskDesc
         });
 
-        if (!error) {
+        if (!apiError) {
             const currentClasses = myClasses.map(c => c.id);
             if (currentClasses.length > 0) fetchTasks(currentClasses);
             setIsCreatingTask(false);
@@ -609,24 +707,60 @@ export default function RoleBasedDashboard() {
 
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div
-                    onClick={() => setActiveTab('connections')}
-                    className={`group bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'connections' ? 'ring-4 ring-offset-4 ring-blue-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
+            <div className="flex justify-end mb-2">
+                <button
+                    onClick={() => setShowHelp(!showHelp)}
+                    className="flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-colors text-sm font-bold bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100"
                 >
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
-                            {isTeacher ? <ChalkboardTeacher size={32} /> : <IdentificationBadge size={32} />}
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-lg">{isTeacher ? 'Alumnos' : 'Profesores'}</h3>
-                            <p className="text-white/80 text-sm">{myProfile.full_name}</p>
-                        </div>
-                    </div>
-                    <div className="text-3xl font-black">{myConnections.length}</div>
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Vinculados' : 'Seleccionados'}</p>
-                </div>
+                    <Info size={18} weight="fill" />
+                    ¿Cómo funciona?
+                </button>
+            </div>
 
+            <AnimatePresence>
+                {showHelp && (
+                    <motion.div
+                        layout
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden mb-6"
+                    >
+                        <div className="bg-blue-50 border border-blue-100 rounded-3xl p-6 relative">
+                            <button
+                                onClick={() => setShowHelp(false)}
+                                className="absolute top-4 right-4 text-blue-300 hover:text-blue-500"
+                            >
+                                <div className="sr-only">Cerrar</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
+                            </button>
+                            <h4 className="font-bold text-blue-800 mb-4 flex items-center gap-2">
+                                <Info size={24} />
+                                Guía Rápida para Profesores
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold mb-3">1</div>
+                                    <h5 className="font-bold text-slate-800 mb-2">Crea tus Clases</h5>
+                                    <p className="text-slate-500 text-sm">Empieza creando una clase. Define la materia y el curso para organizarte mejor.</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold mb-3">2</div>
+                                    <h5 className="font-bold text-slate-800 mb-2">Añade Alumnos</h5>
+                                    <p className="text-slate-500 text-sm">Busca alumnos en la plataforma y vinculalos a tus clases. Si ya están registrados, solo tienes que enviarles una solicitud.</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold mb-3">3</div>
+                                    <h5 className="font-bold text-slate-800 mb-2">Gestiona Tareas</h5>
+                                    <p className="text-slate-500 text-sm">Asigna tareas a tus clases y monitorea el progreso de tus alumnos fácilmente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div
                     onClick={() => setActiveTab('classes')}
                     className={`group bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'classes' ? 'ring-4 ring-offset-4 ring-purple-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
@@ -642,6 +776,23 @@ export default function RoleBasedDashboard() {
                     </div>
                     <div className="text-3xl font-black">{myClasses.length}</div>
                     <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Activas</p>
+                </div>
+
+                <div
+                    onClick={() => setActiveTab('connections')}
+                    className={`group bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer transition-all duration-300 ${activeTab === 'connections' ? 'ring-4 ring-offset-4 ring-blue-500 scale-105 shadow-2xl' : 'hover:scale-105 hover:shadow-2xl hover:-translate-y-1 hover:brightness-110 opacity-90 hover:opacity-100'}`}
+                >
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="p-3 bg-white/20 rounded-2xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
+                            {isTeacher ? <ChalkboardTeacher size={32} /> : <IdentificationBadge size={32} />}
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-lg">{isTeacher ? 'Alumnos' : 'Profesores'}</h3>
+                            <p className="text-white/80 text-sm">{myProfile.full_name}</p>
+                        </div>
+                    </div>
+                    <div className="text-3xl font-black">{myConnections.length}</div>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-wider">{isTeacher ? 'Vinculados' : 'Seleccionados'}</p>
                 </div>
 
                 <div
@@ -722,31 +873,57 @@ export default function RoleBasedDashboard() {
                             {/* Class Selection Modal */}
                             {showClassSelector && (
                                 <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                                    <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl">
-                                        <h3 className="font-bold text-lg text-slate-800 mb-4">Selecciona una clase</h3>
-                                        <p className="text-slate-500 text-sm mb-4">Debes asignar al alumno a una de tus clases para vincularlo.</p>
+                                    <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
+                                        <h3 className="font-bold text-lg text-slate-800 mb-2">Selecciona una clase</h3>
+                                        <p className="text-slate-500 text-sm mb-6">Debes asignar al alumno a una de tus clases para vincularlo.</p>
 
-                                        <div className="space-y-2 max-h-60 overflow-y-auto mb-6">
-                                            {myClasses.map(cls => (
-                                                <button
-                                                    key={cls.id}
-                                                    onClick={() => pendingStudentId && addConnection(pendingStudentId, cls.id)}
-                                                    className="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-purple-500 hover:bg-purple-50 transition-all font-bold text-slate-700"
+                                        <div className="mb-6">
+                                            <div className="relative">
+                                                <select
+                                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-medium focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer pr-10"
+                                                    value={selectedClassForConnection}
+                                                    onChange={(e) => setSelectedClassForConnection(e.target.value)}
                                                 >
-                                                    {cls.name}
-                                                </button>
-                                            ))}
+                                                    <option value="">Elige una clase...</option>
+                                                    {myClasses.map(cls => (
+                                                        <option key={cls.id} value={cls.id}>
+                                                            {cls.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                    <CaretDown size={16} weight="bold" />
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <button
-                                            onClick={() => {
-                                                setShowClassSelector(false);
-                                                setPendingStudentId(null);
-                                            }}
-                                            className="w-full py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-slate-200"
-                                        >
-                                            Cancelar
-                                        </button>
+                                        <div className="flex gap-3">
+                                            <button
+                                                onClick={() => {
+                                                    setShowClassSelector(false);
+                                                    setPendingStudentId(null);
+                                                    setSelectedClassForConnection("");
+                                                }}
+                                                className="flex-1 py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                disabled={!selectedClassForConnection}
+                                                onClick={() => {
+                                                    if (pendingStudentId && selectedClassForConnection) {
+                                                        addConnection(pendingStudentId, selectedClassForConnection);
+                                                    }
+                                                }}
+                                                className={`flex-1 py-3 px-4 rounded-xl font-bold text-white transition-all shadow-lg
+                                                    ${!selectedClassForConnection
+                                                        ? 'bg-slate-300 cursor-not-allowed opacity-50 shadow-none'
+                                                        : 'bg-blue-600 hover:bg-blue-700 shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5'
+                                                    }`}
+                                            >
+                                                Vincular
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -824,6 +1001,63 @@ export default function RoleBasedDashboard() {
                                                     </div>
                                                 </div>
                                             )}
+                                            {/* Add New Student Search */}
+                                            <div className="mt-4 pt-4 border-t border-slate-200">
+                                                <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Buscar nuevo alumno</h6>
+                                                <div className="relative">
+                                                    <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Nombre del alumno..."
+                                                        className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                                        value={classSearchTerm}
+                                                        onChange={(e) => {
+                                                            setClassSearchTerm(e.target.value);
+                                                            searchClassStudents(e.target.value);
+                                                        }}
+                                                    />
+                                                </div>
+                                                {classSearchResults.length > 0 && (
+                                                    <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden z-10 relative">
+                                                        {classSearchResults.map(student => {
+                                                            const isEnrolled = enrolledStudentsByClass[conn.id]?.some(s => s.id === student.id);
+                                                            const isConnected = myConnections.some(c => c.id === student.id);
+
+                                                            return (
+                                                                <button
+                                                                    key={student.id}
+                                                                    disabled={isEnrolled}
+                                                                    onClick={() => {
+                                                                        if (isConnected) {
+                                                                            addStudentToClass(conn.id, student.id);
+                                                                        } else {
+                                                                            // New connection flow
+                                                                            addConnection(student.id, conn.id);
+                                                                        }
+                                                                        setClassSearchTerm('');
+                                                                        setClassSearchResults([]);
+                                                                    }}
+                                                                    className="w-full text-left px-4 py-2 hover:bg-slate-50 flex items-center justify-between text-sm disabled:opacity-50 border-b border-slate-100 last:border-0"
+                                                                >
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-600">
+                                                                            {student.full_name?.[0]}
+                                                                        </div>
+                                                                        <span className="font-medium text-slate-700">{student.full_name}</span>
+                                                                    </div>
+                                                                    {isEnrolled ? (
+                                                                        <span className="text-[10px] text-green-500 font-bold">Inscrito</span>
+                                                                    ) : (
+                                                                        <div className="bg-blue-50 text-blue-600 p-1 rounded-md">
+                                                                            <Plus size={14} weight="bold" />
+                                                                        </div>
+                                                                    )}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+                                            </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {(studentClasses[conn.id] || []).map(cls => (
                                                     <div key={cls.id} className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-bold border border-purple-100">
@@ -1003,7 +1237,7 @@ export default function RoleBasedDashboard() {
 
                                     {/* SECTION 1: TASKS */}
                                     <div className="space-y-3 mb-4 flex-1">
-                                        <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100">
+                                        <div className="bg-slate-50 rounded-2xl p-5 mb-4 border border-slate-100 min-h-[140px] flex flex-col">
                                             <div className="flex justify-between items-center mb-4">
                                                 <h5 className="font-bold text-slate-700 flex items-center gap-2">
                                                     <CheckSquare size={18} className="text-purple-500" />
@@ -1078,7 +1312,9 @@ export default function RoleBasedDashboard() {
                                                         </div>
                                                     ))}
                                                 {myTasks.filter(t => t.class_id === cls.id).filter(t => isTeacher || !completedTaskIds.has(t.id)).length === 0 && (
-                                                    <p className="text-center text-xs text-slate-400 italic py-4">No hay tareas activas en este momento.</p>
+                                                    <div className="flex-1 flex items-center justify-center">
+                                                        <p className="text-slate-400 text-xs italic">No hay tareas activas en este momento.</p>
+                                                    </div>
                                                 )}
                                             </div>
 
@@ -1093,7 +1329,7 @@ export default function RoleBasedDashboard() {
 
                                         {/* SECTION 2: STUDENTS (Unified) */}
                                         {isTeacher && (
-                                            <div className="mt-6 border-t border-slate-100 pt-6">
+                                            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-h-[140px] flex flex-col">
                                                 <div className="flex justify-between items-center mb-4">
                                                     <h5 className="font-bold text-slate-700 flex items-center gap-2">
                                                         <Users size={18} className="text-blue-500" />
@@ -1130,7 +1366,9 @@ export default function RoleBasedDashboard() {
                                                             ))}
                                                         </div>
                                                     ) : (
-                                                        <p className="text-slate-400 text-xs italic">No hay alumnos inscritos.</p>
+                                                        <div className="flex-1 flex items-center justify-center py-6">
+                                                            <p className="text-slate-400 text-xs italic">No hay alumnos inscritos.</p>
+                                                        </div>
                                                     )}
                                                 </div>
 
@@ -1172,6 +1410,64 @@ export default function RoleBasedDashboard() {
                                                                 )}
                                                             </div>
                                                         </div>
+
+                                                        {/* Add New Student Search */}
+                                                        <div className="mt-4 pt-4 border-t border-slate-200">
+                                                            <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Buscar nuevo alumno</h6>
+                                                            <div className="relative">
+                                                                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                                                                <input
+                                                                    type="text"
+                                                                    placeholder="Nombre del alumno..."
+                                                                    className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                                                    value={classSearchTerm}
+                                                                    onChange={(e) => {
+                                                                        setClassSearchTerm(e.target.value);
+                                                                        searchClassStudents(e.target.value);
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            {classSearchResults.length > 0 && (
+                                                                <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden z-10 relative">
+                                                                    {classSearchResults.map(student => {
+                                                                        const isEnrolled = enrolledStudentsByClass[cls.id]?.some(s => s.id === student.id);
+                                                                        const isConnected = myConnections.some(c => c.id === student.id);
+
+                                                                        return (
+                                                                            <button
+                                                                                key={student.id}
+                                                                                disabled={isEnrolled}
+                                                                                onClick={() => {
+                                                                                    if (isConnected) {
+                                                                                        addStudentToClass(cls.id, student.id);
+                                                                                    } else {
+                                                                                        // New connection flow
+                                                                                        addConnection(student.id, cls.id);
+                                                                                    }
+                                                                                    setClassSearchTerm('');
+                                                                                    setClassSearchResults([]);
+                                                                                }}
+                                                                                className="w-full text-left px-4 py-2 hover:bg-slate-50 flex items-center justify-between text-sm disabled:opacity-50 border-b border-slate-100 last:border-0"
+                                                                            >
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-600">
+                                                                                        {student.full_name?.[0]}
+                                                                                    </div>
+                                                                                    <span className="font-medium text-slate-700">{student.full_name}</span>
+                                                                                </div>
+                                                                                {isEnrolled ? (
+                                                                                    <span className="text-[10px] text-green-500 font-bold">Inscrito</span>
+                                                                                ) : (
+                                                                                    <div className="bg-blue-50 text-blue-600 p-1 rounded-md">
+                                                                                        <Plus size={14} weight="bold" />
+                                                                                    </div>
+                                                                                )}
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
@@ -1185,70 +1481,77 @@ export default function RoleBasedDashboard() {
                                 </div>
                             )}
                         </div>
-                    </motion.div>
-                )}
+                    </motion.div >
+                )
+                }
 
-                {activeTab === 'tasks' && (
-                    <motion.div
-                        key="tasks"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm flex flex-col items-center justify-center py-24 text-center"
-                    >
-                        <div className="bg-emerald-50 p-6 rounded-full mb-6">
-                            <CheckSquare size={64} className="text-emerald-500" weight="duotone" />
-                        </div>
-                        <h3 className="text-2xl font-black text-slate-800 mb-2">Gestión de Tareas</h3>
-                        <p className="text-slate-500 max-w-md mx-auto">
-                            Este panel está actualmente en desarrollo. Próximamente podrás gestionar todas las entregas y calificaciones desde aquí.
-                        </p>
-                    </motion.div>
-                )}
-
-                {activeTab === 'notifications' && (
-                    <motion.div
-                        key="notifications"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="space-y-4"
-                    >
-                        <h3 className="font-bold text-xl text-slate-800 mb-4">Tus Notificaciones</h3>
-                        {notifications.length === 0 ? (
-                            <div className="bg-white p-12 rounded-3xl border border-slate-100 text-center text-slate-400">
-                                No tienes notificaciones nuevas.
+                {
+                    activeTab === 'tasks' && (
+                        <motion.div
+                            key="tasks"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm flex flex-col items-center justify-center py-24 text-center"
+                        >
+                            <div className="bg-emerald-50 p-6 rounded-full mb-6">
+                                <CheckSquare size={64} className="text-emerald-500" weight="duotone" />
                             </div>
-                        ) : (
-                            notifications.map(notif => (
-                                <div key={notif.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-bold text-slate-800 text-lg">{notif.title}</h4>
-                                        <p className="text-slate-500">{notif.message}</p>
-                                        <p className="text-slate-300 text-xs mt-2">{new Date(notif.created_at).toLocaleDateString()}</p>
-                                    </div>
-                                    {notif.type === 'connection_request' && (
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => rejectConnection(notif)}
-                                                className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors"
-                                            >
-                                                Rechazar
-                                            </button>
-                                            <button
-                                                onClick={() => approveConnection(notif)}
-                                                className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
-                                            >
-                                                Aprobar
-                                            </button>
-                                        </div>
-                                    )}
+                            <h3 className="text-2xl font-black text-slate-800 mb-2">Gestión de Tareas</h3>
+                            <p className="text-slate-500 max-w-md mx-auto">
+                                Este panel está actualmente en desarrollo. Próximamente podrás gestionar todas las entregas y calificaciones desde aquí.
+                            </p>
+                        </motion.div>
+                    )
+                }
+
+                {
+                    activeTab === 'notifications' && (
+                        <motion.div
+                            key="notifications"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="space-y-4"
+                        >
+                            <h3 className="font-bold text-xl text-slate-800 mb-4">Tus Notificaciones</h3>
+                            {notifications.length === 0 ? (
+                                <div className="bg-white p-12 rounded-3xl border border-slate-100 text-center text-slate-400">
+                                    No tienes notificaciones nuevas.
                                 </div>
-                            ))
-                        )}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                            ) : (
+                                notifications.map(notif => (
+                                    <div key={notif.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                                        <div>
+                                            <h4 className="font-bold text-slate-800 text-lg">{notif.title}</h4>
+                                            <p className="text-slate-500">{notif.message}</p>
+                                            <p className="text-slate-300 text-xs mt-2">
+                                                {new Date(notif.created_at).toLocaleDateString()} · {new Date(notif.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </p>
+                                        </div>
+                                        {notif.type === 'connection_request' && (
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => rejectConnection(notif)}
+                                                    className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors"
+                                                >
+                                                    Rechazar
+                                                </button>
+                                                <button
+                                                    onClick={() => approveConnection(notif)}
+                                                    className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
+                                                >
+                                                    Aprobar
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </motion.div>
+                    )
+                }
+            </AnimatePresence >
 
 
         </div >

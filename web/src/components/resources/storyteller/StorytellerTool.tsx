@@ -426,7 +426,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                 onClick={() => {
                                     setIsMaximized(false);
                                     setSelectedBook(null);
-                                    router.push('/recursos/cuentacuentos');
+                                    router.push('/material/cuentacuentos');
                                 }}
                                 className="inline-flex items-center gap-2 font-bold transition-all p-3 rounded-2xl border shadow-xl pointer-events-auto hover:scale-105 active:scale-95 group bg-white/80 hover:bg-white border-slate-200 text-slate-700"
                             >
@@ -554,7 +554,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                     onClick={() => {
                                         setIsMaximized(false);
                                         setSelectedBook(null);
-                                        router.push('/recursos/cuentacuentos');
+                                        router.push('/material/cuentacuentos');
                                     }}
                                     className="p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2 h-[44px]"
                                     title={t.storyteller.backToLibrary}
@@ -696,7 +696,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                                 {selectedBook && (
                                                     <>
                                                         <Link
-                                                            href={`/recursos/cuentacuentos/${selectedBook.id}`}
+                                                            href={`/material/cuentacuentos/${selectedBook.id}`}
                                                             onClick={(e) => setIsLangMenuOpen(false)}
                                                             className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                 isMaximized
@@ -710,7 +710,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
                                                         {selectedBook?.contentEn && (
                                                             <Link
-                                                                href={`/recursos/cuentacuentos/${selectedBook.id}/en`}
+                                                                href={`/material/cuentacuentos/${selectedBook.id}/en`}
                                                                 onClick={(e) => setIsLangMenuOpen(false)}
                                                                 className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                     isMaximized
@@ -725,7 +725,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
                                                         {selectedBook?.contentFr && (
                                                             <Link
-                                                                href={`/recursos/cuentacuentos/${selectedBook.id}/fr`}
+                                                                href={`/material/cuentacuentos/${selectedBook.id}/fr`}
                                                                 onClick={(e) => setIsLangMenuOpen(false)}
                                                                 className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                     isMaximized
@@ -740,7 +740,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
                                                         {selectedBook?.contentDe && (
                                                             <Link
-                                                                href={`/recursos/cuentacuentos/${selectedBook.id}/de`}
+                                                                href={`/material/cuentacuentos/${selectedBook.id}/de`}
                                                                 onClick={(e) => setIsLangMenuOpen(false)}
                                                                 className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                     isMaximized
@@ -804,7 +804,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 <div className="relative z-10">
                     <div className="mb-8">
                         <Link
-                            href="/recursos"
+                            href="/material"
                             className="inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 font-bold transition-colors bg-white/60 hover:bg-white/80 px-4 py-2 rounded-2xl border border-white/50 shadow-sm backdrop-blur-sm"
                         >
                             <ArrowLeft weight="bold" /> {t.storyteller.backToResources}
@@ -829,7 +829,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                 className="group relative cursor-pointer"
                                 onClick={() => {
                                     setSelectedBook(book);
-                                    router.push(`/recursos/cuentacuentos/${book.id}`);
+                                    router.push(`/material/cuentacuentos/${book.id}`);
                                 }}
                             >
                                 {/* Sombra Dinámica */}

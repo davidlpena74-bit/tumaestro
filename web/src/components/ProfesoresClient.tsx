@@ -224,7 +224,7 @@ export default function ProfesoresClient() {
                                         </p>
 
                                         <Link
-                                            href="/recursos"
+                                            href="/material"
                                             className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                         >
                                             EXPLORAR RECURSOS

@@ -42,12 +42,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             'mejores cuentos para niños'
         ],
         alternates: {
-            canonical: `/recursos/cuentacuentos/${slug}`,
+            canonical: `/material/cuentacuentos/${slug}`,
             languages: {
-                'es': `/recursos/cuentacuentos/${slug}`,
-                'en': `/recursos/cuentacuentos/${slug}/en`,
-                'fr': `/recursos/cuentacuentos/${slug}/fr`,
-                'de': `/recursos/cuentacuentos/${slug}/de`,
+                'es': `/material/cuentacuentos/${slug}`,
+                'en': `/material/cuentacuentos/${slug}/en`,
+                'fr': `/material/cuentacuentos/${slug}/fr`,
+                'de': `/material/cuentacuentos/${slug}/de`,
             }
         }
     };

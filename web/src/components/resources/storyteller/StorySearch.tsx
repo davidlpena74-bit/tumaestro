@@ -89,9 +89,9 @@ export default function StorySearch({ books }: StorySearchProps) {
         setIsOpen(false);
         // Navigate to the book in the CURRENT language
         if (language === 'es') {
-            router.push(`/recursos/cuentacuentos/${bookId}`);
+            router.push(`/material/cuentacuentos/${bookId}`);
         } else {
-            router.push(`/recursos/cuentacuentos/${bookId}/${language}`);
+            router.push(`/material/cuentacuentos/${bookId}/${language}`);
         }
     };
 

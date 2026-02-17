@@ -79,6 +79,8 @@ import { BackgroundProvider } from "@/context/BackgroundContext";
 import PageBackground from "@/components/PageBackground";
 import ContentWrapper from "@/components/ContentWrapper";
 
+import { ToastProvider } from "@/context/ToastContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -91,11 +93,13 @@ export default function RootLayout({
       >
         <LanguageProvider>
           <BackgroundProvider>
-            <PageBackground />
-            <Header />
-            <ContentWrapper>
-              {children}
-            </ContentWrapper>
+            <ToastProvider>
+              <PageBackground />
+              <Header />
+              <ContentWrapper>
+                {children}
+              </ContentWrapper>
+            </ToastProvider>
           </BackgroundProvider>
           <CookieConsent />
         </LanguageProvider>

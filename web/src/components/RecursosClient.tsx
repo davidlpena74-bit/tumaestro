@@ -104,7 +104,7 @@ export default function RecursosClient() {
                                     </p>
 
                                     <Link
-                                        href="/recursos/cuentacuentos"
+                                        href="/material/cuentacuentos"
                                         className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
                                         EXPLORAR BIBLIOTECA
@@ -159,7 +159,7 @@ export default function RecursosClient() {
                                         </p>
 
                                         <Link
-                                            href="/recursos/dictados"
+                                            href="/material/dictados"
                                             className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black rounded-2xl shadow-xl shadow-purple-500/20 hover:shadow-purple-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                         >
                                             EMPEZAR A PRACTICAR
@@ -227,7 +227,7 @@ export default function RecursosClient() {
                                     </p>
 
                                     <Link
-                                        href="/recursos/profesor-lectura"
+                                        href="/material/profesor-lectura"
                                         className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
                                         EMPEZAR A ENTRENAR
@@ -277,7 +277,7 @@ export default function RecursosClient() {
                                     </p>
 
                                     <Link
-                                        href="/recursos/inteligencia"
+                                        href="/material/inteligencia"
                                         className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
                                         VER DESAFÍOS

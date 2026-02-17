@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useToast } from '@/context/ToastContext';
 import {
     Play,
     Pause,
@@ -34,6 +35,7 @@ export default function ReadingTeacherTool() {
     const { t, language } = useLanguage();
     const [selectedText, setSelectedText] = useState<ReadingText | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const { error: toastError } = useToast();
     const [isPaused, setIsPaused] = useState(false);
     const [isSlow, setIsSlow] = useState(false);
     const [focusMode, setFocusMode] = useState(false);
@@ -490,7 +492,7 @@ export default function ReadingTeacherTool() {
     const toggleListening = () => {
         if (!recognitionRef.current) {
             console.error('❌ Recognition not initialized');
-            alert("Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.");
+            toastError("Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.");
             return;
         }
 
@@ -530,7 +532,7 @@ export default function ReadingTeacherTool() {
                     setIsListening(true);
                     startAudioVisualization();
                 } else {
-                    alert('Error al iniciar el reconocimiento de voz: ' + e.message);
+                    toastError('Error al iniciar el reconocimiento de voz: ' + e.message);
                 }
             }
         }
@@ -625,7 +627,7 @@ export default function ReadingTeacherTool() {
             <div className="w-full max-w-6xl mx-auto p-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
                 <div className="mb-8">
                     <Link
-                        href="/recursos"
+                        href="/material"
                         className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-all bg-white/40 hover:bg-white/80 px-6 py-3 rounded-2xl border border-slate-200 hover:shadow-lg active:scale-95"
                     >
                         <ArrowLeft weight="bold" /> {t.readingTeacher.backToResources}

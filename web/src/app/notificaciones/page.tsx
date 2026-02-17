@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Check, Trash, ArrowLeft, Warning, Info, Megaphone, UserPlus, CheckCircle } from '@phosphor-icons/react';
 import Link from 'next/link';
+import { useToast } from '@/context/ToastContext';
 
 type Notification = {
     id: string;
@@ -23,6 +24,7 @@ export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'unread'>('all');
+    const { success, error } = useToast();
 
     useEffect(() => {
         let subscription: any;
@@ -100,27 +102,79 @@ export default function NotificationsPage() {
         }
         if (!user) return;
 
+        console.log("Accepting request:", notification);
+
         const other_party_id = notification.data?.teacher_id || notification.data?.sender_id || notification.data?.student_id;
         const class_id = notification.data?.class_id;
 
         if (!other_party_id) {
             console.error("No target ID found in notification data", notification);
+            error('Error: Datos inválidos en notificación');
             return;
         }
 
-        // Use RPC to accept both connection and class invitation atomically
-        const { error: acceptError } = await supabase.rpc('accept_class_invitation', {
+        // Strategy 1: RPC Call (Preferred - Atomic & Permission Safe)
+        const { error: rpcError } = await supabase.rpc('accept_class_invitation', {
             target_user_id: other_party_id,
             target_class_id: class_id || null
         });
 
-        if (!acceptError) {
-            // Mark notification as read via our robust function
+        if (!rpcError) {
             await markAsRead(notification.id);
-            alert('¡Solicitud aceptada correctamente!');
-        } else {
-            console.error("Error accepting connection:", acceptError);
-            alert('Error al aceptar la solicitud: ' + (acceptError.message || 'Error desconocido'));
+            success('¡Solicitud aceptada correctamente!');
+            fetchNotifications(user.id);
+            return;
+        }
+
+        console.error("RPC Error:", rpcError);
+
+        // Strategy 2: Manual Update Fallback
+        // This is needed if the RPC is not deployed or fails for unknown reasons.
+        // It handles the connection update directly.
+        try {
+            const myId = user.id;
+
+            // Try updating connection as Student (most common case for this UI)
+            const { error: updateError } = await supabase
+                .from('student_teachers')
+                .update({ status: 'accepted' })
+                .eq('student_id', myId)
+                .eq('teacher_id', other_party_id);
+
+            if (updateError) {
+                // If that fails, try as Teacher (maybe a teacher accepting student request?)
+                const { error: updateError2 } = await supabase
+                    .from('student_teachers')
+                    .update({ status: 'accepted' })
+                    .eq('teacher_id', myId)
+                    .eq('student_id', other_party_id);
+
+                if (updateError2) {
+                    throw new Error(updateError.message || updateError2.message || "No se pudo actualizar la conexión");
+                }
+            }
+
+            // Successful connection update. Now handle class enrollment if needed.
+            if (class_id) {
+                const { error: classError } = await supabase
+                    .from('class_students')
+                    .insert({ class_id: class_id, student_id: myId }) // Assuming I am student
+                    .select();
+
+                if (classError && classError.code !== '23505') {
+                    console.error("Class enrollment failed:", classError);
+                    // Allow partial success (connection only)
+                    error("Conectado, pero hubo error al unirse a la clase. Intenta recargar.");
+                }
+            }
+
+            await markAsRead(notification.id);
+            success('Solicitud aceptada (Manual)');
+            fetchNotifications(user.id);
+
+        } catch (err: any) {
+            console.error("Fallback failed:", err);
+            error('Error al aceptar: ' + (err.message || rpcError.message || 'Error desconocido'));
         }
     };
 

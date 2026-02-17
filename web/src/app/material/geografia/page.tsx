@@ -61,7 +61,7 @@ export default function GeografiaPage() {
     return (
         <main className="min-h-screen bg-slate-950 text-white p-4 md:p-8">
             <div className="max-w-5xl mx-auto">
-                <Link href="/recursos" className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors mb-8">
+                <Link href="/material" className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 transition-colors mb-8">
                     <ArrowLeft className="w-4 h-4" /> Volver a Biblioteca
                 </Link>
 

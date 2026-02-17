@@ -6,8 +6,8 @@ const SITE_URL = 'https://tumaestro.es';
 // Base routes
 const staticRoutes = [
     '',
-    '/profesores',
-    '/recursos',
+    '/clases',
+    '/material',
     '/juegos',
     '/login',
     '/registro',
@@ -17,11 +17,11 @@ const staticRoutes = [
 
 // Resources
 const resourceRoutes = [
-    '/recursos/cuentacuentos',
-    '/recursos/dictados',
-    '/recursos/geografia',
-    '/recursos/idiomas',
-    '/recursos/matematicas',
+    '/material/cuentacuentos',
+    '/material/dictados',
+    '/material/geografia',
+    '/material/idiomas',
+    '/material/matematicas',
 ];
 
 // Get games dynamically from directory
@@ -51,7 +51,7 @@ try {
 
     while ((match = idRegex.exec(booksContent)) !== null) {
         if (match[1]) {
-            storyRoutes.push(`/recursos/cuentacuentos/${match[1]}`);
+            storyRoutes.push(`/material/cuentacuentos/${match[1]}`);
         }
     }
     console.log(`Found ${storyRoutes.length} stories.`);

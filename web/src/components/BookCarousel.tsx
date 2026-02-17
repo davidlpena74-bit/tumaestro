@@ -80,7 +80,7 @@ export default function BookCarousel() {
             {displayBooks.map((book, index) => (
                 <Link
                     key={`${book.id}-${index}`}
-                    href={`/recursos/cuentacuentos/${book.id}`}
+                    href={`/material/cuentacuentos/${book.id}`}
                     className="min-w-[140px] w-[140px] md:min-w-[160px] md:w-[160px] inline-block group relative aspect-[3/4] rounded-xl overflow-hidden shadow-lg border border-white/10 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 hover:-translate-y-2"
                 >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
