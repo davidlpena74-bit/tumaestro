@@ -25,6 +25,7 @@ export default function NotificationsPage() {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'unread'>('all');
     const { success, error } = useToast();
+    const [tooltipOpen, setTooltipOpen] = useState(false);
 
     useEffect(() => {
         let subscription: any;
@@ -243,33 +244,54 @@ export default function NotificationsPage() {
         );
     }
 
+
+
     return (
         <main className="min-h-screen pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto relative z-10">
-                <header className="mb-16 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-2 text-slate-500 hover:text-teal-600 font-bold text-sm mb-6 transition-colors group cursor-pointer"
-                        onClick={() => router.push('/dashboard')}
-                    >
-                        <ArrowLeft className="group-hover:-translate-x-1 transition-transform" weight="bold" />
-                        Volver al Panel
-                    </motion.div>
+                <header className="max-w-4xl mx-auto mb-12 relative">
+                    <div className="flex items-center justify-center mb-6 relative">
+                        <motion.button
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onMouseEnter={() => setTooltipOpen(true)}
+                            onMouseLeave={() => setTooltipOpen(false)}
+                            onClick={() => router.push('/dashboard')}
+                            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-11 h-11 bg-white rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-100 transition-all z-20"
+                        >
+                            <ArrowLeft size={20} weight="bold" />
+                            <AnimatePresence>
+                                {tooltipOpen && (
+                                    <motion.span
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50"
+                                    >
+                                        Volver al Panel
+                                    </motion.span>
+                                )}
+                            </AnimatePresence>
+                        </motion.button>
 
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
-                    >
-                        Notificaciones
-                    </motion.h1>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight text-center"
+                        >
+                            Notificaciones
+                        </motion.h1>
+                    </div>
+
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-slate-700 font-medium max-w-2xl mx-auto mt-2"
+                        className="text-xl text-slate-700 font-medium max-w-2xl mx-auto text-center"
                     >
                         Gestiona tus avisos y solicitudes de conexión de forma centralizada.
                     </motion.p>

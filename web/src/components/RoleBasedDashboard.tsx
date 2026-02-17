@@ -707,7 +707,28 @@ export default function RoleBasedDashboard() {
 
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-            <div className="flex justify-end mb-2">
+            <header className="max-w-4xl mx-auto mb-12 relative text-center">
+                <motion.h1
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-4"
+                >
+                    {isTeacher ? 'Panel del Profesor' : 'Panel del Alumno'}
+                </motion.h1>
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-xl text-slate-700 font-medium max-w-2xl mx-auto"
+                >
+                    {isTeacher
+                        ? 'Gestiona tus clases, alumnos y tareas desde un solo lugar.'
+                        : 'Accede a tus clases, consulta tareas y conecta con tus profesores.'}
+                </motion.p>
+            </header>
+
+            <div className="flex justify-end mb-6">
                 <button
                     onClick={() => setShowHelp(!showHelp)}
                     className="flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-colors text-sm font-bold bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100"
