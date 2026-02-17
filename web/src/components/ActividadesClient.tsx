@@ -1045,4 +1045,3 @@ export default function ActividadesClient() {
         </main>
     );
 }
-
