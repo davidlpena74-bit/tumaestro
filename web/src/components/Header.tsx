@@ -334,10 +334,7 @@ export default function Header() {
                                                         <Link
                                                             key={n.id}
                                                             href="/notificaciones"
-                                                            onClick={async () => {
-                                                                setNotifMenuOpen(false);
-                                                                await markAsRead(n.id);
-                                                            }}
+                                                            onClick={() => setNotifMenuOpen(false)}
                                                             className="block relative px-4 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors bg-blue-50/40"
                                                         >
                                                             <div className="flex items-center gap-2 mb-1">
@@ -345,7 +342,7 @@ export default function Header() {
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                                                             </div>
                                                             <p className="text-slate-500 text-xs leading-relaxed">{n.message}</p>
-                                                            <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleDateString()}</p>
+                                                            <p className="text-[10px] text-slate-400 mt-2">{new Date(n.created_at).toLocaleString()}</p>
                                                         </Link>
                                                     ))
                                             )}
