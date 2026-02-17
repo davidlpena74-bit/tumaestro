@@ -26,7 +26,7 @@ interface GameHUDProps {
     gameType?: string;
 
     // Customization
-    colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow' | 'cyan';
+    colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow' | 'cyan' | 'rose';
     icon?: React.ReactNode;
     gameMode?: 'challenge' | 'practice';
     elapsedTime?: number;
@@ -40,6 +40,7 @@ const THEMES = {
     teal: { bg: 'bg-teal-500/20', text: 'text-teal-400', border: 'border-teal-400', sub: 'text-teal-300' },
     yellow: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-400', sub: 'text-yellow-300' },
     cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', border: 'border-cyan-400', sub: 'text-cyan-300' },
+    rose: { bg: 'bg-violet-500/20', text: 'text-violet-400', border: 'border-violet-400', sub: 'text-violet-300' },
 };
 
 export default function GameHUD({

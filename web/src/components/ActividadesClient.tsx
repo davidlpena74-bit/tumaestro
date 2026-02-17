@@ -563,6 +563,48 @@ export default function ActividadesClient() {
             ]
         },
         {
+            id: 'idiomas',
+            title: t.gamesPage.regions.languages,
+            icon: Translate,
+            colorTheme: 'from-violet-600 to-purple-800',
+            subsections: [
+                {
+                    games: [
+                        {
+                            id: 'verbos-irregulares',
+                            title: t.gamesPage.gameTitles.verbs,
+                            description: t.gamesPage.gameTitles.verbsDesc,
+                            href: '/actividades/verbos-irregulares',
+                            icon: Translate,
+                            color: 'from-violet-500 to-purple-600',
+                            grade: '5º Prim.',
+                            gameType: t.gamesPage.gameTypes.verbs
+                        },
+                        {
+                            id: 'verbos-irregulares-pro',
+                            title: "Verbos Irregulares PRO",
+                            description: "Dinamismo total con 100 verbos irregulares para expertos.",
+                            href: '/actividades/verbos-irregulares-pro',
+                            icon: Translate,
+                            color: 'from-violet-600 to-indigo-700',
+                            grade: '6º Prim.',
+                            gameType: t.gamesPage.gameTypes.verbs
+                        },
+                        {
+                            id: 'verbos-irregulares-master',
+                            title: "Verbos Irregulares MASTER",
+                            description: "El reto supremo con 150 verbos para dominar el idioma.",
+                            href: '/actividades/verbos-irregulares-master',
+                            icon: Translate,
+                            color: 'from-violet-600 to-indigo-700',
+                            grade: 'Expert',
+                            gameType: t.gamesPage.gameTypes.verbs
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             id: 'math',
             title: t.gamesPage.categories.math,
             icon: Calculator,
@@ -589,28 +631,6 @@ export default function ActividadesClient() {
                             color: 'from-orange-500 to-amber-600',
                             grade: '2º Prim.',
                             gameType: t.gamesPage.gameTypes.math
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            id: 'idiomas',
-            title: t.gamesPage.regions.languages,
-            icon: Translate,
-            colorTheme: 'from-pink-600 to-rose-800',
-            subsections: [
-                {
-                    games: [
-                        {
-                            id: 'verbos-irregulares',
-                            title: t.gamesPage.gameTitles.verbs,
-                            description: t.gamesPage.gameTitles.verbsDesc,
-                            href: '/actividades/verbos-irregulares',
-                            icon: Translate,
-                            color: 'from-pink-500 to-rose-600',
-                            grade: '5º Prim.',
-                            gameType: t.gamesPage.gameTypes.verbs
                         }
                     ]
                 }
@@ -722,8 +742,7 @@ export default function ActividadesClient() {
                                     category.id === 'geography' && "text-emerald-600",
                                     category.id === 'biology' && "text-blue-600",
                                     category.id === 'math' && "text-orange-600",
-                                    category.id === 'idiomas' && "text-pink-600",
-                                    category.id === 'intelligence' && "text-amber-600"
+                                    category.id === 'idiomas' && "text-violet-600"
                                 )} weight="duotone" />
 
                                 <span className="relative z-10 tracking-tight text-center whitespace-nowrap">{category.title}</span>

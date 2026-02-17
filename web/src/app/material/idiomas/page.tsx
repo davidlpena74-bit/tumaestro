@@ -20,7 +20,7 @@ export default function IdiomasPage() {
 
                 <div className="grid gap-4">
                     {/* Game Card */}
-                    <Link href="/juegos/verbos-irregulares" className="bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition group flex items-center justify-between">
+                    <Link href="/actividades/verbos-irregulares" className="bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition group flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-pink-500/20 rounded-xl text-pink-400">
                                 <Gamepad2 className="w-6 h-6" />

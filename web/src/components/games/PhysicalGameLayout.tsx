@@ -11,7 +11,7 @@ interface PhysicalGameLayoutProps {
     title: string;
     description: string;
     children: React.ReactNode;
-    colorTheme?: 'emerald' | 'blue' | 'teal';
+    colorTheme?: 'emerald' | 'blue' | 'teal' | 'rose' | 'yellow';
 }
 
 export default function PhysicalGameLayout({
@@ -26,7 +26,9 @@ export default function PhysicalGameLayout({
     const themeColors = {
         emerald: 'bg-emerald-500/10 bg-teal-600/10',
         blue: 'bg-blue-500/10 bg-cyan-600/10',
-        teal: 'bg-teal-500/10 bg-emerald-600/10'
+        teal: 'bg-teal-500/10 bg-emerald-600/10',
+        rose: 'bg-violet-500/10 bg-purple-600/10',
+        yellow: 'bg-amber-500/10 bg-yellow-600/10'
     };
 
     const gradientClasses = themeColors[colorTheme as keyof typeof themeColors] || themeColors.emerald;

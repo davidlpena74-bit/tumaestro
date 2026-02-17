@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer } from 'lucide-react';
+import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer, Crown } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
-import { IRREGULAR_VERBS, type IrregularVerb } from './data/irregular-verbs';
+import { IRREGULAR_VERBS_MASTER, type IrregularVerb } from './data/irregular-verbs-master';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import GameHUD from './GameHUD';
 
-export default function IrregularVerbsGame({ taskId = null }: { taskId?: string | null }) {
+export default function IrregularVerbsMasterGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [verbs, setVerbs] = useState<IrregularVerb[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,13 +31,13 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 0, gameMode, taskId });
+    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode, taskId }); // 5 minutes for 150 verbs
 
 
     const startNewGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
-        const shuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
-        setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 10));
+        const shuffled = [...IRREGULAR_VERBS_MASTER].sort(() => Math.random() - 0.5);
+        setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 20)); // 20 for practice in Master
         setCurrentIndex(0);
         setStreak(0);
         hookStartGame();
@@ -95,14 +95,32 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
 
         if (correctSimple && correctParticiple) {
             setShowResult('correct');
-            addScore(10 + (streak * 2));
+            addScore(20 + (streak * 5)); // More points for Master
             setStreak(prev => prev + 1);
             setMessage(t.common.correct + ' ✅');
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+
+            // Grand finale confetti
+            const duration = 3 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min: number, max: number) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval: any = setInterval(function () {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                // since particles fall down, start a bit higher than random
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+            }, 250);
+
         } else {
             setShowResult('incorrect');
             setStreak(0);
@@ -115,7 +133,7 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
         setMessage('');
         if (gameMode === 'challenge') {
             if (currentIndex >= verbs.length - 1) {
-                const reshuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
+                const reshuffled = [...IRREGULAR_VERBS_MASTER].sort(() => Math.random() - 0.5);
                 setVerbs(reshuffled);
                 setCurrentIndex(0);
             } else {
@@ -150,48 +168,55 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                 timeLeft={timeLeft}
                 elapsedTime={elapsedTime}
                 gameMode={gameMode}
-                totalTargets={verbs.length || IRREGULAR_VERBS.length}
-                remainingTargets={(verbs.length || IRREGULAR_VERBS.length) - currentIndex}
+                totalTargets={verbs.length || IRREGULAR_VERBS_MASTER.length}
+                remainingTargets={(verbs.length || IRREGULAR_VERBS_MASTER.length) - currentIndex}
                 targetName={currentVerb ? currentVerb.translation : ''}
                 message={message}
                 onReset={resetGame}
                 colorTheme="purple"
-                icon={<BookOpen className="w-8 h-8 text-violet-600" />}
+                icon={<Crown className="w-8 h-8 text-purple-400 fill-purple-400/20" />}
             />
 
-            <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
+            <div className="relative w-full min-h-[500px] bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
                 {/* START OVERLAY */}
                 {gameState === 'start' && (
-                    <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center">
-                        <div className="bg-violet-500/10 p-6 rounded-full mb-6 ring-1 ring-violet-500/30">
-                            <BookOpen className="w-16 h-16 text-violet-500" />
+                    <div className="absolute inset-0 z-50 bg-black/70 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center">
+                        <div className="relative">
+                            <div className="bg-purple-500/10 p-6 rounded-full mb-6 ring-2 ring-purple-500/30">
+                                <Crown className="w-16 h-16 text-purple-500 animate-pulse" />
+                            </div>
+                            <div className="absolute -top-2 -right-2 bg-slate-950 text-purple-400 font-black text-xs px-3 py-1.5 rounded-lg rotate-12 shadow-[0_0_20px_rgba(139,92,246,0.3)] border border-purple-500/50">
+                                MASTER
+                            </div>
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Verbos Irregulares</h2>
-                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                            Domina el inglés practicando los verbos más importantes. ¿Te los sabes todos?
+                        <h2 className="text-3xl md:text-6xl font-black text-white mb-4 tracking-tighter uppercase italic">
+                            The <span className="text-purple-400">Master</span> Challenge
+                        </h2>
+                        <p className="text-purple-100/70 mb-8 max-w-md text-lg leading-relaxed font-medium">
+                            El desafío definitivo: 150 verbos irregulares. Solo para auténticos maestros del inglés.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                             <button
                                 onClick={() => startNewGame('challenge')}
-                                className="group relative px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(139,92,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(139,92,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative px-10 py-5 bg-purple-600 hover:bg-purple-500 text-white font-black text-xl rounded-2xl transition-all shadow-[0_0_50px_-10px_rgba(139,92,246,0.5)] hover:shadow-[0_0_70px_-10px_rgba(139,92,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
-                                        MODO RETO <Trophy className="w-5 h-5 opacity-50" />
+                                        NIVEL MASTER <Trophy className="w-5 h-5" />
                                     </div>
-                                    <span className="text-xs opacity-70 font-bold tracking-wider">TIEMPO LÍMITE</span>
+                                    <span className="text-xs opacity-70 font-bold tracking-widest">150 VERBOS • 5 MIN</span>
                                 </span>
                             </button>
 
                             <button
                                 onClick={() => startNewGame('practice')}
-                                className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative px-10 py-5 bg-slate-800 hover:bg-slate-700 text-white font-black text-xl rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
                                         PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
                                     </div>
-                                    <span className="text-xs opacity-50 font-bold tracking-wider">10 VERBOS</span>
+                                    <span className="text-xs opacity-50 font-bold tracking-widest">20 VERBOS</span>
                                 </span>
                             </button>
                         </div>
@@ -200,27 +225,23 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
 
                 {/* FINISHED OVERLAY */}
                 {gameState === 'finished' && (
-                    <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
-                        <div className="bg-violet-500/10 p-4 rounded-full mb-6 ring-1 ring-violet-500/30">
-                            {gameMode === 'challenge' && timeLeft === 0 ? (
-                                <Timer className="w-16 h-16 text-red-500 animate-pulse" />
-                            ) : (
-                                <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
-                            )}
+                    <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in zoom-in duration-500">
+                        <div className="bg-purple-500/10 p-6 rounded-full mb-6 ring-2 ring-purple-500/50 shadow-[0_0_50px_rgba(139,92,246,0.3)]">
+                            <Crown className="w-20 h-20 text-purple-400 animate-bounce" />
                         </div>
-                        <h2 className="text-4xl font-bold text-white mb-2">
-                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
+                        <h2 className="text-5xl font-black text-white mb-2 tracking-tighter uppercase italic">
+                            ¡Nivel Master <span className="text-purple-400">Alcanzado</span>!
                         </h2>
 
-                        <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                            <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
+                        <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-10 rounded-[3rem] border border-purple-500/20 shadow-[inset_0_0_40px_rgba(139,92,246,0.05)]">
+                            <span className="text-purple-400/60 text-xs uppercase tracking-[0.4em] font-black">Score Final Master</span>
+                            <span className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-purple-200 via-purple-500 to-purple-800 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
                                 {score}
                             </span>
                         </div>
 
-                        <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                            <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                        <button onClick={resetGame} className="flex items-center gap-3 px-10 py-4 bg-purple-600 hover:bg-purple-500 text-white font-black rounded-full transition-all hover:scale-105 shadow-xl shadow-purple-500/20 active:scale-95">
+                            <RefreshCw className="w-6 h-6" /> {t.common.playAgain}
                         </button>
                     </div>
                 )}
@@ -232,28 +253,28 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                             {currentVerb && (
                                 <motion.div
                                     key={currentVerb.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 20 }}
-                                    className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-[2rem] p-10 flex flex-col justify-center items-center text-center shadow-2xl relative group"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 1.1 }}
+                                    className="bg-gradient-to-br from-slate-800 to-slate-950 rounded-[2.5rem] p-12 flex flex-col justify-center items-center text-center shadow-2xl relative group border border-white/5"
                                 >
-                                    <div className="absolute top-4 right-4 text-white/20 font-black text-6xl select-none group-hover:text-white/30 transition-colors">
+                                    <div className="absolute top-6 right-8 text-white/5 font-black text-8xl select-none pointer-events-none italic">
                                         {currentIndex + 1}
                                     </div>
-                                    <div className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
-                                        <BookOpen className="w-10 h-10 text-white" />
+                                    <div className="w-24 h-24 bg-purple-500/10 rounded-3xl flex items-center justify-center mb-8 backdrop-blur-sm border border-purple-500/20 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                        <Crown className="w-12 h-12 text-purple-400" />
                                     </div>
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <h2 className="text-5xl font-black text-white capitalize tracking-tight">{currentVerb.infinitive}</h2>
+                                    <div className="flex items-center gap-4 mb-6 relative">
+                                        <h2 className="text-5xl md:text-6xl font-black text-white italic tracking-tighter uppercase">{currentVerb.infinitive}</h2>
                                         <button
                                             onClick={() => playAudio(currentVerb.infinitive)}
-                                            className="p-3 bg-white/20 hover:bg-white/30 rounded-full transition-all text-white hover:scale-110 active:scale-90 shadow-lg"
+                                            className="p-3 bg-white/5 hover:bg-purple-500/20 rounded-full transition-all text-white hover:text-purple-400 border border-white/10 hover:border-purple-500/30 hover:scale-110 active:scale-90 shadow-lg"
                                             title="Escuchar"
                                         >
                                             <Volume2 className="w-6 h-6" />
                                         </button>
                                     </div>
-                                    <p className="text-violet-100 text-xl font-medium px-4 py-2 bg-black/10 rounded-full">
+                                    <p className="text-purple-400/80 text-xl font-black px-6 py-2.5 bg-purple-500/5 rounded-2xl border border-purple-500/10 tracking-wide">
                                         {currentVerb.translation}
                                     </p>
                                 </motion.div>
@@ -261,45 +282,45 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                         </AnimatePresence>
 
                         <div className="space-y-6">
-                            <div className="bg-slate-900/40 p-8 rounded-[2rem] border border-white/10 space-y-6 shadow-xl backdrop-blur-sm">
+                            <div className="bg-slate-950/40 p-8 rounded-[2.5rem] border border-white/10 space-y-6 shadow-2xl backdrop-blur-xl">
                                 <div className="space-y-2">
-                                    <label className="block text-xs font-black text-violet-600 uppercase tracking-widest ml-1">Past Simple</label>
+                                    <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Simple</label>
                                     <input
                                         type="text"
                                         value={inputs.pastSimple}
                                         onChange={(e) => setInputs(prev => ({ ...prev, pastSimple: e.target.value }))}
                                         onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
                                         disabled={showResult !== null}
-                                        placeholder="Escribe aquí..."
-                                        className={`w-full bg-slate-950/50 border-2 rounded-2xl px-5 py-4 text-white text-lg outline-none transition-all
+                                        placeholder="Type here..."
+                                        className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
                                             ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
                                                 showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
-                                                    'border-white/10 focus:border-violet-600/50'}`}
+                                                    'border-white/10 focus:border-purple-500/30'}`}
                                     />
                                     {showResult === 'incorrect' && currentVerb && (
-                                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
-                                            <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastSimple}
+                                        <motion.p initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-sm font-bold mt-2 ml-2 flex items-center gap-2">
+                                            <div className="w-1 h-1 rounded-full bg-red-500" /> Correcto: <span className="text-white">{currentVerb.pastSimple}</span>
                                         </motion.p>
                                     )}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="block text-xs font-black text-violet-600 uppercase tracking-widest ml-1">Past Participle</label>
+                                    <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Participle</label>
                                     <input
                                         type="text"
                                         value={inputs.pastParticiple}
                                         onChange={(e) => setInputs(prev => ({ ...prev, pastParticiple: e.target.value }))}
                                         onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
                                         disabled={showResult !== null}
-                                        placeholder="Escribe aquí..."
-                                        className={`w-full bg-slate-950/50 border-2 rounded-2xl px-5 py-4 text-white text-lg outline-none transition-all
+                                        placeholder="Type here..."
+                                        className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
                                             ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
                                                 showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
-                                                    'border-white/10 focus:border-violet-600/50'}`}
+                                                    'border-white/10 focus:border-purple-500/30'}`}
                                     />
                                     {showResult === 'incorrect' && currentVerb && (
-                                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
-                                            <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastParticiple}
+                                        <motion.p initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-sm font-bold mt-2 ml-2 flex items-center gap-2">
+                                            <div className="w-1 h-1 rounded-full bg-red-500" /> Correcto: <span className="text-white">{currentVerb.pastParticiple}</span>
                                         </motion.p>
                                     )}
                                 </div>
@@ -309,21 +330,21 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                                 <button
                                     onClick={checkAnswer}
                                     disabled={!inputs.pastSimple || !inputs.pastParticiple}
-                                    className="w-full py-5 bg-white text-slate-900 rounded-2xl font-black text-lg hover:bg-violet-50 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-violet-500/10"
+                                    className="w-full py-6 bg-purple-600 text-white rounded-2xl font-black text-xl hover:bg-purple-500 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_20px_40px_-15px_rgba(139,92,246,0.3)] uppercase tracking-widest italic"
                                 >
-                                    COMPROBAR
+                                    VERIFICAR
                                 </button>
                             ) : (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="w-full flex flex-col gap-4"
+                                    className="w-full"
                                 >
                                     <button
                                         onClick={nextVerb}
-                                        className="w-full py-5 bg-violet-600 text-white rounded-2xl font-black text-lg hover:bg-violet-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-violet-500/20 flex items-center justify-center gap-3"
+                                        className="w-full py-6 bg-slate-100 text-slate-900 rounded-2xl font-black text-xl hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest italic"
                                     >
-                                        SIGUIENTE VERBO <ArrowRight className="w-6 h-6" />
+                                        SIGUIENTE NIVEL <ArrowRight className="w-6 h-6" />
                                     </button>
                                 </motion.div>
                             )}

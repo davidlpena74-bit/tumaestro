@@ -9,9 +9,9 @@ const SECTIONS = [
         title: 'Geografía de España',
         icon: <Map className="w-8 h-8 text-emerald-400" />,
         resources: [
-            { title: 'Mapa Interactivo: Provincias', type: 'Game', link: '/juegos/mapa-provincias', category: 'Geografía' },
-            { title: 'Mapa Interactivo: Comunidades Autónomas', type: 'Game', link: '/juegos/mapa-comunidades', category: 'Geografía' },
-            { title: 'Mapa Interactivo: Ríos de España', type: 'Game', link: '/juegos/mapa-rios', category: 'Hidrografía' },
+            { title: 'Mapa Interactivo: Provincias', type: 'Game', link: '/actividades/mapa-provincias', category: 'Geografía' },
+            { title: 'Mapa Interactivo: Comunidades Autónomas', type: 'Game', link: '/actividades/mapa-comunidades', category: 'Geografía' },
+            { title: 'Mapa Interactivo: Ríos de España', type: 'Game', link: '/actividades/mapa-rios', category: 'Hidrografía' },
             { title: 'Climas de España: Esquema Completo', type: 'PDF', category: 'PAU / Bachillerato', isDownload: true },
         ]
     },
@@ -20,9 +20,9 @@ const SECTIONS = [
         title: 'Geografía de Europa',
         icon: <Globe2 className="w-8 h-8 text-blue-400" />,
         resources: [
-            { title: 'Mapa Interactivo: Países de Europa', type: 'Game', link: '/juegos/mapa-europa', category: 'Geografía Política' },
-            { title: 'Ríos de Europa: Reto Interactivo', type: 'Game', link: '/juegos/rios-europa', category: 'Hidrografía' },
-            { title: 'Capitales de Europa: Quiz', type: 'Game', link: '/juegos/capitales-europa', category: 'Cultura General' },
+            { title: 'Mapa Interactivo: Países de Europa', type: 'Game', link: '/actividades/mapa-europa', category: 'Geografía Política' },
+            { title: 'Ríos de Europa: Reto Interactivo', type: 'Game', link: '/actividades/rios-europa', category: 'Hidrografía' },
+            { title: 'Capitales de Europa: Quiz', type: 'Game', link: '/actividades/capitales-europa', category: 'Cultura General' },
             { title: 'La Unión Europea: Instituciones y Países', type: 'PDF', category: 'Geografía Política', isDownload: true },
         ]
     },
@@ -31,7 +31,7 @@ const SECTIONS = [
         title: 'Geografía de América',
         icon: <Landmark className="w-8 h-8 text-amber-400" />,
         resources: [
-            { title: 'Mapa Interactivo: Países de América', type: 'Game', link: '/juegos/mapa-america', category: 'Geografía Política' },
+            { title: 'Mapa Interactivo: Países de América', type: 'Game', link: '/actividades/mapa-america', category: 'Geografía Política' },
             { title: 'Relieve de América: Cordilleras y Llanuras', type: 'PDF', category: 'Geografía Física', isDownload: true },
             { title: 'Capitales de América Latina', type: 'Quiz', category: 'Geografía Política' },
             { title: 'Hidrografía: El Amazonas y grandes ríos', type: 'Doc', category: 'Hidrografía', isDownload: true },
@@ -42,7 +42,7 @@ const SECTIONS = [
         title: 'Geografía de África',
         icon: <Globe2 className="w-8 h-8 text-orange-400" />,
         resources: [
-            { title: 'Mapa Interactivo: Países de África', type: 'Game', link: '/juegos/mapa-africa', category: 'Geografía Política' },
+            { title: 'Mapa Interactivo: Países de África', type: 'Game', link: '/actividades/mapa-africa', category: 'Geografía Política' },
             { title: 'Relieve Africano y Grandes Lagos', type: 'PDF', category: 'Geografía Física', isDownload: true },
         ]
     },
@@ -51,7 +51,7 @@ const SECTIONS = [
         title: 'Asia y Oceanía',
         icon: <Globe2 className="w-8 h-8 text-violet-400" />,
         resources: [
-            { title: 'Mapa Interactivo: Asia y Oceanía', type: 'Game', link: '/juegos/mapa-asia-oceania', category: 'Geografía Política' },
+            { title: 'Mapa Interactivo: Asia', type: 'Game', link: '/actividades/mapa-asia', category: 'Geografía Política' },
             { title: 'Economía: Los tigres asiáticos', type: 'PDF', category: 'Geografía Humana', isDownload: true },
         ]
     }

@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer } from 'lucide-react';
+import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer, Star } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
-import { IRREGULAR_VERBS, type IrregularVerb } from './data/irregular-verbs';
+import { IRREGULAR_VERBS_PRO, type IrregularVerb } from './data/irregular-verbs-pro';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import GameHUD from './GameHUD';
 
-export default function IrregularVerbsGame({ taskId = null }: { taskId?: string | null }) {
+export default function IrregularVerbsProGame({ taskId = null }: { taskId?: string | null }) {
     const { t, language } = useLanguage();
     const [verbs, setVerbs] = useState<IrregularVerb[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,13 +31,13 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 0, gameMode, taskId });
+    } = useGameLogic({ initialTime: 180, penaltyTime: 0, gameMode, taskId }); // More time for more verbs
 
 
     const startNewGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
-        const shuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
-        setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 10));
+        const shuffled = [...IRREGULAR_VERBS_PRO].sort(() => Math.random() - 0.5);
+        setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 15)); // 15 for practice in pro
         setCurrentIndex(0);
         setStreak(0);
         hookStartGame();
@@ -95,13 +95,14 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
 
         if (correctSimple && correctParticiple) {
             setShowResult('correct');
-            addScore(10 + (streak * 2));
+            addScore(15 + (streak * 3)); // More points for Pro
             setStreak(prev => prev + 1);
             setMessage(t.common.correct + ' ✅');
             confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#8b5cf6', '#d946ef', '#ffffff']
             });
         } else {
             setShowResult('incorrect');
@@ -115,7 +116,7 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
         setMessage('');
         if (gameMode === 'challenge') {
             if (currentIndex >= verbs.length - 1) {
-                const reshuffled = [...IRREGULAR_VERBS].sort(() => Math.random() - 0.5);
+                const reshuffled = [...IRREGULAR_VERBS_PRO].sort(() => Math.random() - 0.5);
                 setVerbs(reshuffled);
                 setCurrentIndex(0);
             } else {
@@ -150,25 +151,32 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                 timeLeft={timeLeft}
                 elapsedTime={elapsedTime}
                 gameMode={gameMode}
-                totalTargets={verbs.length || IRREGULAR_VERBS.length}
-                remainingTargets={(verbs.length || IRREGULAR_VERBS.length) - currentIndex}
+                totalTargets={verbs.length || IRREGULAR_VERBS_PRO.length}
+                remainingTargets={(verbs.length || IRREGULAR_VERBS_PRO.length) - currentIndex}
                 targetName={currentVerb ? currentVerb.translation : ''}
                 message={message}
                 onReset={resetGame}
                 colorTheme="purple"
-                icon={<BookOpen className="w-8 h-8 text-violet-600" />}
+                icon={<Star className="w-8 h-8 text-yellow-500 fill-yellow-500" />}
             />
 
             <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
                 {/* START OVERLAY */}
                 {gameState === 'start' && (
                     <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center">
-                        <div className="bg-violet-500/10 p-6 rounded-full mb-6 ring-1 ring-violet-500/30">
-                            <BookOpen className="w-16 h-16 text-violet-500" />
+                        <div className="relative">
+                            <div className="bg-violet-500/10 p-6 rounded-full mb-6 ring-1 ring-violet-500/30">
+                                <BookOpen className="w-16 h-16 text-violet-500" />
+                            </div>
+                            <div className="absolute -top-2 -right-2 bg-yellow-500 text-black font-black text-xs px-2 py-1 rounded-lg rotate-12 shadow-lg">
+                                PRO
+                            </div>
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Verbos Irregulares</h2>
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase flex items-center gap-4">
+                            Verbos Irregulares <span className="text-yellow-500">PRO</span>
+                        </h2>
                         <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                            Domina el inglés practicando los verbos más importantes. ¿Te los sabes todos?
+                            Nivel experto: 100 verbos irregulares para dominar el inglés por completo.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                             <button
@@ -177,9 +185,9 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
-                                        MODO RETO <Trophy className="w-5 h-5 opacity-50" />
+                                        MODO LEYENDA <Trophy className="w-5 h-5 text-yellow-500" />
                                     </div>
-                                    <span className="text-xs opacity-70 font-bold tracking-wider">TIEMPO LÍMITE</span>
+                                    <span className="text-xs opacity-70 font-bold tracking-wider">100 VERBOS • 3 MIN</span>
                                 </span>
                             </button>
 
@@ -191,7 +199,7 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                                     <div className="flex items-center gap-2">
                                         PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
                                     </div>
-                                    <span className="text-xs opacity-50 font-bold tracking-wider">10 VERBOS</span>
+                                    <span className="text-xs opacity-50 font-bold tracking-wider">15 VERBOS</span>
                                 </span>
                             </button>
                         </div>
@@ -209,11 +217,11 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                             )}
                         </div>
                         <h2 className="text-4xl font-bold text-white mb-2">
-                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
+                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Nivel Completado!'}
                         </h2>
 
                         <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                            <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
+                            <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Pro</span>
                             <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
                                 {score}
                             </span>
@@ -241,7 +249,7 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                                         {currentIndex + 1}
                                     </div>
                                     <div className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
-                                        <BookOpen className="w-10 h-10 text-white" />
+                                        <Star className="w-10 h-10 text-yellow-400" />
                                     </div>
                                     <div className="flex items-center gap-4 mb-4">
                                         <h2 className="text-5xl font-black text-white capitalize tracking-tight">{currentVerb.infinitive}</h2>
