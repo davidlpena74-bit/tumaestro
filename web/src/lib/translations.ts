@@ -201,7 +201,7 @@ export const TRANSLATIONS = {
                 linesA: 'Líneas de {a}',
                 linesB: 'Líneas de {b}'
             },
-            playBtn: 'JUGAR AHORA',
+            playBtn: 'ACCEDER',
             comingSoon: 'Pronto añadiremos más asignaturas como Historia y Lengua',
             regions: {
                 spain: 'España',
@@ -561,7 +561,7 @@ export const TRANSLATIONS = {
                 linesA: 'Lines for {a}',
                 linesB: 'Lines for {b}'
             },
-            playBtn: 'PLAY NOW',
+            playBtn: 'ACCESS',
             comingSoon: 'Soon we will add more subjects like History and Language',
             regions: {
                 spain: 'Spain',
@@ -920,7 +920,7 @@ export const TRANSLATIONS = {
                 linesA: 'Lignes pour {a}',
                 linesB: 'Lignes pour {b}'
             },
-            playBtn: 'JOUER MAINTENANT',
+            playBtn: 'ACCÉDER',
             comingSoon: 'Bientôt nous ajouterons plus de matières comme l\'Histoire et la Langue',
             regions: {
                 spain: 'Espagne',
@@ -1274,7 +1274,7 @@ export const TRANSLATIONS = {
                 linesA: 'Linien für {a}',
                 linesB: 'Linien für {b}'
             },
-            playBtn: 'JETZT SPIELEN',
+            playBtn: 'ÖFFNEN',
             comingSoon: 'Bald werden wir weitere Fächer wie Geschichte und Sprache hinzufügen',
             regions: {
                 spain: 'Spanien',
