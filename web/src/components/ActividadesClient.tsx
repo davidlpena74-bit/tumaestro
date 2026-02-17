@@ -62,8 +62,29 @@ export default function ActividadesClient() {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => { setMounted(true); }, []);
-    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [filterOpen, setFilterOpen] = useState(false);
+
+    // Handle hash scroll
+    useEffect(() => {
+        if (!mounted) return;
+
+        const handleHashScroll = () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                // Short delay to ensure content is rendered
+                setTimeout(() => {
+                    const element = document.getElementById(hash);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            }
+        };
+
+        handleHashScroll();
+        window.addEventListener('hashchange', handleHashScroll);
+        return () => window.removeEventListener('hashchange', handleHashScroll);
+    }, [mounted]);
 
     // Auth & Assignment State
     const [user, setUser] = useState<any>(null);
@@ -94,15 +115,21 @@ export default function ActividadesClient() {
                 }
             } catch (err: any) {
                 console.warn("Actividades auth session error:", err.message);
-                if (err.message?.includes('Refresh Token Not Found')) {
-                    await supabase.auth.signOut();
-                    setUser(null);
-                    setProfile(null);
-                }
             }
         };
         checkUser();
     }, []);
+
+    const scrollToCategory = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            // Updating hash manually as well to ensure URL matches
+            if (window.location.hash !== `#${id}`) {
+                window.history.pushState(null, '', `#${id}`);
+            }
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
 
     const handleAssign = async () => {
         if (!isAssigning || !selectedClassId || !user) return;
@@ -160,48 +187,6 @@ export default function ActividadesClient() {
     }, [filterOpen]);
 
     const categories: Category[] = [
-        {
-            id: 'intelligence',
-            title: t.gamesPage.categories.intelligence,
-            icon: Brain,
-            colorTheme: 'from-amber-400 to-orange-600',
-            subsections: [
-                {
-                    games: [
-                        {
-                            id: 'riddles',
-                            title: t.gamesPage.gameTitles.riddles,
-                            description: t.gamesPage.gameTitles.riddlesDesc,
-                            href: '/actividades/riddles',
-                            icon: Brain,
-                            color: 'from-amber-400 to-orange-500',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.logic
-                        },
-                        {
-                            id: 'logic',
-                            title: t.gamesPage.gameTitles.logic,
-                            description: t.gamesPage.gameTitles.logicDesc,
-                            href: '/actividades/logic',
-                            icon: PuzzlePiece,
-                            color: 'from-cyan-400 to-emerald-500',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.logic
-                        },
-                        {
-                            id: 'quiz',
-                            title: t.gamesPage.gameTitles.quiz,
-                            description: t.gamesPage.gameTitles.quizDesc,
-                            href: '/actividades/quiz-cultura',
-                            icon: Brain,
-                            color: 'from-violet-500 to-indigo-600',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.quiz
-                        }
-                    ]
-                }
-            ]
-        },
         {
             id: 'geography',
             title: t.gamesPage.categories.geography,
@@ -654,18 +639,13 @@ export default function ActividadesClient() {
                 ...cat,
                 subsections: cat.subsections.map(sub => ({
                     ...sub,
-                    games: sub.games.filter(game => game.grade === selectedGrade)
+                    games: sub.games.filter(game => game.grade === selectedGrade || game.grade === 'Todo')
                 })).filter(sub => sub.games.length > 0)
             })).filter(cat => cat.subsections.length > 0);
         }
 
-        // 2. Filter by Subject (Category ID) if one is selected
-        if (selectedSubject) {
-            result = result.filter(cat => cat.id === selectedSubject);
-        }
-
         return result;
-    }, [selectedGrade, selectedSubject, categories]);
+    }, [selectedGrade, categories]);
 
     // Categories available for the current grade (used for chips)
     const availableCategories = useMemo(() => {
@@ -711,14 +691,8 @@ export default function ActividadesClient() {
                             key={category.id}
                             href={`#${category.id}`}
                             onClick={(e) => {
-                                e.preventDefault();
-                                // Toggle subject filter
-                                if (selectedSubject === category.id) {
-                                    setSelectedSubject(null);
-                                } else {
-                                    setSelectedSubject(category.id);
-                                    document.getElementById(category.id)?.scrollIntoView({ behavior: 'smooth' });
-                                }
+                                e.preventDefault(); // Control scroll manually
+                                scrollToCategory(category.id);
                             }}
                             whileHover={{
                                 y: -8,
@@ -733,15 +707,9 @@ export default function ActividadesClient() {
                                 "group-hover:border-white/50 shadow-lg overflow-hidden",
                                 "flex flex-col items-center justify-center gap-3 preserve-3d",
                                 "text-slate-700 font-black tracking-tight",
-                                "backdrop-blur-md",
-                                selectedSubject === category.id
-                                    ? "bg-white/80 border-white shadow-[0_20px_40px_rgba(0,0,0,0.1)] scale-105"
-                                    : "bg-white/20 border-white/20 hover:bg-white/40",
-                                category.id === 'geography' && (selectedSubject === 'geography' ? "ring-2 ring-emerald-500/20" : ""),
-                                category.id === 'biology' && (selectedSubject === 'biology' ? "ring-2 ring-blue-500/20" : ""),
-                                category.id === 'math' && (selectedSubject === 'math' ? "ring-2 ring-orange-500/20" : ""),
-                                category.id === 'idiomas' && (selectedSubject === 'idiomas' ? "ring-2 ring-pink-500/20" : ""),
-                                category.id === 'intelligence' && (selectedSubject === 'intelligence' ? "ring-2 ring-amber-500/20" : "")
+                                "backdrop-blur-md bg-white/20 border-white/20 hover:bg-white/40 shadow-lg",
+                                // Highlight active chip
+                                mounted && window.location.hash === `#${category.id}` && "bg-white/80 border-white shadow-[0_20px_40px_rgba(0,0,0,0.1)] scale-105"
                             )}>
                                 {/* Shine Effect */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -864,7 +832,7 @@ export default function ActividadesClient() {
                                                     className="perspective-1000 h-full"
                                                 >
                                                     <div className="group relative block h-full preserve-3d">
-                                                        <Link href={game.href} className="absolute inset-0 z-0" />
+                                                        <Link href={game.href} className="absolute inset-0 z-20" />
                                                         {/* 3D Shadow/Glow Background */}
                                                         <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-[2rem] blur-3xl -z-10`} />
 
@@ -943,7 +911,7 @@ export default function ActividadesClient() {
                                                                             e.stopPropagation();
                                                                             setIsAssigning(game);
                                                                         }}
-                                                                        className="relative z-20 px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white rounded-lg border border-blue-500/30 transition-all text-xs font-bold flex items-center gap-1.5"
+                                                                        className="relative z-30 px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white rounded-lg border border-blue-500/30 transition-all text-xs font-bold flex items-center gap-1.5"
                                                                         title="Asignar a una clase"
                                                                     >
                                                                         <Plus size={14} weight="bold" />
@@ -971,7 +939,7 @@ export default function ActividadesClient() {
                     >
                         <p className="text-slate-500 text-lg">{t.gamesPage.regions.noGames}</p>
                         <button
-                            onClick={() => { setSelectedGrade('all'); setSelectedSubject(null); }}
+                            onClick={() => { setSelectedGrade('all'); }}
                             className="mt-4 text-teal-600 font-bold hover:underline"
                         >
                             {t.gamesPage.regions.viewAll}

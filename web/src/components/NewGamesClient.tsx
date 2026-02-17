@@ -67,13 +67,29 @@ export default function NewGamesClient() {
                                         Desafía tu mente con acertijos, juegos de lógica y problemas de razonamiento lateral. Ideal para desarrollar el pensamiento crítico de forma divertida.
                                     </p>
 
-                                    <Link
-                                        href="/actividades#intelligence"
-                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
-                                    >
-                                        VER DESAFÍOS
-                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
-                                    </Link>
+                                    <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                                        <Link
+                                            href="/actividades/riddles"
+                                            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-black rounded-xl shadow-lg hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                        >
+                                            ACERTIJOS
+                                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                        <Link
+                                            href="/actividades/logic"
+                                            className="inline-flex items-center px-6 py-3 bg-slate-800 text-white text-sm font-black rounded-xl shadow-lg hover:bg-slate-700 hover:-translate-y-1 transition-all group active:scale-95"
+                                        >
+                                            LÓGICA
+                                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                        <Link
+                                            href="/actividades/quiz-cultura"
+                                            className="inline-flex items-center px-6 py-3 border-2 border-amber-500 text-amber-600 text-sm font-black rounded-xl hover:bg-amber-500/10 hover:-translate-y-1 transition-all group active:scale-95"
+                                        >
+                                            TEST CULTURA
+                                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
