@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Play, Pause, ArrowLeft, Check, ArrowsClockwise, Gauge, Keyboard, BookOpen, GraduationCap, ArrowCounterClockwise } from '@phosphor-icons/react';
 import { DICTATIONS, Dictation } from './data/dictations';
@@ -34,6 +34,7 @@ export default function DictationTool() {
 
     // Defines how many characters of the text are currently "read"
     const [charIndex, setCharIndex] = useState(0);
+    const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const synthRef = useRef<SpeechSynthesis | null>(null);
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -424,23 +425,48 @@ export default function DictationTool() {
 
     if (!selectedDictation) {
         return (
-            <div className="w-full max-w-6xl mx-auto p-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="mb-8">
-                    <Link
-                        href="/material"
-                        className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-colors bg-white/40 px-4 py-2 rounded-2xl border border-slate-200"
-                    >
-                        <ArrowLeft weight="bold" /> {t.dictation.backToResources}
-                    </Link>
-                </div>
+            <div className="w-full max-w-6xl mx-auto p-0 relative z-10">
+                <div className="p-0 md:p-8 relative overflow-hidden">
+                    <div className="relative z-10">
+                        <div className="mb-8 flex items-center gap-4">
+                            <div className="relative flex items-center">
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onMouseEnter={() => setTooltipOpen(true)}
+                                    onMouseLeave={() => setTooltipOpen(false)}
+                                    onClick={() => window.location.href = '/material'}
+                                    className="flex items-center justify-center w-11 h-11 bg-white rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-purple-600 hover:border-purple-100 transition-all z-20 cursor-pointer"
+                                >
+                                    <ArrowLeft size={20} weight="bold" />
+                                    <AnimatePresence>
+                                        {tooltipOpen && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -10 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50"
+                                            >
+                                                {t.dictation.backToResources}
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.button>
+                            </div>
+                        </div>
 
-                <header className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">{t.dictation.title}</h2>
-                    <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
-                        {t.dictation.subtitle}
-                    </p>
-                </header>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <header className="text-center mb-12 -mt-24">
+                            <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.dictation.title}</h2>
+                            <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
+                                {t.dictation.subtitle}
+                            </p>
+                        </header>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-8">
                     {DICTATIONS.map((dictation) => (
                         <motion.button
                             key={dictation.id}
@@ -484,12 +510,31 @@ export default function DictationTool() {
     return (
         <div className="w-full max-w-4xl mx-auto p-4 animate-in fade-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between mb-8">
-                <button
-                    onClick={backToMenu}
-                    className="flex items-center gap-2 text-white/60 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm"
-                >
-                    <ArrowLeft className="w-4 h-4" /> {t.dictation.back}
-                </button>
+                <div className="relative flex items-center">
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onMouseEnter={() => setTooltipOpen(true)}
+                        onMouseLeave={() => setTooltipOpen(false)}
+                        onClick={backToMenu}
+                        className="flex items-center justify-center w-11 h-11 bg-white/10 backdrop-blur-md rounded-full shadow-lg border border-white/10 text-white/60 hover:text-white transition-all z-20 cursor-pointer"
+                    >
+                        <ArrowLeft size={20} weight="bold" />
+                        <AnimatePresence>
+                            {tooltipOpen && (
+                                <motion.span
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -10 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50"
+                                >
+                                    {t.dictation.back}
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
+                    </motion.button>
+                </div>
                 <div className="text-right">
                     <h2 className="text-white font-bold text-xl">{selectedDictation.title}</h2>
                     <p className="text-white/40 text-sm">{selectedDictation.category} • {selectedDictation.level}</p>

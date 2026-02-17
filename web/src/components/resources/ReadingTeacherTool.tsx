@@ -46,6 +46,7 @@ export default function ReadingTeacherTool() {
     const [audioLevel, setAudioLevel] = useState(0);
     const [interimTranscript, setInterimTranscript] = useState('');
     const [finalTranscripts, setFinalTranscripts] = useState<string[]>([]);
+    const [tooltipOpen, setTooltipOpen] = useState(false);
 
     // Internal refs for matching logic
     const currentWordIndexRef = useRef(0);
@@ -624,30 +625,49 @@ export default function ReadingTeacherTool() {
 
     if (!selectedText) {
         return (
-            <div className="w-full max-w-6xl mx-auto p-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="mb-8">
-                    <Link
-                        href="/material"
-                        className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold transition-all bg-white/40 hover:bg-white/80 px-6 py-3 rounded-2xl border border-slate-200 hover:shadow-lg active:scale-95"
-                    >
-                        <ArrowLeft weight="bold" /> {t.readingTeacher.backToResources}
-                    </Link>
-                </div>
+            <div className="w-full max-w-6xl mx-auto p-0 relative z-10">
+                <div className="p-0 md:p-8 relative overflow-hidden">
+                    <div className="relative z-10">
+                        <div className="mb-8 flex items-center gap-4">
+                            <div className="relative flex items-center">
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onMouseEnter={() => setTooltipOpen(true)}
+                                    onMouseLeave={() => setTooltipOpen(false)}
+                                    onClick={() => window.location.href = '/material'}
+                                    className="flex items-center justify-center w-11 h-11 bg-white rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-sky-600 hover:border-sky-100 transition-all z-20 cursor-pointer"
+                                >
+                                    <ArrowLeft size={20} weight="bold" />
+                                    <AnimatePresence>
+                                        {tooltipOpen && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -10 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50"
+                                            >
+                                                {t.readingTeacher.backToResources}
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.button>
+                            </div>
+                        </div>
 
-                <header className="text-center mb-16 relative">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-sky-500/10 rounded-full blur-3xl"
-                    />
-                    <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight flex items-center justify-center gap-4">
-                        <GraduationCap className="text-sky-500 w-12 h-12 md:w-16 md:h-16" weight="duotone" />
-                        {t.readingTeacher.title}
-                    </h2>
-                    <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed">
-                        {t.readingTeacher.subtitle}
-                    </p>
-                </header>
+                        <header className="text-center mb-12 -mt-24">
+                            <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight flex items-center justify-center gap-4">
+                                {t.readingTeacher.title}
+                            </h2>
+                            <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
+                                {t.readingTeacher.subtitle}
+                            </p>
+                        </header>
+                    </div>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
                     {READING_TEXTS.map((text) => (
@@ -717,17 +737,35 @@ export default function ReadingTeacherTool() {
                         "flex items-center gap-4 transition-all",
                         focusMode ? "mb-4" : "mb-0"
                     )}>
-                        <button
-                            onClick={() => {
-                                cancelSpeech();
-                                setSelectedText(null);
-                                if (focusMode) setFocusMode(false);
-                            }}
-                            className="p-4 rounded-2xl text-slate-400 hover:text-slate-900 hover:bg-white border border-transparent hover:border-slate-200 transition-all shadow-sm active:scale-95"
-                            title={t.common.back}
-                        >
-                            <ArrowLeft weight="bold" className="w-6 h-6" />
-                        </button>
+                        <div className="relative flex items-center">
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onMouseEnter={() => setTooltipOpen(true)}
+                                onMouseLeave={() => setTooltipOpen(false)}
+                                onClick={() => {
+                                    cancelSpeech();
+                                    setSelectedText(null);
+                                    if (focusMode) setFocusMode(false);
+                                }}
+                                className="flex items-center justify-center w-11 h-11 bg-white rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-sky-600 hover:border-sky-100 transition-all z-20 cursor-pointer"
+                            >
+                                <ArrowLeft size={20} weight="bold" />
+                                <AnimatePresence>
+                                    {tooltipOpen && (
+                                        <motion.span
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -10 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50"
+                                        >
+                                            {t.common.back}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </motion.button>
+                        </div>
                         <div className="flex-1">
                             <h3 className="text-slate-800 font-black text-2xl md:text-3xl">{selectedText.title}</h3>
                             <div className="flex items-center gap-2 text-slate-400 text-sm font-bold uppercase tracking-wider">
