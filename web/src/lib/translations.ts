@@ -292,8 +292,8 @@ export const TRANSLATIONS = {
         storyteller: {
             title: 'El Cuenta Cuentos',
             subtitle: 'Sumérgete en grandes historias narradas con voz mágica. Lectura inmersiva para pequeños y grandes soñadores.',
-            backToLibrary: 'Volver a la Biblioteca',
-            backToResources: 'Volver a Recursos',
+            backToLibrary: 'Volver a Material Didáctico',
+            backToResources: 'Volver a Material Didáctico',
             maximize: 'Maximizar lectura',
             minimize: 'Salir de pantalla completa',
             pageOf: 'Página {current} de {total}',
@@ -312,7 +312,7 @@ export const TRANSLATIONS = {
         dictation: {
             title: 'Dictados Interactivos',
             subtitle: 'Mejora tu ortografía y comprensión auditiva. Escucha, escribe y corrige al instante.',
-            backToResources: 'Volver a Recursos',
+            backToResources: 'Volver a Material Didáctico',
             back: 'Volver',
             restart: 'Reiniciar reproducción',
             slowMode: 'Modo Lento',
@@ -334,14 +334,14 @@ export const TRANSLATIONS = {
         resources: {
             intelligenceTitle: 'Retos de Inteligencia',
             intelligenceSubtitle: 'Desafía tu mente con acertijos, lógica y problemas de razonamiento lateral.',
-            backToLibrary: 'Volver a Recursos',
+            backToLibrary: 'Volver a Material Didáctico',
             comingSoon: 'Más material en camino...',
             comingSoonDesc: 'Estamos preparando fichas descargables, resúmenes y ejercicios interactivos para esta sección.'
         },
         readingTeacher: {
             title: 'Profesor de Lectura',
             subtitle: 'Mejora tu fluidez y comprensión lectora con nuestro asistente inteligente. Escucha, lee y practica a tu ritmo.',
-            backToResources: 'Volver a Recursos',
+            backToResources: 'Volver a Material Didáctico',
             startReading: 'Empezar a Leer',
             focusMode: 'Modo Enfoque',
             exitFocus: 'Salir de Enfoque',
