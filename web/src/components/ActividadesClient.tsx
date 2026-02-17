@@ -78,15 +78,26 @@ export default function ActividadesClient() {
     // Check user and fetch classes
     useEffect(() => {
         const checkUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                setUser(session.user);
-                const { data: p } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-                setProfile(p);
+            try {
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (sessionError) throw sessionError;
 
-                if (p?.role === 'teacher') {
-                    const { data: cls } = await supabase.from('classes').select('*').eq('teacher_id', session.user.id);
-                    if (cls) setClasses(cls);
+                if (session?.user) {
+                    setUser(session.user);
+                    const { data: p } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                    setProfile(p);
+
+                    if (p?.role === 'teacher') {
+                        const { data: cls } = await supabase.from('classes').select('*').eq('teacher_id', session.user.id);
+                        if (cls) setClasses(cls);
+                    }
+                }
+            } catch (err: any) {
+                console.warn("Actividades auth session error:", err.message);
+                if (err.message?.includes('Refresh Token Not Found')) {
+                    await supabase.auth.signOut();
+                    setUser(null);
+                    setProfile(null);
                 }
             }
         };

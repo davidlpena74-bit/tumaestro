@@ -151,29 +151,73 @@ export default function RoleBasedDashboard() {
     const getArchivedClasses = () => myClasses.filter((c: any) => c.enrollment_status === 'archived');
 
     const fetchInitialData = async () => {
-        setLoading(true);
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) return;
+        try {
+            setLoading(true);
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            if (sessionError) throw sessionError;
 
-        // Get my profile
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
+            if (!session) {
+                try {
+                    const { data: { user }, error: userError } = await supabase.auth.getUser();
+                    if (userError) throw userError;
 
-        setMyProfile(profile);
+                    if (user) {
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('*')
+                            .eq('id', user.id)
+                            .single();
+                        setMyProfile(profile);
 
-        if (profile) {
-            fetchConnections(profile.id, profile.role);
-            if (profile.role === 'teacher') {
-                fetchClassesAsTeacher(profile.id);
-            } else {
-                fetchClassesAsStudent(profile.id);
+                        if (profile) {
+                            fetchConnections(profile.id, profile.role);
+                            if (profile.role === 'teacher') {
+                                fetchClassesAsTeacher(profile.id);
+                            } else {
+                                fetchClassesAsStudent(profile.id);
+                            }
+                            fetchNotifications(profile.id);
+                        }
+                    }
+                } catch (err: any) {
+                    console.warn("Dashboard auth user error:", err.message);
+                    if (err.message?.includes('Refresh Token Not Found')) {
+                        await supabase.auth.signOut();
+                        setMyProfile(null);
+                    }
+                } finally {
+                    setLoading(false);
+                }
+                return;
             }
-            fetchNotifications(profile.id);
+
+            // Get my profile
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            setMyProfile(profile);
+
+            if (profile) {
+                fetchConnections(profile.id, profile.role);
+                if (profile.role === 'teacher') {
+                    fetchClassesAsTeacher(profile.id);
+                } else {
+                    fetchClassesAsStudent(profile.id);
+                }
+                fetchNotifications(profile.id);
+            }
+        } catch (err: any) {
+            console.warn("Dashboard auth session error:", err.message);
+            if (err.message?.includes('Refresh Token Not Found')) {
+                await supabase.auth.signOut();
+                setMyProfile(null);
+            }
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
 

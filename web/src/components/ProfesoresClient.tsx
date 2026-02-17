@@ -13,16 +13,27 @@ export default function ProfesoresClient() {
 
     useEffect(() => {
         const checkUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', user.id)
-                    .single();
-                setRole(profile?.role as 'teacher' | 'student' || 'student');
+            try {
+                const { data: { user }, error: userError } = await supabase.auth.getUser();
+                if (userError) throw userError;
+
+                if (user) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('role')
+                        .eq('id', user.id)
+                        .single();
+                    setRole(profile?.role as 'teacher' | 'student' || 'student');
+                }
+            } catch (err: any) {
+                console.warn("ProfesoresClient auth error:", err.message);
+                if (err.message?.includes('Refresh Token Not Found')) {
+                    await supabase.auth.signOut();
+                    setRole(null);
+                }
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
         checkUser();
     }, []);

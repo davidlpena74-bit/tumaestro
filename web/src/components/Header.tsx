@@ -65,14 +65,26 @@ export default function Header() {
 
         // Check active session
         const checkUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            const currentUser = session?.user ?? null;
-            setUser(currentUser);
-            if (currentUser) {
-                fetchNotifications(currentUser.id);
-                // Fetch profile for role
-                const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
-                if (p) setProfile(p);
+            try {
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (sessionError) throw sessionError;
+
+                const currentUser = session?.user ?? null;
+                setUser(currentUser);
+                if (currentUser) {
+                    fetchNotifications(currentUser.id);
+                    // Fetch profile for role
+                    const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
+                    if (p) setProfile(p);
+                }
+            } catch (err: any) {
+                console.warn("Supabase auth session error (expected if token expired):", err.message);
+                if (err.message?.includes('Refresh Token Not Found')) {
+                    // Force sign out to clear local storage if token is corrupted
+                    await supabase.auth.signOut();
+                    setUser(null);
+                    setProfile(null);
+                }
             }
         };
         checkUser();

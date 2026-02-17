@@ -33,7 +33,8 @@ export const TRANSLATIONS = {
             teachers: 'Clases',
             login: 'Acceso Usuarios',
             teaching: 'Docencia',
-            students: 'Alumnos'
+            students: 'Alumnos',
+            language: 'Idioma'
         },
         home: {
             heroTitle: 'Tu futuro empieza aquí',
@@ -392,7 +393,8 @@ export const TRANSLATIONS = {
             teachers: 'Classes',
             login: 'User Login',
             teaching: 'Teaching',
-            students: 'Students'
+            students: 'Students',
+            language: 'Language'
         },
         home: {
             heroTitle: 'Your future starts here',
@@ -751,7 +753,8 @@ export const TRANSLATIONS = {
             teachers: 'Cours',
             login: 'Connexion Utilisateurs',
             teaching: 'Enseignement',
-            students: 'Étudiants'
+            students: 'Étudiants',
+            language: 'Langue'
         },
         home: {
             heroTitle: 'Votre avenir commence ici',
@@ -1104,7 +1107,8 @@ export const TRANSLATIONS = {
             teachers: 'Kurse',
             login: 'Benutzer-Login',
             teaching: 'Lehre',
-            students: 'Schüler'
+            students: 'Schüler',
+            language: 'Sprache'
         },
         home: {
             heroTitle: 'Deine Zukunft beginnt hier',
