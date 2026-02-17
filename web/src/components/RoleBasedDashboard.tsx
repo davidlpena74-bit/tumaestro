@@ -544,10 +544,20 @@ export default function RoleBasedDashboard() {
         });
 
         if (!apiError) {
+            // Notify student
+            const cls = myClasses.find(c => c.id === classId);
+            if (myProfile && cls) {
+                await supabase.from('notifications').insert({
+                    user_id: studentId,
+                    type: 'class_enrollment',
+                    title: 'Inscripción a Clase',
+                    message: `${myProfile.full_name} te ha inscrito en ${cls.name}.`,
+                    data: { teacher_id: myProfile.id, class_id: classId }
+                });
+            }
+
             fetchClassStudents(classId);
             success('Alumno añadido/restaurado a la clase');
-            // Notify if new add? Maybe skips notification if re-add for simplicity or handled by trigger/RPC?
-            // Existing notification logic could be here if needed for new students.
         } else {
             error('Error al añadir alumno: ' + apiError.message);
         }
@@ -596,11 +606,11 @@ export default function RoleBasedDashboard() {
             : { student_id: targetId, teacher_id: myProfile.id };
 
         // Also remove from all classes (if teacher removing student)
+        // Optimization: Rely on SQL Trigger 'handle_removed_connection' to archive students silently.
+        // This prevents spamming multiple "Class Removal" notifications.
         if (myProfile.role === 'teacher') {
-            const userClasses = studentClasses[targetId] || [];
-            for (const cls of userClasses) {
-                await removeStudentFromClass(cls.id, targetId);
-            }
+            // The SQL trigger will handle archiving.
+            // We just need to update local state if needed, but a refresh is better.
         }
 
         const { error: apiError } = await supabase
@@ -681,11 +691,34 @@ export default function RoleBasedDashboard() {
         });
 
         if (!apiError) {
+            // Notify all active students
+            const classObj = myClasses.find(c => c.id === targetClassId);
+            if (classObj && myProfile) {
+                // Fetch active students ids
+                const { data: students } = await supabase
+                    .from('class_students')
+                    .select('student_id')
+                    .eq('class_id', targetClassId)
+                    .eq('status', 'active');
+
+                if (students && students.length > 0) {
+                    const notifications = students.map((s: any) => ({
+                        user_id: s.student_id,
+                        type: 'new_task',
+                        title: 'Nueva Tarea Asignada',
+                        message: `${myProfile.full_name} ha publicado: "${newTaskTitle}" en ${classObj.name}.`,
+                        data: { class_id: targetClassId, task_id: 'new' } // task_id not returned by insert unless select(), but not critical
+                    }));
+                    await supabase.from('notifications').insert(notifications);
+                }
+            }
+
             const currentClasses = myClasses.map(c => c.id);
             if (currentClasses.length > 0) fetchTasks(currentClasses);
             setIsCreatingTask(false);
             setNewTaskTitle('');
             setNewTaskDesc('');
+            success('Tarea creada y notificada');
         }
     };
 
