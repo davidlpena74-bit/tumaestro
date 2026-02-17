@@ -18,7 +18,8 @@ import {
     CheckSquare,
     Square,
     CaretDown,
-    Info
+    Info,
+    ArrowCounterClockwise
 } from '@phosphor-icons/react';
 
 type Profile = {
@@ -27,6 +28,7 @@ type Profile = {
     email: string;
     role: 'student' | 'teacher';
     avatar_url?: string;
+    status?: 'active' | 'archived'; // Add status for class enrollment
 };
 
 type Class = {
@@ -211,7 +213,8 @@ export default function RoleBasedDashboard() {
             .from('class_students')
             .select('student_id, classes(*)')
             .in('class_id', myClassIds)
-            .in('student_id', studentIds);
+            .in('student_id', studentIds)
+            .eq('status', 'active');
 
         if (data) {
             const map: Record<string, Class[]> = {};
@@ -228,8 +231,9 @@ export default function RoleBasedDashboard() {
 
         const { data } = await supabase
             .from('class_students')
-            .select('class_id, profiles:student_id(*)') // Updated to use correct relation name if possible, or assume profiles joined on student_id
-            .in('class_id', classIds);
+            .select('class_id, profiles:student_id(*)')
+            .in('class_id', classIds)
+            .eq('status', 'active');
 
         if (data) {
             const map: Record<string, Profile[]> = {};
@@ -266,7 +270,8 @@ export default function RoleBasedDashboard() {
         const { data } = await supabase
             .from('class_students')
             .select('classes(*)')
-            .eq('student_id', studentId);
+            .eq('student_id', studentId)
+            .eq('status', 'active');
 
         if (data) {
             const classes = data.map((item: any) => item.classes);
@@ -340,8 +345,8 @@ export default function RoleBasedDashboard() {
 
         // 1. Create connection request (pending)
         const payload = myProfile.role === 'student'
-            ? { student_id: myProfile.id, teacher_id: targetId, status: 'pending' }
-            : { student_id: targetId, teacher_id: myProfile.id, status: 'pending' };
+            ? { student_id: myProfile.id, teacher_id: targetId, status: 'pending', initiator_id: myProfile.id }
+            : { student_id: targetId, teacher_id: myProfile.id, status: 'pending', initiator_id: myProfile.id };
 
         const { error: connError, data: connData } = await supabase
             .from('student_teachers')
@@ -514,27 +519,42 @@ export default function RoleBasedDashboard() {
     };
 
     const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
+    const [showArchived, setShowArchived] = useState(false);
     const [classStudents, setClassStudents] = useState<Profile[]>([]);
 
     const fetchClassStudents = async (classId: string) => {
         const { data } = await supabase
             .from('class_students')
-            .select('profiles(*)')
+            .select('status, profiles(*)')
             .eq('class_id', classId);
-        if (data) setClassStudents(data.map((item: any) => item.profiles));
+
+        if (data) {
+            setClassStudents(data.map((item: any) => ({
+                ...item.profiles,
+                status: item.status
+            })));
+        }
     };
 
     const addStudentToClass = async (classId: string, studentId: string) => {
-        const { error: apiError } = await supabase
-            .from('class_students')
-            .insert({ class_id: classId, student_id: studentId });
+        // Use RPC to handle re-admission (upsert logic)
+        const { error: apiError } = await supabase.rpc('enroll_student', {
+            p_class_id: classId,
+            p_student_id: studentId
+        });
 
         if (!apiError) {
             fetchClassStudents(classId);
-            success('Alumno añadido a la clase');
+            success('Alumno añadido/restaurado a la clase');
+            // Notify if new add? Maybe skips notification if re-add for simplicity or handled by trigger/RPC?
+            // Existing notification logic could be here if needed for new students.
         } else {
             error('Error al añadir alumno: ' + apiError.message);
         }
+    };
+
+    const restoreStudentToClass = async (classId: string, studentId: string) => {
+        await addStudentToClass(classId, studentId);
     };
 
     const removeStudentFromClass = async (classId: string, studentId: string) => {
@@ -543,7 +563,7 @@ export default function RoleBasedDashboard() {
 
         const { error } = await supabase
             .from('class_students')
-            .delete()
+            .update({ status: 'archived' }) // Soft delete
             .eq('class_id', classId)
             .eq('student_id', studentId);
 
@@ -1397,17 +1417,51 @@ export default function RoleBasedDashboard() {
                                                 {selectedClassId === cls.id && (
                                                     <div className="bg-slate-50 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-200">
                                                         <div className="bg-white p-4 rounded-xl border border-slate-100 mb-4">
-                                                            <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Eliminar Alumnos</h6>
+                                                            <div className="flex justify-between items-center mb-3">
+                                                                <h6 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                                    {showArchived ? 'Antiguos Alumnos' : 'Alumnos Activos'}
+                                                                </h6>
+                                                                <button
+                                                                    onClick={() => setShowArchived(!showArchived)}
+                                                                    className="text-[10px] font-bold text-blue-500 hover:text-blue-700 underline"
+                                                                >
+                                                                    {showArchived ? 'Ver Activos' : 'Ver Antiguos'}
+                                                                </button>
+                                                            </div>
+
                                                             <div className="space-y-2">
-                                                                {classStudents.map(student => (
-                                                                    <div key={student.id} className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-slate-50">
-                                                                        <span className="font-bold text-slate-700">{student.full_name}</span>
-                                                                        <button onClick={() => removeStudentFromClass(cls.id, student.id)} className="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-md">
-                                                                            <Trash size={14} />
-                                                                        </button>
+                                                                {classStudents.filter(s => showArchived ? s.status === 'archived' : (s.status === 'active' || !s.status)).map(student => (
+                                                                    <div key={student.id} className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className={`font-bold ${showArchived ? 'text-slate-400' : 'text-slate-700'}`}>{student.full_name}</span>
+                                                                            {showArchived && <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200">Archivado</span>}
+                                                                        </div>
+
+                                                                        {showArchived ? (
+                                                                            <button
+                                                                                onClick={() => restoreStudentToClass(cls.id, student.id)}
+                                                                                className="text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-2 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-bold transition-all shadow-sm border border-green-100"
+                                                                                title="Restaurar alumno"
+                                                                            >
+                                                                                <ArrowCounterClockwise size={14} weight="bold" />
+                                                                                Restaurar
+                                                                            </button>
+                                                                        ) : (
+                                                                            <button
+                                                                                onClick={() => removeStudentFromClass(cls.id, student.id)}
+                                                                                className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors group"
+                                                                                title="Archivar alumno"
+                                                                            >
+                                                                                <Trash size={14} className="group-hover:animate-pulse" />
+                                                                            </button>
+                                                                        )}
                                                                     </div>
                                                                 ))}
-                                                                {classStudents.length === 0 && <p className="text-slate-400 text-xs italic">Lista vacía</p>}
+                                                                {classStudents.filter(s => showArchived ? s.status === 'archived' : (s.status === 'active' || !s.status)).length === 0 && (
+                                                                    <div className="text-center py-4">
+                                                                        <p className="text-slate-400 text-xs italic">{showArchived ? 'No hay alumnos archivados' : 'No hay alumnos activos'}</p>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
 
