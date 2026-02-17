@@ -53,7 +53,7 @@ export default function ResourceSectionView({ title, subtitle, children, showCom
                     </div>
 
                     <header className="text-center mb-12 -mt-24">
-                        <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight uppercase leading-tight">
+                        <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight leading-tight">
                             {title}
                         </h2>
                         <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
