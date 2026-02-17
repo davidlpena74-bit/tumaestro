@@ -1,11 +1,140 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { BookOpen, GraduationCap, Sparkle, ChalkboardTeacher, MonitorPlay, ChartLineUp } from '@phosphor-icons/react';
 
 export default function ProfesoresClient() {
+    const [role, setRole] = useState<'teacher' | 'student' | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', user.id)
+                    .single();
+                setRole(profile?.role as 'teacher' | 'student' || 'student');
+            }
+            setLoading(false);
+        };
+        checkUser();
+    }, []);
+
+    // Content Definitions based on Role
+    const content = {
+        teacher: {
+            mainTitle: "Para Profesores",
+            mainDesc: "Potencia tu enseñanza con herramientas digitales diseñadas para ahorrar tiempo y mejorar el aprendizaje de tus alumnos.",
+            s1: {
+                badge: "Gestión Eficiente",
+                title: "Clases y Alumnos",
+                desc: "Crea tus propias clases y gestiona los alumnos y tareas dentro de ellas de forma sencilla y centralizada.",
+                cta: "GESTIONAR MIS CLASES",
+                link: "/dashboard"
+            },
+            s2: {
+                badge: "Personalización Total",
+                title: "Actividades Propias",
+                desc: "Crea tus propias actividades, súbelas y asígnalas a tus alumnos con un solo clic. Mantén todo organizado.",
+                cta: "CREAR ACTIVIDADES",
+                link: "/dashboard"
+            },
+            s3: {
+                badge: "Análisis Inteligente",
+                title: "Reportes de Progreso",
+                desc: "Visualiza el resultado y utiliza nuestros reportes automáticos para identificar áreas de refuerzo y mejorar el rendimiento.",
+                cta: "VER REPORTES",
+                link: "/dashboard"
+            },
+            s4: {
+                badge: "Biblioteca Premium",
+                title: "Recursos Didácticos",
+                desc: "Usa todos nuestros recursos didácticos, contenidos temáticos, cuentos y juegos para enriquecer tus clases sin esfuerzo extra.",
+                cta: "EXPLORAR RECURSOS",
+                link: "/material"
+            }
+        },
+        student: {
+            mainTitle: "Para Alumnos",
+            mainDesc: "Domina tus estudios con herramientas diseñadas para organizarte, practicar y mejorar tus notas día a día.",
+            s1: {
+                badge: "Tu Espacio",
+                title: "Mis Clases",
+                desc: "Accede a tus asignaturas, consulta horarios y conecta con tus profesores y compañeros de clase.",
+                cta: "IR A MI CLASE",
+                link: "/dashboard"
+            },
+            s2: {
+                badge: "Tareas Pendientes",
+                title: "Actividades y Deberes",
+                desc: "Revisa las actividades asignadas por tus profesores, complétalas y envíalas directamente desde la plataforma.",
+                cta: "VER MIS TAREAS",
+                link: "/dashboard"
+            },
+            s3: {
+                badge: "Mi Evolución",
+                title: "Mi Progreso",
+                desc: "Consulta tus calificaciones, revisa tu historial de actividades y celebra tus logros académicos.",
+                cta: "VER MI PROGRESO",
+                link: "/dashboard"
+            },
+            s4: {
+                badge: "Apoyo Escolar",
+                title: "Material de Estudio",
+                desc: "Accede a una biblioteca de recursos, juegos y cuentos para reforzar lo aprendido en clase de forma divertida.",
+                cta: "BUSCAR MATERIAL",
+                link: "/material"
+            }
+        },
+        guest: {
+            mainTitle: "Para Profesores",
+            mainDesc: "Potencia tu enseñanza con herramientas digitales diseñadas para ahorrar tiempo y mejorar el aprendizaje de tus alumnos.",
+            s1: {
+                badge: "Gestión Eficiente",
+                title: "Clases y Alumnos",
+                desc: "Crea tus propias clases y gestiona los alumnos y tareas dentro de ellas de forma sencilla y centralizada.",
+                cta: "EMPEZAR AHORA",
+                link: "/registro"
+            },
+            s2: {
+                badge: "Personalización Total",
+                title: "Actividades Propias",
+                desc: "Crea tus propias actividades, súbelas y asígnalas a tus alumnos con un solo clic. Mantén todo organizado.",
+                cta: "CREAR CUENTA",
+                link: "/registro"
+            },
+            s3: {
+                badge: "Análisis Inteligente",
+                title: "Reportes de Progreso",
+                desc: "Visualiza el resultado y utiliza nuestros reportes automáticos para identificar áreas de refuerzo y mejorar el rendimiento.",
+                cta: "VER DEMOSTRACIÓN",
+                link: "/registro"
+            },
+            s4: {
+                badge: "Biblioteca Premium",
+                title: "Recursos Didácticos",
+                desc: "Usa todos nuestros recursos didácticos, contenidos temáticos, cuentos y juegos para enriquecer tus clases sin esfuerzo extra.",
+                cta: "EXPLORAR RECURSOS",
+                link: "/material"
+            }
+        }
+    };
+
+    const t = role ? content[role] : content.guest;
+
+    if (loading) return (
+        <div className="min-h-screen pt-32 flex justify-center bg-slate-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500" />
+        </div>
+    );
+
     return (
         <main className="min-h-screen pt-32 pb-12 px-4 md:px-12 relative overflow-hidden">
 
@@ -19,7 +148,7 @@ export default function ProfesoresClient() {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
                     >
-                        Para Profesores
+                        {t.mainTitle}
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -27,7 +156,7 @@ export default function ProfesoresClient() {
                         transition={{ delay: 0.2 }}
                         className="text-xl text-slate-700 font-medium max-w-2xl mx-auto mt-2"
                     >
-                        Potencia tu enseñanza con herramientas digitales diseñadas para ahorrar tiempo y mejorar el aprendizaje de tus alumnos.
+                        {t.mainDesc}
                     </motion.p>
                 </header>
 
@@ -66,21 +195,21 @@ export default function ProfesoresClient() {
 
                                 <div className="w-full md:w-2/3 text-center md:text-left">
                                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 text-teal-600 text-xs font-black mb-6 border border-teal-500/20 uppercase tracking-widest">
-                                        Gestión Eficiente
+                                        {t.s1.badge}
                                     </div>
 
                                     <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                        Clases y Alumnos
+                                        {t.s1.title}
                                     </h2>
                                     <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                        Crea tus propias clases y gestiona los alumnos y tareas dentro de ellas de forma sencilla y centralizada.
+                                        {t.s1.desc}
                                     </p>
 
                                     <Link
-                                        href="/registro"
+                                        href={t.s1.link}
                                         className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-black rounded-2xl shadow-xl shadow-teal-500/20 hover:shadow-teal-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
-                                        CREAR MI CLASE AHORA
+                                        {t.s1.cta}
                                         <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
@@ -114,22 +243,22 @@ export default function ProfesoresClient() {
 
                                 <div className="w-full md:w-2/3 text-center md:text-right">
                                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 text-xs font-black mb-6 border border-indigo-500/20 uppercase tracking-widest md:flex-row-reverse">
-                                        Personalización Total
+                                        {t.s2.badge}
                                     </div>
 
                                     <div className="flex flex-col md:items-end w-full">
                                         <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                            Actividades Propias
+                                            {t.s2.title}
                                         </h2>
                                         <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                            Crea tus propias actividades, súbelas y asígnalas a tus alumnos con un solo clic. Mantén todo organizado.
+                                            {t.s2.desc}
                                         </p>
 
                                         <Link
-                                            href="/registro"
+                                            href={t.s2.link}
                                             className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                         >
-                                            CREAR ACTIVIDADES
+                                            {t.s2.cta}
                                             <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                         </Link>
                                     </div>
@@ -164,21 +293,21 @@ export default function ProfesoresClient() {
 
                                 <div className="w-full md:w-2/3 text-center md:text-left">
                                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 text-rose-600 text-xs font-black mb-6 border border-rose-500/20 uppercase tracking-widest">
-                                        Análisis Inteligente
+                                        {t.s3.badge}
                                     </div>
 
                                     <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                        Reportes de Progreso
+                                        {t.s3.title}
                                     </h2>
                                     <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                        Visualiza el resultado y utiliza nuestros reportes automáticos para identificar áreas de refuerzo y mejorar el rendimiento.
+                                        {t.s3.desc}
                                     </p>
 
                                     <Link
-                                        href="/registro"
+                                        href={t.s3.link}
                                         className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-black rounded-2xl shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
-                                        VER DEMOSTRACIÓN
+                                        {t.s3.cta}
                                         <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
@@ -212,22 +341,22 @@ export default function ProfesoresClient() {
 
                                 <div className="w-full md:w-2/3 text-center md:text-right">
                                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-black mb-6 border border-amber-500/20 uppercase tracking-widest md:flex-row-reverse">
-                                        Biblioteca Premium
+                                        {t.s4.badge}
                                     </div>
 
                                     <div className="flex flex-col md:items-end w-full">
                                         <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                            Recursos Didácticos
+                                            {t.s4.title}
                                         </h2>
                                         <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                            Usa todos nuestros recursos didácticos, contenidos temáticos, cuentos y juegos para enriquecer tus clases sin esfuerzo extra.
+                                            {t.s4.desc}
                                         </p>
 
                                         <Link
-                                            href="/material"
+                                            href={t.s4.link}
                                             className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                         >
-                                            EXPLORAR RECURSOS
+                                            {t.s4.cta}
                                             <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                         </Link>
                                     </div>

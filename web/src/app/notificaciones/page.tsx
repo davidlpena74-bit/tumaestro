@@ -358,8 +358,8 @@ export default function NotificationsPage() {
                                                 <h3 className={`text-lg font-black transition-colors ${!n.read ? 'text-slate-900 underline decoration-teal-500/30 decoration-4 underline-offset-4' : 'text-slate-600'}`}>
                                                     {n.title}
                                                 </h3>
-                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white/50 px-2 py-1 rounded-md border border-slate-200/30">
-                                                    {new Date(n.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white/50 px-2 py-1 rounded-md border border-slate-200/30 whitespace-nowrap">
+                                                    {new Date(n.created_at).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                             </div>
                                             <p className={`text-base leading-relaxed mb-6 ${!n.read ? 'text-slate-700 font-medium' : 'text-slate-500'}`}>
