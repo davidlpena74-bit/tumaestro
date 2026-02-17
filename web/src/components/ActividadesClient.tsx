@@ -936,7 +936,6 @@ export default function ActividadesClient() {
                     </div>
                 </motion.div>
 
-                {/* Assignment Modal */}
                 {mounted && createPortal(
                     <AnimatePresence>
                         {isAssigning && (
