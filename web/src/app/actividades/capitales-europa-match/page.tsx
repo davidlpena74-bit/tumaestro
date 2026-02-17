@@ -6,6 +6,12 @@ export const metadata: Metadata = {
     description: 'Completa el mapa de Europa arrastrando cada capital a su país. Un reto educativo divertido para todas las edades.',
 };
 
+import { Suspense } from 'react';
+
 export default function EuropeCapitalsMatchPage() {
-    return <EuropeCapitalsMatchClient />;
+    return (
+        <Suspense fallback={null}>
+            <EuropeCapitalsMatchClient />
+        </Suspense>
+    );
 }

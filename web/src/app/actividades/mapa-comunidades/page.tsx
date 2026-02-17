@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaComunidadesClient from './MapaComunidadesClient';
 
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function MapaComunidadesPage() {
-    return <MapaComunidadesClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaComunidadesClient />
+        </Suspense>
+    );
 }

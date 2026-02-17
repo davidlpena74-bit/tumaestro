@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import EuropeRiversClient from './EuropeRiversClient';
 
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function EuropeRiversPage() {
-    return <EuropeRiversClient />;
+    return (
+        <Suspense fallback={null}>
+            <EuropeRiversClient />
+        </Suspense>
+    );
 }

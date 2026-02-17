@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaOceaniaClient from './MapaOceaniaClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function OceaniaMapPage() {
-    return <MapaOceaniaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaOceaniaClient />
+        </Suspense>
+    );
 }

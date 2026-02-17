@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MontanasEspanaClient from './MontanasEspanaClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function MontanasEspanaPage() {
-    return <MontanasEspanaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MontanasEspanaClient />
+        </Suspense>
+    );
 }

@@ -1,4 +1,5 @@
 
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MaresAmericaClient from './MaresAmericaClient';
 
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function MaresAmericaPage() {
-    return <MaresAmericaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MaresAmericaClient />
+        </Suspense>
+    );
 }

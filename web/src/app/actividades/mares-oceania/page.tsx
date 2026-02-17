@@ -1,4 +1,5 @@
 
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MaresOceaniaClient from './MaresOceaniaClient';
 
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function MaresOceaniaPage() {
-    return <MaresOceaniaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MaresOceaniaClient />
+        </Suspense>
+    );
 }

@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import CapitalesUeClient from './CapitalesUeClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function EUCapitalsMapPage() {
-    return <CapitalesUeClient />;
+    return (
+        <Suspense fallback={null}>
+            <CapitalesUeClient />
+        </Suspense>
+    );
 }

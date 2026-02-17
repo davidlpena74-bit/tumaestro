@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaAfricaClient from './MapaAfricaClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function AfricaMapPage() {
-    return <MapaAfricaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaAfricaClient />
+        </Suspense>
+    );
 }

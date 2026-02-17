@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MultiplicationPageClient from '@/components/MultiplicationPageClient';
 
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function MultiplicationPage() {
-    return <MultiplicationPageClient />;
+    return (
+        <Suspense fallback={null}>
+            <MultiplicationPageClient />
+        </Suspense>
+    );
 }

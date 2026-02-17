@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaNorteamericaClient from './MapaNorteamericaClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function NorthAmericaGamePage() {
-    return <MapaNorteamericaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaNorteamericaClient />
+        </Suspense>
+    );
 }

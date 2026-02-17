@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import DivisionPageClient from '@/components/DivisionPageClient';
 
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function DivisionPage() {
-    return <DivisionPageClient />;
+    return (
+        <Suspense fallback={null}>
+            <DivisionPageClient />
+        </Suspense>
+    );
 }

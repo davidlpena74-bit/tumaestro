@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaProvinciasClient from './MapaProvinciasClient';
 
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function MapaProvinciasPage() {
-    return <MapaProvinciasClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaProvinciasClient />
+        </Suspense>
+    );
 }

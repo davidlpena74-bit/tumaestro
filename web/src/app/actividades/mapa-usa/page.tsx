@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaUsaClient from './MapaUsaClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function UsaGamePage() {
-    return <MapaUsaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaUsaClient />
+        </Suspense>
+    );
 }

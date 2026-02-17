@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaRiosClient from './MapaRiosClient';
 
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function MapaRiosPage() {
-    return <MapaRiosClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaRiosClient />
+        </Suspense>
+    );
 }

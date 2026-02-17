@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaAsiaClient from './MapaAsiaClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function AsiaMapPage() {
-    return <MapaAsiaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaAsiaClient />
+        </Suspense>
+    );
 }

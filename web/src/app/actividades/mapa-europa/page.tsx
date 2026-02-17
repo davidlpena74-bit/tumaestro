@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import MapaEuropaClient from './MapaEuropaClient';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function EuropeMapPage() {
-    return <MapaEuropaClient />;
+    return (
+        <Suspense fallback={null}>
+            <MapaEuropaClient />
+        </Suspense>
+    );
 }
