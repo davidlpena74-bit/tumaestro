@@ -8,6 +8,7 @@ import confetti from 'canvas-confetti';
 import { IRREGULAR_VERBS, type IrregularVerb } from './data/irregular-verbs';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import GameHUD from './GameHUD';
+import { useVoiceVolume } from '@/hooks/useVoiceVolume';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -45,6 +46,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
         handleFinish
     } = useGameLogic({ initialTime: 60, penaltyTime: 0, gameMode, taskId });
     const recognitionRef = useRef<any>(null);
+    const volume = useVoiceVolume(isListening);
 
     const startNewGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -160,16 +162,16 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
             let elapsed = 0;
             interval = setInterval(() => {
                 elapsed += 1;
-                const remainingInStep = 3 - (elapsed % 3);
-                setStepCountdown(remainingInStep === 0 ? 3 : remainingInStep);
+                const remainingInStep = 5 - (elapsed % 5);
+                setStepCountdown(remainingInStep === 0 ? 5 : remainingInStep);
 
-                if (elapsed === 3) {
+                if (elapsed === 5) {
                     setCurrentStep(1);
                     setTranscript('');
-                } else if (elapsed === 6) {
+                } else if (elapsed === 10) {
                     setCurrentStep(2);
                     setTranscript('');
-                } else if (elapsed === 9) {
+                } else if (elapsed === 15) {
                     clearInterval(interval);
                     setTimeout(() => {
                         handlePronunciationSequenceEnd(stepResultsRef.current);
@@ -183,23 +185,62 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
     const checkVoiceAnswer = (voiceInput: string, isManualStop = false) => {
         if (!currentVerb || showResult === 'correct') return;
 
-        const words = voiceInput.toLowerCase().split(/\s+/);
-        const targets = [
-            currentVerb.infinitive.toLowerCase(),
-            currentVerb.pastSimple.toLowerCase(),
-            currentVerb.pastParticiple.toLowerCase()
-        ];
-        const target = targets[currentStep];
+        // Hyper-Normalization: Lowercase, remove punctuation, collapse double letters, normalize sounds
+        const normalize = (str: string) => str.toLowerCase()
+            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+            .replace(/(.)\1+/g, "$1") // collapse double letters
+            .replace(/ph/g, "f").replace(/ck/g, "k").replace(/y/g, "i")
+            .trim();
 
-        const targetOptions = target.includes('/') ? target.split('/') : [target];
-        const found = words.some(w => targetOptions.includes(w));
+        const fullTranscriptNorm = normalize(voiceInput);
+        const wordsNorm = voiceInput.split(/\s+/).map(normalize).filter(Boolean);
+        const targetsNorm = [
+            currentVerb.infinitive,
+            currentVerb.pastSimple,
+            currentVerb.pastParticiple
+        ].map(normalize);
 
-        if (found) {
+        const targetNorm = targetsNorm[currentStep];
+        const targetOptions = targetNorm.includes(' ') ? [targetNorm] : targetNorm.split('/');
+
+        // Levenshtein helper
+        const dist = (a: string, b: string) => {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            const matrix = Array.from({ length: a.length + 1 }, (_, i) => [i]) as number[][];
+            for (let j = 1; j <= b.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= a.length; i++) {
+                for (let j = 1; j <= b.length; j++) {
+                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                    matrix[i][j] = Math.min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + cost);
+                }
+            }
+            return matrix[a.length][b.length];
+        };
+
+        const isHyperMatch = (s1: string, s2: string) => {
+            if (s1 === s2) return true;
+            if (s1.length === 0 || s2.length === 0) return false;
+
+            // Substring check (very tolerant)
+            if (s1.includes(s2) || s2.includes(s1)) return true;
+
+            const d = dist(s1, s2);
+            // Hyper-lenient thresholds
+            if (s1.length >= 6) return d <= 3;
+            if (s1.length >= 3) return d <= 2;
+            return d <= 1;
+        };
+
+        const found = wordsNorm.some(w =>
+            targetOptions.some(opt => opt === w || isHyperMatch(opt, w))
+        ) || targetOptions.some(opt => fullTranscriptNorm.includes(opt));
+
+        if (found && !stepResults[currentStep]) {
             const newResults = [...stepResults];
             newResults[currentStep] = true;
             setStepResults(newResults);
-            playAudio(targetOptions[0]);
-        } else if (isManualStop) {
+        } else if (isManualStop && !stepResults[currentStep]) {
             const newResults = [...stepResults];
             newResults[currentStep] = false;
             setStepResults(newResults);
@@ -228,9 +269,11 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
             setStreak(0);
             addError();
             setMessage(language === 'es' ? '¡Repasemos! 🎙️' : 'Let\'s review! 🎙️');
-            if (currentVerb) {
-                await playSequence([currentVerb.infinitive, currentVerb.pastSimple, currentVerb.pastParticiple]);
-            }
+        }
+
+        // Always play the full sequence at the end for reinforcement
+        if (currentVerb) {
+            await playSequence([currentVerb.infinitive, currentVerb.pastSimple, currentVerb.pastParticiple]);
         }
     };
 
@@ -244,10 +287,14 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
             recognition.lang = 'en-US';
 
             recognition.onresult = (event: any) => {
+                let interimTranscript = '';
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    const result = event.results[i][0].transcript.toLowerCase().trim();
                     if (event.results[i].isFinal) {
-                        const result = event.results[i][0].transcript.toLowerCase().trim();
                         setTranscript(result);
+                        checkVoiceAnswer(result);
+                    } else {
+                        interimTranscript += result;
                         checkVoiceAnswer(result);
                     }
                 }
@@ -390,9 +437,14 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
 
                 <div className="p-8 md:p-12 h-full flex flex-col items-center justify-center">
                     <div className={cn(
-                        "w-full max-w-4xl items-center",
+                        "w-full max-w-4xl items-center relative",
                         type === 'writing' ? "grid md:grid-cols-2 gap-12" : "flex flex-col"
                     )}>
+                        {/* Voice Visualizer Integration */}
+                        {type === 'pronunciation' && isListening && (
+                            <div className="absolute -top-16 right-0 z-20">
+                            </div>
+                        )}
                         {type === 'writing' && (
                             <AnimatePresence mode="wait">
                                 {currentVerb && (
@@ -516,88 +568,96 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                                             {(form.show && (isActive || isDone || isFailed || idx === 0)) ? form.value : '?'}
                                                         </p>
                                                     </div>
-
-                                                    {/* Countdown Overlay with Vanish Effect */}
-                                                    <AnimatePresence>
-                                                        {isActive && (
-                                                            <motion.div
-                                                                key={stepCountdown}
-                                                                initial={{ scale: 0.5, opacity: 0 }}
-                                                                animate={{ scale: 2.5, opacity: 0 }}
-                                                                transition={{ duration: 1, ease: "easeOut" }}
-                                                                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                                                            >
-                                                                <span className="text-8xl font-black text-white/20 select-none">
-                                                                    {stepCountdown}
-                                                                </span>
-                                                            </motion.div>
-                                                        )}
-                                                    </AnimatePresence>
                                                 </motion.div>
                                             );
                                         })}
                                     </div>
 
                                     <div className="flex flex-col items-center gap-4">
-                                        <button
-                                            onClick={toggleListening}
-                                            disabled={showResult === 'correct'}
-                                            className={cn(
-                                                "w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-2xl relative",
-                                                isListening
-                                                    ? "bg-red-500 animate-pulse shadow-red-500/40"
-                                                    : "bg-sky-600 hover:bg-sky-500 shadow-sky-500/40"
-                                            )}
-                                        >
-                                            <Mic className="w-8 h-8 text-white" />
-                                            {isListening && (
-                                                <motion.div
-                                                    layoutId="ripple-basic"
-                                                    initial={{ scale: 0.8, opacity: 0.5 }}
-                                                    animate={{ scale: 1.5, opacity: 0 }}
-                                                    transition={{ repeat: Infinity, duration: 1.5 }}
-                                                    className="absolute inset-0 bg-red-500 rounded-full -z-10"
-                                                />
-                                            )}
-                                        </button>
-
-                                        <div className="min-h-[4rem] flex flex-col items-center justify-center text-center">
-                                            <AnimatePresence mode="wait">
-                                                {isListening ? (
+                                        <div className="flex items-center gap-8">
+                                            <button
+                                                onClick={toggleListening}
+                                                disabled={showResult === 'correct'}
+                                                className={cn(
+                                                    "w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-2xl relative",
+                                                    isListening
+                                                        ? "bg-red-500 shadow-red-500/40"
+                                                        : showResult === 'correct'
+                                                            ? "bg-emerald-500/20 text-emerald-400 cursor-default"
+                                                            : "bg-sky-600 hover:bg-sky-500 shadow-sky-500/40"
+                                                )}
+                                            >
+                                                <Mic className="w-8 h-8 text-white" />
+                                                {isListening && (
                                                     <motion.div
-                                                        key={stepCountdown}
-                                                        initial={{ scale: 1, opacity: 0 }}
-                                                        animate={{ scale: [1, 1.4, 1], opacity: 1 }}
-                                                        transition={{ duration: 0.9, times: [0, 0.5, 1], ease: "easeInOut" }}
-                                                        className="flex flex-col items-center"
+                                                        layoutId="ripple-basic"
+                                                        initial={{ scale: 1, opacity: 0.3 }}
+                                                        animate={{
+                                                            scale: 1 + volume * 1.5,
+                                                            opacity: 0.2 + volume * 0.8
+                                                        }}
+                                                        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                                                        className="absolute inset-0 bg-red-500 rounded-full -z-10"
+                                                    />
+                                                )}
+                                            </button>
+
+                                            {(showResult === 'correct' || showResult === 'incorrect') && (
+                                                <div className="flex items-center gap-4 animate-in slide-in-from-left duration-500">
+                                                    <button
+                                                        onClick={() => {
+                                                            setShowResult(null);
+                                                            setTranscript('');
+                                                            setMessage('');
+                                                            setCurrentStep(0);
+                                                            setStepResults([false, false, false]);
+                                                        }}
+                                                        className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition-all shadow-xl shadow-red-500/20 border-2 border-white/20 hover:scale-110 active:scale-95 group"
+                                                        title="Repetir"
                                                     >
-                                                        <span className="text-6xl font-black text-violet-400 drop-shadow-[0_0_20px_rgba(167,139,250,0.5)]">
-                                                            {stepCountdown}
-                                                        </span>
-                                                    </motion.div>
-                                                ) : !showResult ? (
-                                                    <motion.p
-                                                        initial={{ opacity: 0, y: -10 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        className="text-violet-400 font-black uppercase tracking-[0.2em] animate-pulse text-[16px]"
-                                                    >
-                                                        {t.gamesPage.verbsGame.pressToStart || "Pulsa para empezar"}
-                                                    </motion.p>
-                                                ) : null}
-                                            </AnimatePresence>
-                                            {transcript && !isListening && (
-                                                <p className="text-white/40 text-sm font-medium italic mt-2">
-                                                    "{transcript}"
-                                                </p>
+                                                        <RefreshCw className="w-8 h-8 group-hover:rotate-180 transition-transform duration-500" />
+                                                    </button>
+                                                    {showResult !== null && (
+                                                        <button
+                                                            onClick={nextVerb}
+                                                            className="w-16 h-16 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center transition-all shadow-xl shadow-emerald-500/20 border-2 border-white/20 hover:scale-110 active:scale-95 group"
+                                                            title="Siguiente"
+                                                        >
+                                                            <ArrowRight className="w-8 h-8 group-hover:translate-x-1 transition-transform" />
+                                                        </button>
+                                                    )}
+                                                </div>
                                             )}
                                         </div>
 
-                                        {showResult === 'incorrect' && (
-                                            <div className="text-center space-y-1">
-                                                <p className="text-red-400 text-xs font-bold uppercase tracking-widest">Inténtalo de nuevo</p>
-                                                <p className="text-white/40 text-[10px]">Asegúrate de pronunciar claramente el verbo destacado</p>
+                                        <div className="flex flex-col gap-2 min-w-[200px]">
+                                            <div className="min-h-[3rem] flex items-center justify-center">
+                                                <AnimatePresence mode="wait">
+                                                    {isListening ? (
+                                                        <motion.div
+                                                            key={stepCountdown}
+                                                            initial={{ opacity: 0, scale: 0.8 }}
+                                                            animate={{ opacity: 1, scale: 1 }}
+                                                            className="flex items-center gap-3"
+                                                        >
+                                                            <span className="text-5xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                                                                {stepCountdown}
+                                                            </span>
+                                                        </motion.div>
+                                                    ) : !showResult ? (
+                                                        <motion.p
+                                                            initial={{ opacity: 0, y: -10 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            className="text-sky-400 font-black uppercase tracking-[0.2em] animate-pulse text-[14px]"
+                                                        >
+                                                            {t.gamesPage.verbsGame.pressToStart || "Pulsa para empezar"}
+                                                        </motion.p>
+                                                    ) : null}
+                                                </AnimatePresence>
                                             </div>
-                                        )}
+
+
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -618,24 +678,14 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                     animate={{ opacity: 1, y: 0 }}
                                     className="w-full flex flex-col gap-4"
                                 >
-                                    {showResult === 'incorrect' && type === 'pronunciation' && (
+                                    {showResult === 'correct' && type === 'writing' && (
                                         <button
-                                            onClick={() => {
-                                                setShowResult(null);
-                                                setTranscript('');
-                                                setMessage('');
-                                            }}
-                                            className="w-full py-5 bg-white/10 text-white rounded-2xl font-black text-lg hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all border border-white/10 flex items-center justify-center gap-3"
+                                            onClick={nextVerb}
+                                            className="w-full py-5 bg-sky-600 text-white rounded-2xl font-black text-lg hover:bg-sky-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-sky-500/20 flex items-center justify-center gap-3"
                                         >
-                                            <RefreshCw className="w-6 h-6" /> {t.gamesPage.verbsGame.repeat}
+                                            {t.gamesPage.verbsGame.next} <ArrowRight className="w-6 h-6" />
                                         </button>
                                     )}
-                                    <button
-                                        onClick={nextVerb}
-                                        className="w-full py-5 bg-sky-600 text-white rounded-2xl font-black text-lg hover:bg-sky-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-sky-500/20 flex items-center justify-center gap-3"
-                                    >
-                                        {t.gamesPage.verbsGame.next} <ArrowRight className="w-6 h-6" />
-                                    </button>
                                 </motion.div>
                             )}
                         </div>
