@@ -38,7 +38,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setLoading(true);
         const { error: err } = await supabase.auth.signInWithOtp({
             email,
-            options: { emailRedirectTo: window.location.origin },
+            options: {
+                emailRedirectTo: mode === 'signup'
+                    ? `${window.location.origin}/auth/callback?role=${role}`
+                    : `${window.location.origin}/auth/callback`,
+                data: {
+                    role: role,
+                    full_name: email.split('@')[0] // Fallback name
+                }
+            },
         });
         if (err) error('Error: ' + err.message);
         else setSent(true);
@@ -53,8 +61,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 redirectTo: mode === 'signup'
                     ? `${window.location.origin}/auth/callback?role=${role}`
                     : `${window.location.origin}/auth/callback`,
-                queryParams: {
-                    role: role // This will be available in user_metadata for new users
+                data: {
+                    role: role // Supabase internally maps this to raw_user_meta_data
                 }
             },
         });
