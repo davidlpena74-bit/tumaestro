@@ -186,23 +186,33 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
     const checkVoiceAnswer = (voiceInput: string, isManualStop = false) => {
         if (!currentVerb || showResult === 'correct') return;
 
-        // Hyper-Normalization: Lowercase, remove punctuation, collapse double letters, normalize sounds
-        const normalize = (str: string) => str.toLowerCase()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-            .replace(/(.)\1+/g, "$1") // collapse double letters
-            .replace(/ph/g, "f").replace(/ck/g, "k").replace(/y/g, "i")
+        // Basic Clean: Lowercase and strip punctuation EXCEPT slashes for now
+        const clean = (str: string) => str.toLowerCase().replace(/[.,#!$%^&*;:{}=\-_`~()]/g, "").trim();
+
+        // God-Mode Phonetic Collapse: Group sounds that are often confused by noise/accents
+        const collapsePhonetics = (str: string) => str.toLowerCase()
+            .replace(/[aeiouy]/g, "v") // All vowels to 'v'
+            .replace(/[bpv]/g, "b")    // Labials
+            .replace(/[dt]/g, "d")     // Dentals
+            .replace(/[gkq]/g, "g")    // Gutturals
+            .replace(/[szc]/g, "s")    // Sibilants
+            .replace(/(.)\1+/g, "$1")  // Collapse double letters
+            .replace(/[^a-z]/g, "")    // Keep only letters
             .trim();
 
-        const fullTranscriptNorm = normalize(voiceInput);
-        const wordsNorm = voiceInput.split(/\s+/).map(normalize).filter(Boolean);
-        const targetsNorm = [
+        const fullTranscriptClean = clean(voiceInput);
+        const fullTranscriptCollapsed = collapsePhonetics(voiceInput);
+        const words = voiceInput.split(/\s+/).map(clean).filter(w => w.length > 0);
+
+        const rawTarget = [
             currentVerb.infinitive,
             currentVerb.pastSimple,
             currentVerb.pastParticiple
-        ].map(normalize);
+        ][currentStep];
 
-        const targetNorm = targetsNorm[currentStep];
-        const targetOptions = targetNorm.includes(' ') ? [targetNorm] : targetNorm.split('/');
+        // SPLIT FIRST to handle variants like was/were
+        const targetOptions = rawTarget.split('/').map(clean);
+        const targetOptionsCollapsed = rawTarget.split('/').map(collapsePhonetics);
 
         // Levenshtein helper
         const dist = (a: string, b: string) => {
@@ -219,23 +229,43 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
             return matrix[a.length][b.length];
         };
 
-        const isHyperMatch = (s1: string, s2: string) => {
-            if (s1 === s2) return true;
-            if (s1.length === 0 || s2.length === 0) return false;
+        const isGodMatch = (t: string, inputWord: string) => {
+            if (t === inputWord) return true;
+            if (t.length <= 1 || inputWord.length <= 1) return t === inputWord;
 
             // Substring check (very tolerant)
-            if (s1.includes(s2) || s2.includes(s1)) return true;
+            if (t.includes(inputWord) || inputWord.includes(t)) return true;
 
-            const d = dist(s1, s2);
-            // Hyper-lenient thresholds
-            if (s1.length >= 6) return d <= 3;
-            if (s1.length >= 3) return d <= 2;
+            const d = dist(t, inputWord);
+            // Extreme tolerance: ~40-50% error margin
+            if (t.length >= 6) return d <= 3;
+            if (t.length >= 3) return d <= 2;
             return d <= 1;
         };
 
-        const found = wordsNorm.some(w =>
-            targetOptions.some(opt => opt === w || isHyperMatch(opt, w))
-        ) || targetOptions.some(opt => fullTranscriptNorm.includes(opt));
+        // 1. Literal Word Check (on cleaned words)
+        let found = words.some(w => targetOptions.some(opt => isGodMatch(opt, w)));
+
+        // 2. Collapsed Substring Check (Resilience to concatenations)
+        if (!found) {
+            found = targetOptionsCollapsed.some(opt => fullTranscriptCollapsed.includes(opt));
+        }
+
+        // 3. Sliding window fuzzy check on collapsed transcript (Deep noise search)
+        if (!found) {
+            for (const optCollapsed of targetOptionsCollapsed) {
+                if (fullTranscriptCollapsed.length >= optCollapsed.length) {
+                    for (let i = 0; i <= fullTranscriptCollapsed.length - optCollapsed.length; i++) {
+                        const window = fullTranscriptCollapsed.substring(i, i + optCollapsed.length);
+                        if (dist(optCollapsed, window) <= Math.max(1, Math.floor(optCollapsed.length * 0.45))) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (found) break;
+            }
+        }
 
         if (found && !stepResults[currentStep]) {
             const newResults = [...stepResults];
