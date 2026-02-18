@@ -162,16 +162,16 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
             let elapsed = 0;
             interval = setInterval(() => {
                 elapsed += 1;
-                const remainingInStep = 5 - (elapsed % 5);
-                setStepCountdown(remainingInStep === 0 ? 5 : remainingInStep);
+                const remainingInStep = 3 - (elapsed % 3);
+                setStepCountdown(remainingInStep === 0 ? 3 : remainingInStep);
 
-                if (elapsed === 5) {
+                if (elapsed === 3) {
                     setCurrentStep(1);
                     setTranscript('');
-                } else if (elapsed === 10) {
+                } else if (elapsed === 6) {
                     setCurrentStep(2);
                     setTranscript('');
-                } else if (elapsed === 15) {
+                } else if (elapsed === 9) {
                     clearInterval(interval);
                     setTimeout(() => {
                         handlePronunciationSequenceEnd(stepResultsRef.current);
