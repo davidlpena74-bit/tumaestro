@@ -14,9 +14,18 @@ export const TRANSLATIONS = {
             loading: 'Cargando...',
             congrats: '¡Impresionante!',
             victoryMessage: 'Has completado el desafío con éxito.',
-            back: 'Volver',
-            find: 'Busca',
+            back: 'Atrás',
+            find: 'Encuentra',
+            accuracy: 'Acierto',
             profile: 'Perfil',
+            cancel: 'Cancelar',
+            assigning: 'Asignando...',
+            confirmAssign: 'Confirmar Asignación',
+            selectClass: 'Selecciona una clase...',
+            yourClass: 'Tu Clase',
+            noClasses: 'No tienes clases creadas. Ve al panel para crear una.',
+            successAssign: 'Tarea asignada con éxito',
+            errorAssign: 'Error al asignar la tarea',
             subjects: {
                 math: 'Matemáticas',
                 english: 'Inglés',
@@ -290,6 +299,58 @@ export const TRANSLATIONS = {
                 vagina: 'Vagina',
                 endometrium: 'Endometrio',
                 vulva: 'Vulva'
+            },
+            verbsLevels: {
+                basic: {
+                    title: 'Verbos Irregulares BÁSICO',
+                    desc: 'Comienza con los 25 verbos irregulares más fundamentales del inglés.',
+                    descP: 'Practica tu pronunciación con los 25 verbos más comunes.'
+                },
+                medium: {
+                    title: 'Verbos Irregulares MEDIO',
+                    desc: 'Domina los 50 verbos irregulares mediante la escritura dinámica.',
+                    descP: 'Practica la pronunciación exacta de los 50 verbos irregulares.'
+                },
+                pro: {
+                    title: 'Verbos Irregulares PRO',
+                    desc: 'Dinamismo total con 100 verbos irregulares para expertos.',
+                    descP: 'Mejora tu fluidez hablando 100 verbos irregulares avanzados.'
+                },
+                master: {
+                    title: 'Verbos Irregulares MASTER',
+                    desc: 'El reto supremo con 150 verbos para dominar el idioma.',
+                    descP: 'El desafío definitivo de voz: 150 verbos para sonar como un nativo.'
+                }
+            },
+            gameModes: {
+                writing: 'Escritura',
+                pronunciation: 'Pronunciación'
+            },
+            grades: {
+                prim2: '2º Prim.',
+                prim3: '3º Prim.',
+                prim4: '4º Prim.',
+                prim5: '5º Prim.',
+                prim6: '6º Prim.',
+                expert: 'Experto'
+            },
+            verbsGame: {
+                challengeMode: 'MODO RETO',
+                legendMode: 'MODO LEYENDA',
+                masterMode: 'NIVEL MASTER',
+                practiceMode: 'PRÁCTICA',
+                verify: 'VERIFICAR',
+                next: 'SIGUIENTE',
+                repeat: 'REPETIR',
+                masterLevelReached: '¡Nivel Master Alcanzado!',
+                finalMasterScore: 'Score Final Master',
+                masterChallenge: 'EL DESAFÍO MASTER',
+                masterIntro: 'El desafío definitivo: 150 verbos irregulares. Solo para auténticos maestros del inglés.',
+                proIntro: 'Nivel experto: 100 verbos irregulares para dominar el inglés por completo.',
+                verbsCount: '{count} VERBOS',
+                timeCount: '{count} SEG',
+                minCount: '{count} MIN',
+                pressToStart: 'Pulsa para empezar'
             }
         },
         storyteller: {
@@ -378,7 +439,16 @@ export const TRANSLATIONS = {
             victoryMessage: 'You have successfully completed the challenge.',
             back: 'Back',
             find: 'Find',
+            accuracy: 'Accuracy',
             profile: 'Profile',
+            cancel: 'Cancel',
+            assigning: 'Assigning...',
+            confirmAssign: 'Confirm Assignment',
+            selectClass: 'Select a class...',
+            yourClass: 'Your Class',
+            noClasses: 'You have no classes created. Go to the dashboard to create one.',
+            successAssign: 'Task assigned successfully',
+            errorAssign: 'Error assigning the task',
             subjects: {
                 math: 'Math',
                 english: 'English',
@@ -652,6 +722,58 @@ export const TRANSLATIONS = {
                 vagina: 'Vagina',
                 endometrium: 'Endometrium',
                 vulva: 'Vulva'
+            },
+            verbsLevels: {
+                basic: {
+                    title: 'Irregular Verbs BASIC',
+                    desc: 'Start with the 25 most fundamental irregular verbs in English.',
+                    descP: 'Practice your pronunciation with the 25 most common verbs.'
+                },
+                medium: {
+                    title: 'Irregular Verbs MEDIUM',
+                    desc: 'Master 50 irregular verbs through dynamic writing.',
+                    descP: 'Practice the exact pronunciation of 50 irregular verbs.'
+                },
+                pro: {
+                    title: 'Irregular Verbs PRO',
+                    desc: 'Full dynamics with 100 irregular verbs for experts.',
+                    descP: 'Improve your fluency speaking 100 advanced irregular verbs.'
+                },
+                master: {
+                    title: 'Irregular Verbs MASTER',
+                    desc: 'The ultimate challenge with 150 verbs to master the language.',
+                    descP: 'The definitive voice challenge: 150 verbs to sound like a native.'
+                }
+            },
+            gameModes: {
+                writing: 'Writing',
+                pronunciation: 'Pronunciation'
+            },
+            grades: {
+                prim2: '2nd Grade',
+                prim3: '3rd Grade',
+                prim4: '4th Grade',
+                prim5: '5th Grade',
+                prim6: '6th Grade',
+                expert: 'Expert'
+            },
+            verbsGame: {
+                challengeMode: 'CHALLENGE MODE',
+                legendMode: 'LEGEND MODE',
+                masterMode: 'MASTER LEVEL',
+                practiceMode: 'PRACTICE',
+                verify: 'VERIFY',
+                next: 'NEXT',
+                repeat: 'REPEAT',
+                masterLevelReached: 'Master Level Reached!',
+                finalMasterScore: 'Final Master Score',
+                masterChallenge: 'THE MASTER CHALLENGE',
+                masterIntro: 'The ultimate challenge: 150 irregular verbs. Only for true English masters.',
+                proIntro: 'Expert level: 100 irregular verbs to fully master English.',
+                verbsCount: '{count} VERBS',
+                timeCount: '{count} SEC',
+                minCount: '{count} MIN',
+                pressToStart: 'Press to START'
             }
         },
         storyteller: {
@@ -739,8 +861,17 @@ export const TRANSLATIONS = {
             congrats: 'Génial !',
             victoryMessage: 'Vous avez terminé le défi avec succès.',
             back: 'Retour',
-            find: 'Chercher',
+            find: 'Trouve',
+            accuracy: 'Précision',
             profile: 'Profil',
+            cancel: 'Annuler',
+            assigning: 'Assignation...',
+            confirmAssign: 'Confirmer l\'Assignation',
+            selectClass: 'Sélectionnez une classe...',
+            yourClass: 'Votre Classe',
+            noClasses: 'Vous n\'avez pas de classes créées. Allez au panneau pour en créer une.',
+            successAssign: 'Tâche assignée avec succès',
+            errorAssign: 'Erreur lors de l\'assignation de la tâche',
             subjects: {
                 math: 'Mathématiques',
                 english: 'Anglais',
@@ -762,7 +893,7 @@ export const TRANSLATIONS = {
         },
         home: {
             heroTitle: 'Votre avenir commence ici',
-            heroSubtitle: 'Choisissez comment vous voulez apprendre aujourd\'hui',
+            heroSubtitle: 'Choisissez how vous voulez apprendre aujourd\'hui',
             findTeacher: 'Cours Particuliers',
             findTeacherDesc: 'Trouvez des cours particuliers en personne ou en ligne avec des experts vérifiés.',
             findTeacherBtn: 'Voir les Professeurs',
@@ -1010,7 +1141,58 @@ export const TRANSLATIONS = {
                 cervix: 'Col de l\'utérus',
                 vagina: 'Vagin',
                 endometrium: 'Endomètre',
-                vulva: 'Vulve'
+                vulva: 'Vulva'
+            },
+            verbsLevels: {
+                basic: {
+                    title: 'Verbes Irréguliers BASIQUE',
+                    desc: 'Commencez par les 25 verbes irréguliers les plus fondamentaux de l\'anglais.',
+                    descP: 'Pratiquez votre prononciation avec les 25 verbes les plus courants.'
+                },
+                medium: {
+                    title: 'Verbes Irréguliers MOYEN',
+                    desc: 'Maîtrisez 50 verbes irréguliers grâce à l\'écriture dynamique.',
+                    descP: 'Pratiquez la prononciation exacte de 50 verbes irréguliers.'
+                },
+                pro: {
+                    title: 'Verbes Irréguliers PRO',
+                    desc: 'Dynamisme total avec 100 verbes irréguliers pour experts.',
+                    descP: 'Améliorez votre fluidité en parlant 100 verbes irréguliers avancés.'
+                },
+                master: {
+                    title: 'Verbes Irréguliers MASTER',
+                    desc: 'Le défi ultime avec 150 verbes pour maîtriser la langue.',
+                    descP: 'Le défi vocal définitif : 150 verbes pour sonner comme un natif.'
+                }
+            },
+            gameModes: {
+                writing: 'Écriture',
+                pronunciation: 'Prononciation'
+            },
+            grades: {
+                prim2: 'CE1',
+                prim3: 'CE2',
+                prim4: 'CM1',
+                prim5: 'CM2',
+                prim6: '6ème',
+                expert: 'Expert'
+            },
+            verbsGame: {
+                challengeMode: 'MODE DÉFI',
+                legendMode: 'MODE LÉGENDE',
+                masterMode: 'NIVEAU MASTER',
+                practiceMode: 'PRATIQUE',
+                verify: 'VÉRIFIER',
+                next: 'SUIVANT',
+                repeat: 'RÉPÉTER',
+                masterLevelReached: 'Niveau Master Atteint !',
+                finalMasterScore: 'Score Final Master',
+                masterChallenge: 'LE DÉFI MASTER',
+                masterIntro: 'Le défi ultime : 150 verbes irréguliers. Seulement pour les vrais maîtres de l\'anglais.',
+                proIntro: 'Niveau expert : 100 verbes irréguliers pour maîtriser pleinement l\'anglais.',
+                verbsCount: '{count} VERBES',
+                timeCount: '{count} SEC',
+                minCount: '{count} MIN'
             }
         },
         storyteller: {
@@ -1094,7 +1276,16 @@ export const TRANSLATIONS = {
             victoryMessage: 'Du hast die Herausforderung erfolgreich abgeschlossen.',
             back: 'Zurück',
             find: 'Finde',
-            profile: 'Profil',
+            accuracy: 'Genauigkeit',
+            profile: 'Profile',
+            cancel: 'Abbrechen',
+            assigning: 'Zuweisen...',
+            confirmAssign: 'Zuweisung bestätigen',
+            selectClass: 'Wähle eine Klasse...',
+            yourClass: 'Deine Klasse',
+            noClasses: 'Du hast keine Klassen erstellt. Geh zum Dashboard, um eine zu erstellen.',
+            successAssign: 'Aufgabe erfolgreich zugewiesen',
+            errorAssign: 'Fehler beim Zuweisen der Aufgabe',
             subjects: {
                 math: 'Mathematik',
                 english: 'Englisch',
@@ -1365,6 +1556,57 @@ export const TRANSLATIONS = {
                 vagina: 'Vagina',
                 endometrium: 'Gebärmutterschleimhaut',
                 vulva: 'Vulva'
+            },
+            verbsLevels: {
+                basic: {
+                    title: 'Unregelmäßige Verben BASIS',
+                    desc: 'Beginnen Sie mit den 25 grundlegendsten unregelmäßigen Verben im Englischen.',
+                    descP: 'Üben Sie Ihre Aussprache mit den 25 häufigsten Verben.'
+                },
+                medium: {
+                    title: 'Unregelmäßige Verben MITTEL',
+                    desc: 'Meistern Sie 50 unregelmäßige Verben durch dynamisches Schreiben.',
+                    descP: 'Üben Sie die exakte Aussprache von 50 unregelmäßigen Verben.'
+                },
+                pro: {
+                    title: 'Unregelmäßige Verben PRO',
+                    desc: 'Volle Dynamik mit 100 unregelmäßigen Verben für Experten.',
+                    descP: 'Verbessern Sie Ihre Geläufigkeit beim Sprechen von 100 fortgeschrittenen unregelmäßigen Verben.'
+                },
+                master: {
+                    title: 'Unregelmäßige Verben MASTER',
+                    desc: 'Die ultimative Herausforderung mit 150 Verben, um die Sprache zu beherrschen.',
+                    descP: 'Die endgültige stimmliche Herausforderung: 150 Verben, um wie ein Muttersprachler zu klingen.'
+                }
+            },
+            gameModes: {
+                writing: 'Schreiben',
+                pronunciation: 'Aussprache'
+            },
+            grades: {
+                prim2: '2. Klasse',
+                prim3: '3. Klasse',
+                prim4: '4. Klasse',
+                prim5: '5. Klasse',
+                prim6: '6. Klasse',
+                expert: 'Experte'
+            },
+            verbsGame: {
+                challengeMode: 'HERAUSFORDERUNGSMODUS',
+                legendMode: 'LEGENDENMODUS',
+                masterMode: 'MASTER-LEVEL',
+                practiceMode: 'ÜBUNG',
+                verify: 'ÜBERPRÜFEN',
+                next: 'WEITER',
+                repeat: 'WIEDERHOLEN',
+                masterLevelReached: 'Master-Level erreicht!',
+                finalMasterScore: 'Master-Endstand',
+                masterChallenge: 'DIE MASTER-HERAUSFORDERUNG',
+                masterIntro: 'Die ultimative Herausforderung: 150 unregelmäßige Verben. Nur für echte Englisch-Meister.',
+                proIntro: 'Expertenniveau: 100 unregelmäßige Verben zur vollständigen Beherrschung des Englischen.',
+                verbsCount: '{count} VERBEN',
+                timeCount: '{count} SEK',
+                minCount: '{count} MIN'
             }
         },
         storyteller: {

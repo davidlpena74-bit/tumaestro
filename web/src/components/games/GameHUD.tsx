@@ -26,7 +26,7 @@ interface GameHUDProps {
     gameType?: string;
 
     // Customization
-    colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow' | 'cyan' | 'rose';
+    colorTheme?: 'blue' | 'emerald' | 'purple' | 'orange' | 'teal' | 'yellow' | 'cyan' | 'rose' | 'sky';
     icon?: React.ReactNode;
     gameMode?: 'challenge' | 'practice';
     elapsedTime?: number;
@@ -41,6 +41,7 @@ const THEMES = {
     yellow: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-400', sub: 'text-yellow-300' },
     cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', border: 'border-cyan-400', sub: 'text-cyan-300' },
     rose: { bg: 'bg-violet-500/20', text: 'text-violet-400', border: 'border-violet-400', sub: 'text-violet-300' },
+    sky: { bg: 'bg-sky-500/20', text: 'text-sky-400', border: 'border-sky-400', sub: 'text-sky-300' },
 };
 
 export default function GameHUD({
@@ -56,10 +57,11 @@ export default function GameHUD({
     colorTheme = 'blue',
     icon,
     gameMode = 'challenge',
-    elapsedTime = 0
+    elapsedTime = 0,
+    gameType
 }: GameHUDProps) {
-    const { t } = useLanguage();
-    const theme = THEMES[colorTheme];
+    const { t, language } = useLanguage();
+    const theme = THEMES[colorTheme as keyof typeof THEMES] || THEMES.blue;
 
     // Calculate accuracy
     const completed = totalTargets - remainingTargets;
@@ -87,7 +89,7 @@ export default function GameHUD({
                             {score} <span className={cn("text-sm font-normal", theme.sub)}>pts</span>
                         </h2>
                         <div className={cn("flex flex-wrap gap-x-3 gap-y-1 text-xs font-bold mt-1 uppercase tracking-wider", theme.sub)}>
-                            <span>{accuracy}% Acierto</span>
+                            <span>{accuracy}% {t.common.accuracy}</span>
                         </div>
                     </div>
                 </div>
@@ -95,7 +97,9 @@ export default function GameHUD({
                 {/* CENTER: Target Display - Only show if targetName is provided */}
                 {targetName !== "" && (
                     <div className="flex-1 text-center bg-slate-900/50 px-1 py-2 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[80px]">
-                        <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1">Encuentra</div>
+                        <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                            {gameType === 'pronunciation' ? (language === 'es' ? 'Conjuga el verbo:' : 'Conjugate the verb:') : t.common.find}
+                        </div>
                         <AnimatePresence mode='wait'>
                             <motion.div
                                 key={targetName || 'loading'}

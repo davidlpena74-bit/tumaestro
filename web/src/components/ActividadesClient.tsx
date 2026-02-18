@@ -508,7 +508,7 @@ export default function ActividadesClient() {
                             href: '/actividades/celula-animal',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -518,7 +518,7 @@ export default function ActividadesClient() {
                             href: '/actividades/celula-vegetal',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -528,7 +528,7 @@ export default function ActividadesClient() {
                             href: '/actividades/sistema-reproductor-masculino',
                             icon: Dna,
                             color: 'from-blue-500 to-indigo-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -538,7 +538,7 @@ export default function ActividadesClient() {
                             href: '/actividades/sistema-reproductor-femenino',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -548,7 +548,7 @@ export default function ActividadesClient() {
                             href: '/actividades/musculos',
                             icon: Brain,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
@@ -558,7 +558,7 @@ export default function ActividadesClient() {
                             href: '/actividades/esqueleto',
                             icon: Dna,
                             color: 'from-blue-500 to-cyan-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.map
                         }
                     ]
@@ -575,89 +575,89 @@ export default function ActividadesClient() {
                     games: [
                         {
                             id: 'verbos-irregulares-basico',
-                            title: "Verbos Irregulares BÁSICO",
-                            description: "Comienza con los 25 verbos irregulares más fundamentales del inglés.",
+                            title: t.gamesPage.verbsLevels.basic.title,
+                            description: t.gamesPage.verbsLevels.basic.desc,
                             href: '/actividades/verbos-irregulares-basico',
                             icon: Translate,
                             color: 'from-violet-500 to-purple-600',
-                            grade: '4º Prim.',
+                            grade: t.gamesPage.grades.prim4,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'writing'
                         },
                         {
                             id: 'verbos-irregulares',
-                            title: "Verbos Irregulares MEDIO",
-                            description: t.gamesPage.gameTitles.verbsDesc,
+                            title: t.gamesPage.verbsLevels.medium.title,
+                            description: t.gamesPage.verbsLevels.medium.desc,
                             href: '/actividades/verbos-irregulares',
                             icon: Translate,
                             color: 'from-violet-500 to-purple-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'writing'
                         },
                         {
                             id: 'verbos-irregulares-pro',
-                            title: "Verbos Irregulares PRO",
-                            description: "Dinamismo total con 100 verbos irregulares para expertos.",
+                            title: t.gamesPage.verbsLevels.pro.title,
+                            description: t.gamesPage.verbsLevels.pro.desc,
                             href: '/actividades/verbos-irregulares-pro',
                             icon: Translate,
                             color: 'from-violet-600 to-indigo-700',
-                            grade: '6º Prim.',
+                            grade: t.gamesPage.grades.prim6,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'writing'
                         },
                         {
                             id: 'verbos-irregulares-master',
-                            title: "Verbos Irregulares MASTER",
-                            description: "El reto supremo con 150 verbos para dominar el idioma.",
+                            title: t.gamesPage.verbsLevels.master.title,
+                            description: t.gamesPage.verbsLevels.master.desc,
                             href: '/actividades/verbos-irregulares-master',
                             icon: Translate,
                             color: 'from-violet-600 to-indigo-700',
-                            grade: 'Expert',
+                            grade: t.gamesPage.grades.expert,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'writing'
                         },
                         {
                             id: 'verbos-irregulares-basico-pronunciacion',
-                            title: "Verbos Irregulares BÁSICO",
-                            description: "Practica tu pronunciación con los 25 verbos más comunes.",
+                            title: t.gamesPage.verbsLevels.basic.title,
+                            description: t.gamesPage.verbsLevels.basic.descP,
                             href: '/actividades/verbos-irregulares-basico-pronunciacion',
                             icon: Translate,
                             color: 'from-violet-500 to-purple-600',
-                            grade: '4º Prim.',
+                            grade: t.gamesPage.grades.prim4,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'pronunciation'
                         },
                         {
                             id: 'verbos-irregulares-pronunciacion',
-                            title: "Verbos Irregulares MEDIO",
-                            description: t.gamesPage.gameTitles.verbsPronunciationDesc,
+                            title: t.gamesPage.verbsLevels.medium.title,
+                            description: t.gamesPage.verbsLevels.medium.descP,
                             href: '/actividades/verbos-irregulares-pronunciacion',
                             icon: Translate,
                             color: 'from-violet-500 to-purple-600',
-                            grade: '5º Prim.',
+                            grade: t.gamesPage.grades.prim5,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'pronunciation'
                         },
                         {
                             id: 'verbos-irregulares-pro-pronunciacion',
-                            title: "Verbos Irregulares PRO",
-                            description: "Mejora tu fluidez hablando 100 verbos irregulares avanzados.",
+                            title: t.gamesPage.verbsLevels.pro.title,
+                            description: t.gamesPage.verbsLevels.pro.descP,
                             href: '/actividades/verbos-irregulares-pro-pronunciacion',
                             icon: Translate,
                             color: 'from-violet-600 to-indigo-700',
-                            grade: '6º Prim.',
+                            grade: t.gamesPage.grades.prim6,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'pronunciation'
                         },
                         {
                             id: 'verbos-irregulares-master-pronunciacion',
-                            title: "Verbos Irregulares MASTER",
-                            description: "El desafío definitivo de voz: 150 verbos para sonar como un nativo.",
+                            title: t.gamesPage.verbsLevels.master.title,
+                            description: t.gamesPage.verbsLevels.master.descP,
                             href: '/actividades/verbos-irregulares-master-pronunciacion',
                             icon: Translate,
                             color: 'from-violet-600 to-indigo-700',
-                            grade: 'Expert',
+                            grade: t.gamesPage.grades.expert,
                             gameType: t.gamesPage.gameTypes.verbs,
                             mode: 'pronunciation'
                         }
@@ -680,7 +680,7 @@ export default function ActividadesClient() {
                             href: '/actividades/divisiones',
                             icon: Calculator,
                             color: 'from-orange-500 to-amber-600',
-                            grade: '3º Prim.',
+                            grade: t.gamesPage.grades.prim3,
                             gameType: t.gamesPage.gameTypes.math
                         },
                         {
@@ -690,7 +690,7 @@ export default function ActividadesClient() {
                             href: '/actividades/multiplicaciones',
                             icon: Calculator,
                             color: 'from-orange-500 to-amber-600',
-                            grade: '2º Prim.',
+                            grade: t.gamesPage.grades.prim2,
                             gameType: t.gamesPage.gameTypes.math
                         }
                     ]
@@ -920,7 +920,7 @@ export default function ActividadesClient() {
                                                         {game.mode && (
                                                             <div
                                                                 className="absolute top-4 right-4 z-30 group/mode cursor-pointer"
-                                                                title={game.mode === 'writing' ? 'Escritura' : 'Pronunciación'}
+                                                                title={game.mode === 'writing' ? t.gamesPage.gameModes.writing : t.gamesPage.gameModes.pronunciation}
                                                             >
                                                                 <div className="bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-lg shadow-lg group-hover:bg-white/20 transition-all">
                                                                     {game.mode === 'writing' ? (
@@ -932,7 +932,7 @@ export default function ActividadesClient() {
 
                                                                 {/* Custom Tooltip */}
                                                                 <div className="absolute top-full right-0 mt-2 opacity-0 group-hover/mode:opacity-100 transition-opacity pointer-events-none whitespace-nowrap bg-slate-900/90 text-[10px] font-bold text-white px-2 py-1 rounded-md border border-white/10 shadow-xl backdrop-blur-md">
-                                                                    {game.mode === 'writing' ? 'Escritura' : 'Pronunciación'}
+                                                                    {game.mode === 'writing' ? t.gamesPage.gameModes.writing : t.gamesPage.gameModes.pronunciation}
                                                                 </div>
                                                             </div>
                                                         )}
@@ -1108,14 +1108,14 @@ export default function ActividadesClient() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">Tu Clase</label>
+                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">{t.common.yourClass}</label>
                                             <div className="relative">
                                                 <select
                                                     value={selectedClassId}
                                                     onChange={(e) => setSelectedClassId(e.target.value)}
                                                     className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-slate-700 font-bold focus:border-blue-500 outline-none appearance-none transition-all cursor-pointer"
                                                 >
-                                                    <option value="">Selecciona una clase...</option>
+                                                    <option value="">{t.common.selectClass}</option>
                                                     {classes.map(cls => (
                                                         <option key={cls.id} value={cls.id}>
                                                             {cls.name} {cls.grade ? `(${cls.grade})` : ''}
@@ -1128,7 +1128,7 @@ export default function ActividadesClient() {
                                             </div>
                                             {classes.length === 0 && (
                                                 <p className="text-[10px] text-red-400 font-bold mt-2 px-1">
-                                                    No tienes clases creadas. Ve al panel para crear una.
+                                                    {t.common.noClasses}
                                                 </p>
                                             )}
                                         </div>
@@ -1138,7 +1138,7 @@ export default function ActividadesClient() {
                                                 onClick={() => setIsAssigning(null)}
                                                 className="flex-1 py-4 bg-slate-100 text-slate-500 font-black rounded-2xl hover:bg-slate-200 transition-all"
                                             >
-                                                Cancelar
+                                                {t.common.cancel}
                                             </button>
                                             <button
                                                 disabled={!selectedClassId || isSubmitting}
@@ -1153,9 +1153,9 @@ export default function ActividadesClient() {
                                                 {isSubmitting ? (
                                                     <div className="flex items-center justify-center gap-2">
                                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                        Asignando...
+                                                        {t.common.assigning}
                                                     </div>
-                                                ) : "Confirmar Asignación"}
+                                                ) : t.common.confirmAssign}
                                             </button>
                                         </div>
                                     </div>

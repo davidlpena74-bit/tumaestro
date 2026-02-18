@@ -2,12 +2,18 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer, Crown, Mic } from 'lucide-react';
+import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer, Star, Mic, XCircle } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
 import { IRREGULAR_VERBS_MASTER, type IrregularVerb } from './data/irregular-verbs-master';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import GameHUD from './GameHUD';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 export default function IrregularVerbsMasterGame({ taskId = null, type = 'writing' }: { taskId?: string | null, type?: 'writing' | 'pronunciation' }) {
     const { t, language } = useLanguage();
@@ -22,6 +28,10 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');
+    const [isMounted, setIsMounted] = useState(false);
+    const [currentStep, setCurrentStep] = useState(0); // 0: infinitive, 1: pastSimple, 2: pastParticiple
+    const [stepResults, setStepResults] = useState<boolean[]>([false, false, false]);
+    const [stepCountdown, setStepCountdown] = useState(3);
 
     const {
         gameState, setGameState,
@@ -33,24 +43,21 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode, taskId }); // 5 minutes for 150 verbs
+    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode, taskId });
     const recognitionRef = useRef<any>(null);
-
-    const cn = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
-
-
-
 
     const startNewGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
         const shuffled = [...IRREGULAR_VERBS_MASTER].sort(() => Math.random() - 0.5);
-        setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 20)); // 20 for practice in Master
+        setVerbs(mode === 'challenge' ? shuffled : shuffled.slice(0, 20));
         setCurrentIndex(0);
         setStreak(0);
         hookStartGame();
         setInputs({ pastSimple: '', pastParticiple: '' });
         setShowResult(null);
         setMessage('');
+        setCurrentStep(0);
+        setStepResults([false, false, false]);
     };
 
     const currentVerb = verbs[currentIndex];
@@ -102,32 +109,14 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
 
         if (correctSimple && correctParticiple) {
             setShowResult('correct');
-            addScore(20 + (streak * 5)); // More points for Master
+            addScore(25 + (streak * 5));
             setStreak(prev => prev + 1);
             setMessage(t.common.correct + ' ✅');
-
-            // Grand finale confetti
-            const duration = 3 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-            function randomInRange(min: number, max: number) {
-                return Math.random() * (max - min) + min;
-            }
-
-            const interval: any = setInterval(function () {
-                const timeLeft = animationEnd - Date.now();
-
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
-                }
-
-                const particleCount = 50 * (timeLeft / duration);
-                // since particles fall down, start a bit higher than random
-                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-            }, 250);
-
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
         } else {
             setShowResult('incorrect');
             setStreak(0);
@@ -140,37 +129,112 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
         if (isListening) {
             recognitionRef.current?.stop();
             setIsListening(false);
+            checkVoiceAnswer(transcript, true);
         } else {
             setTranscript('');
+            setShowResult(null);
+            setCurrentStep(0);
+            setStepResults([false, false, false]);
+
             try {
                 recognitionRef.current?.start();
                 setIsListening(true);
             } catch (e) {
+                console.error("Speech recognition error:", e);
                 setIsListening(false);
             }
         }
     };
 
-    const checkVoiceAnswer = (voiceInput: string) => {
-        if (!currentVerb) return;
+    // Ref to always have the latest state in the finish sequence
+    const stepResultsRef = useRef(stepResults);
+    useEffect(() => {
+        stepResultsRef.current = stepResults;
+    }, [stepResults]);
+
+    // Timer Effect for auto-advancing
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isListening && type === 'pronunciation') {
+            let elapsed = 0;
+            interval = setInterval(() => {
+                elapsed += 1;
+                const remainingInStep = 3 - (elapsed % 3);
+                setStepCountdown(remainingInStep === 0 ? 3 : remainingInStep);
+
+                if (elapsed === 3) {
+                    setCurrentStep(1);
+                    setTranscript('');
+                } else if (elapsed === 6) {
+                    setCurrentStep(2);
+                    setTranscript('');
+                } else if (elapsed === 9) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        handlePronunciationSequenceEnd(stepResultsRef.current);
+                    }, 500);
+                }
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [isListening, type]);
+
+    const checkVoiceAnswer = (voiceInput: string, isManualStop = false) => {
+        if (!currentVerb || showResult === 'correct') return;
+
         const words = voiceInput.toLowerCase().split(/\s+/);
-        const pastSimpleTarget = currentVerb.pastSimple.toLowerCase();
-        const pastParticipleTarget = currentVerb.pastParticiple.toLowerCase();
+        const targets = [
+            currentVerb.infinitive.toLowerCase(),
+            currentVerb.pastSimple.toLowerCase(),
+            currentVerb.pastParticiple.toLowerCase()
+        ];
+        const target = targets[currentStep];
 
-        const foundSimple = words.some(w => w === pastSimpleTarget);
-        const foundParticiple = words.some(w => w === pastParticipleTarget);
+        const targetOptions = target.includes('/') ? target.split('/') : [target];
+        const found = words.some(w => targetOptions.includes(w));
 
-        if (foundSimple && foundParticiple) {
+        if (found) {
+            const newResults = [...stepResults];
+            newResults[currentStep] = true;
+            setStepResults(newResults);
+            playAudio(targetOptions[0]);
+        } else if (isManualStop) {
+            const newResults = [...stepResults];
+            newResults[currentStep] = false;
+            setStepResults(newResults);
+        }
+    };
+
+    const handlePronunciationSequenceEnd = async (results: boolean[]) => {
+        setIsListening(false);
+        recognitionRef.current?.stop();
+
+        const finalResults = results.slice(0, 3);
+        const allCorrect = finalResults.every(r => r === true);
+
+        if (allCorrect) {
             setShowResult('correct');
-            addScore(25 + (streak * 5));
+            addScore(30 + (streak * 5));
             setStreak(prev => prev + 1);
             setMessage(t.common.correct + ' 🎙️');
-            recognitionRef.current?.stop();
-            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        } else {
+            setShowResult('incorrect');
+            setStreak(0);
+            addError();
+            setMessage(language === 'es' ? '¡Repasemos! 🎙️' : 'Let\'s review! 🎙️');
+            if (currentVerb) {
+                await playSequence([currentVerb.infinitive, currentVerb.pastSimple, currentVerb.pastParticiple]);
+            }
         }
     };
 
     useEffect(() => {
+        setIsMounted(true);
         if (typeof window !== 'undefined' && (window as any).webkitSpeechRecognition) {
             const SpeechRecognition = (window as any).webkitSpeechRecognition;
             const recognition = new SpeechRecognition();
@@ -187,7 +251,14 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
                     }
                 }
             };
-            recognition.onend = () => setIsListening(false);
+            recognition.onerror = () => setIsListening(false);
+            recognition.onend = () => {
+                if (isListening && !showResult) {
+                    recognition.start();
+                } else {
+                    setIsListening(false);
+                }
+            };
             recognitionRef.current = recognition;
         }
     }, [currentIndex]);
@@ -204,11 +275,15 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
             }
             setInputs({ pastSimple: '', pastParticiple: '' });
             setShowResult(null);
+            setCurrentStep(0);
+            setStepResults([false, false, false]);
         } else {
             if (currentIndex < verbs.length - 1) {
                 setCurrentIndex(prev => prev + 1);
                 setInputs({ pastSimple: '', pastParticiple: '' });
                 setShowResult(null);
+                setCurrentStep(0);
+                setStepResults([false, false, false]);
             } else {
                 handleFinish();
             }
@@ -221,7 +296,11 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
         setCurrentIndex(0);
         setStreak(0);
         setMessage('');
+        setCurrentStep(0);
+        setStepResults([false, false, false]);
     };
+
+    if (!isMounted) return null;
 
     return (
         <div className="w-full flex flex-col items-center select-none max-w-6xl mx-auto p-4">
@@ -233,222 +312,314 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
                 gameMode={gameMode}
                 totalTargets={verbs.length || IRREGULAR_VERBS_MASTER.length}
                 remainingTargets={(verbs.length || IRREGULAR_VERBS_MASTER.length) - currentIndex}
-                targetName={currentVerb ? currentVerb.translation : ''}
+                targetName={currentVerb ? `${currentVerb.infinitive.toUpperCase()} (${currentVerb.translation})` : ''}
                 message={message}
                 onReset={resetGame}
-                colorTheme="purple"
-                icon={<Crown className="w-8 h-8 text-purple-400 fill-purple-400/20" />}
+                colorTheme="rose"
+                icon={<Star className="w-8 h-8 text-violet-500 fill-violet-500" />}
                 title={type === 'pronunciation' ? t.gamesPage.gameTitles.verbsPronunciation : "Verbos Irregulares MASTER"}
+                gameType={type}
             />
 
-            <div className="relative w-full min-h-[500px] bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
-                {/* START OVERLAY */}
+            <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
                 {gameState === 'start' && (
-                    <div className="absolute inset-0 z-50 bg-black/70 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center">
-                        <div className="relative">
-                            <div className="bg-purple-500/10 p-6 rounded-full mb-6 ring-2 ring-purple-500/30">
-                                <Crown className="w-16 h-16 text-purple-500 animate-pulse" />
-                            </div>
-                            <div className="absolute -top-2 -right-2 bg-slate-950 text-purple-400 font-black text-xs px-3 py-1.5 rounded-lg rotate-12 shadow-[0_0_20px_rgba(139,92,246,0.3)] border border-purple-500/50">
-                                MASTER
-                            </div>
+                    <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center">
+                        <div className="bg-violet-500/10 p-6 rounded-full mb-6 ring-1 ring-violet-500/30">
+                            <BookOpen className="w-16 h-16 text-violet-500" />
                         </div>
-                        <h2 className="text-3xl md:text-6xl font-black text-white mb-4 tracking-tighter uppercase italic">
-                            The <span className="text-purple-400">Master</span> Challenge
-                        </h2>
-                        <p className="text-purple-100/70 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                            El desafío definitivo: 150 verbos irregulares. Solo para auténticos maestros del inglés.
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.verbsLevels.master.title}</h2>
+                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
+                            {type === 'pronunciation' ? t.gamesPage.verbsLevels.master.descP : t.gamesPage.verbsLevels.master.desc}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                             <button
                                 onClick={() => startNewGame('challenge')}
-                                className="group relative px-10 py-5 bg-purple-600 hover:bg-purple-500 text-white font-black text-xl rounded-2xl transition-all shadow-[0_0_50px_-10px_rgba(139,92,246,0.5)] hover:shadow-[0_0_70px_-10px_rgba(139,92,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10_rgba(139,92,246,0.5)] hover:shadow-[0_0_60px_-10_rgba(139,92,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
-                                        NIVEL MASTER <Trophy className="w-5 h-5" />
+                                        {t.gamesPage.verbsGame.challengeMode} <Trophy className="w-5 h-5 opacity-50" />
                                     </div>
-                                    <span className="text-xs opacity-70 font-bold tracking-widest">150 VERBOS • 5 MIN</span>
+                                    <span className="text-xs opacity-70 font-bold tracking-wider">
+                                        {t.gamesPage.verbsGame.verbsCount.replace('{count}', '200')} • 5 Min
+                                    </span>
                                 </span>
                             </button>
 
                             <button
                                 onClick={() => startNewGame('practice')}
-                                className="group relative px-10 py-5 bg-slate-800 hover:bg-slate-700 text-white font-black text-xl rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
-                                        PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
+                                        {t.gamesPage.verbsGame.practiceMode} <RefreshCw className="w-5 h-5 opacity-50" />
                                     </div>
-                                    <span className="text-xs opacity-50 font-bold tracking-widest">20 VERBOS</span>
+                                    <span className="text-xs opacity-50 font-bold tracking-wider">{t.gamesPage.verbsGame.verbsCount.replace('{count}', '20')}</span>
                                 </span>
                             </button>
                         </div>
                     </div>
                 )}
 
-                {/* FINISHED OVERLAY */}
                 {gameState === 'finished' && (
-                    <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in zoom-in duration-500">
-                        <div className="bg-purple-500/10 p-6 rounded-full mb-6 ring-2 ring-purple-500/50 shadow-[0_0_50px_rgba(139,92,246,0.3)]">
-                            <Crown className="w-20 h-20 text-purple-400 animate-bounce" />
+                    <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+                        <div className="bg-violet-500/10 p-4 rounded-full mb-6 ring-1 ring-violet-500/30">
+                            {gameMode === 'challenge' && timeLeft === 0 ? (
+                                <Timer className="w-16 h-16 text-red-500 animate-pulse" />
+                            ) : (
+                                <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                            )}
                         </div>
-                        <h2 className="text-5xl font-black text-white mb-2 tracking-tighter uppercase italic">
-                            ¡Nivel Master <span className="text-purple-400">Alcanzado</span>!
+                        <h2 className="text-4xl font-bold text-white mb-2">
+                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
                         </h2>
 
-                        <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-10 rounded-[3rem] border border-purple-500/20 shadow-[inset_0_0_40px_rgba(139,92,246,0.05)]">
-                            <span className="text-purple-400/60 text-xs uppercase tracking-[0.4em] font-black">Score Final Master</span>
-                            <span className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-purple-200 via-purple-500 to-purple-800 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+                        <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
+                            <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
+                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
                                 {score}
                             </span>
                         </div>
 
-                        <button onClick={resetGame} className="flex items-center gap-3 px-10 py-4 bg-purple-600 hover:bg-purple-500 text-white font-black rounded-full transition-all hover:scale-105 shadow-xl shadow-purple-500/20 active:scale-95">
-                            <RefreshCw className="w-6 h-6" /> {t.common.playAgain}
+                        <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
+                            <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                         </button>
                     </div>
                 )}
 
-                {/* GAMEPLAY CONTENT */}
                 <div className="p-8 md:p-12 h-full flex flex-col items-center justify-center">
-                    <div className="grid md:grid-cols-2 gap-12 w-full max-w-4xl items-center">
-                        <AnimatePresence mode="wait">
-                            {currentVerb && (
-                                <motion.div
-                                    key={currentVerb.id}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 1.1 }}
-                                    className="bg-gradient-to-br from-slate-800 to-slate-950 rounded-[2.5rem] p-12 flex flex-col justify-center items-center text-center shadow-2xl relative group border border-white/5"
-                                >
-                                    <div className="absolute top-6 right-8 text-white/5 font-black text-8xl select-none pointer-events-none italic">
-                                        {currentIndex + 1}
-                                    </div>
-                                    <div className="w-24 h-24 bg-purple-500/10 rounded-3xl flex items-center justify-center mb-8 backdrop-blur-sm border border-purple-500/20 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                                        <Crown className="w-12 h-12 text-purple-400" />
-                                    </div>
-                                    <div className="flex items-center gap-4 mb-6 relative">
-                                        <h2 className="text-5xl md:text-6xl font-black text-white italic tracking-tighter uppercase">{currentVerb.infinitive}</h2>
-                                        <button
-                                            onClick={() => playAudio(currentVerb.infinitive)}
-                                            className="p-3 bg-white/5 hover:bg-purple-500/20 rounded-full transition-all text-white hover:text-purple-400 border border-white/10 hover:border-purple-500/30 hover:scale-110 active:scale-90 shadow-lg"
-                                            title="Escuchar"
-                                        >
-                                            <Volume2 className="w-6 h-6" />
-                                        </button>
-                                    </div>
-                                    <p className="text-purple-400/80 text-xl font-black px-6 py-2.5 bg-purple-500/5 rounded-2xl border border-purple-500/10 tracking-wide">
-                                        {currentVerb.translation}
-                                    </p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <div className="space-y-6">
-                            <div className="bg-slate-950/40 p-8 rounded-[2.5rem] border border-white/10 space-y-6 shadow-2xl backdrop-blur-xl">
-                                {type === 'writing' ? (
-                                    <>
-                                        <div className="space-y-2">
-                                            <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Simple</label>
-                                            <input
-                                                type="text"
-                                                value={inputs.pastSimple}
-                                                onChange={(e) => setInputs(prev => ({ ...prev, pastSimple: e.target.value }))}
-                                                onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
-                                                disabled={showResult !== null}
-                                                placeholder="Type here..."
-                                                className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
-                                                        ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
-                                                        showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
-                                                            'border-white/10 focus:border-purple-500/30'}`}
-                                            />
-                                            {showResult === 'incorrect' && currentVerb && (
-                                                <motion.p initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-sm font-bold mt-2 ml-2 flex items-center gap-2">
-                                                    <div className="w-1 h-1 rounded-full bg-red-500" /> Correcto: <span className="text-white">{currentVerb.pastSimple}</span>
-                                                </motion.p>
-                                            )}
+                    <div className={cn(
+                        "w-full max-w-4xl items-center",
+                        type === 'writing' ? "grid md:grid-cols-2 gap-12" : "flex flex-col"
+                    )}>
+                        {type === 'writing' && (
+                            <AnimatePresence mode="wait">
+                                {currentVerb && (
+                                    <motion.div
+                                        key={currentVerb.id}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 20 }}
+                                        className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-[2rem] p-10 flex flex-col justify-center items-center text-center shadow-2xl relative group"
+                                    >
+                                        <div className="absolute top-4 right-4 text-white/20 font-black text-6xl select-none group-hover:text-white/30 transition-colors">
+                                            {currentIndex + 1}
                                         </div>
-
-                                        <div className="space-y-2">
-                                            <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Participle</label>
-                                            <input
-                                                type="text"
-                                                value={inputs.pastParticiple}
-                                                onChange={(e) => setInputs(prev => ({ ...prev, pastParticiple: e.target.value }))}
-                                                onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
-                                                disabled={showResult !== null}
-                                                placeholder="Type here..."
-                                                className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
-                                                        ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
-                                                        showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
-                                                            'border-white/10 focus:border-purple-500/30'}`}
-                                            />
-                                            {showResult === 'incorrect' && currentVerb && (
-                                                <motion.p initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-red-400 text-sm font-bold mt-2 ml-2 flex items-center gap-2">
-                                                    <div className="w-1 h-1 rounded-full bg-red-500" /> Correcto: <span className="text-white">{currentVerb.pastParticiple}</span>
-                                                </motion.p>
-                                            )}
+                                        <div className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
+                                            <Star className="w-10 h-10 text-violet-400" />
                                         </div>
-                                    </>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center py-6 space-y-6">
-                                        {currentVerb && (
-                                            <p className="text-slate-400 text-sm font-medium text-center">
-                                                Diga las formas en pasado:<br />
-                                                <span className="text-purple-400 font-bold">"{currentVerb.pastSimple}"</span> y <span className="text-purple-400 font-bold">"{currentVerb.pastParticiple}"</span>
-                                            </p>
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <h2 className="text-5xl font-black text-white capitalize tracking-tight">{currentVerb.infinitive}</h2>
+                                            <button
+                                                onClick={() => playAudio(currentVerb.infinitive)}
+                                                className="p-3 bg-white/20 hover:bg-white/30 rounded-full transition-all text-white hover:scale-110 active:scale-90 shadow-lg"
+                                                title="Escuchar"
+                                            >
+                                                <Volume2 className="w-6 h-6" />
+                                            </button>
+                                        </div>
+                                        <p className="text-violet-100 text-xl font-medium px-4 py-2 bg-black/10 rounded-full">
+                                            {currentVerb.translation}
+                                        </p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        )}
+
+                        <div className={cn("space-y-6", type === 'pronunciation' && "w-full")}>
+                            {type === 'writing' ? (
+                                <div className="bg-slate-900/40 p-8 rounded-[2rem] border border-white/10 space-y-6 shadow-xl backdrop-blur-sm">
+                                    <div className="space-y-2">
+                                        <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Simple</label>
+                                        <input
+                                            type="text"
+                                            value={inputs.pastSimple}
+                                            onChange={(e) => setInputs(prev => ({ ...prev, pastSimple: e.target.value }))}
+                                            onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                                            disabled={showResult !== null}
+                                            placeholder={language === 'es' ? "Escribe aquí..." : "Type here..."}
+                                            className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
+                                                    ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
+                                                    showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
+                                                        'border-white/10 focus:border-violet-600/50'}`}
+                                        />
+                                        {showResult === 'incorrect' && currentVerb && (
+                                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
+                                                <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastSimple}
+                                            </motion.p>
                                         )}
+                                    </div>
 
+                                    <div className="space-y-2">
+                                        <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Participle</label>
+                                        <input
+                                            type="text"
+                                            value={inputs.pastParticiple}
+                                            onChange={(e) => setInputs(prev => ({ ...prev, pastParticiple: e.target.value }))}
+                                            onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                                            disabled={showResult !== null}
+                                            placeholder={language === 'es' ? "Escribe aquí..." : "Type here..."}
+                                            className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
+                                                    ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
+                                                    showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
+                                                        'border-white/10 focus:border-violet-600/50'}`}
+                                        />
+                                        {showResult === 'incorrect' && currentVerb && (
+                                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
+                                                <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastParticiple}
+                                            </motion.p>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center py-4 space-y-12 w-full">
+                                    <div className="grid grid-cols-3 gap-6 w-full max-w-5xl">
+                                        {[
+                                            { label: 'Infinitive', value: currentVerb?.infinitive, show: true },
+                                            { label: 'Past Simple', value: currentVerb?.pastSimple, show: stepResults[1] || showResult === 'incorrect' },
+                                            { label: 'Past Participle', value: currentVerb?.pastParticiple, show: stepResults[2] || showResult === 'incorrect' }
+                                        ].map((form, idx) => {
+                                            const isActive = idx === currentStep && isListening;
+                                            const isDone = stepResults[idx];
+                                            const isFailed = showResult === 'incorrect' && !stepResults[idx];
+
+                                            return (
+                                                <motion.div
+                                                    key={idx}
+                                                    layout
+                                                    className={cn(
+                                                        "relative aspect-square flex flex-col items-center justify-center transition-all duration-500 rounded-[2.5rem] border-4",
+                                                        isActive
+                                                            ? "bg-violet-500/20 border-violet-500 shadow-[0_0_50px_rgba(139,92,246,0.4)] scale-110 z-10"
+                                                            : isDone
+                                                                ? "bg-emerald-500/10 border-emerald-500/50 scale-90"
+                                                                : isFailed
+                                                                    ? "bg-red-500/10 border-red-500/50 scale-90"
+                                                                    : "bg-slate-900/50 border-white/5 opacity-40 scale-90"
+                                                    )}
+                                                >
+                                                    <div className="absolute top-4 right-4 z-10 text-white/80 text-2xl font-black w-8 h-8 rounded-xl flex items-center justify-center">
+                                                        {idx + 1}
+                                                    </div>
+                                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20 transition-all">
+                                                        {isDone && <CheckCircle2 className="w-10 h-10 text-emerald-500 fill-emerald-500/20" />}
+                                                        {isFailed && <XCircle className="w-10 h-10 text-red-500 fill-red-500/20" />}
+                                                    </div>
+
+                                                    <div className="flex flex-col items-center justify-center text-center p-4">
+                                                        <p className="text-[16px] font-black uppercase tracking-[0.3em] text-slate-300 mb-4">{form.label}</p>
+                                                        <p className={cn(
+                                                            "font-black transition-all leading-none",
+                                                            isActive ? "text-6xl text-white" : isDone ? "text-4xl text-emerald-400" : isFailed ? "text-4xl text-red-400" : "text-2xl text-white/60"
+                                                        )}>
+                                                            {(form.show && (isActive || isDone || isFailed || idx === 0)) ? form.value : '?'}
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Countdown Overlay with Vanish Effect */}
+                                                    <AnimatePresence>
+                                                        {isActive && (
+                                                            <motion.div
+                                                                key={stepCountdown}
+                                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                                animate={{ scale: 2.5, opacity: 0 }}
+                                                                transition={{ duration: 1, ease: "easeOut" }}
+                                                                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                                                            >
+                                                                <span className="text-8xl font-black text-white/20 select-none">
+                                                                    {stepCountdown}
+                                                                </span>
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    <div className="flex flex-col items-center gap-4">
                                         <button
                                             onClick={toggleListening}
+                                            disabled={showResult === 'correct'}
                                             className={cn(
-                                                "w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-2xl relative",
+                                                "w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-2xl relative",
                                                 isListening
                                                     ? "bg-red-500 animate-pulse shadow-red-500/40"
-                                                    : "bg-purple-600 hover:bg-purple-500 shadow-purple-500/40"
+                                                    : "bg-violet-600 hover:bg-violet-500 shadow-violet-500/40"
                                             )}
                                         >
-                                            <Mic className="w-10 h-10 text-white" />
+                                            <Mic className="w-8 h-8 text-white" />
                                             {isListening && (
                                                 <motion.div
                                                     layoutId="ripple-master"
                                                     initial={{ scale: 0.8, opacity: 0.5 }}
                                                     animate={{ scale: 1.5, opacity: 0 }}
                                                     transition={{ repeat: Infinity, duration: 1.5 }}
-                                                    className="absolute inset-0 bg-red-500 rounded-full"
+                                                    className="absolute inset-0 bg-red-500 rounded-full -z-10"
                                                 />
                                             )}
                                         </button>
 
-                                        <div className="min-h-[1.5rem] text-center">
-                                            <p className="text-white/60 italic text-sm">
-                                                {transcript || (isListening ? 'Escuchando Maestro...' : '')}
-                                            </p>
+                                        <div className="min-h-[2.5rem] text-center">
+                                            {!isListening && !showResult && (
+                                                <motion.p
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="text-violet-400 font-black uppercase tracking-[0.2em] animate-pulse text-[16px]"
+                                                >
+                                                    {t.gamesPage.verbsGame.pressToStart || "Pulsa para empezar"}
+                                                </motion.p>
+                                            )}
+                                            {transcript && (
+                                                <p className="text-white/40 text-sm font-medium italic">
+                                                    "{transcript}"
+                                                </p>
+                                            )}
                                         </div>
+
+                                        {showResult === 'incorrect' && (
+                                            <div className="text-center space-y-1">
+                                                <p className="text-red-400 text-xs font-bold uppercase tracking-widest">Inténtalo de nuevo</p>
+                                                <p className="text-white/40 text-[10px]">Asegúrate de pronunciar claramente el verbo destacado</p>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
 
                             {showResult === null ? (
-                                <button
-                                    onClick={checkAnswer}
-                                    disabled={!inputs.pastSimple || !inputs.pastParticiple}
-                                    className="w-full py-6 bg-purple-600 text-white rounded-2xl font-black text-xl hover:bg-purple-500 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_20px_40px_-15px_rgba(139,92,246,0.3)] uppercase tracking-widest italic"
-                                >
-                                    VERIFICAR
-                                </button>
+                                type === 'writing' ? (
+                                    <button
+                                        onClick={checkAnswer}
+                                        disabled={!inputs.pastSimple || !inputs.pastParticiple}
+                                        className="w-full py-5 bg-white text-slate-900 rounded-2xl font-black text-lg hover:bg-violet-50 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-violet-500/10"
+                                    >
+                                        {t.gamesPage.verbsGame.verify}
+                                    </button>
+                                ) : null
                             ) : (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="w-full"
+                                    className="w-full flex flex-col gap-4"
                                 >
+                                    {showResult === 'incorrect' && type === 'pronunciation' && (
+                                        <button
+                                            onClick={() => {
+                                                setShowResult(null);
+                                                setTranscript('');
+                                                setMessage('');
+                                            }}
+                                            className="w-full py-5 bg-white/10 text-white rounded-2xl font-black text-lg hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all border border-white/10 flex items-center justify-center gap-3"
+                                        >
+                                            <RefreshCw className="w-6 h-6" /> {t.gamesPage.verbsGame.repeat}
+                                        </button>
+                                    )}
                                     <button
                                         onClick={nextVerb}
-                                        className="w-full py-6 bg-slate-100 text-slate-900 rounded-2xl font-black text-xl hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest italic"
+                                        className="w-full py-5 bg-violet-600 text-white rounded-2xl font-black text-lg hover:bg-violet-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-violet-500/20 flex items-center justify-center gap-3"
                                     >
-                                        SIGUIENTE NIVEL <ArrowRight className="w-6 h-6" />
+                                        {t.gamesPage.verbsGame.next} <ArrowRight className="w-6 h-6" />
                                     </button>
                                 </motion.div>
                             )}
