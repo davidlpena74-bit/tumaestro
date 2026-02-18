@@ -611,10 +611,10 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                                 className={cn(
                                                     "w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-2xl relative",
                                                     isListening
-                                                        ? "bg-red-500 shadow-red-500/40"
+                                                        ? "bg-violet-600 shadow-violet-500/40"
                                                         : showResult === 'correct'
                                                             ? "bg-emerald-500/20 text-emerald-400 cursor-default"
-                                                            : "bg-sky-600 hover:bg-sky-500 shadow-sky-500/40"
+                                                            : "bg-violet-600 hover:bg-violet-500 shadow-violet-500/40"
                                                 )}
                                             >
                                                 <Mic className="w-8 h-8 text-white" />
@@ -627,7 +627,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                                             opacity: 0.2 + volume * 0.8
                                                         }}
                                                         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-                                                        className="absolute inset-0 bg-red-500 rounded-full -z-10"
+                                                        className="absolute inset-0 bg-violet-500 rounded-full -z-10"
                                                     />
                                                 )}
                                             </button>
