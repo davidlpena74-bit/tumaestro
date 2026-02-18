@@ -582,7 +582,7 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
                                                                     : "bg-slate-900/50 border-white/5 opacity-40 scale-90"
                                                     )}
                                                 >
-                                                    <div className="absolute top-4 right-4 z-10 text-white/80 text-2xl font-black w-8 h-8 rounded-xl flex items-center justify-center">
+                                                    <div className="absolute top-4 right-4 z-10 text-white/50 text-4xl font-black w-8 h-8 rounded-xl flex items-center justify-center">
                                                         {idx + 1}
                                                     </div>
                                                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20 transition-all">

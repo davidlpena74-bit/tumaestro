@@ -98,7 +98,7 @@ export default function GameHUD({
                 {targetName !== "" && (
                     <div className="flex-1 text-center bg-slate-900/50 px-1 py-2 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[80px]">
                         <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1">
-                            {gameType === 'pronunciation' ? (language === 'es' ? 'Conjuga el verbo:' : 'Conjugate the verb:') : t.common.find}
+                            {(gameType === 'pronunciation' || gameType === 'writing') ? (language === 'es' ? 'Conjuga el verbo:' : 'Conjugate the verb:') : t.common.find}
                         </div>
                         <AnimatePresence mode='wait'>
                             <motion.div

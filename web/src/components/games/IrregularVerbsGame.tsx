@@ -606,7 +606,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: 
                                                     )}
                                                 >
                                                     {/* Number Indicator Top Right */}
-                                                    <div className="absolute top-4 right-4 z-10 text-white/80 text-2xl font-black w-8 h-8 rounded-xl flex items-center justify-center">
+                                                    <div className="absolute top-4 right-4 z-10 text-white/50 text-4xl font-black w-8 h-8 rounded-xl flex items-center justify-center">
                                                         {idx + 1}
                                                     </div>
                                                     {/* Step Result Icons */}
