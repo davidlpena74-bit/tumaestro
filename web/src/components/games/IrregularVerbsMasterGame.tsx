@@ -465,8 +465,8 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
                         </button>
                     </div>
                 )}
-
-                <div className="p-8 md:p-12 h-full flex flex-col items-center justify-center">
+                {/* GAMEPLAY CONTENT */}
+                <div className="pt-8 pb-6 md:pt-12 md:pb-8 h-full flex flex-col items-center justify-center">
                     <div className={cn(
                         "w-full max-w-4xl items-center relative",
                         type === 'writing' ? "grid md:grid-cols-2 gap-12" : "flex flex-col"
@@ -556,7 +556,7 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
                                     </div>
                                 </div>
                             ) : (
-                                <div className="flex flex-col items-center justify-center py-4 space-y-12 w-full">
+                                <div className="flex flex-col items-center justify-center pt-4 pb-0 space-y-12 w-full">
                                     <div className="grid grid-cols-3 gap-6 w-full max-w-5xl">
                                         {[
                                             { label: 'Infinitive', value: currentVerb?.infinitive, show: true },
