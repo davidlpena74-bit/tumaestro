@@ -3,7 +3,7 @@ export interface Question {
     question: string;
     options: string[];
     correct: number; // Index of correct option
-    category: 'Historia' | 'Geografía' | 'Ciencia' | 'Arte' | 'Literatura';
+    category: 'Historia' | 'Geografía' | 'Ciencia' | 'Arte' | 'Literatura' | 'Lógica' | 'Adivinanza';
 }
 
 export const QUESTIONS: Question[] = [
