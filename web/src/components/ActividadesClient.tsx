@@ -696,6 +696,48 @@ export default function ActividadesClient() {
                     ]
                 }
             ]
+        },
+        {
+            id: 'logic',
+            title: t.gamesPage.categories.logic,
+            icon: Brain,
+            colorTheme: 'from-amber-600 to-orange-800',
+            subsections: [
+                {
+                    games: [
+                        {
+                            id: 'riddles',
+                            title: t.gamesPage.gameTitles.riddles,
+                            description: t.gamesPage.gameTitles.riddlesDesc,
+                            href: '/actividades/riddles',
+                            icon: Brain,
+                            color: 'from-amber-500 to-orange-600',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.logic
+                        },
+                        {
+                            id: 'logic',
+                            title: t.gamesPage.gameTitles.logic,
+                            description: t.gamesPage.gameTitles.logicDesc,
+                            href: '/actividades/logic',
+                            icon: Brain,
+                            color: 'from-amber-500 to-orange-600',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.logic
+                        },
+                        {
+                            id: 'quiz-cultura',
+                            title: t.gamesPage.gameTitles.quiz,
+                            description: t.gamesPage.gameTitles.quizDesc,
+                            href: '/actividades/quiz-cultura',
+                            icon: Brain,
+                            color: 'from-amber-500 to-orange-600',
+                            grade: 'Todo',
+                            gameType: t.gamesPage.gameTypes.quiz
+                        }
+                    ]
+                }
+            ]
         }
     ];
 
@@ -803,7 +845,8 @@ export default function ActividadesClient() {
                                     category.id === 'geography' && "text-emerald-600",
                                     category.id === 'biology' && "text-blue-600",
                                     category.id === 'math' && "text-orange-600",
-                                    category.id === 'idiomas' && "text-violet-600"
+                                    category.id === 'idiomas' && "text-violet-600",
+                                    category.id === 'logic' && "text-amber-600"
                                 )} weight="duotone" />
 
                                 <span className="relative z-10 tracking-tight text-center whitespace-nowrap">{category.title}</span>

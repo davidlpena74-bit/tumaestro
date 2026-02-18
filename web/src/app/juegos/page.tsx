@@ -3,8 +3,8 @@ import NewGamesClient from '@/components/NewGamesClient';
 
 export const metadata: Metadata = {
     title: 'Nueva Zona de Juegos | Aprende Jugando Gratis',
-    description: 'Descubre nuestra nueva colección de juegos educativos. Divertidos, interactivos y gratis. Aprende matemáticas, geografía e idiomas jugando.',
-    keywords: ['juegos educativos', 'aprender jugando', 'matematicas divertidas', 'geografia interactiva'],
+    description: 'Descubre nuestra nueva colección de juegos educativos. Divertidos, interactivos y gratis. Aprende geografía y ciencias jugando.',
+    keywords: ['juegos educativos', 'aprender jugando', 'geografia interactiva', 'ciencias naturales'],
     alternates: {
         canonical: 'https://tumaestro.es/juegos',
     },

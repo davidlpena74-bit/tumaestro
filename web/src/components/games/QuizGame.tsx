@@ -17,12 +17,27 @@ function cn(...inputs: ClassValue[]) {
 
 const QUESTIONS_PER_GAME = 10;
 
-export default function QuizGame({ taskId = null }: { taskId?: string | null }) {
+interface QuizGameProps {
+    taskId?: string | null;
+    customQuestions?: Question[];
+    title?: string;
+    gameTypeLabel?: string;
+}
+
+export default function QuizGame({
+    taskId = null,
+    customQuestions,
+    title = "Desafío de Cultura",
+    gameTypeLabel
+}: QuizGameProps) {
     const { language, t } = useLanguage();
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
     const [gameQuestions, setGameQuestions] = useState<Question[]>([]);
+
+    const sourceQuestions = customQuestions || QUESTIONS;
+    const finalGameTypeLabel = gameTypeLabel || t.gamesPage.gameTypes.quiz;
 
     const {
         gameState, setGameState,
@@ -38,10 +53,10 @@ export default function QuizGame({ taskId = null }: { taskId?: string | null }) 
     useEffect(() => {
         if (gameState === 'playing') {
             // Shuffle and pick 10 questions
-            const shuffled = [...QUESTIONS].sort(() => 0.5 - Math.random());
-            setGameQuestions(shuffled.slice(0, QUESTIONS_PER_GAME));
+            const shuffled = [...sourceQuestions].sort(() => 0.5 - Math.random());
+            setGameQuestions(shuffled.slice(0, Math.min(shuffled.length, QUESTIONS_PER_GAME)));
         }
-    }, [gameState]);
+    }, [gameState, sourceQuestions]);
 
     const currentQuestion = gameQuestions[currentQuestionIdx];
 
@@ -94,9 +109,9 @@ export default function QuizGame({ taskId = null }: { taskId?: string | null }) 
                             {score} <span className="text-sm font-normal text-violet-300">pts</span>
                         </h2>
                         <div className="flex gap-3 text-xs font-bold mt-1 text-violet-300 uppercase tracking-wider">
-                            <span>{currentQuestionIdx + 1} / {QUESTIONS_PER_GAME}</span>
+                            <span>{currentQuestionIdx + 1} / {gameQuestions.length}</span>
                             <span>•</span>
-                            <span>{t.gamesPage.gameTypes.quiz}</span>
+                            <span>{finalGameTypeLabel}</span>
                         </div>
                     </div>
                 </div>
@@ -122,9 +137,9 @@ export default function QuizGame({ taskId = null }: { taskId?: string | null }) 
                             <div className="bg-violet-500/10 p-4 rounded-full mb-6 ring-1 ring-violet-500/30">
                                 <Trophy className="w-12 h-12 text-violet-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">Desafío de Cultura</h2>
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
-                                Pon a prueba tu mente con {QUESTIONS_PER_GAME} preguntas aleatorias de Historia, Geografía y Ciencia.
+                                Pon a prueba tu mente con {gameQuestions.length || QUESTIONS_PER_GAME} retos diseñados para entrenar tu cerebro.
                             </p>
                             <button
                                 onClick={handleStart}
@@ -156,8 +171,8 @@ export default function QuizGame({ taskId = null }: { taskId?: string | null }) 
                             <div className="h-2 w-full bg-white/10 rounded-full mb-8 overflow-hidden">
                                 <motion.div
                                     className="h-full bg-teal-500"
-                                    initial={{ width: `${((currentQuestionIdx) / QUESTIONS_PER_GAME) * 100}%` }}
-                                    animate={{ width: `${((currentQuestionIdx + 1) / QUESTIONS_PER_GAME) * 100}%` }}
+                                    initial={{ width: `${((currentQuestionIdx) / gameQuestions.length) * 100}%` }}
+                                    animate={{ width: `${((currentQuestionIdx + 1) / gameQuestions.length) * 100}%` }}
                                 />
                             </div>
 
@@ -210,7 +225,7 @@ export default function QuizGame({ taskId = null }: { taskId?: string | null }) 
                                         onClick={handleNext}
                                         className="px-6 py-2 bg-white text-slate-900 font-bold rounded-lg hover:bg-gray-200 transition flex items-center gap-2"
                                     >
-                                        {currentQuestionIdx === QUESTIONS_PER_GAME - 1 ? "Ver Resultados" : "Siguiente"} <ArrowRight className="w-4 h-4" />
+                                        {currentQuestionIdx === gameQuestions.length - 1 ? "Ver Resultados" : "Siguiente"} <ArrowRight className="w-4 h-4" />
                                     </motion.button>
                                 )}
                             </div>
@@ -233,13 +248,13 @@ export default function QuizGame({ taskId = null }: { taskId?: string | null }) 
                             <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
                                 <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
                                 <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
-                                    {score} / {QUESTIONS_PER_GAME}
+                                    {score} / {gameQuestions.length}
                                 </span>
                             </div>
 
                             <p className="text-gray-300 mb-8 max-w-sm">
-                                {score === QUESTIONS_PER_GAME ? "¡Perfecto! Eres un genio." :
-                                    score > QUESTIONS_PER_GAME / 2 ? "¡Muy bien! Casi perfecto." :
+                                {score === gameQuestions.length ? "¡Perfecto! Eres un genio." :
+                                    score > gameQuestions.length / 2 ? "¡Muy bien! Casi perfecto." :
                                         "Buen intento, sigue practicando."}
                             </p>
 

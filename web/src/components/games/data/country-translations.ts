@@ -179,8 +179,8 @@ export const ASIA_OCEANIA_MAPPING: Record<string, string> = {
 export const EUROPE_MAPPING: Record<string, string> = {
     'Albania': 'Albania', 'Andorra': 'Andorra', 'Armenia': 'Armenia', 'Austria': 'Austria',
     'Azerbaijan': 'Azerbaiyán', 'Belarus': 'Bielorrusia', 'Belgium': 'Bélgica',
-    'Bosnia and Herz.': 'Bosnia y Herzegovina', 'Bulgaria': 'Bulgaria', 'Croatia': 'Croacia',
-    'Cyprus': 'Chipre', 'Czechia': 'República Checa', 'Denmark': 'Dinamarca',
+    'Bosnia and Herzegovina': 'Bosnia y Herzegovina', 'Bulgaria': 'Bulgaria', 'Croatia': 'Croacia',
+    'Cyprus': 'Chipre', 'Czech Republic': 'República Checa', 'Denmark': 'Dinamarca',
     'Estonia': 'Estonia', 'Finland': 'Finlandia', 'France': 'Francia',
     'Georgia': 'Georgia', 'Germany': 'Alemania', 'Greece': 'Grecia', 'Hungary': 'Hungría',
     'Iceland': 'Islandia', 'Ireland': 'Irlanda', 'Italy': 'Italia', 'Kazakhstan': 'Kazajistán',

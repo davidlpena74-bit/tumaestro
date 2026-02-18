@@ -1,8 +1,7 @@
-// Generated Oceania Physical Data
 export const OCEANIA_MOUNTAINS_PATHS: Record<string, string> = {
-    "Gran Cordillera Divisoria": "M400,199.642L421.569,261.561L445.933,326.84L406.562,381.988",
-    "Alpes del Sur": "M550.924,451.687L577.172,424.54",
-    "Cordillera Owen Stanley": "M406.562,179.619L426.248,186.272",
+    "Gran Cordillera Divisoria": "M400,199.6 C411,230 416,245 421.6,261.6 S435,295 445.9,326.8 S426,354 406.6,382",
+    "Alpes del Sur": "M550.9,451.7 C559,443 568,434 577.2,424.5",
+    "Cordillera Owen Stanley": "M406.6,179.6 C413,182 420,184 426.2,186.3",
 };
 
 export const OCEANIA_SEAS_PATHS: Record<string, string> = {

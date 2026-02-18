@@ -287,18 +287,22 @@ export default function PhysicalMapGame({
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
 
-                            {/* Mountain Peak Marker */}
-                            <marker
-                                id="mountain-peak"
-                                viewBox="0 0 20 20"
-                                refX="10"
-                                refY="20"
-                                markerWidth="8"
-                                markerHeight="8"
-                                orient="auto-start-reverse"
-                            >
-                                <path d="M0 20 L10 0 L20 20 Z" fill="currentColor" />
-                            </marker>
+                            <filter id="mountain-roughness">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="5" result="noise" />
+                                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+                            </filter>
+
+                            <filter id="mountain-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feOffset dx="0.5" dy="0.5" result="offsetBlur" />
+                                <feComponentTransfer>
+                                    <feFuncA type="linear" slope="0.5" />
+                                </feComponentTransfer>
+                                <feMerge>
+                                    <feMergeNode />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
                         </defs>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
@@ -342,25 +346,60 @@ export default function PhysicalMapGame({
                                     >
                                         <path d={d} fill={itemType === 'polygon' ? "transparent" : "none"} stroke="transparent" strokeWidth="20" />
 
-                                        {/* Visual Path */}
-                                        <motion.path
-                                            d={d}
-                                            stroke={color}
-                                            strokeWidth={itemType === 'line' ? (isHovered ? 6 : 3) : 1}
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            markerMid={itemType === 'line' ? "url(#mountain-peak)" : undefined}
-                                            markerStart={itemType === 'line' ? "url(#mountain-peak)" : undefined}
-                                            markerEnd={itemType === 'line' ? "url(#mountain-peak)" : undefined}
-                                            fill={itemType === 'polygon' ? color : "none"}
-                                            fillOpacity={itemType === 'polygon' ? 0.3 : 0}
-                                            className="transition-all duration-300"
-                                            style={{
-                                                filter: isHovered || isCompleted ? 'url(#physical-glow)' : 'none',
-                                                color: color // Pass color to marker via currentColor
-                                            }}
-                                            animate={isHovered ? { scale: 1.02 } : { scale: 1 }}
-                                        />
+                                        {itemType === 'line' ? (
+                                            <g style={{ filter: 'url(#mountain-shadow)' }}>
+                                                {/* Mountain Base (Thick) */}
+                                                <motion.path
+                                                    d={d}
+                                                    stroke={isCompleted ? "#10b981" : isFailed ? "#ef4444" : (isHovered ? "#3d2b1f" : "#4a3728")}
+                                                    strokeWidth={isHovered ? 16 : 14}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    fill="none"
+                                                    style={{ filter: 'url(#mountain-roughness)' }}
+                                                    className="transition-all duration-500"
+                                                />
+                                                {/* Mountain Mid (Medium) */}
+                                                <motion.path
+                                                    d={d}
+                                                    stroke={isCompleted ? "#34d399" : isFailed ? "#f87171" : (isHovered ? "#8b6d5c" : "#7d5c4d")}
+                                                    strokeWidth={isHovered ? 9 : 7}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    fill="none"
+                                                    style={{ filter: 'url(#mountain-roughness)' }}
+                                                    className="transition-all duration-500"
+                                                />
+                                                {/* Mountain Peak (Thin) */}
+                                                <motion.path
+                                                    d={d}
+                                                    stroke={isCompleted ? "#d1fae5" : isFailed ? "#fee2e2" : "#ffffff"}
+                                                    strokeWidth={2}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    fill="none"
+                                                    style={{ filter: 'url(#mountain-roughness)' }}
+                                                    opacity={isHovered ? 1 : 0.8}
+                                                    className="transition-all duration-500"
+                                                />
+                                            </g>
+                                        ) : (
+                                            /* Polygon Main Path */
+                                            <motion.path
+                                                d={d}
+                                                stroke={color}
+                                                strokeWidth={1}
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                fill={color}
+                                                fillOpacity={0.3}
+                                                className="transition-all duration-300"
+                                                style={{
+                                                    filter: isHovered || isCompleted ? 'url(#physical-glow)' : 'none',
+                                                }}
+                                                animate={isHovered ? { scale: 1.02 } : { scale: 1 }}
+                                            />
+                                        )}
                                     </g>
                                 );
                             })}

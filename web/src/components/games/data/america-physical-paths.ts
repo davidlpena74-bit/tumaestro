@@ -1,11 +1,10 @@
-// Generated America Physical Data
 export const AMERICA_MOUNTAINS_PATHS: Record<string, string> = {
-    "Rocosas": "M374.836,273.782L383.224,251.816L376.279,232.402L366.449,209.948",
-    "Andes": "M443.617,319.67L436.907,353.393L450.327,389.329L445.294,441.764",
-    "Apalaches": "M426.841,275.818L436.907,260.996L453.682,246.985",
-    "Sierra Nevada": "M366.449,271.721L368.126,265.376",
-    "Sierra Madre Occidental": "M386.579,287.57L391.612,302.277",
-    "Sierra Madre Oriental": "M400,293.194L403.355,304.057",
+    "Rocosas": "M374.8,273.8 C378,265 381,258 383.2,251.8 S380,242 376.3,232.4 S371,221 366.4,209.9",
+    "Andes": "M443.6,319.7 C440,336 438,344 436.9,353.4 S444,371 450.3,389.3 S447,415 445.3,441.8",
+    "Apalaches": "M426.8,275.8 C430,270 433,265 436.9,261 S445,254 453.7,247",
+    "Sierra Nevada": "M366.4,271.7 C367,268 368,267 368.1,265.4",
+    "Sierra Madre Occidental": "M386.6,287.6 C388,292 390,297 391.6,302.3",
+    "Sierra Madre Oriental": "M400,293.2 C401,296 402,300 403.4,304.1",
 };
 
 export const AMERICA_SEAS_PATHS: Record<string, string> = {

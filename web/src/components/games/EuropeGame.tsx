@@ -29,8 +29,8 @@ export default function EuropeGame({ taskId = null }: { taskId?: string | null }
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.53}
-            initialPan={{ x: -40, y: -100 }}
+            initialZoom={1.38}
+            initialPan={{ x: -120, y: -40 }}
             elevationHeight={6}
             taskId={taskId}
         />

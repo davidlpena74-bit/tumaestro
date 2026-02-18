@@ -97,14 +97,14 @@ export const TRANSLATIONS = {
                 math: 'Matemáticas',
                 culture: 'Cultura General',
                 biology: 'Ciencias Naturales',
-                intelligence: 'Retos de Inteligencia'
+                logic: 'Lógica'
             },
             gameTitles: {
                 region: 'Comunidades Autónomas',
                 regionDesc: 'Nivel básico. Ubica las 17 comunidades en el mapa.',
                 provinces: 'Provincias de España',
                 provincesDesc: 'Nivel difícil. ¿Puedes encontrar las 52 provincias?',
-                europeMap: 'Mapa de Europa',
+                europeMap: 'Países de Europa',
                 europeMapDesc: 'Localiza los principales países del continente europeo.',
                 euCapitalsMap: 'Capitales de la UE',
                 euCapitalsMapDesc: 'Ubica en el mapa las 27 capitales de la UE.',
@@ -396,7 +396,7 @@ export const TRANSLATIONS = {
             category: 'Categoría'
         },
         resources: {
-            intelligenceTitle: 'Retos de Inteligencia',
+            intelligenceTitle: 'Lógica y Astucia',
             intelligenceSubtitle: 'Desafía tu mente con acertijos, lógica y problemas de razonamiento lateral.',
             backToLibrary: 'Volver a Material Didáctico',
             comingSoon: 'Más material en camino...',
@@ -527,7 +527,7 @@ export const TRANSLATIONS = {
                 regionDesc: 'Basic level. Locate the 17 communities on the map.',
                 provinces: 'Provinces of Spain',
                 provincesDesc: 'Hard level. Can you find the 52 provinces?',
-                europeMap: 'Map of Europe',
+                europeMap: 'Europe Countries',
                 europeMapDesc: 'Locate the main countries of the European continent.',
                 euCapitalsMap: 'EU Capitals',
                 euCapitalsMapDesc: 'Locate the 27 EU capitals on the map.',
@@ -950,7 +950,7 @@ export const TRANSLATIONS = {
                 regionDesc: 'Niveau basique. Localisez les 17 communautés sur la carte.',
                 provinces: 'Provinces d\'Espagne',
                 provincesDesc: 'Niveau difficile. Pouvez-vous trouver les 52 provinces ?',
-                europeMap: 'Carte de l\'Europe',
+                europeMap: 'Pays d\'Europe',
                 europeMapDesc: 'Localisez les principaux pays du continent européen.',
                 euCapitalsMap: 'Capitales de l\'UE',
                 euCapitalsMapDesc: 'Localisez les 27 capitales de l\'UE sur la carte.',
