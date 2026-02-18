@@ -394,8 +394,8 @@ export default function IrregularVerbsMasterGame({ taskId = null, type = 'writin
                 targetName={currentVerb ? `${currentVerb.infinitive.toUpperCase()} (${currentVerb.translation})` : ''}
                 message={message}
                 onReset={resetGame}
-                colorTheme="rose"
-                icon={<Star className="w-8 h-8 text-violet-500 fill-violet-500" />}
+                colorTheme="purple"
+                icon={<Star className="w-8 h-8 text-violet-600 fill-violet-600" />}
                 title={type === 'pronunciation' ? t.gamesPage.gameTitles.verbsPronunciation : "Verbos Irregulares MASTER"}
                 gameType={type}
             />
