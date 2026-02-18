@@ -513,7 +513,7 @@ export default function IrregularVerbsProGame({ taskId = null, type = 'writing' 
                             {type === 'writing' ? (
                                 <div className="bg-slate-900/40 p-8 rounded-[2rem] border border-white/10 space-y-6 shadow-xl backdrop-blur-sm">
                                     <div className="space-y-2">
-                                        <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Simple</label>
+                                        <label className="block text-[11px] font-black text-violet-100/90 uppercase tracking-[0.3em] ml-2">Past Simple</label>
                                         <input
                                             type="text"
                                             value={inputs.pastSimple}
@@ -534,7 +534,7 @@ export default function IrregularVerbsProGame({ taskId = null, type = 'writing' 
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="block text-[10px] font-black text-purple-500/60 uppercase tracking-[0.3em] ml-2">Past Participle</label>
+                                        <label className="block text-[11px] font-black text-violet-100/90 uppercase tracking-[0.3em] ml-2">Past Participle</label>
                                         <input
                                             type="text"
                                             value={inputs.pastParticiple}
