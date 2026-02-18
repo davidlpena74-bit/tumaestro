@@ -602,7 +602,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: 
                                                         key={stepCountdown}
                                                         initial={{ scale: 0.8, opacity: 0 }}
                                                         animate={{ scale: [1, 1.2, 1], opacity: 1 }}
-                                                        transition={{ duration: 0.5, times: [0, 0.5, 1] }}
+                                                        transition={{ duration: 0.8, times: [0, 0.5, 1], ease: "easeInOut" }}
                                                         className="flex flex-col items-center"
                                                     >
                                                         <span className="text-6xl font-black text-violet-400 drop-shadow-[0_0_20px_rgba(167,139,250,0.5)]">
