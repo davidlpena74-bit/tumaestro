@@ -61,6 +61,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: 
         setMessage('');
         setCurrentStep(0);
         setStepResults([false, false, false]);
+        setStepCountdown(3);
     };
 
     const currentVerb = verbs[currentIndex];
@@ -139,6 +140,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: 
             setShowResult(null);
             setCurrentStep(0);
             setStepResults([false, false, false]);
+            setStepCountdown(3);
 
             try {
                 recognitionRef.current?.start();
@@ -593,18 +595,32 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: 
                                             )}
                                         </button>
 
-                                        <div className="min-h-[2.5rem] text-center">
-                                            {!isListening && !showResult && (
-                                                <motion.p
-                                                    initial={{ opacity: 0, y: -10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    className="text-violet-400 font-black uppercase tracking-[0.2em] animate-pulse text-[16px]"
-                                                >
-                                                    {t.gamesPage.verbsGame.pressToStart || "Pulsa para empezar"}
-                                                </motion.p>
-                                            )}
-                                            {transcript && (
-                                                <p className="text-white/40 text-sm font-medium italic">
+                                        <div className="min-h-[4rem] flex flex-col items-center justify-center text-center">
+                                            <AnimatePresence mode="wait">
+                                                {isListening ? (
+                                                    <motion.div
+                                                        key={stepCountdown}
+                                                        initial={{ scale: 0.8, opacity: 0 }}
+                                                        animate={{ scale: [1, 1.2, 1], opacity: 1 }}
+                                                        transition={{ duration: 0.5, times: [0, 0.5, 1] }}
+                                                        className="flex flex-col items-center"
+                                                    >
+                                                        <span className="text-6xl font-black text-violet-400 drop-shadow-[0_0_20px_rgba(167,139,250,0.5)]">
+                                                            {stepCountdown}
+                                                        </span>
+                                                    </motion.div>
+                                                ) : !showResult ? (
+                                                    <motion.p
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="text-violet-400 font-black uppercase tracking-[0.2em] animate-pulse text-[16px]"
+                                                    >
+                                                        {t.gamesPage.verbsGame.pressToStart || "Pulsa para empezar"}
+                                                    </motion.p>
+                                                ) : null}
+                                            </AnimatePresence>
+                                            {transcript && !isListening && (
+                                                <p className="text-white/40 text-sm font-medium italic mt-2">
                                                     "{transcript}"
                                                 </p>
                                             )}
