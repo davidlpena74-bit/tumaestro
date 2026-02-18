@@ -77,7 +77,7 @@ export default function GameHUD({
 
                 {/* LEFT: Score & Accuracy */}
                 <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className={cn("p-3 rounded-xl", icon ? "bg-blue-500/20" : theme.bg)}>
+                    <div className={cn("p-3 rounded-xl", theme.bg)}>
                         {icon ? (
                             <div className="text-blue-400">{icon}</div>
                         ) : (

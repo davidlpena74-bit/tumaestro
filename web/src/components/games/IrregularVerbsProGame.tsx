@@ -394,7 +394,7 @@ export default function IrregularVerbsProGame({ taskId = null, type = 'writing' 
                 message={message}
                 onReset={resetGame}
                 colorTheme="purple"
-                icon={<Star className="w-8 h-8 text-yellow-500 fill-yellow-500" />}
+                icon={<Star className="w-8 h-8 text-violet-500 fill-violet-500" />}
                 title={type === 'pronunciation' ? t.gamesPage.gameTitles.verbsPronunciation : "Verbos Irregulares PRO"}
                 gameType={type}
             />
