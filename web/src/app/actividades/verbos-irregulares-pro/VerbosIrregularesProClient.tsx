@@ -16,7 +16,7 @@ export default function VerbosIrregularesProClient() {
             description="Nivel avanzado con 100 verbos irregulares. ¡Demuestra que eres un experto!"
             colorTheme="rose"
         >
-            <IrregularVerbsProGame taskId={taskId} />
+            <IrregularVerbsProGame taskId={taskId} type="writing" />
         </PhysicalGameLayout>
     );
 }

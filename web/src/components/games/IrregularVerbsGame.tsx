@@ -1,15 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer } from 'lucide-react';
+import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer, Mic, MicOff } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
 import { IRREGULAR_VERBS, type IrregularVerb } from './data/irregular-verbs';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import GameHUD from './GameHUD';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-export default function IrregularVerbsGame({ taskId = null }: { taskId?: string | null }) {
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
+
+export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: { taskId?: string | null, type?: 'writing' | 'pronunciation' }) {
     const { t, language } = useLanguage();
     const [verbs, setVerbs] = useState<IrregularVerb[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,6 +26,8 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
     const [showResult, setShowResult] = useState<'correct' | 'incorrect' | null>(null);
     const [streak, setStreak] = useState(0);
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+    const [isListening, setIsListening] = useState(false);
+    const [transcript, setTranscript] = useState('');
 
     const {
         gameState, setGameState,
@@ -32,6 +40,9 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
         resetGame: hookResetGame,
         handleFinish
     } = useGameLogic({ initialTime: 120, penaltyTime: 0, gameMode, taskId });
+    const recognitionRef = useRef<any>(null);
+
+
 
 
     const startNewGame = (mode: 'challenge' | 'practice' = 'challenge') => {
@@ -111,6 +122,73 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
         }
     };
 
+    const toggleListening = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+            setIsListening(false);
+        } else {
+            setTranscript('');
+            try {
+                recognitionRef.current?.start();
+                setIsListening(true);
+            } catch (e) {
+                console.error("Speech recognition error:", e);
+                setIsListening(false);
+            }
+        }
+    };
+
+    const checkVoiceAnswer = (voiceInput: string) => {
+        if (!currentVerb) return;
+        const words = voiceInput.toLowerCase().split(/\s+/);
+        const pastSimpleTarget = currentVerb.pastSimple.toLowerCase();
+        const pastParticipleTarget = currentVerb.pastParticiple.toLowerCase();
+
+        const foundSimple = words.some(w => w === pastSimpleTarget);
+        const foundParticiple = words.some(w => w === pastParticipleTarget);
+
+        if (foundSimple && foundParticiple) {
+            setShowResult('correct');
+            addScore(15 + (streak * 2));
+            setStreak(prev => prev + 1);
+            setMessage(t.common.correct + ' 🎙️');
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            recognitionRef.current?.stop();
+        }
+    };
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && (window as any).webkitSpeechRecognition) {
+            const SpeechRecognition = (window as any).webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event: any) => {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        const result = event.results[i][0].transcript.toLowerCase().trim();
+                        setTranscript(result);
+                        checkVoiceAnswer(result);
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+            };
+
+            recognition.onerror = () => setIsListening(false);
+            recognition.onend = () => setIsListening(false);
+
+            recognitionRef.current = recognition;
+        }
+    }, [currentIndex]);
+
     const nextVerb = () => {
         setMessage('');
         if (gameMode === 'challenge') {
@@ -157,6 +235,7 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
                 onReset={resetGame}
                 colorTheme="purple"
                 icon={<BookOpen className="w-8 h-8 text-violet-600" />}
+                title={type === 'pronunciation' ? "Verbos MEDIO (Voces)" : "Verbos Irregulares MEDIO"}
             />
 
             <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
@@ -262,47 +341,98 @@ export default function IrregularVerbsGame({ taskId = null }: { taskId?: string 
 
                         <div className="space-y-6">
                             <div className="bg-slate-900/40 p-8 rounded-[2rem] border border-white/10 space-y-6 shadow-xl backdrop-blur-sm">
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-black text-violet-600 uppercase tracking-widest ml-1">Past Simple</label>
-                                    <input
-                                        type="text"
-                                        value={inputs.pastSimple}
-                                        onChange={(e) => setInputs(prev => ({ ...prev, pastSimple: e.target.value }))}
-                                        onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
-                                        disabled={showResult !== null}
-                                        placeholder="Escribe aquí..."
-                                        className={`w-full bg-slate-950/50 border-2 rounded-2xl px-5 py-4 text-white text-lg outline-none transition-all
-                                            ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
-                                                showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
-                                                    'border-white/10 focus:border-violet-600/50'}`}
-                                    />
-                                    {showResult === 'incorrect' && currentVerb && (
-                                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
-                                            <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastSimple}
-                                        </motion.p>
-                                    )}
-                                </div>
+                                {type === 'writing' ? (
+                                    <>
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-violet-600 uppercase tracking-widest ml-1">Past Simple</label>
+                                            <input
+                                                type="text"
+                                                value={inputs.pastSimple}
+                                                onChange={(e) => setInputs(prev => ({ ...prev, pastSimple: e.target.value }))}
+                                                onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                                                disabled={showResult !== null}
+                                                placeholder="Escribe aquí..."
+                                                className={`w-full bg-slate-950/50 border-2 rounded-2xl px-5 py-4 text-white text-lg outline-none transition-all
+                                                        ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
+                                                        showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
+                                                            'border-white/10 focus:border-violet-600/50'}`}
+                                            />
+                                            {showResult === 'incorrect' && currentVerb && (
+                                                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
+                                                    <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastSimple}
+                                                </motion.p>
+                                            )}
+                                        </div>
 
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-black text-violet-600 uppercase tracking-widest ml-1">Past Participle</label>
-                                    <input
-                                        type="text"
-                                        value={inputs.pastParticiple}
-                                        onChange={(e) => setInputs(prev => ({ ...prev, pastParticiple: e.target.value }))}
-                                        onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
-                                        disabled={showResult !== null}
-                                        placeholder="Escribe aquí..."
-                                        className={`w-full bg-slate-950/50 border-2 rounded-2xl px-5 py-4 text-white text-lg outline-none transition-all
-                                            ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
-                                                showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
-                                                    'border-white/10 focus:border-violet-600/50'}`}
-                                    />
-                                    {showResult === 'incorrect' && currentVerb && (
-                                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
-                                            <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastParticiple}
-                                        </motion.p>
-                                    )}
-                                </div>
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-violet-600 uppercase tracking-widest ml-1">Past Participle</label>
+                                            <input
+                                                type="text"
+                                                value={inputs.pastParticiple}
+                                                onChange={(e) => setInputs(prev => ({ ...prev, pastParticiple: e.target.value }))}
+                                                onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                                                disabled={showResult !== null}
+                                                placeholder="Escribe aquí..."
+                                                className={`w-full bg-slate-950/50 border-2 rounded-2xl px-5 py-4 text-white text-lg outline-none transition-all
+                                                        ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
+                                                        showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
+                                                            'border-white/10 focus:border-violet-600/50'}`}
+                                            />
+                                            {showResult === 'incorrect' && currentVerb && (
+                                                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
+                                                    <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastParticiple}
+                                                </motion.p>
+                                            )}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-6 space-y-6">
+                                        {currentVerb && (
+                                            <p className="text-slate-400 text-sm font-medium text-center">
+                                                Pulsa el micro y di las formas en pasado:<br />
+                                                <span className="text-violet-400 font-bold">"{currentVerb.pastSimple}"</span> y <span className="text-violet-400 font-bold">"{currentVerb.pastParticiple}"</span>
+                                            </p>
+                                        )}
+
+                                        <button
+                                            onClick={toggleListening}
+                                            className={cn(
+                                                "w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-2xl relative",
+                                                isListening
+                                                    ? "bg-red-500 animate-pulse shadow-red-500/40"
+                                                    : "bg-violet-600 hover:bg-violet-500 shadow-violet-500/40"
+                                            )}
+                                        >
+                                            {isListening ? (
+                                                <Mic className="w-10 h-10 text-white" />
+                                            ) : (
+                                                <Mic className="w-10 h-10 text-white" />
+                                            )}
+                                            {isListening && (
+                                                <motion.div
+                                                    layoutId="ripple"
+                                                    initial={{ scale: 0.8, opacity: 0.5 }}
+                                                    animate={{ scale: 1.5, opacity: 0 }}
+                                                    transition={{ repeat: Infinity, duration: 1.5 }}
+                                                    className="absolute inset-0 bg-red-500 rounded-full"
+                                                />
+                                            )}
+                                        </button>
+
+                                        <div className="min-h-[1.5rem] text-center">
+                                            <p className="text-white/60 italic text-sm">
+                                                {transcript || (isListening ? 'Escuchando...' : '')}
+                                            </p>
+                                        </div>
+
+                                        {showResult === 'incorrect' && (
+                                            <div className="text-center space-y-1">
+                                                <p className="text-red-400 text-xs font-bold uppercase tracking-widest">Inténtalo de nuevo</p>
+                                                <p className="text-white/40 text-[10px]">Asegúrate de pronunciar claramente</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             {showResult === null ? (

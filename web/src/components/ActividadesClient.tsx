@@ -19,7 +19,9 @@ import {
     CaretDown,
     Funnel,
     Plus,
-    X
+    X,
+    Pencil,
+    UserSound
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -40,6 +42,7 @@ type Game = {
     grade: string;
     region?: string;
     gameType?: string;
+    mode?: 'writing' | 'pronunciation';
 };
 
 type Subsection = {
@@ -571,14 +574,26 @@ export default function ActividadesClient() {
                 {
                     games: [
                         {
+                            id: 'verbos-irregulares-basico',
+                            title: "Verbos Irregulares BÁSICO",
+                            description: "Comienza con los 25 verbos irregulares más fundamentales del inglés.",
+                            href: '/actividades/verbos-irregulares-basico',
+                            icon: Translate,
+                            color: 'from-violet-500 to-purple-600',
+                            grade: '4º Prim.',
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'writing'
+                        },
+                        {
                             id: 'verbos-irregulares',
-                            title: t.gamesPage.gameTitles.verbs,
+                            title: "Verbos Irregulares MEDIO",
                             description: t.gamesPage.gameTitles.verbsDesc,
                             href: '/actividades/verbos-irregulares',
                             icon: Translate,
                             color: 'from-violet-500 to-purple-600',
                             grade: '5º Prim.',
-                            gameType: t.gamesPage.gameTypes.verbs
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'writing'
                         },
                         {
                             id: 'verbos-irregulares-pro',
@@ -588,7 +603,8 @@ export default function ActividadesClient() {
                             icon: Translate,
                             color: 'from-violet-600 to-indigo-700',
                             grade: '6º Prim.',
-                            gameType: t.gamesPage.gameTypes.verbs
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'writing'
                         },
                         {
                             id: 'verbos-irregulares-master',
@@ -598,7 +614,52 @@ export default function ActividadesClient() {
                             icon: Translate,
                             color: 'from-violet-600 to-indigo-700',
                             grade: 'Expert',
-                            gameType: t.gamesPage.gameTypes.verbs
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'writing'
+                        },
+                        {
+                            id: 'verbos-irregulares-basico-pronunciacion',
+                            title: "Verbos Irregulares BÁSICO",
+                            description: "Practica tu pronunciación con los 25 verbos más comunes.",
+                            href: '/actividades/verbos-irregulares-basico-pronunciacion',
+                            icon: Translate,
+                            color: 'from-violet-500 to-purple-600',
+                            grade: '4º Prim.',
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'pronunciation'
+                        },
+                        {
+                            id: 'verbos-irregulares-pronunciacion',
+                            title: "Verbos Irregulares MEDIO",
+                            description: t.gamesPage.gameTitles.verbsPronunciationDesc,
+                            href: '/actividades/verbos-irregulares-pronunciacion',
+                            icon: Translate,
+                            color: 'from-violet-500 to-purple-600',
+                            grade: '5º Prim.',
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'pronunciation'
+                        },
+                        {
+                            id: 'verbos-irregulares-pro-pronunciacion',
+                            title: "Verbos Irregulares PRO",
+                            description: "Mejora tu fluidez hablando 100 verbos irregulares avanzados.",
+                            href: '/actividades/verbos-irregulares-pro-pronunciacion',
+                            icon: Translate,
+                            color: 'from-violet-600 to-indigo-700',
+                            grade: '6º Prim.',
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'pronunciation'
+                        },
+                        {
+                            id: 'verbos-irregulares-master-pronunciacion',
+                            title: "Verbos Irregulares MASTER",
+                            description: "El desafío definitivo de voz: 150 verbos para sonar como un nativo.",
+                            href: '/actividades/verbos-irregulares-master-pronunciacion',
+                            icon: Translate,
+                            color: 'from-violet-600 to-indigo-700',
+                            grade: 'Expert',
+                            gameType: t.gamesPage.gameTypes.verbs,
+                            mode: 'pronunciation'
                         }
                     ]
                 }
@@ -855,6 +916,27 @@ export default function ActividadesClient() {
                                                         {/* 3D Shadow/Glow Background */}
                                                         <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-[2rem] blur-3xl -z-10`} />
 
+                                                        {/* Mode Icon (Top Right) - Moved here to be above the Link z-index */}
+                                                        {game.mode && (
+                                                            <div
+                                                                className="absolute top-4 right-4 z-30 group/mode cursor-pointer"
+                                                                title={game.mode === 'writing' ? 'Escritura' : 'Pronunciación'}
+                                                            >
+                                                                <div className="bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-lg shadow-lg group-hover:bg-white/20 transition-all">
+                                                                    {game.mode === 'writing' ? (
+                                                                        <Pencil size={16} className="text-white/80 group-hover:text-white" weight="bold" />
+                                                                    ) : (
+                                                                        <UserSound size={16} className="text-white/80 group-hover:text-white" weight="bold" />
+                                                                    )}
+                                                                </div>
+
+                                                                {/* Custom Tooltip */}
+                                                                <div className="absolute top-full right-0 mt-2 opacity-0 group-hover/mode:opacity-100 transition-opacity pointer-events-none whitespace-nowrap bg-slate-900/90 text-[10px] font-bold text-white px-2 py-1 rounded-md border border-white/10 shadow-xl backdrop-blur-md">
+                                                                    {game.mode === 'writing' ? 'Escritura' : 'Pronunciación'}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
                                                         <div className={cn(
                                                             "h-full border border-white/10 py-5 px-5 rounded-3xl transition-all duration-500 transform-gpu relative overflow-hidden flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)] group-hover:border-white/25",
                                                             "bg-slate-950/80 backdrop-blur-sm",
@@ -870,6 +952,8 @@ export default function ActividadesClient() {
                                                         )}>
                                                             {/* 3D Top Glare Effect */}
                                                             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                                            {/* Mode Icon (Top Right) */}
 
                                                             <div className="mb-3 flex items-start gap-3 pointer-events-none">
                                                                 <div className={`w-12 h-12 flex-shrink-0 rounded-xl relative flex items-center justify-center group-hover:scale-110 transition-transform duration-500`}>
