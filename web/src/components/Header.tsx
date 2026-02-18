@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
 import { User as UserIcon, CaretDown, Check, SignOut, Bell, List, X } from '@phosphor-icons/react';
@@ -21,6 +21,7 @@ type Notification = {
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);
+    const router = useRouter();
     const { t, language, setLanguage } = useLanguage();
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
@@ -211,9 +212,14 @@ export default function Header() {
 
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
-        setUserMenuOpen(false);
-        window.location.href = '/';
+        try {
+            await supabase.auth.signOut();
+            // Force a full reload to clear all stale state and ensure UI updates correctly
+            window.location.href = '/';
+        } catch (err) {
+            console.error("Error during sign out:", err);
+            window.location.href = '/';
+        }
     };
 
     const pathname = usePathname();

@@ -11,7 +11,7 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
-    const [view, setView] = useState<'role_selection' | 'magic_link' | 'password' | 'confirmation'>('role_selection');
+    const [view, setView] = useState<'role_selection' | 'magic_link' | 'password'>('role_selection');
     const [mode, setMode] = useState<'signin' | 'signup'>('signin');
     const { success, error, warning, info } = useToast();
 
@@ -21,7 +21,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const [role, setRole] = useState<'student' | 'teacher'>('student');
     const [sent, setSent] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [pendingAction, setPendingAction] = useState<{ type: 'google' | 'form', event?: React.FormEvent } | null>(null);
 
     const [mounted, setMounted] = useState(false);
 
@@ -30,7 +29,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         if (isOpen) {
             setView('role_selection');
             setMode('signin');
-            setPendingAction(null);
         }
         return () => setMounted(false);
     }, [isOpen]);
@@ -52,7 +50,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         const { error: err } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin,
+                redirectTo: mode === 'signup'
+                    ? `${window.location.origin}/auth/callback?role=${role}`
+                    : `${window.location.origin}/auth/callback`,
                 queryParams: {
                     role: role // This will be available in user_metadata for new users
                 }
@@ -87,8 +87,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             });
 
             if (err) {
-                error('Error al registrarse: ' + err.message);
-            } else {
+                if (err.message.includes('already registered') || err.message.includes('already exists')) {
+                    info('Ya tienes una cuenta con este correo. ¡Bienvenido de nuevo!');
+                    setMode('signin');
+                    setView('password');
+                } else {
+                    error('Error al registrarse: ' + err.message);
+                }
+            } else if (data.user) {
                 success('¡Usuario registrado! ' + (data.session ? 'Sesión iniciada.' : 'Por favor revisa tu correo para confirmar.'));
                 if (data.session) onClose();
             }
@@ -98,7 +104,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 password,
             });
             if (err) {
-                error('Error al entrar: ' + err.message);
+                if (err.message.includes('Invalid login credentials')) {
+                    warning('Email o contraseña incorrectos. Si sueles entrar con Google, pulsa el botón de arriba. Para habilitar contraseña por primera vez, usa "¿Olvidaste tu contraseña?"');
+                } else {
+                    error('Error al entrar: ' + err.message);
+                }
             } else {
                 onClose();
             }
@@ -106,20 +116,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setLoading(false);
     };
 
-    const requestConfirmation = (type: 'google' | 'form', e?: React.FormEvent) => {
-        if (e) e.preventDefault();
-        setPendingAction({ type });
-        setView('confirmation');
-    };
-
-    const confirmAction = () => {
-        if (!pendingAction) return;
-        if (pendingAction.type === 'google') {
-            handleSocialLogin();
+    const handleFormSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (view === 'magic_link') {
+            handleMagicLinkLogin(e);
         } else {
             handlePasswordAuth();
         }
     };
+
 
     const handleResetPassword = async () => {
         if (!email) {
@@ -155,8 +160,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
                                 {view === 'role_selection' ? '¿Cómo quieres entrar?' :
-                                    view === 'confirmation' ? 'Confirmación Final' :
-                                        (mode === 'signin' ? 'Bienvenido de nuevo' : 'Únete a Tu Maestro')}
+                                    mode === 'signup' ? (
+                                        <span>Unirse como <span className={role === 'student' ? 'text-teal-600' : 'text-purple-600'}>{role === 'student' ? 'Alumno' : 'Profesor'}</span></span>
+                                    ) : 'Bienvenido de nuevo'}
                             </h2>
                             <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition p-1 hover:bg-slate-100 rounded-full">
                                 <X size={24} weight="bold" />
@@ -165,89 +171,59 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                         {view === 'role_selection' ? (
                             <div className="space-y-4 py-4">
-                                <p className="text-slate-500 text-center mb-8">Selecciona tu perfil para continuar</p>
-
                                 <div className="grid grid-cols-2 gap-4">
                                     <button
                                         onClick={() => {
                                             setRole('student');
+                                            setMode('signup');
                                             setView('password');
                                         }}
-                                        className="group relative flex flex-col items-center gap-4 p-6 px-4 bg-teal-50/50 hover:bg-teal-50 border-2 border-slate-100 hover:border-teal-500 rounded-[2.5rem] transition-all text-center h-full"
+                                        className="group relative flex flex-col items-center gap-4 p-6 px-4 bg-white hover:bg-teal-50/30 border-2 border-slate-200 hover:border-teal-500 rounded-[2.5rem] transition-all text-center h-full shadow-md hover:shadow-xl hover:shadow-teal-500/10 active:scale-[0.98]"
                                     >
-                                        <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center text-teal-600 group-hover:scale-110 transition-transform">
+                                        <div className="w-20 h-20 bg-teal-50 rounded-3xl shadow-sm flex items-center justify-center text-teal-600 group-hover:scale-110 transition-transform">
                                             <GraduationCap size={48} weight="duotone" />
                                         </div>
                                         <div className="w-full">
                                             <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight whitespace-nowrap">Soy Alumno</h3>
-                                            <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest mt-1">Aprender</p>
+                                            <p className="text-slate-500 text-[10px] uppercase font-bold tracking-widest mt-1">Aprender y Jugar</p>
                                         </div>
                                     </button>
 
                                     <button
                                         onClick={() => {
                                             setRole('teacher');
+                                            setMode('signup');
                                             setView('password');
                                         }}
-                                        className="group relative flex flex-col items-center gap-4 p-6 px-4 bg-purple-50/50 hover:bg-purple-50 border-2 border-slate-100 hover:border-purple-500 rounded-[2.5rem] transition-all text-center h-full"
+                                        className="group relative flex flex-col items-center gap-4 p-6 px-4 bg-white hover:bg-purple-50/30 border-2 border-slate-200 hover:border-purple-500 rounded-[2.5rem] transition-all text-center h-full shadow-md hover:shadow-xl hover:shadow-purple-500/10 active:scale-[0.98]"
                                     >
-                                        <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
+                                        <div className="w-20 h-20 bg-purple-50 rounded-3xl shadow-sm flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
                                             <ChalkboardTeacher size={48} weight="duotone" />
                                         </div>
                                         <div className="w-full">
                                             <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight whitespace-nowrap">Soy Profesor</h3>
-                                            <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest mt-1">Gestionar</p>
+                                            <p className="text-slate-500 text-[10px] uppercase font-bold tracking-widest mt-1">Gestionar Clases</p>
                                         </div>
                                     </button>
                                 </div>
 
-                                <div className="mt-8 flex flex-col items-center gap-4">
+                                <div className="mt-6">
                                     <button
                                         onClick={() => {
                                             setMode('signin');
                                             setView('password');
                                         }}
-                                        className="text-xs font-black text-slate-400 hover:text-teal-600 uppercase tracking-widest flex items-center gap-2 transition-colors"
+                                        className="w-full py-4 bg-slate-100/80 hover:bg-teal-600 border-2 border-slate-200 hover:border-teal-500 rounded-[2rem] text-slate-600 hover:text-white transition-all flex items-center justify-center gap-3 group shadow-sm active:scale-[0.98]"
                                     >
-                                        YA ESTOY REGISTRADO • ENTRAR DIRECTO
+                                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform text-slate-400 group-hover:text-teal-600">
+                                            <User size={20} weight="bold" />
+                                        </div>
+                                        <span className="text-sm font-black uppercase tracking-widest">Ya tengo cuenta • Entrar</span>
                                     </button>
 
-                                    <div className="pt-4 text-center text-[10px] text-slate-200 uppercase tracking-[0.3em] font-black">
+                                    <div className="mt-8 text-center text-[10px] text-slate-200 uppercase tracking-[0.3em] font-black">
                                         TU MAESTRO • PLATAFORMA EDUCATIVA
                                     </div>
-                                </div>
-                            </div>
-                        ) : view === 'confirmation' ? (
-                            <div className="py-6 text-center">
-                                <div className={`w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-6 shadow-xl ${role === 'student' ? 'bg-teal-500 text-white' : 'bg-purple-500 text-white'}`}>
-                                    {role === 'student' ? <GraduationCap size={56} weight="duotone" /> : <ChalkboardTeacher size={56} weight="duotone" />}
-                                </div>
-
-                                <h3 className="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tight">
-                                    Confirmar Perfil
-                                </h3>
-
-                                <p className="text-slate-500 mb-8 max-w-[280px] mx-auto text-balance">
-                                    {mode === 'signup' ? 'Te vas a registrar como ' : 'Vas a entrar con el perfil de '}
-                                    <span className={`font-black uppercase ${role === 'student' ? 'text-teal-600' : 'text-purple-600'}`}>{role === 'student' ? 'Alumno' : 'Profesor'}</span>.
-                                </p>
-
-                                <div className="space-y-4">
-                                    <button
-                                        onClick={confirmAction}
-                                        disabled={loading}
-                                        className={`w-full py-5 rounded-2xl font-black text-xl shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 ${role === 'student' ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-teal-500/20' : 'bg-purple-600 hover:bg-purple-500 text-white shadow-purple-500/20'}`}
-                                    >
-                                        {loading ? 'PROCESANDO...' : <>SÍ, CONFIRMO <Check size={24} weight="bold" /></>}
-                                    </button>
-
-                                    <button
-                                        onClick={() => setView('role_selection')}
-                                        disabled={loading}
-                                        className="text-sm font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
-                                    >
-                                        NO, QUIERO CAMBIARLO
-                                    </button>
                                 </div>
                             </div>
                         ) : (
@@ -255,7 +231,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                 {/* Social Login */}
                                 <div className="flex flex-col gap-3 mb-6">
                                     <button
-                                        onClick={() => requestConfirmation('google')}
+                                        onClick={handleSocialLogin}
                                         className="flex items-center justify-center w-full px-4 py-2.5 border border-slate-200 rounded-xl shadow-sm bg-white text-sm font-semibold text-slate-600 hover:bg-slate-50 transition gap-2"
                                     >
                                         <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -303,7 +279,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                             <button onClick={onClose} className="mt-6 text-sm font-bold text-teal-600 hover:text-teal-500 bg-white px-4 py-2 rounded-lg shadow-sm">Cerrar</button>
                                         </div>
                                     ) : (
-                                        <form onSubmit={(e) => requestConfirmation('form', e)} className="space-y-4">
+                                        <form onSubmit={handleFormSubmit} className="space-y-4">
                                             <p className="text-slate-500 text-sm text-center">Te enviaremos un enlace seguro a tu correo. <br />Sin recordar contraseñas.</p>
                                             <div>
                                                 <label className="block text-xs font-bold text-slate-700 mb-1 ml-1 uppercase tracking-wider">Correo Electrónico</label>
@@ -325,16 +301,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                         </form>
                                     )
                                 ) : (
-                                    <form onSubmit={(e) => requestConfirmation('form', e)} className="space-y-4">
+                                    <form onSubmit={handleFormSubmit} className="space-y-4">
                                         {mode === 'signup' && (
                                             <>
-                                                {/* Role Identification (Small badge since already selected) */}
-                                                <div className="flex justify-center mb-4">
-                                                    <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border-2 ${role === 'student' ? 'bg-teal-50 text-teal-600 border-teal-200' : 'bg-purple-50 text-purple-600 border-purple-200'}`}>
-                                                        {role === 'student' ? 'Perfil: Alumno' : 'Perfil: Profesor'}
-                                                    </span>
-                                                </div>
-
                                                 <div>
                                                     <label className="block text-xs font-bold text-slate-700 mb-1 ml-1 uppercase tracking-wider">Nombre Completo</label>
                                                     <div className="relative">
@@ -399,13 +368,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                         </button>
 
                                         <div className="text-center mt-4">
-                                            <button
-                                                type="button"
-                                                className="text-xs text-slate-400 hover:text-teal-600 font-bold uppercase tracking-widest"
-                                                onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
-                                            >
-                                                {mode === 'signin' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'}
-                                            </button>
+                                            {mode === 'signin' ? (
+                                                <button
+                                                    type="button"
+                                                    className="text-xs text-slate-400 hover:text-teal-600 font-bold uppercase tracking-widest"
+                                                    onClick={() => {
+                                                        setMode('signup');
+                                                        setView('role_selection');
+                                                    }}
+                                                >
+                                                    ¿No tienes cuenta? Regístrate
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    className="text-xs text-slate-400 hover:text-teal-600 font-bold uppercase tracking-widest"
+                                                    onClick={() => setMode('signin')}
+                                                >
+                                                    ¿Ya tienes cuenta? Inicia Sesión
+                                                </button>
+                                            )}
                                         </div>
 
                                         <div className="mt-6 flex justify-center">

@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Envelope, Lock, FloppyDisk, SignOut, CircleNotch, Trash } from '@phosphor-icons/react';
+import { useToast } from '@/context/ToastContext';
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -12,6 +13,7 @@ export default function ProfilePage() {
     const [profile, setProfile] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
+    const { success } = useToast();
 
     // Form States
     const [fullName, setFullName] = useState('');
@@ -129,8 +131,11 @@ export default function ProfilePage() {
             // Sign out
             await supabase.auth.signOut();
 
-            // Force reload to go to login
-            window.location.href = '/login';
+            // Success message
+            success('Tu cuenta ha sido eliminada correctamente.');
+
+            // Force redirect to home instead of login
+            router.push('/');
 
         } catch (error) {
             console.error('Error deleting account:', error);
@@ -164,8 +169,20 @@ export default function ProfilePage() {
                             </div>
                         </div>
                         <p className="text-slate-500">{email}</p>
-                        <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-100">
-                            Cuenta verificada
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-100">
+                                Cuenta verificada
+                            </div>
+                            <button
+                                onClick={async () => {
+                                    await supabase.auth.signOut();
+                                    window.location.href = '/';
+                                }}
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 transition-colors"
+                            >
+                                <SignOut size={14} weight="bold" />
+                                Cerrar Sesión
+                            </button>
                         </div>
                     </div>
                 </div>
