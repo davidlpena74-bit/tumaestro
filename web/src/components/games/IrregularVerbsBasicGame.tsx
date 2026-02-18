@@ -393,8 +393,8 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                 targetName={currentVerb ? `${currentVerb.infinitive.toUpperCase()} (${currentVerb.translation})` : ''}
                 message={message}
                 onReset={resetGame}
-                colorTheme="sky"
-                icon={<Star className="w-8 h-8 text-sky-500 fill-sky-500" />}
+                colorTheme="purple"
+                icon={<BookOpen className="w-8 h-8 text-violet-600" />}
                 title={type === 'pronunciation' ? t.gamesPage.gameTitles.verbsPronunciation : t.gamesPage.gameTitles.verbs}
                 gameType={type}
             />
@@ -402,8 +402,8 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
             <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
                 {gameState === 'start' && (
                     <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center">
-                        <div className="bg-sky-500/10 p-6 rounded-full mb-6 ring-1 ring-sky-500/30">
-                            <BookOpen className="w-16 h-16 text-sky-500" />
+                        <div className="bg-violet-500/10 p-6 rounded-full mb-6 ring-1 ring-violet-500/30">
+                            <BookOpen className="w-16 h-16 text-violet-500" />
                         </div>
                         <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.verbsLevels.basic.title}</h2>
                         <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
@@ -412,7 +412,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                             <button
                                 onClick={() => startNewGame('challenge')}
-                                className="group relative px-8 py-4 bg-sky-600 hover:bg-sky-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(14,165,233,0.5)] hover:shadow-[0_0_60px_-10px_rgba(14,165,233,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(139,92,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(139,92,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
@@ -441,7 +441,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
 
                 {gameState === 'finished' && (
                     <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
-                        <div className="bg-sky-500/10 p-4 rounded-full mb-6 ring-1 ring-sky-500/30">
+                        <div className="bg-violet-500/10 p-4 rounded-full mb-6 ring-1 ring-violet-500/30">
                             {gameMode === 'challenge' && timeLeft === 0 ? (
                                 <Timer className="w-16 h-16 text-red-500 animate-pulse" />
                             ) : (
@@ -483,7 +483,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: 20 }}
-                                        className="bg-gradient-to-br from-sky-600 to-blue-700 rounded-[2rem] p-10 flex flex-col justify-center items-center text-center shadow-2xl relative group"
+                                        className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-[2rem] p-10 flex flex-col justify-center items-center text-center shadow-2xl relative group"
                                     >
                                         <div className="absolute top-4 right-4 text-white/20 font-black text-6xl select-none group-hover:text-white/30 transition-colors">
                                             {currentIndex + 1}
