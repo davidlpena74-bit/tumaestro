@@ -678,7 +678,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                                         <motion.p
                                                             initial={{ opacity: 0, y: -10 }}
                                                             animate={{ opacity: 1, y: 0 }}
-                                                            className="text-sky-400 font-black uppercase tracking-[0.2em] animate-pulse text-[14px]"
+                                                            className="text-violet-400/80 font-black uppercase tracking-[0.2em] animate-pulse text-[14px]"
                                                         >
                                                             {t.gamesPage.verbsGame.pressToStart || "Pulsa para empezar"}
                                                         </motion.p>
