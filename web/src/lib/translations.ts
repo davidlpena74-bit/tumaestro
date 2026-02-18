@@ -520,7 +520,7 @@ export const TRANSLATIONS = {
                 math: 'Mathematics',
                 culture: 'General Knowledge',
                 biology: 'Natural Science',
-                intelligence: 'Intelligence Challenges'
+                logic: 'Intelligence Challenges'
             },
             gameTitles: {
                 region: 'Autonomous Communities',
@@ -943,7 +943,7 @@ export const TRANSLATIONS = {
                 math: 'Mathématiques',
                 culture: 'Culture Générale',
                 biology: 'Sciences Naturelles',
-                intelligence: 'Défis d\'Intelligence'
+                logic: 'Défis d\'Intelligence'
             },
             gameTitles: {
                 region: 'Communautés Autonomes',
@@ -1357,7 +1357,7 @@ export const TRANSLATIONS = {
                 math: 'Mathematik',
                 culture: 'Allgemeinwissen',
                 biology: 'Naturwissenschaft',
-                intelligence: 'Intelligenz-Herausforderungen'
+                logic: 'Intelligenz-Herausforderungen'
             },
             gameTitles: {
                 region: 'Autonome Gemeinschaften',
