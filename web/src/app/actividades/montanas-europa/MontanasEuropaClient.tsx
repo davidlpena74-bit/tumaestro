@@ -26,7 +26,7 @@ export default function MontanasEuropaClient() {
                 itemType="line"
                 backgroundPaths={EUROPE_PATHS}
                 viewBox="0 0 800 600"
-                initialZoom={1.65}
+                initialZoom={1.5}
                 initialPan={{ x: -160, y: -110 }}
                 elevationHeight={2}
                 taskId={taskId}
