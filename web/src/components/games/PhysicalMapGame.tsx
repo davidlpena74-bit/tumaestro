@@ -292,6 +292,25 @@ export default function PhysicalMapGame({
                                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
                             </filter>
 
+                            {/* STIPPLE FILTERS */}
+                            <filter id="stipple-heavy">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" seed="1" result="noise" />
+                                <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 10 -4" result="stipple" />
+                                <feComposite in="SourceGraphic" in2="stipple" operator="in" />
+                            </filter>
+
+                            <filter id="stipple-mid">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="2" result="noise" />
+                                <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 12 -5" result="stipple" />
+                                <feComposite in="SourceGraphic" in2="stipple" operator="in" />
+                            </filter>
+
+                            <filter id="stipple-fine">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="2" seed="3" result="noise" />
+                                <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 15 -7" result="stipple" />
+                                <feComposite in="SourceGraphic" in2="stipple" operator="in" />
+                            </filter>
+
                             <filter id="mountain-shadow" x="-20%" y="-20%" width="140%" height="140%">
                                 <feGaussianBlur stdDeviation="2" result="blur" />
                                 <feOffset dx="0.5" dy="0.5" result="offsetBlur" />
@@ -348,37 +367,63 @@ export default function PhysicalMapGame({
 
                                         {itemType === 'line' ? (
                                             <g style={{ filter: 'url(#mountain-shadow)' }}>
-                                                {/* Mountain Base (Thick) */}
+                                                {/* LAYER 1: Deep Shadow (Wide Stipple) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#10b981" : isFailed ? "#ef4444" : (isHovered ? "#3d2b1f" : "#4a3728")}
-                                                    strokeWidth={isHovered ? 16 : 14}
+                                                    stroke={isCompleted ? "#064e3b" : isFailed ? "#7f1d1d" : "#1a130e"}
+                                                    strokeWidth={isHovered ? 20 : 18}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
-                                                    style={{ filter: 'url(#mountain-roughness)' }}
+                                                    style={{ filter: 'url(#stipple-heavy)' }}
+                                                    className="transition-all duration-500 opacity-60"
+                                                />
+
+                                                {/* LAYER 2: Base Rock (Textured) */}
+                                                <motion.path
+                                                    d={d}
+                                                    stroke={isCompleted ? "#10b981" : isFailed ? "#dc2626" : (isHovered ? "#3d2b1f" : "#4a3728")}
+                                                    strokeWidth={14}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    fill="none"
+                                                    style={{ filter: 'url(#stipple-mid)' }}
                                                     className="transition-all duration-500"
                                                 />
-                                                {/* Mountain Mid (Medium) */}
+
+                                                {/* LAYER 3: Mid Elevation */}
                                                 <motion.path
                                                     d={d}
                                                     stroke={isCompleted ? "#34d399" : isFailed ? "#f87171" : (isHovered ? "#8b6d5c" : "#7d5c4d")}
-                                                    strokeWidth={isHovered ? 9 : 7}
+                                                    strokeWidth={8}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
-                                                    style={{ filter: 'url(#mountain-roughness)' }}
+                                                    style={{ filter: 'url(#stipple-mid)' }}
                                                     className="transition-all duration-500"
                                                 />
-                                                {/* Mountain Peak (Thin) */}
+
+                                                {/* LAYER 4: High Ridge (Slightly rough solid) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#d1fae5" : isFailed ? "#fee2e2" : "#ffffff"}
+                                                    stroke={isCompleted ? "#6ee7b7" : isFailed ? "#fca5a5" : (isHovered ? "#a3a3a3" : "#737373")}
                                                     strokeWidth={2}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
                                                     style={{ filter: 'url(#mountain-roughness)' }}
+                                                    className="transition-all duration-500"
+                                                />
+
+                                                {/* LAYER 5: Peak Particles (Snow/Fine) */}
+                                                <motion.path
+                                                    d={d}
+                                                    stroke={isCompleted ? "#d1fae5" : isFailed ? "#fee2e2" : "#ffffff"}
+                                                    strokeWidth={4}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    fill="none"
+                                                    style={{ filter: 'url(#stipple-fine)' }}
                                                     opacity={isHovered ? 1 : 0.8}
                                                     className="transition-all duration-500"
                                                 />
