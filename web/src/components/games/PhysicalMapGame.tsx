@@ -112,6 +112,11 @@ export default function PhysicalMapGame({
         nextTurn(itemKeys);
     };
 
+    const getTranslatedName = (name: string) => {
+        // @ts-ignore - dynamic access to translations
+        return t.physical?.mountains?.[name] || t.physical?.seas?.[name] || name;
+    };
+
     const nextTurn = (currentRemaining: string[]) => {
         if (currentRemaining.length === 0) {
             handleFinish();
@@ -121,13 +126,18 @@ export default function PhysicalMapGame({
         const next = currentRemaining[randomIndex];
         setTargetItem(next);
         setAttempts(0);
-        speak(`${t.common.find} ${next}`, language === 'es' ? 'es-ES' : 'en-US');
+
+        const localizedFind = t.common.find || (language === 'es' ? 'Encuentra' : 'Find');
+        speak(`${localizedFind} ${getTranslatedName(next)}`, language === 'es' ? 'es-ES' : 'en-US');
     };
 
     const handleItemClick = (name: string, e: React.MouseEvent) => {
         if (gameState !== 'playing') return;
         if (!isClick.current) return;
         e.stopPropagation();
+
+        const translatedTarget = getTranslatedName(targetItem);
+        const translatedClicked = getTranslatedName(name);
 
         if (name === targetItem) {
             addScore(10);
@@ -138,16 +148,15 @@ export default function PhysicalMapGame({
             nextTurn(newRemaining);
         } else {
             addError();
-            // Penalty adjustment is handled inside addError hook based on mode
-            if (gameMode === 'practice') {
-                // In practice we might want less visual penalty or different message but useGameLogic handles score deduction
-            }
-
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
             if (newAttempts >= 3) {
-                setMessage(language === 'es' ? `¡Fallaste! Era ${targetItem}` : `Failed! It was ${targetItem}`);
+                const failMsg = language === 'es' ? `¡Fallaste! Era ${translatedTarget}` :
+                    language === 'en' ? `Failed! It was ${translatedTarget}` :
+                        language === 'fr' ? `Échec ! C'était ${translatedTarget}` :
+                            `Fehlgeschlagen! Es war ${translatedTarget}`;
+                setMessage(failMsg);
                 setFailedItems(prev => [...prev, targetItem]);
                 setCompletedItems(prev => [...prev, targetItem]);
                 const newRemaining = remainingItems.filter(r => r !== targetItem);
@@ -155,9 +164,16 @@ export default function PhysicalMapGame({
                 setTimeout(() => nextTurn(newRemaining), 1500);
             } else {
                 if (gameMode === 'practice') {
-                    setMessage(language === 'es' ? `¡Incorrecto! Esa es ${name}. Intento ${newAttempts}/3. ❌` : `Incorrect! That is ${name}. Attempt ${newAttempts}/3. ❌`);
+                    const incorrectMsg = language === 'es' ? `¡Incorrecto! Esa es ${translatedClicked}. Intento ${newAttempts}/3. ❌` :
+                        language === 'en' ? `Incorrect! That is ${translatedClicked}. Attempt ${newAttempts}/3. ❌` :
+                            language === 'fr' ? `Incorrect ! C'est ${translatedClicked}. Essai ${newAttempts}/3. ❌` :
+                                `Falsch! Das ist ${translatedClicked}. Versuch ${newAttempts}/3. ❌`;
+                    setMessage(incorrectMsg);
                 } else {
-                    setMessage(`${language === 'es' ? 'Incorrecto' : 'Incorrect'} (${newAttempts}/3) ❌`);
+                    const shortIncorrect = language === 'es' ? 'Incorrecto' :
+                        language === 'en' ? 'Incorrect' :
+                            language === 'fr' ? 'Incorrect' : 'Falsch';
+                    setMessage(`${shortIncorrect} (${newAttempts}/3) ❌`);
                 }
             }
         }
@@ -214,7 +230,7 @@ export default function PhysicalMapGame({
                     gameMode={gameMode}
                     totalTargets={Object.keys(items).length}
                     remainingTargets={remainingItems.length}
-                    targetName={targetItem}
+                    targetName={getTranslatedName(targetItem)}
                     message={message}
                     onReset={resetGame}
                     colorTheme={colorTheme}

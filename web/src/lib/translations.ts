@@ -422,6 +422,34 @@ export const TRANSLATIONS = {
             stopListening: 'Detener micrófono',
             keepReading: 'Te estoy escuchando... ¡Sigue leyendo!',
             pronounceClear: 'Pronuncia con claridad cada palabra'
+        },
+        physical: {
+            mountains: {
+                "Pirineos": "Pirineos", "Alpes": "Alpes", "Apeninos": "Apeninos", "Cárpatos": "Cárpatos",
+                "Balcanes": "Balcanes", "Cáucaso": "Cáucaso", "Montes Escandinavos": "Montes Escandinavos",
+                "Urales": "Urales", "Montes Urales": "Montes Urales", "Montes Grampianos": "Montes Grampianos",
+                "Peninos": "Peninos", "Macizo Central": "Macizo Central", "Meseta Central": "Meseta Central",
+                "Sierra Nevada": "Sierra Nevada", "Cordillera Cantábrica": "Cordillera Cantábrica",
+                "Sistema Ibérico": "Sistema Ibérico", "Sistema Central": "Sistema Central",
+                "Sistemas Béticos": "Sistemas Béticos", "Sierra Morena": "Sierra Morena",
+                "Montes de Toledo": "Montes de Toledo", "Macizo Galaico": "Macizo Galaico",
+                "Montes de León": "Montes de León", "Cordillera Costero-Catalana": "Cordillera Costero-Catalana",
+                "Himalaya": "Himalaya", "Karakórum": "Karakórum", "Tian Shan": "Tian Shan",
+                "Altái": "Altái", "Kunlun": "Kunlun", "Zagros": "Zagros", "Hindu Kush": "Hindu Kush",
+                "Rocosas": "Rocosas", "Andes": "Andes", "Apalaches": "Apalaches",
+                "Sierra Madre Occidental": "Sierra Madre Occidental", "Sierra Madre Oriental": "Sierra Madre Oriental",
+                "Gran Cordillera Divisoria": "Gran Cordillera Divisoria", "Alpes del Sur": "Alpes del Sur",
+                "Cordillera Owen Stanley": "Cordillera Owen Stanley"
+            },
+            seas: {
+                "Mar Mediterráneo": "Mar Mediterráneo", "Mar del Norte": "Mar del Norte", "Mar Báltico": "Mar Báltico",
+                "Mar Negro": "Mar Negro", "Mar Caspio": "Mar Caspio", "Mar Adriático": "Mar Adriático",
+                "Mar Arábigo": "Mar Arábigo", "Bahía de Bengala": "Bahía de Bengala", "Mar de China Meridional": "Mar de China Meridional",
+                "Mar de Japón": "Mar de Japón", "Mar Rojo": "Mar Rojo", "Golfo Pérsico": "Golfo Pérsico",
+                "Mar Caribe": "Mar Caribe", "Golfo de México": "Golfo de México", "Bahía de Hudson": "Bahía de Hudson",
+                "Mar de Bering": "Mar de Bering", "Golfo de California": "Golfo de California", "Mar del Coral": "Mar del Coral",
+                "Mar de Tasmania": "Mar de Tasmania", "Mar de Arafura": "Mar de Arafura", "Gran Bahía Australiana": "Gran Bahía Australiana"
+            }
         }
     },
     en: {
@@ -845,6 +873,34 @@ export const TRANSLATIONS = {
             stopListening: 'Stop Microphone',
             keepReading: 'I am listening... Keep reading!',
             pronounceClear: 'Pronounce each word clearly'
+        },
+        physical: {
+            mountains: {
+                "Pirineos": "Pyrenees", "Alpes": "Alps", "Apeninos": "Apennines", "Cárpatos": "Carpathians",
+                "Balcanes": "Balkans", "Cáucaso": "Caucasus", "Montes Escandinavos": "Scandinavian Mountains",
+                "Urales": "Urals", "Montes Urales": "Ural Mountains", "Montes Grampianos": "Grampian Mountains",
+                "Peninos": "Pennines", "Macizo Central": "Massif Central", "Meseta Central": "Inner Plateau",
+                "Sierra Nevada": "Sierra Nevada", "Cordillera Cantábrica": "Cantabrian Mountains",
+                "Sistema Ibérico": "Iberian System", "Sistema Central": "Central System",
+                "Sistemas Béticos": "Baetic System", "Sierra Morena": "Sierra Morena",
+                "Montes de Toledo": "Toledo Mountains", "Macizo Galaico": "Galician Massif",
+                "Montes de León": "León Mountains", "Cordillera Costero-Catalana": "Catalan Coastal Range",
+                "Himalaya": "Himalayas", "Karakórum": "Karakoram", "Tian Shan": "Tian Shan",
+                "Altái": "Altai", "Kunlun": "Kunlun", "Zagros": "Zagros", "Hindu Kush": "Hindu Kush",
+                "Rocosas": "Rockies", "Andes": "Andes", "Apalaches": "Appalachians",
+                "Sierra Madre Occidental": "Sierra Madre Occidental", "Sierra Madre Oriental": "Sierra Madre Oriental",
+                "Gran Cordillera Divisoria": "Great Dividing Range", "Alpes del Sur": "Southern Alps",
+                "Cordillera Owen Stanley": "Owen Stanley Range"
+            },
+            seas: {
+                "Mar Mediterráneo": "Mediterranean Sea", "Mar del Norte": "North Sea", "Mar Báltico": "Baltic Sea",
+                "Mar Negro": "Black Sea", "Mar Caspio": "Caspian Sea", "Mar Adriático": "Adriatic Sea",
+                "Mar Arábigo": "Arabian Sea", "Bahía de Bengala": "Bay of Bengal", "Mar de China Meridional": "South China Sea",
+                "Mar de Japón": "Sea of Japan", "Mar Rojo": "Red Sea", "Golfo Pérsico": "Persian Gulf",
+                "Mar Caribe": "Caribbean Sea", "Golfo de México": "Gulf of Mexico", "Bahía de Hudson": "Hudson Bay",
+                "Mar de Bering": "Bering Sea", "Golfo de California": "Gulf of California", "Mar del Coral": "Coral Sea",
+                "Mar de Tasmania": "Tasman Sea", "Mar de Arafura": "Arafura Sea", "Gran Bahía Australiana": "Great Australian Bight"
+            }
         }
     },
     fr: {
@@ -1259,6 +1315,34 @@ export const TRANSLATIONS = {
             repeat: 'Répéter la Lecture',
             comprehension: 'Questions de Compréhension',
             checkAnswers: 'Vérifier les Réponses'
+        },
+        physical: {
+            mountains: {
+                "Pirineos": "Pyrénées", "Alpes": "Alpes", "Apeninos": "Apennins", "Cárpatos": "Carpates",
+                "Balcanes": "Balkans", "Cáucaso": "Caucase", "Montes Escandinavos": "Alpes scandinaves",
+                "Urales": "Oural", "Montes Urales": "Oural", "Montes Grampianos": "Monts Grampians",
+                "Peninos": "Pennines", "Macizo Central": "Massif central", "Meseta Central": "Meseta centrale",
+                "Sierra Nevada": "Sierra Nevada", "Cordillera Cantábrica": "Cordillère Cantabrique",
+                "Sistema Ibérico": "Système Ibérique", "Sistema Central": "Système Central",
+                "Sistemas Béticos": "Systèmes Bétiques", "Sierra Morena": "Sierra Morena",
+                "Montes de Toledo": "Monts de Tolède", "Macizo Galaico": "Massif galicien",
+                "Montes de León": "Monts de Léon", "Cordillera Costero-Catalana": "Cordillère côtière catalane",
+                "Himalaya": "Himalaya", "Karakórum": "Karakoram", "Tian Shan": "Tian Shan",
+                "Altái": "Altaï", "Kunlun": "Kunlun", "Zagros": "Zagros", "Hindu Kush": "Hindou Kouch",
+                "Rocosas": "Rocheuses", "Andes": "Andes", "Apalaches": "Appalaches",
+                "Sierra Madre Occidental": "Sierra Madre occidentale", "Sierra Madre Oriental": "Sierra Madre orientale",
+                "Gran Cordillera Divisoria": "Cordillère australienne", "Alpes del Sur": "Alpes du Sud",
+                "Cordillera Owen Stanley": "Chaîne Owen Stanley"
+            },
+            seas: {
+                "Mar Mediterráneo": "Mer Méditerranée", "Mar del Norte": "Mer du Nord", "Mar Báltico": "Mer Baltique",
+                "Mar Negro": "Mer Noire", "Mar Caspio": "Mer Caspienne", "Mar Adriático": "Mer Adriatique",
+                "Mar Arábigo": "Mer d'Arabie", "Bahía de Bengala": "Golfe du Bengale", "Mar de China Meridional": "Mer de Chine méridionale",
+                "Mar de Japón": "Mer du Japon", "Mar Rojo": "Mer Rouge", "Golfe Persique": "Golfe Persique",
+                "Mar Caribe": "Mer des Caraïbes", "Golfo de México": "Golfe du Mexique", "Bahía de Hudson": "Baie d'Hudson",
+                "Mar de Bering": "Mer de Béring", "Golfo de California": "Golfe de Californie", "Mar del Coral": "Mer de Corail",
+                "Mar de Tasmania": "Mer de Tasman", "Mar de Arafura": "Mer d'Arafura", "Gran Bahía Australiana": "Grande Baie australienne"
+            }
         }
     },
     de: {
@@ -1673,6 +1757,34 @@ export const TRANSLATIONS = {
             repeat: 'Lesen Wiederholen',
             comprehension: 'Verständnisfragen',
             checkAnswers: 'Antworten Überprüfen'
+        },
+        physical: {
+            mountains: {
+                "Pirineos": "Pyrenäen", "Alpes": "Alpen", "Apeninos": "Apenninen", "Cárpatos": "Karpaten",
+                "Balcanes": "Balkan", "Cáucaso": "Kaukasus", "Montes Escandinavos": "Skandinavisches Gebirge",
+                "Urales": "Ural", "Montes Urales": "Ural", "Montes Grampianos": "Grampian Mountains",
+                "Peninos": "Pennines", "Macizo Central": "Zentralmassiv", "Meseta Central": "Zentralmeseta",
+                "Sierra Nevada": "Sierra Nevada", "Cordillera Cantábrica": "Kantabrisches Gebirge",
+                "Sistema Ibérico": "Iberisches Gebirge", "Sistema Central": "Kastilisches Scheidegebirge",
+                "Sistemas Béticos": "Betische Kordillere", "Sierra Morena": "Sierra Morena",
+                "Montes de Toledo": "Montes de Toledo", "Macizo Galaico": "Galicisches Massiv",
+                "Montes de León": "Berge von León", "Cordillera Costero-Catalana": "Katalanisches Küstengebirge",
+                "Himalaya": "Himalaya", "Karakórum": "Karakorum", "Tian Shan": "Tian Shan",
+                "Altái": "Altai", "Kunlun": "Kunlun", "Zagros": "Sagros", "Hindu Kush": "Hindukusch",
+                "Rocosas": "Rocky Mountains", "Andes": "Anden", "Apalaches": "Appalachen",
+                "Sierra Madre Occidental": "Sierra Madre Occidental", "Sierra Madre Oriental": "Sierra Madre Oriental",
+                "Gran Cordillera Divisoria": "Australisches Scheidegebirge", "Alpes del Sur": "Südalpen",
+                "Cordillera Owen Stanley": "Owen-Stanley-Gebirge"
+            },
+            seas: {
+                "Mar Mediterráneo": "Mittelmeer", "Mar del Norte": "Nordsee", "Mar Báltico": "Ostsee",
+                "Mar Negro": "Schwarzes Meer", "Mar Caspio": "Kaspisches Meer", "Mar Adriático": "Adriatisches Meer",
+                "Mar Arábigo": "Arabisches Meer", "Bahía de Bengala": "Golf von Bengalen", "Mar de China Meridional": "Südchinesisches Meer",
+                "Mar de Japón": "Japanisches Meer", "Mar Rojo": "Rotes Meer", "Golfo Pérsico": "Persischer Golf",
+                "Mar Caribe": "Karibisches Meer", "Golfo de México": "Golf von Mexiko", "Bahía de Hudson": "Hudson-Bucht",
+                "Mar de Bering": "Beringmeer", "Golfo de California": "Golf von Kalifornien", "Mar del Coral": "Korallenmeer",
+                "Mar de Tasmania": "Tasmansee", "Mar de Arafura": "Arafurasee", "Gran Bahía Australiana": "Große Australische Bucht"
+            }
         }
     }
 };
