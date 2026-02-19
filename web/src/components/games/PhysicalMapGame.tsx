@@ -287,31 +287,34 @@ export default function PhysicalMapGame({
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
 
-                            <filter id="mountain-roughness">
+                            <filter id="mountain-roughness" filterUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
                                 <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="5" result="noise" />
                                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
                             </filter>
 
                             {/* STIPPLE FILTERS */}
-                            <filter id="stipple-heavy">
+                            <filter id="stipple-heavy" filterUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
                                 <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" seed="1" result="noise" />
                                 <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 10 -4" result="stipple" />
                                 <feComposite in="SourceGraphic" in2="stipple" operator="in" />
+                                <feGaussianBlur stdDeviation="0.2" />
                             </filter>
 
-                            <filter id="stipple-mid">
+                            <filter id="stipple-mid" filterUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
                                 <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="2" result="noise" />
                                 <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 12 -5" result="stipple" />
                                 <feComposite in="SourceGraphic" in2="stipple" operator="in" />
+                                <feGaussianBlur stdDeviation="0.2" />
                             </filter>
 
-                            <filter id="stipple-fine">
+                            <filter id="stipple-fine" filterUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
                                 <feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="2" seed="3" result="noise" />
                                 <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 15 -7" result="stipple" />
                                 <feComposite in="SourceGraphic" in2="stipple" operator="in" />
+                                <feGaussianBlur stdDeviation="0.1" />
                             </filter>
 
-                            <filter id="mountain-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <filter id="mountain-shadow" filterUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
                                 <feGaussianBlur stdDeviation="2" result="blur" />
                                 <feOffset dx="0.5" dy="0.5" result="offsetBlur" />
                                 <feComponentTransfer>
