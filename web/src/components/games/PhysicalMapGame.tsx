@@ -374,7 +374,7 @@ export default function PhysicalMapGame({
                                                 <motion.path
                                                     d={d}
                                                     stroke={isCompleted ? "#064e3b" : isFailed ? "#7f1d1d" : "#1a130e"}
-                                                    strokeWidth={isHovered ? 20 : 18}
+                                                    strokeWidth={isHovered ? 12 : 10}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
@@ -386,7 +386,7 @@ export default function PhysicalMapGame({
                                                 <motion.path
                                                     d={d}
                                                     stroke={isCompleted ? "#10b981" : isFailed ? "#dc2626" : (isHovered ? "#3d2b1f" : "#4a3728")}
-                                                    strokeWidth={14}
+                                                    strokeWidth={8}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
@@ -398,7 +398,7 @@ export default function PhysicalMapGame({
                                                 <motion.path
                                                     d={d}
                                                     stroke={isCompleted ? "#34d399" : isFailed ? "#f87171" : (isHovered ? "#8b6d5c" : "#7d5c4d")}
-                                                    strokeWidth={8}
+                                                    strokeWidth={5}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
@@ -410,7 +410,7 @@ export default function PhysicalMapGame({
                                                 <motion.path
                                                     d={d}
                                                     stroke={isCompleted ? "#6ee7b7" : isFailed ? "#fca5a5" : (isHovered ? "#a3a3a3" : "#737373")}
-                                                    strokeWidth={2}
+                                                    strokeWidth={1.2}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
@@ -422,7 +422,7 @@ export default function PhysicalMapGame({
                                                 <motion.path
                                                     d={d}
                                                     stroke={isCompleted ? "#d1fae5" : isFailed ? "#fee2e2" : "#ffffff"}
-                                                    strokeWidth={4}
+                                                    strokeWidth={2.5}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
