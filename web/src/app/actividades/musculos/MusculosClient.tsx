@@ -56,7 +56,7 @@ export default function MusculosClient() {
                         </p>
                     </div>
 
-                    <HumanMusclesGame taskId={taskId} />
+                    <HumanMusclesGame taskId={taskId} activityId="musculos" />
                 </div>
             </main>
         </div>

@@ -8,6 +8,7 @@ interface UseGameLogicProps {
     penaltyTime?: number; // Default 10s
     onFinish?: (results: { score: number, errors: number, timeSpent: number }) => void;
     taskId?: string | null;
+    activityId?: string;
 }
 
 export function useGameLogic({
@@ -15,7 +16,8 @@ export function useGameLogic({
     penaltyTime = 10,
     onFinish,
     gameMode = 'challenge', // 'challenge' | 'practice'
-    taskId = null
+    taskId = null,
+    activityId
 }: UseGameLogicProps & { gameMode?: 'challenge' | 'practice' } = {}) {
     const [gameState, setGameState] = useState<GameState>('start');
     const [score, setScore] = useState(0);
@@ -49,11 +51,23 @@ export function useGameLogic({
 
         if (onFinish) onFinish(results);
 
-        // If it's an assigned task, save results to Supabase
-        if (taskId) {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session?.user) {
+        // Always try to save score if user is logged in
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                // 1. Save to general activity_scores for rankings
+                if (activityId) {
+                    await supabase.from('activity_scores').insert({
+                        activity_id: activityId,
+                        user_id: session.user.id,
+                        score: score,
+                        errors: errors,
+                        time_spent: elapsedTime
+                    });
+                }
+
+                // 2. If it's an assigned task, save results to task completions
+                if (taskId) {
                     await supabase.from('student_task_completions').upsert({
                         task_id: taskId,
                         student_id: session.user.id,
@@ -63,11 +77,11 @@ export function useGameLogic({
                         completed_at: new Date().toISOString()
                     });
                 }
-            } catch (err) {
-                console.error("Error saving task completion:", err);
             }
+        } catch (err) {
+            console.error("Error saving game results:", err);
         }
-    }, [score, errors, elapsedTime, taskId, onFinish]);
+    }, [score, errors, elapsedTime, taskId, activityId, onFinish]);
 
     // Auto clear message
     useEffect(() => {

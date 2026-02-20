@@ -15,9 +15,10 @@ export default function MapaProvinciasClient() {
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.provinces}
             description={t.gamesPage.gameTitles.provincesDesc}
-            colorTheme="emerald"
+            colorTheme="teal"
+            activityId="mapa-provincias"
         >
-            <ProvinceGame taskId={taskId} />
+            <ProvinceGame taskId={taskId} activityId="mapa-provincias" />
         </PhysicalGameLayout>
     );
 }

@@ -15,9 +15,10 @@ export default function MapaRiosClient() {
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.riversSpain}
             description={t.gamesPage.gameTitles.riversSpainDesc}
-            colorTheme="teal"
+            colorTheme="blue"
+            activityId="mapa-rios"
         >
-            <RiversGame taskId={taskId} />
+            <RiversGame activityId="mapa-rios" taskId={taskId} />
         </PhysicalGameLayout>
     );
 }

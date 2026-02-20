@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, ArrowRight, RefreshCcw, Trophy } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowRight, RefreshCcw, Trophy, Timer } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
 import { QUESTIONS, type Question } from './data/quiz-questions';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import GameHUD from './GameHUD';
 
 // Utility for cleaner classes
 function cn(...inputs: ClassValue[]) {
@@ -22,13 +23,15 @@ interface QuizGameProps {
     customQuestions?: Question[];
     title?: string;
     gameTypeLabel?: string;
+    activityId?: string;
 }
 
 export default function QuizGame({
     taskId = null,
     customQuestions,
     title = "Desafío de Cultura",
-    gameTypeLabel
+    gameTypeLabel,
+    activityId
 }: QuizGameProps) {
     const { language, t } = useLanguage();
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -99,23 +102,22 @@ export default function QuizGame({
     return (
         <div className="w-full max-w-2xl mx-auto min-h-[500px] flex flex-col items-center justify-center p-4">
             {/* HUD */}
-            <div className="w-full flex flex-col md:flex-row justify-between items-center mb-6 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl gap-4">
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="p-3 rounded-xl bg-violet-500/20">
-                        <Trophy className="text-violet-400 w-8 h-8" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-black text-white leading-none">
-                            {score} <span className="text-sm font-normal text-violet-300">pts</span>
-                        </h2>
-                        <div className="flex gap-3 text-xs font-bold mt-1 text-violet-300 uppercase tracking-wider">
-                            <span>{currentQuestionIdx + 1} / {gameQuestions.length}</span>
-                            <span>•</span>
-                            <span>{finalGameTypeLabel}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <GameHUD
+                title={title}
+                score={score}
+                errors={0}
+                timeLeft={timeLeft}
+                elapsedTime={elapsedTime}
+                gameMode="practice"
+                totalTargets={gameQuestions.length}
+                remainingTargets={gameQuestions.length - currentQuestionIdx}
+                targetName=""
+                message={message}
+                onReset={hookResetGame}
+                colorTheme="purple"
+                icon={<Trophy className="w-8 h-8 text-purple-400" />}
+                activityId={activityId}
+            />
 
             <div className="relative w-full bg-transparent border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden min-h-[500px] flex flex-col justify-center">
 

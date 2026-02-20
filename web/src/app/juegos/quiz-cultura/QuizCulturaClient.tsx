@@ -1,19 +1,19 @@
 'use client';
 
 import QuizGame from '@/components/games/QuizGame';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from '@phosphor-icons/react';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { LOGIC_QUESTIONS } from '@/components/games/data/logic-questions';
+
 import { useLanguage } from '@/context/LanguageContext';
 
-export default function LogicClient() {
+export default function QuizCulturaClient() {
+    const { t } = useLanguage();
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
     const [tooltipOpen, setTooltipOpen] = useState(false);
-    const { t } = useLanguage();
-
     return (
         <main className="min-h-screen bg-transparent text-white pt-24 pb-8 px-4 md:px-8">
             <div className="max-w-4xl mx-auto">
@@ -25,7 +25,7 @@ export default function LogicClient() {
                                 whileTap={{ scale: 0.9 }}
                                 onMouseEnter={() => setTooltipOpen(true)}
                                 onMouseLeave={() => setTooltipOpen(false)}
-                                onClick={() => window.location.href = '/actividades'}
+                                onClick={() => window.location.href = t.common.back === 'Volver' ? '/juegos' : '/juegos'}
                                 className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-200 transition-all z-20 cursor-pointer"
                             >
                                 <ArrowLeft size={24} weight="bold" />
@@ -45,21 +45,16 @@ export default function LogicClient() {
                             </motion.button>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-black text-slate-800">
-                            Desafío de Lógica
+                            Desafío de Conocimiento
                         </h1>
                     </div>
                     <p className="text-slate-700 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
-                        Resuelve problemas de lógica y razonamiento espacial. Pon a prueba tu capacidad analítica.
+                        Pon a prueba tu cultura general con este quiz rápido. ¿Podrás acertar todas?
                     </p>
                 </div>
 
                 <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-1 md:p-8 border border-white/10 shadow-2xl">
-                    <QuizGame
-                        taskId={taskId}
-                        customQuestions={LOGIC_QUESTIONS}
-                        title="Reto de Lógica"
-                        gameTypeLabel="Lógica"
-                    />
+                    <QuizGame taskId={taskId} activityId="quiz-cultura" />
                 </div>
             </div>
         </main>

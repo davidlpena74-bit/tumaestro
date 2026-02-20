@@ -7,6 +7,7 @@ import confetti from 'canvas-confetti';
 import { RIVERS_PATHS } from './data/rivers-paths';
 import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from './spanish-communities-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';
+import RatingSystem from './RatingSystem';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
@@ -18,7 +19,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function RiversGame({ taskId = null }: { taskId?: string | null }) {
+export default function RiversGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
@@ -214,6 +215,7 @@ export default function RiversGame({ taskId = null }: { taskId?: string | null }
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Globe className="w-8 h-8 text-teal-400" />}
+                    activityId={activityId}
                 />
 
                 {/* MAP CONTAINER */}
@@ -283,8 +285,11 @@ export default function RiversGame({ taskId = null }: { taskId?: string | null }
                                 </span>
                             </div>
 
+                            <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8 mb-4">
+                                <RatingSystem activityId={activityId || "rivers-game"} />
+                            </div>
                             <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> Jugar de nuevo
+                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                             </button>
                         </div>
                     )}

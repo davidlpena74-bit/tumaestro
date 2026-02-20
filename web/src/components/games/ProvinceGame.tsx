@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { MapPin } from 'lucide-react';
 import { useMemo } from 'react';
 
-export default function ProvinceGame({ taskId = null }: { taskId?: string | null }) {
+export default function ProvinceGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { language, t } = useLanguage();
 
     const { paths, names } = useMemo(() => {
@@ -55,6 +55,7 @@ export default function ProvinceGame({ taskId = null }: { taskId?: string | null
                 ceuta: "translate(188, 541) scale(3) translate(-188, -541)",
                 melilla: "translate(322, 582) scale(3) translate(-322, -582)"
             }}
+            activityId={activityId}
         />
     );
 }

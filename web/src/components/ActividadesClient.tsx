@@ -21,7 +21,9 @@ import {
     Plus,
     X,
     Pencil,
-    UserSound
+    UserSound,
+    Star,
+    ChatCircleText
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -63,6 +65,7 @@ export default function ActividadesClient() {
     const { success, error, warning, info } = useToast();
     const [selectedGrade, setSelectedGrade] = useState<string>('all');
     const [mounted, setMounted] = useState(false);
+    const [ratings, setRatings] = useState<Record<string, { avg: number; count: number }>>({});
 
     useEffect(() => { setMounted(true); }, []);
     const [filterOpen, setFilterOpen] = useState(false);
@@ -121,6 +124,43 @@ export default function ActividadesClient() {
             }
         };
         checkUser();
+    }, []);
+
+    useEffect(() => {
+        const fetchRatings = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('activity_ratings')
+                    .select('activity_id, rating');
+
+                if (error) {
+                    console.error('Error fetching ratings from Supabase:', JSON.stringify(error, null, 2));
+                    return;
+                }
+
+                if (!data) return;
+
+                const counts: Record<string, { sum: number; count: number }> = {};
+                data.forEach((r: any) => {
+                    if (!counts[r.activity_id]) counts[r.activity_id] = { sum: 0, count: 0 };
+                    counts[r.activity_id].sum += r.rating;
+                    counts[r.activity_id].count += 1;
+                });
+
+                const processed: Record<string, { avg: number; count: number }> = {};
+                Object.keys(counts).forEach(id => {
+                    processed[id] = {
+                        avg: Math.round((counts[id].sum / counts[id].count) * 10) / 10,
+                        count: counts[id].count
+                    };
+                });
+                setRatings(processed);
+            } catch (err) {
+                console.error('Error fetching ratings:', err);
+            }
+        };
+
+        fetchRatings();
     }, []);
 
     const scrollToCategory = (id: string) => {
@@ -200,7 +240,7 @@ export default function ActividadesClient() {
                     title: t.gamesPage.regions.spain,
                     games: [
                         {
-                            id: 'region',
+                            id: 'mapa-comunidades',
                             title: t.gamesPage.gameTitles.region,
                             description: t.gamesPage.gameTitles.regionDesc,
                             href: '/actividades/mapa-comunidades',
@@ -211,7 +251,7 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'mapa',
+                            id: 'mapa-provincias',
                             title: t.gamesPage.gameTitles.provinces,
                             description: t.gamesPage.gameTitles.provincesDesc,
                             href: '/actividades/mapa-provincias',
@@ -222,7 +262,7 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'rios',
+                            id: 'mapa-rios',
                             title: t.gamesPage.gameTitles.riversSpain,
                             description: t.gamesPage.gameTitles.riversSpainDesc,
                             href: '/actividades/mapa-rios',
@@ -249,7 +289,7 @@ export default function ActividadesClient() {
                     title: t.gamesPage.regions.europe,
                     games: [
                         {
-                            id: 'europe',
+                            id: 'mapa-europa',
                             title: t.gamesPage.gameTitles.europeMap,
                             description: t.gamesPage.gameTitles.europeMapDesc,
                             href: '/actividades/mapa-europa',
@@ -260,7 +300,7 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'capitals-ue',
+                            id: 'capitales-ue',
                             title: t.gamesPage.gameTitles.euCapitalsMap,
                             description: t.gamesPage.gameTitles.euCapitalsMapDesc,
                             href: '/actividades/capitales-ue',
@@ -271,7 +311,7 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'capitals-europe',
+                            id: 'capitales-europa',
                             title: t.gamesPage.gameTitles.europeCapitalsMap,
                             description: t.gamesPage.gameTitles.europeCapitalsMapDesc,
                             href: '/actividades/capitales-europa',
@@ -294,7 +334,7 @@ export default function ActividadesClient() {
                         },
 
                         {
-                            id: 'capitals-europe-match',
+                            id: 'capitales-europa-match',
                             title: t.gamesPage.gameTitles.europeCapitalsPuzzle,
                             description: t.gamesPage.gameTitles.europeCapitalsPuzzleDesc,
                             href: '/actividades/capitales-europa-match',
@@ -522,7 +562,7 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'male-reproductive',
+                            id: 'sistema-reproductor-masculino',
                             title: t.gamesPage.gameTitles.maleReproductive,
                             description: t.gamesPage.gameTitles.maleReproductiveDesc,
                             href: '/actividades/sistema-reproductor-masculino',
@@ -532,7 +572,7 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'female-reproductive',
+                            id: 'sistema-reproductor-femenino',
                             title: t.gamesPage.gameTitles.femaleReproductive,
                             description: t.gamesPage.gameTitles.femaleReproductiveDesc,
                             href: '/actividades/sistema-reproductor-femenino',
@@ -674,7 +714,7 @@ export default function ActividadesClient() {
                 {
                     games: [
                         {
-                            id: 'division',
+                            id: 'divisiones',
                             title: t.gamesPage.gameTitles.division,
                             description: t.gamesPage.gameTitles.divisionDesc,
                             href: '/actividades/divisiones',
@@ -684,7 +724,7 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.math
                         },
                         {
-                            id: 'multiplication',
+                            id: 'multiplicaciones',
                             title: t.gamesPage.gameTitles.multiplication,
                             description: t.gamesPage.gameTitles.multiplicationDesc,
                             href: '/actividades/multiplicaciones',
@@ -692,48 +732,6 @@ export default function ActividadesClient() {
                             color: 'from-orange-500 to-amber-600',
                             grade: t.gamesPage.grades.prim2,
                             gameType: t.gamesPage.gameTypes.math
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            id: 'logic',
-            title: t.gamesPage.categories.logic,
-            icon: Brain,
-            colorTheme: 'from-amber-600 to-orange-800',
-            subsections: [
-                {
-                    games: [
-                        {
-                            id: 'riddles',
-                            title: t.gamesPage.gameTitles.riddles,
-                            description: t.gamesPage.gameTitles.riddlesDesc,
-                            href: '/actividades/riddles',
-                            icon: Brain,
-                            color: 'from-amber-500 to-orange-600',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.logic
-                        },
-                        {
-                            id: 'logic',
-                            title: t.gamesPage.gameTitles.logic,
-                            description: t.gamesPage.gameTitles.logicDesc,
-                            href: '/actividades/logic',
-                            icon: Brain,
-                            color: 'from-amber-500 to-orange-600',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.logic
-                        },
-                        {
-                            id: 'quiz-cultura',
-                            title: t.gamesPage.gameTitles.quiz,
-                            description: t.gamesPage.gameTitles.quizDesc,
-                            href: '/actividades/quiz-cultura',
-                            icon: Brain,
-                            color: 'from-amber-500 to-orange-600',
-                            grade: 'Todo',
-                            gameType: t.gamesPage.gameTypes.quiz
                         }
                     ]
                 }
@@ -959,26 +957,61 @@ export default function ActividadesClient() {
                                                         {/* 3D Shadow/Glow Background */}
                                                         <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-[2rem] blur-3xl -z-10`} />
 
-                                                        {/* Mode Icon (Top Right) - Moved here to be above the Link z-index */}
-                                                        {game.mode && (
-                                                            <div
-                                                                className="absolute top-4 right-4 z-30 group/mode cursor-pointer"
-                                                                title={game.mode === 'writing' ? t.gamesPage.gameModes.writing : t.gamesPage.gameModes.pronunciation}
+                                                        <div className="absolute top-4 right-4 z-30 flex flex-col items-end gap-2">
+                                                            {/* Activity Info (Stars) - Always on top */}
+                                                            <Link
+                                                                href={`/actividades/valoraciones/${game.id}`}
+                                                                className="group/stars"
                                                             >
-                                                                <div className="bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-lg shadow-lg group-hover:bg-white/20 transition-all">
-                                                                    {game.mode === 'writing' ? (
-                                                                        <Pencil size={16} className="text-white/80 group-hover:text-white" weight="bold" />
+                                                                <div className="flex items-center gap-1.5 bg-slate-900/40 backdrop-blur-md border border-white/10 px-2 py-1 rounded-full shadow-lg h-6 group-hover/stars:scale-110 group-hover/stars:bg-slate-900/60 transition-all duration-300">
+                                                                    {ratings[game.id] ? (
+                                                                        <>
+                                                                            <div className="flex items-center gap-0.5">
+                                                                                <Star size={12} weight="fill" className="text-yellow-400" />
+                                                                                <span className="text-[10px] font-black text-white">{ratings[game.id].avg}</span>
+                                                                            </div>
+                                                                            <div className="w-px h-2 bg-white/20" />
+                                                                            <div className="flex items-center gap-1">
+                                                                                <ChatCircleText size={12} weight="bold" className="text-slate-400" />
+                                                                                <span className="text-[10px] font-bold text-slate-400">{ratings[game.id].count}</span>
+                                                                            </div>
+                                                                        </>
                                                                     ) : (
-                                                                        <UserSound size={16} className="text-white/80 group-hover:text-white" weight="bold" />
+                                                                        <div className="flex items-center gap-0.5 opacity-40 group-hover/stars:opacity-100 transition-opacity">
+                                                                            {[1, 2, 3, 4, 5].map((s) => (
+                                                                                <Star key={s} size={10} weight="bold" className="text-white" />
+                                                                            ))}
+                                                                        </div>
                                                                     )}
                                                                 </div>
 
-                                                                {/* Custom Tooltip */}
-                                                                <div className="absolute top-full right-0 mt-2 opacity-0 group-hover/mode:opacity-100 transition-opacity pointer-events-none whitespace-nowrap bg-slate-900/90 text-[10px] font-bold text-white px-2 py-1 rounded-md border border-white/10 shadow-xl backdrop-blur-md">
-                                                                    {game.mode === 'writing' ? t.gamesPage.gameModes.writing : t.gamesPage.gameModes.pronunciation}
+                                                                {/* Tooltip */}
+                                                                <div className="absolute top-full right-0 mt-2 opacity-0 group-hover/stars:opacity-100 transition-opacity pointer-events-none whitespace-nowrap bg-slate-900/90 text-[10px] font-bold text-white px-2 py-1 rounded-md border border-white/10 shadow-xl backdrop-blur-md">
+                                                                    Ver valoraciones
                                                                 </div>
-                                                            </div>
-                                                        )}
+                                                            </Link>
+
+                                                            {/* Mode Icon (Below Stars) */}
+                                                            {game.mode && (
+                                                                <div
+                                                                    className="group/mode cursor-pointer"
+                                                                    title={game.mode === 'writing' ? t.gamesPage.gameModes.writing : t.gamesPage.gameModes.pronunciation}
+                                                                >
+                                                                    <div className="bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-lg shadow-lg group-hover:bg-white/20 transition-all">
+                                                                        {game.mode === 'writing' ? (
+                                                                            <Pencil size={16} className="text-white/80 group-hover:text-white" weight="bold" />
+                                                                        ) : (
+                                                                            <UserSound size={16} className="text-white/80 group-hover:text-white" weight="bold" />
+                                                                        )}
+                                                                    </div>
+
+                                                                    {/* Custom Tooltip */}
+                                                                    <div className="absolute top-full right-0 mt-2 opacity-0 group-hover/mode:opacity-100 transition-opacity pointer-events-none whitespace-nowrap bg-slate-900/90 text-[10px] font-bold text-white px-2 py-1 rounded-md border border-white/10 shadow-xl backdrop-blur-md">
+                                                                        {game.mode === 'writing' ? t.gamesPage.gameModes.writing : t.gamesPage.gameModes.pronunciation}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
 
                                                         <div className={cn(
                                                             "h-full border border-white/10 py-5 px-5 rounded-3xl transition-all duration-500 transform-gpu relative overflow-hidden flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)] group-hover:border-white/25",
@@ -995,6 +1028,7 @@ export default function ActividadesClient() {
                                                         )}>
                                                             {/* 3D Top Glare Effect */}
                                                             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
 
                                                             {/* Mode Icon (Top Right) */}
 

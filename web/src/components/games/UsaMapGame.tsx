@@ -5,7 +5,7 @@ import { USA_STATES_PATHS } from './data/usa-states-paths';
 import { USA_STATES_MAPPING } from './data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
 
-export default function UsaMapGame({ taskId = null }: { taskId?: string | null }) {
+export default function UsaMapGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t } = useLanguage();
     return (
         <CountryGameBase
@@ -18,6 +18,7 @@ export default function UsaMapGame({ taskId = null }: { taskId?: string | null }
             initialZoom={2}
             taskId={taskId}
             initialPan={{ x: 0, y: 0 }}
+            activityId={activityId}
         />
     );
 }

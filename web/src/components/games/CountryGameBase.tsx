@@ -11,6 +11,8 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
 import { calculatePathCentroid } from '@/lib/svg-utils';
+import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -27,6 +29,7 @@ interface CountryGameProps {
     initialPan?: { x: number; y: number };
     elevationHeight?: number;
     taskId?: string | null;
+    activityId?: string;
 }
 
 export default function CountryGameBase({
@@ -39,7 +42,8 @@ export default function CountryGameBase({
     initialZoom = 1,
     initialPan = { x: 0, y: 0 },
     elevationHeight = 8,
-    taskId = null
+    taskId = null,
+    activityId
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -54,7 +58,7 @@ export default function CountryGameBase({
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId });
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId, activityId });
 
     const [targetCountry, setTargetCountry] = useState('');
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
@@ -200,6 +204,7 @@ export default function CountryGameBase({
                     onReset={resetGame}
                     colorTheme={colorTheme}
                     icon={<Globe className={cn("w-8 h-8", colorTheme === 'emerald' ? "text-emerald-400" : "text-blue-400")} />}
+                    activityId={activityId}
                 />
 
                 <div
@@ -260,21 +265,44 @@ export default function CountryGameBase({
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]"
+                                className="absolute inset-0 z-30 bg-black/90 backdrop-blur-xl flex flex-col items-center p-8 text-center rounded-[2rem] overflow-y-auto scrollbar-hide"
                             >
-                                <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
-                                    <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                <div className="w-full max-w-2xl flex flex-col items-center py-8">
+                                    <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
+                                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                    </div>
+                                    <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
+                                    <div className="flex flex-col items-center gap-1 mb-8 text-center text-white">
+                                        <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
+                                        <div className="relative">
+                                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
+                                                {score}
+                                            </span>
+                                            <motion.div
+                                                initial={{ scale: 0 }}
+                                                animate={{ scale: 1 }}
+                                                className="absolute -top-4 -right-8 bg-emerald-500 text-slate-900 text-xs font-black px-2 py-1 rounded-lg transform rotate-12"
+                                            >
+                                                {elapsedTime}s
+                                            </motion.div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                        <div className="space-y-4">
+                                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                                <RatingSystem activityId={activityId || "map-game"} />
+                                            </div>
+                                            <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
+                                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                                            </button>
+                                        </div>
+
+                                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                            <ActivityRanking activityId={activityId || "map-game"} />
+                                        </div>
+                                    </div>
                                 </div>
-                                <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
-                                <div className="flex flex-col items-center gap-1 mb-8 text-center text-white">
-                                    <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                                    <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
-                                        {score}
-                                    </span>
-                                </div>
-                                <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                    <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                                </button>
                             </motion.div>
                         )}
                     </AnimatePresence>

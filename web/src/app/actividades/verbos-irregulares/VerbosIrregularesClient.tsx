@@ -20,8 +20,9 @@ export default function VerbosIrregularesClient() {
             title="Verbos Irregulares MEDIO"
             description={t.gamesPage.gameTitles.verbsDesc}
             colorTheme="rose"
+            activityId="verbos-irregulares"
         >
-            <IrregularVerbsGame taskId={taskId} type="writing" />
+            <IrregularVerbsGame taskId={taskId} type="writing" activityId="verbos-irregulares" />
         </PhysicalGameLayout>
     );
 }

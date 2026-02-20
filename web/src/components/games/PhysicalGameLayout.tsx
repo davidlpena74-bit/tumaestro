@@ -12,13 +12,15 @@ interface PhysicalGameLayoutProps {
     description: string;
     children: React.ReactNode;
     colorTheme?: 'emerald' | 'blue' | 'teal' | 'rose' | 'yellow';
+    activityId?: string;
 }
 
 export default function PhysicalGameLayout({
     title,
     description,
     children,
-    colorTheme = 'emerald'
+    colorTheme = 'emerald',
+    activityId
 }: PhysicalGameLayoutProps) {
     const { t } = useLanguage();
     const [tooltipOpen, setTooltipOpen] = useState(false);

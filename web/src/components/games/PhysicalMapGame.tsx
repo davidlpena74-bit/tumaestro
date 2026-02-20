@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle } from 'lucide-react';
+import { Trophy, Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import GameHUD from './GameHUD';
@@ -12,6 +12,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
+import RatingSystem from './RatingSystem';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -36,6 +37,7 @@ interface PhysicalMapGameProps {
     elevationHeight?: number;
     colorTheme?: "teal" | "emerald" | "blue" | "purple" | "orange" | "cyan";
     taskId?: string | null;
+    activityId?: string;
 }
 
 export default function PhysicalMapGame({
@@ -50,7 +52,8 @@ export default function PhysicalMapGame({
     initialPan = { x: 0, y: 0 },
     elevationHeight = 8,
     colorTheme = "teal",
-    taskId = null
+    taskId = null,
+    activityId
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -100,6 +103,8 @@ export default function PhysicalMapGame({
             document.exitFullscreen();
         }
     };
+
+
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
         setGameMode(mode);
@@ -220,7 +225,8 @@ export default function PhysicalMapGame({
 
     return (
         <div ref={gameContainerRef} className={cn("w-full flex flex-col items-center select-none transition-all duration-300", isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : "")}>
-            <div className={cn("w-full flex flex-col items-center", isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4")}>
+            <div className={cn("w-full flex flex-col items-center relative", isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4")}>
+
                 <GameHUD
                     title={title}
                     score={score}
@@ -235,6 +241,7 @@ export default function PhysicalMapGame({
                     onReset={resetGame}
                     colorTheme={colorTheme}
                     icon={<Globe className="w-8 h-8" />}
+                    activityId={activityId}
                 />
 
                 <div
@@ -280,6 +287,10 @@ export default function PhysicalMapGame({
                                 <div className="bg-transparent border border-white/20 p-8 rounded-3xl text-center shadow-2xl mb-8">
                                     <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Puntuación Final</span>
                                     <span className="block text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">{score}</span>
+                                </div>
+
+                                <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8 mb-4">
+                                    <RatingSystem activityId={activityId || "physical-map-game"} />
                                 </div>
                                 <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
                                     <RefreshCw className="w-5 h-5" /> Jugar de nuevo

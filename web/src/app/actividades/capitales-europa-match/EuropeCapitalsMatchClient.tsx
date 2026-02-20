@@ -52,12 +52,11 @@ export default function EuropeCapitalsMatchClient() {
                                 Puzzle: Capitales Europa 🧩
                             </h1>
                         </div>
-                        <p className="text-slate-700 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
-                            El gran reto de las capitales europeas. Arrastra y suelta cada nombre en el país correcto para completar el continente.
-                        </p>
                     </div>
 
-                    <EuropeCapitalsGame taskId={taskId} />
+                    <div className="bg-white/80 backdrop-blur-md rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
+                        <EuropeCapitalsGame taskId={taskId} activityId="capitales-europa-match" />
+                    </div>
                 </div>
             </main>
         </div>

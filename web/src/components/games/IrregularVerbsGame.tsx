@@ -16,7 +16,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: { taskId?: string | null, type?: 'writing' | 'pronunciation' }) {
+export default function IrregularVerbsGame({ taskId = null, type = 'writing', activityId }: { taskId?: string | null, type?: 'writing' | 'pronunciation', activityId?: string }) {
     const { t, language } = useLanguage();
     const [verbs, setVerbs] = useState<IrregularVerb[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -417,6 +417,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing' }: 
                 icon={<BookOpen className="w-8 h-8 text-violet-600" />}
                 title={type === 'pronunciation' ? t.gamesPage.gameTitles.verbsPronunciation : t.gamesPage.gameTitles.verbs}
                 gameType={type}
+                activityId={activityId}
             />
 
             <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">

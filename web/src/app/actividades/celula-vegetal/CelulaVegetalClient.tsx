@@ -51,16 +51,10 @@ export default function CelulaVegetalClient() {
                                     </AnimatePresence>
                                 </motion.button>
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-black text-slate-800">
-                                {t.gamesPage.gameTitles.plantCell} 🌿
-                            </h1>
                         </div>
-                        <p className="text-slate-700 font-medium text-lg mb-8 leading-relaxed max-w-3xl">
-                            {t.gamesPage.gameTitles.plantCellDesc}. Arrastra cada etiqueta para conectarla con su ubicación correspondiente en el modelo interactivo de la célula vegetal.
-                        </p>
                     </div>
 
-                    <PlantCellGame taskId={taskId} />
+                    <PlantCellGame taskId={taskId} activityId="celula-vegetal" />
                 </div>
             </main>
         </div>

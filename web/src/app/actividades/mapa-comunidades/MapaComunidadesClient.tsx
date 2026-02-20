@@ -15,9 +15,10 @@ export default function MapaComunidadesClient() {
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.region}
             description={t.gamesPage.gameTitles.regionDesc}
-            colorTheme="emerald"
+            colorTheme="teal"
+            activityId="mapa-comunidades"
         >
-            <RegionGame taskId={taskId} />
+            <RegionGame taskId={taskId} activityId="mapa-comunidades" />
         </PhysicalGameLayout>
     );
 }

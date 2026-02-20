@@ -18,6 +18,7 @@ export default function MaresEuropaClient() {
             title={t.gamesPage.gameTitles.oceansEurope}
             description={t.gamesPage.gameTitles.oceansEuropeDesc}
             colorTheme="blue"
+            activityId="mares-europa"
         >
             <PhysicalMapGame
                 title={t.gamesPage.gameTitles.oceansEurope}
@@ -31,6 +32,7 @@ export default function MaresEuropaClient() {
                 elevationHeight={2}
                 taskId={taskId}
                 colorTheme="emerald"
+                activityId="mares-europa"
             />
         </PhysicalGameLayout>
     );

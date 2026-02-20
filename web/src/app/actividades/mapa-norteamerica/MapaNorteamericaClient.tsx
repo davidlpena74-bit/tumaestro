@@ -16,8 +16,9 @@ export default function MapaNorteamericaClient() {
             title={t.gamesPage.gameTitles.northAmericaMap}
             description={t.gamesPage.gameTitles.northAmericaMapDesc}
             colorTheme="emerald"
+            activityId="mapa-norteamerica"
         >
-            <NorthAmericaMapGame taskId={taskId} />
+            <NorthAmericaMapGame taskId={taskId} activityId="mapa-norteamerica" />
         </PhysicalGameLayout>
     );
 }

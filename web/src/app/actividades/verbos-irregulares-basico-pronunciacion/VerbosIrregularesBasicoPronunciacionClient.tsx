@@ -12,11 +12,12 @@ export default function VerbosIrregularesBasicoPronunciacionClient() {
 
     return (
         <PhysicalGameLayout
-            title="Verbos Irregulares BÁSICO (Voz)"
-            description="Practica tu pronunciación con los 25 verbos más comunes."
+            title="Verbos Irregulares BÁSICO"
+            description={t.gamesPage.gameTitles.verbsDesc}
             colorTheme="rose"
+            activityId="verbos-irregulares-basico-pronunciacion"
         >
-            <IrregularVerbsBasicGame taskId={taskId} type="pronunciation" />
+            <IrregularVerbsBasicGame taskId={taskId} type="pronunciation" activityId="verbos-irregulares-basico-pronunciacion" />
         </PhysicalGameLayout>
     );
 }

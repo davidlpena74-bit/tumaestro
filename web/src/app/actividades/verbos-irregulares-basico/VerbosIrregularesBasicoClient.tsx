@@ -13,10 +13,11 @@ export default function VerbosIrregularesBasicoClient() {
     return (
         <PhysicalGameLayout
             title="Verbos Irregulares BÁSICO"
-            description="Comienza tu camino con los 25 verbos más fundamentales del inglés."
+            description={t.gamesPage.gameTitles.verbsDesc}
             colorTheme="rose"
+            activityId="verbos-irregulares-basico"
         >
-            <IrregularVerbsBasicGame taskId={taskId} type="writing" />
+            <IrregularVerbsBasicGame taskId={taskId} type="writing" activityId="verbos-irregulares-basico" />
         </PhysicalGameLayout>
     );
 }

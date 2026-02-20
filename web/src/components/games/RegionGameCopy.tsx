@@ -36,7 +36,7 @@ const REGION_DISPLAY_NAMES: Record<string, string> = {
     melilla: 'Melilla'
 };
 
-export default function RegionGame() {
+export default function RegionGame({ activityId }: { activityId?: string }) {
     // Note: RegionGame usually has 60s for Regions (fewer targets).
     // Rivers has 120s. Let's use 60s here.
     const {
@@ -201,6 +201,7 @@ export default function RegionGame() {
                     onReset={resetGame}
                     colorTheme="teal" // Using teal to match original styling
                     icon={<MapPin className="w-8 h-8 text-teal-400" />}
+                    activityId={activityId}
                 />
 
                 {/* MAP CONTAINER */}

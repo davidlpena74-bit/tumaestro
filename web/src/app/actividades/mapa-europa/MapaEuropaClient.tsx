@@ -16,8 +16,9 @@ export default function MapaEuropaClient() {
             title={t.gamesPage.gameTitles.europeMap}
             description={t.gamesPage.gameTitles.europeMapDesc}
             colorTheme="emerald"
+            activityId="mapa-europa"
         >
-            <EuropeGame taskId={taskId} />
+            <EuropeGame taskId={taskId} activityId="mapa-europa" />
         </PhysicalGameLayout>
     );
 }

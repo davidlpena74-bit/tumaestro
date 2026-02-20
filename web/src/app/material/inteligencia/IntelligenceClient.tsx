@@ -14,7 +14,7 @@ export default function IntelligenceClient() {
             id: 'riddles',
             title: t.gamesPage.gameTitles.riddles,
             description: t.gamesPage.gameTitles.riddlesDesc,
-            href: '/actividades/riddles',
+            href: '/juegos/riddles',
             image: '/images/resources/game-riddles.png',
             theme: 'from-amber-400 to-orange-500'
         },
@@ -22,7 +22,7 @@ export default function IntelligenceClient() {
             id: 'logic',
             title: t.gamesPage.gameTitles.logic,
             description: t.gamesPage.gameTitles.logicDesc,
-            href: '/actividades/logic',
+            href: '/juegos/logic',
             image: '/images/resources/game-logic.png',
             theme: 'from-cyan-400 to-emerald-500'
         },
@@ -30,7 +30,7 @@ export default function IntelligenceClient() {
             id: 'quiz',
             title: t.gamesPage.gameTitles.quiz,
             description: t.gamesPage.gameTitles.quizDesc,
-            href: '/actividades/quiz-cultura',
+            href: '/juegos/quiz-cultura',
             image: '/images/resources/game-quiz.png',
             theme: 'from-violet-500 to-indigo-600'
         }

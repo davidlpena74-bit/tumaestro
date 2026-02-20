@@ -16,8 +16,9 @@ export default function MapaUsaClient() {
             title={t.gamesPage.gameTitles.usaStatesMap}
             description={t.gamesPage.gameTitles.usaStatesMapDesc}
             colorTheme="emerald"
+            activityId="mapa-usa"
         >
-            <UsaMapGame taskId={taskId} />
+            <UsaMapGame taskId={taskId} activityId="mapa-usa" />
         </PhysicalGameLayout>
     );
 }

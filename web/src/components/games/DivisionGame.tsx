@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
+import RatingSystem from './RatingSystem';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { Trophy } from '@phosphor-icons/react';
 import { Pizza, Smile, CheckCircle, XCircle, ArrowRight, RefreshCw, Timer, Hand } from 'lucide-react';
 
-type GameState = 'start' | 'playing' | 'feedback' | 'finished';
+
 
 interface DivisionProblem {
     dividend: number; // Total items
@@ -18,7 +19,7 @@ interface DivisionProblem {
     remainder: number; // Leftovers
 }
 
-export default function DivisionGame({ taskId = null }: { taskId?: string | null }) {
+export default function DivisionGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t } = useLanguage();
     const [level, setLevel] = useState(1);
     const [problem, setProblem] = useState<DivisionProblem>({ dividend: 6, divisor: 2, quotient: 3, remainder: 0 });
@@ -221,6 +222,28 @@ export default function DivisionGame({ taskId = null }: { taskId?: string | null
                 </div>
             )}
 
+            {/* FINISHED OVERLAY */}
+            {gameState === 'finished' && (
+                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
+                    <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30">
+                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                    </div>
+                    <h2 className="text-4xl font-black text-white mb-2">¡Reto Completado!</h2>
+                    <p className="text-xl text-orange-200 mb-8 font-light">Has demostrado un gran dominio de las divisiones.</p>
+
+                    <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
+                        <RatingSystem activityId={activityId || "division-pizzas"} />
+                    </div>
+
+                    <button
+                        onClick={() => setGameState('start')}
+                        className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-orange-500/20 transition-transform active:scale-95"
+                    >
+                        Jugar Otra Vez
+                    </button>
+                </div>
+            )}
+
             {/* HUD */}
             <GameHUD
                 title={t.gamesPage.divisionGame.title}
@@ -236,6 +259,7 @@ export default function DivisionGame({ taskId = null }: { taskId?: string | null
                 colorTheme="orange"
                 message={message}
                 icon={<Pizza className="w-8 h-8 text-orange-400" />}
+                activityId={activityId}
             />
 
             {/* Game Grid */}

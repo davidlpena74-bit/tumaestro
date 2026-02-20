@@ -13,10 +13,11 @@ export default function VerbosIrregularesProClient() {
     return (
         <PhysicalGameLayout
             title="Verbos Irregulares PRO"
-            description="Nivel avanzado con 100 verbos irregulares. ¡Demuestra que eres un experto!"
+            description={t.gamesPage.gameTitles.verbsDesc}
             colorTheme="rose"
+            activityId="verbos-irregulares-pro"
         >
-            <IrregularVerbsProGame taskId={taskId} type="writing" />
+            <IrregularVerbsProGame taskId={taskId} type="writing" activityId="verbos-irregulares-pro" />
         </PhysicalGameLayout>
     );
 }

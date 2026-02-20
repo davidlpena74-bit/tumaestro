@@ -18,6 +18,7 @@ export default function MontanasOceaniaClient() {
             title={t.gamesPage.gameTitles.mountainsOceania}
             description={t.gamesPage.gameTitles.mountainsOceaniaDesc}
             colorTheme="emerald"
+            activityId="montanas-oceania"
         >
             <PhysicalMapGame
                 title={t.gamesPage.gameTitles.mountainsOceania}

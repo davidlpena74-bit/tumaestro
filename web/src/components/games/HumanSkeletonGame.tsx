@@ -16,6 +16,7 @@ import {
 } from '@phosphor-icons/react';
 import confetti from 'canvas-confetti';
 import GameHUD from './GameHUD';
+import RatingSystem from './RatingSystem';
 import { useGameLogic } from '@/hooks/useGameLogic';
 
 type BonePart = {
@@ -46,7 +47,7 @@ const BONE_PARTS: BonePart[] = [
     { id: 'scapula', nameKey: 'scapula', view: 'back', x: 450, y: 320, lx: 700, ly: 315 },
 ];
 
-export default function HumanSkeletonGame({ taskId = null }: { taskId?: string | null }) {
+export default function HumanSkeletonGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t, language } = useLanguage();
     const [rotation, setRotation] = useState(0); // 0 to 180 degrees
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
@@ -248,6 +249,7 @@ export default function HumanSkeletonGame({ taskId = null }: { taskId?: string |
                 colorTheme="blue"
                 message={message}
                 icon={<Skull className="w-8 h-8 text-blue-400" weight="duotone" />}
+                activityId={activityId}
             />
 
             <div className="w-full">
@@ -327,6 +329,9 @@ export default function HumanSkeletonGame({ taskId = null }: { taskId?: string |
                                     </div>
                                 </div>
 
+                                <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
+                                    <RatingSystem activityId={activityId || "human-skeleton-game"} />
+                                </div>
                                 <button
                                     onClick={() => setGameState('start')} // Back to start screen
                                     className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"

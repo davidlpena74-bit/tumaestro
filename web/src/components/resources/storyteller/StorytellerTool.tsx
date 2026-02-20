@@ -29,7 +29,9 @@ import { BOOKS, Book } from './books-data';
 import { getBestVoice } from '@/lib/speech-utils';
 import { useLanguage } from '@/context/LanguageContext';
 import { useBackground } from '@/context/BackgroundContext';
+import { supabase } from '@/lib/supabaseClient';
 import StorySearch from './StorySearch';
+import RatingSystem from '@/components/games/RatingSystem';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -64,6 +66,8 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
     const [charIndex, setCharIndex] = useState(0);
     const [isMaximized, setIsMaximized] = useState(false);
     const [tooltipOpen, setTooltipOpen] = useState(false);
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [bookRatings, setBookRatings] = useState<Record<string, { avg: number, count: number }>>({});
 
 
     const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -151,6 +155,42 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
             setSelectedBook(null);
         }
     }, [initialBookId]);
+
+    useEffect(() => {
+        const fetchAllStoryRatings = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('activity_ratings')
+                    .select('activity_id, rating')
+                    .like('activity_id', 'story-%');
+
+                if (error) throw error;
+
+                if (data) {
+                    const ratingsMap: Record<string, { sum: number, count: number }> = {};
+                    data.forEach(r => {
+                        const id = r.activity_id.replace('story-', '');
+                        if (!ratingsMap[id]) ratingsMap[id] = { sum: 0, count: 0 };
+                        ratingsMap[id].sum += r.rating;
+                        ratingsMap[id].count += 1;
+                    });
+
+                    const finalRatings: Record<string, { avg: number, count: number }> = {};
+                    Object.entries(ratingsMap).forEach(([id, stats]) => {
+                        finalRatings[id] = {
+                            avg: Number((stats.sum / stats.count).toFixed(1)),
+                            count: stats.count
+                        };
+                    });
+                    setBookRatings(finalRatings);
+                }
+            } catch (err) {
+                console.error('Error fetching all story ratings:', err);
+            }
+        };
+
+        fetchAllStoryRatings();
+    }, []);
 
     useEffect(() => {
         if (selectedBook) {
@@ -512,6 +552,30 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                             </button>
                         </div>
 
+                        {/* Rating Logic Trigger */}
+                        <div className={cn(
+                            "absolute z-50 transition-all duration-500",
+                            isMaximized ? "top-4 left-1/2 -translate-x-1/2" : "-top-14 -right-2"
+                        )}>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setIsRatingModalOpen(true)}
+                                className={cn(
+                                    "flex items-center gap-2 px-4 py-2 rounded-2xl shadow-xl transition-all border cursor-pointer",
+                                    isMaximized
+                                        ? "bg-white/10 backdrop-blur-md border-white/20 text-white"
+                                        : "bg-white border-yellow-200 text-slate-700 hover:border-yellow-400"
+                                )}
+                            >
+                                <Star weight="fill" className="text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.4)]" size={18} />
+                                <div className="flex flex-col items-start leading-none">
+                                    <span className="text-[10px] font-black uppercase tracking-wider opacity-60">Valorar</span>
+                                    {selectedBook.rating && <span className="text-xs font-bold">{selectedBook.rating}</span>}
+                                </div>
+                            </motion.button>
+                        </div>
+
 
                         <div className="flex-grow flex flex-col items-center justify-center overflow-hidden w-full relative z-10">
                             <AnimatePresence mode="wait">
@@ -812,6 +876,32 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                         )}
                     </div>
                 </div>
+
+                {/* Rating Modal Integration */}
+                <AnimatePresence>
+                    {isRatingModalOpen && selectedBook && (
+                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setIsRatingModalOpen(false)}
+                                className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
+                            />
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                className="relative w-full max-w-lg bg-slate-900 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-3xl"
+                            >
+                                <RatingSystem
+                                    activityId={`story-${selectedBook.id}`}
+                                    onClose={() => setIsRatingModalOpen(false)}
+                                />
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
             </div>
         );
     }
@@ -963,26 +1053,45 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                                 </div>
 
                                                 {/* Valoración Estrellas */}
-                                                {book.rating && (
-                                                    <div className="flex items-center gap-0.5" title={`Puntuación: ${book.rating} / 5`}>
-                                                        {[1, 2, 3, 4, 5].map((star) => {
-                                                            const isFull = book.rating! >= star;
-                                                            const isHalf = book.rating! >= star - 0.5 && book.rating! < star;
-                                                            return (
-                                                                <div key={star}>
-                                                                    {isFull ? (
-                                                                        <Star weight="fill" className="text-amber-400" size={13} />
-                                                                    ) : isHalf ? (
-                                                                        <StarHalf weight="fill" className="text-amber-400" size={13} />
-                                                                    ) : (
-                                                                        <Star weight="fill" className="text-slate-200" size={13} />
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        })}
-                                                        <span className="text-[10px] font-bold text-slate-400 ml-1">{book.rating}</span>
-                                                    </div>
-                                                )}
+                                                {(() => {
+                                                    const dynamicRating = bookRatings[book.id];
+                                                    const ratingToShow = dynamicRating ? dynamicRating.avg : book.rating;
+
+                                                    if (!ratingToShow) return null;
+
+                                                    return (
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                router.push(`/actividades/valoraciones/story-${book.id}`);
+                                                            }}
+                                                            className="flex items-center gap-0.5 group/stars cursor-pointer hover:bg-amber-50 px-2 py-1 rounded-lg transition-all"
+                                                            title={`Puntuación: ${ratingToShow} / 5 ${dynamicRating ? `(${dynamicRating.count} opiniones)` : '(Sin valoraciones aún)'}. Haz clic para ver comentarios.`}
+                                                        >
+                                                            {[1, 2, 3, 4, 5].map((star) => {
+                                                                const isFull = ratingToShow >= star;
+                                                                const isHalf = ratingToShow >= star - 0.5 && ratingToShow < star;
+                                                                return (
+                                                                    <div key={star}>
+                                                                        {isFull ? (
+                                                                            <Star weight="fill" className="text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.2)]" size={13} />
+                                                                        ) : isHalf ? (
+                                                                            <StarHalf weight="fill" className="text-amber-400" size={13} />
+                                                                        ) : (
+                                                                            <Star weight="fill" className="text-slate-200" size={13} />
+                                                                        )}
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                            <span className="text-[10px] font-bold text-slate-400 ml-1 group-hover/stars:text-amber-600 transition-colors">{ratingToShow}</span>
+                                                            {dynamicRating && (
+                                                                <span className="text-[9px] font-black text-slate-300 ml-1 group-hover/stars:text-amber-400 transition-colors">({dynamicRating.count})</span>
+                                                            )}
+                                                        </motion.button>
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                         <h3 className="text-2xl font-black text-slate-800 mb-1 transition-colors group-hover:text-slate-900 leading-tight">

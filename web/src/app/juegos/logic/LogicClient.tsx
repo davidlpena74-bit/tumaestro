@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from '@phosphor-icons/react';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { RIDDLES_QUESTIONS } from '@/components/games/data/riddles-questions';
+import { LOGIC_QUESTIONS } from '@/components/games/data/logic-questions';
 import { useLanguage } from '@/context/LanguageContext';
 
-export default function RiddlesClient() {
+export default function LogicClient() {
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
     const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -25,8 +25,8 @@ export default function RiddlesClient() {
                                 whileTap={{ scale: 0.9 }}
                                 onMouseEnter={() => setTooltipOpen(true)}
                                 onMouseLeave={() => setTooltipOpen(false)}
-                                onClick={() => window.location.href = '/actividades'}
-                                className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 text-slate-500 hover:text-amber-600 hover:border-amber-200 transition-all z-20 cursor-pointer"
+                                onClick={() => window.location.href = t.common.back === 'Volver' ? '/juegos' : '/juegos'}
+                                className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-200 transition-all z-20 cursor-pointer"
                             >
                                 <ArrowLeft size={24} weight="bold" />
                                 <AnimatePresence>
@@ -45,20 +45,21 @@ export default function RiddlesClient() {
                             </motion.button>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-black text-slate-800">
-                            Adivinanzas Mágicas
+                            Desafío de Lógica
                         </h1>
                     </div>
                     <p className="text-slate-700 font-medium text-lg max-w-2xl mb-8 leading-relaxed">
-                        Pon a prueba tu ingenio con acertijos y adivinanzas clásicas. ¿Cuántas podrás resolver?
+                        Resuelve problemas de lógica y razonamiento espacial. Pon a prueba tu capacidad analítica.
                     </p>
                 </div>
 
                 <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-1 md:p-8 border border-white/10 shadow-2xl">
                     <QuizGame
                         taskId={taskId}
-                        customQuestions={RIDDLES_QUESTIONS}
-                        title="Reto de Adivinanzas"
+                        customQuestions={LOGIC_QUESTIONS}
+                        title="Reto de Lógica"
                         gameTypeLabel="Lógica"
+                        activityId="logic"
                     />
                 </div>
             </div>

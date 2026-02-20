@@ -16,8 +16,9 @@ export default function MapaAsiaClient() {
             title={t.gamesPage.gameTitles.asiaMap}
             description={t.gamesPage.gameTitles.asiaMapDesc}
             colorTheme="emerald"
+            activityId="mapa-asia"
         >
-            <AsiaMapGame taskId={taskId} />
+            <AsiaMapGame taskId={taskId} activityId="mapa-asia" />
         </PhysicalGameLayout>
     );
 }

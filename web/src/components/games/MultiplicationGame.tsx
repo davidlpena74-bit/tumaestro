@@ -5,12 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
+import RatingSystem from './RatingSystem';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { Hash, CheckCircle, RefreshCw, Trophy, Timer, MousePointer2 } from 'lucide-react';
 
-type GameState = 'start' | 'playing' | 'feedback' | 'finished';
 
-export default function MultiplicationGame({ taskId = null }: { taskId?: string | null }) {
+
+export default function MultiplicationGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t } = useLanguage();
     const [level, setLevel] = useState(1);
     const [numA, setNumA] = useState(2);
@@ -158,6 +159,28 @@ export default function MultiplicationGame({ taskId = null }: { taskId?: string 
                 </div>
             )}
 
+            {/* FINISHED OVERLAY */}
+            {gameState === 'finished' && (
+                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
+                    <div className="bg-blue-500/10 p-6 rounded-full mb-6 ring-1 ring-blue-500/30">
+                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                    </div>
+                    <h2 className="text-4xl font-black text-white mb-2">¡Reto Completado!</h2>
+                    <p className="text-xl text-blue-200 mb-8 font-light">Has demostrado un gran dominio de las multiplicaciones.</p>
+
+                    <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
+                        <RatingSystem activityId={activityId || "multiplication-intersections"} />
+                    </div>
+
+                    <button
+                        onClick={() => setGameState('start')}
+                        className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-blue-500/20 transition-transform active:scale-95"
+                    >
+                        Jugar Otra Vez
+                    </button>
+                </div>
+            )}
+
 
 
             {/* HUD */}
@@ -175,6 +198,7 @@ export default function MultiplicationGame({ taskId = null }: { taskId?: string 
                 colorTheme="blue"
                 message={message}
                 icon={<Hash className="w-8 h-8 text-blue-400" />}
+                activityId={activityId}
             />
 
             {/* Game Grid */}

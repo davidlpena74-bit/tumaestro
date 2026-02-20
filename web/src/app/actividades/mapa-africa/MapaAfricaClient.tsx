@@ -16,8 +16,9 @@ export default function MapaAfricaClient() {
             title={t.gamesPage.gameTitles.africaMap}
             description={t.gamesPage.gameTitles.africaMapDesc}
             colorTheme="emerald"
+            activityId="mapa-africa"
         >
-            <AfricaMapGame taskId={taskId} />
+            <AfricaMapGame taskId={taskId} activityId="mapa-africa" />
         </PhysicalGameLayout>
     );
 }

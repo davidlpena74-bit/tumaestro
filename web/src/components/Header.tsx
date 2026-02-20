@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useLanguage } from '@/context/LanguageContext';
-import { User as UserIcon, CaretDown, Check, SignOut, Bell, List, X } from '@phosphor-icons/react';
+import { User as UserIcon, CaretDown, Check, SignOut, Bell, List, X, Star } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AuthModal from './AuthModal';
 
@@ -457,6 +457,14 @@ export default function Header() {
                                             >
                                                 <UserIcon size={16} weight="bold" />
                                                 Mi Perfil
+                                            </Link>
+                                            <Link
+                                                href="/perfil/valoraciones"
+                                                onClick={() => setUserMenuOpen(false)}
+                                                className="w-full text-left px-4 py-2.5 text-sm font-medium text-white hover:bg-white/5 flex items-center gap-2 transition-colors"
+                                            >
+                                                <Star size={16} weight="bold" className="text-yellow-400" />
+                                                Mis Valoraciones
                                             </Link>
                                             <Link
                                                 href="/dashboard"

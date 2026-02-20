@@ -29,7 +29,7 @@ export default function NewGamesClient() {
                 </header>
 
                 <div className="flex flex-col gap-24">
-                    {/* SECCIÓN RETOS DE INTELIGENCIA */}
+                    {/* SECCIÓN LÓGICA */}
                     <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
                         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-3xl blur-3xl -z-10" />
 
@@ -49,7 +49,7 @@ export default function NewGamesClient() {
                                         <div className="absolute inset-0 bg-amber-500/20 rounded-3xl blur-2xl group-hover/img:bg-amber-500/30 transition-all -z-10" />
                                         <img
                                             src="/images/resources/intelligence-main.png"
-                                            alt="Retos de Inteligencia"
+                                            alt="Lógica"
                                             className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform -rotate-3 group-hover/img:rotate-0 transition-all duration-500"
                                         />
                                     </motion.div>
@@ -57,37 +57,72 @@ export default function NewGamesClient() {
 
                                 <div className="w-full md:w-2/3 text-center md:text-left">
                                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-black mb-6 border border-amber-500/20 uppercase tracking-widest">
-                                        Entrena tu Mente
+                                        Retos Mentales
                                     </div>
 
                                     <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
                                         Lógica y Astucia
                                     </h2>
                                     <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                        Desafía tu mente con acertijos, juegos de lógica y problemas de razonamiento lateral. Ideal para desarrollar el pensamiento crítico de forma divertida.
+                                        Entrena tu cerebro con problemas matemáticos, lógica y razonamiento. ¡Demuestra tu inteligencia!
                                     </p>
 
-                                    <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                                    <Link
+                                        href="/juegos/logic"
+                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                    >
+                                        JUGAR AHORA
+                                        <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* SECCIÓN ADIVINANZAS */}
+                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
+                        <div className="absolute inset-0 bg-gradient-to-l from-purple-500/10 to-indigo-500/10 rounded-3xl blur-3xl -z-10" />
+
+                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] group-hover:bg-purple-500/20 transition-all duration-700" />
+
+                            <div className="flex flex-col md:flex-row-reverse items-center gap-12 relative z-10">
+                                <div className="w-full md:w-1/3 flex justify-center">
+                                    <motion.div
+                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(139,92,246,0))', scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(139,92,246,0.4))', scale: 1.05 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="relative group/img"
+                                    >
+                                        <div className="absolute inset-0 bg-purple-500/20 rounded-3xl blur-2xl group-hover/img:bg-purple-500/30 transition-all -z-10" />
+                                        <img
+                                            src="/images/resources/game-riddles.png"
+                                            alt="Adivinanzas"
+                                            className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform rotate-3 group-hover/img:rotate-0 transition-all duration-500"
+                                        />
+                                    </motion.div>
+                                </div>
+
+                                <div className="w-full md:w-2/3 text-center md:text-right">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 text-purple-600 text-xs font-black mb-6 border border-purple-500/20 uppercase tracking-widest md:flex-row-reverse">
+                                        ¿Lo Adivinarás?
+                                    </div>
+
+                                    <div className="flex flex-col md:items-end w-full">
+                                        <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
+                                            Adivinanzas
+                                        </h2>
+                                        <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
+                                            Descubre acertijos clásicos y modernos. Pon a prueba tu ingenio para resolver los misterios más divertidos.
+                                        </p>
+
                                         <Link
-                                            href="/actividades/riddles"
-                                            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-black rounded-xl shadow-lg hover:shadow-amber-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                            href="/juegos/riddles"
+                                            className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-purple-500/20 hover:shadow-purple-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                         >
-                                            ACERTIJOS
-                                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                                        </Link>
-                                        <Link
-                                            href="/actividades/logic"
-                                            className="inline-flex items-center px-6 py-3 bg-slate-800 text-white text-sm font-black rounded-xl shadow-lg hover:bg-slate-700 hover:-translate-y-1 transition-all group active:scale-95"
-                                        >
-                                            LÓGICA
-                                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                                        </Link>
-                                        <Link
-                                            href="/actividades/quiz-cultura"
-                                            className="inline-flex items-center px-6 py-3 border-2 border-amber-500 text-amber-600 text-sm font-black rounded-xl hover:bg-amber-500/10 hover:-translate-y-1 transition-all group active:scale-95"
-                                        >
-                                            TEST CULTURA
-                                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                            RESOLVER
+                                            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                         </Link>
                                     </div>
                                 </div>
@@ -95,14 +130,14 @@ export default function NewGamesClient() {
                         </div>
                     </section>
 
-                    {/* SECCIÓN CIENCIAS */}
+                    {/* SECCIÓN QUIZ */}
                     <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
-                        <div className="absolute inset-0 bg-gradient-to-l from-blue-500/10 to-cyan-500/10 rounded-3xl blur-3xl -z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-3xl blur-3xl -z-10" />
 
                         <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-                            <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-700" />
+                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-700" />
 
-                            <div className="flex flex-col md:flex-row-reverse items-center gap-12 relative z-10">
+                            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
                                 <div className="w-full md:w-1/3 flex justify-center">
                                     <motion.div
                                         initial={{ filter: 'drop-shadow(0 0 0px rgba(59,130,246,0))', scale: 0.9, opacity: 0 }}
@@ -112,92 +147,31 @@ export default function NewGamesClient() {
                                         className="relative group/img"
                                     >
                                         <div className="absolute inset-0 bg-blue-500/20 rounded-3xl blur-2xl group-hover/img:bg-blue-500/30 transition-all -z-10" />
-
-                                        {/* Glass Container for Image */}
-                                        <div className="relative bg-white/10 backdrop-blur-md border border-white/40 p-8 rounded-[2.5rem] shadow-2xl transform rotate-3 group-hover:rotate-0 transition-all duration-500 border-b-white/10 border-l-white/10">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-cyan-600/20 rounded-[2.5rem] -z-10" />
-                                            <img
-                                                src="/images/games/animal-cell-hq.png"
-                                                alt="Ciencias Naturales"
-                                                className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-2xl"
-                                            />
-                                        </div>
-                                    </motion.div>
-                                </div>
-
-                                <div className="w-full md:w-2/3 text-center md:text-right">
-                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 text-blue-600 text-xs font-black mb-6 border border-blue-500/20 uppercase tracking-widest md:flex-row-reverse">
-                                        Descubre la Vida
-                                    </div>
-
-                                    <div className="flex flex-col md:items-end w-full">
-                                        <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                            Ciencias y Anatomía
-                                        </h2>
-                                        <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                            Explora el cuerpo humano y las células en detalle. Modelos interactivos para entender cómo funcionamos por dentro.
-                                        </p>
-
-                                        <Link
-                                            href="/actividades#biology"
-                                            className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all group active:scale-95"
-                                        >
-                                            EXPLORAR CIENCIAS
-                                            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* SECCIÓN GEOGRAFÍA */}
-                    <section className="w-full max-w-6xl mx-auto relative z-10 scroll-mt-32">
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-3xl blur-3xl -z-10" />
-
-                        <div className="bg-white/10 backdrop-blur-md border border-slate-200/50 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-                            <div className="absolute -right-24 -top-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] group-hover:bg-emerald-500/20 transition-all duration-700" />
-
-                            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
-                                <div className="w-full md:w-1/3 flex justify-center">
-                                    <motion.div
-                                        initial={{ filter: 'drop-shadow(0 0 0px rgba(16,185,129,0))', scale: 0.9, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        whileHover={{ filter: 'drop-shadow(0 0 40px rgba(16,185,129,0.4))', scale: 1.05 }}
-                                        transition={{ duration: 0.5 }}
-                                        className="relative group/img"
-                                    >
-                                        <div className="absolute inset-0 bg-emerald-500/20 rounded-3xl blur-2xl group-hover/img:bg-emerald-500/30 transition-all -z-10" />
-
-                                        {/* Glass Container for Icon */}
-                                        <div className="relative bg-white/10 backdrop-blur-md border border-white/40 p-10 rounded-[2.5rem] shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-all duration-500 border-b-white/10 border-r-white/10">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-[2.5rem] -z-10" />
-                                            <GlobeHemisphereWest className="w-40 h-40 text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" weight="duotone" />
-                                        </div>
+                                        <img
+                                            src="/images/resources/game-quiz.png"
+                                            alt="Quiz"
+                                            className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform -rotate-3 group-hover/img:rotate-0 transition-all duration-500"
+                                        />
                                     </motion.div>
                                 </div>
 
                                 <div className="w-full md:w-2/3 text-center md:text-left">
-                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-black mb-6 border border-emerald-500/20 uppercase tracking-widest">
-                                        <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                        </span>
-                                        Explora el Mundo
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 text-blue-600 text-xs font-black mb-6 border border-blue-500/20 uppercase tracking-widest">
+                                        Cultura General
                                     </div>
 
                                     <h2 className="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                                        Geografía Interactiva
+                                        Quiz de Sabiduría
                                     </h2>
                                     <p className="text-xl text-slate-600 font-medium mb-10 leading-relaxed max-w-2xl">
-                                        Viaja por el mundo sin salir de casa. Aprende países, capitales, ríos y montañas con nuestros mapas interactivos.
+                                        ¿Cuánto sabes realmente? Participa en tests interactivos sobre diversos temas y conviértete en un experto.
                                     </p>
 
                                     <Link
-                                        href="/actividades#geography"
-                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all group active:scale-95"
+                                        href="/juegos/quiz-cultura"
+                                        className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all group active:scale-95"
                                     >
-                                        VER MAPAS
+                                        PONTE A PRUEBA
                                         <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>

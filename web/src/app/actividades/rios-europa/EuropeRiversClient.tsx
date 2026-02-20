@@ -15,9 +15,10 @@ export default function EuropeRiversClient() {
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.riversEurope}
             description={t.gamesPage.gameTitles.riversEuropeDesc}
-            colorTheme="teal"
+            colorTheme="blue"
+            activityId="rios-europa"
         >
-            <EuropeRiversGame taskId={taskId} />
+            <EuropeRiversGame taskId={taskId} activityId="rios-europa" />
         </PhysicalGameLayout>
     );
 }

@@ -16,8 +16,9 @@ export default function MapaOceaniaClient() {
             title={t.gamesPage.gameTitles.oceaniaMap}
             description={t.gamesPage.gameTitles.oceaniaMapDesc}
             colorTheme="emerald"
+            activityId="mapa-oceania"
         >
-            <OceaniaMapGame taskId={taskId} />
+            <OceaniaMapGame taskId={taskId} activityId="mapa-oceania" />
         </PhysicalGameLayout>
     );
 }

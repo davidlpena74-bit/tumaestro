@@ -8,27 +8,12 @@ import { EU_MEMBERS_LIST, EU_MEMBERS_LIST_EN } from '@/components/games/data/cap
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
+import CapitalMatchingGame from '@/components/games/CapitalMatchingGame'; // Added this import based on the change
 
 export default function CapitalesUeClient() {
     const { t, language } = useLanguage();
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
 
-    return (
-        <PhysicalGameLayout
-            title={t.gamesPage.gameTitles.euCapitalsMap}
-            description={t.gamesPage.gameTitles.euCapitalsMapDesc}
-            colorTheme="teal"
-        >
-            <CapitalGame
-                taskId={taskId}
-                paths={EUROPE_PATHS}
-                centroids={EUROPE_CAPITALS_COORDS}
-                targetList={language === 'es' ? EU_MEMBERS_LIST : EU_MEMBERS_LIST_EN}
-                title={t.gamesPage.gameTitles.euCapitalsMap}
-                initialPan={{ x: 0, y: -150 }}
-                initialZoom={1.74}
-            />
-        </PhysicalGameLayout>
-    );
+    return <CapitalMatchingGame activityId="capitales-ue" />;
 }

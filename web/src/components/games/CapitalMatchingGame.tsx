@@ -9,6 +9,7 @@ import { EU_PATHS } from './data/eu-paths';
 import { EU_CAPITALS_COORDS } from './data/eu-capitals-coords';
 import { useLanguage } from '@/context/LanguageContext';
 import { speak } from '@/lib/speech-utils';
+import RatingSystem from './RatingSystem';
 
 type MatchItem = {
     country: string;
@@ -21,7 +22,7 @@ type MatchItem = {
 const MAP_WIDTH = 800;
 const MAP_HEIGHT = 600;
 
-export default function CapitalMatchingGame() {
+export default function CapitalMatchingGame({ activityId }: { activityId?: string }) {
     const { language, t } = useLanguage();
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
@@ -57,7 +58,7 @@ export default function CapitalMatchingGame() {
             loading: 'Loading...'
         }
     };
-    const content = TEXTS[language];
+    const content = TEXTS[language as keyof typeof TEXTS] || TEXTS.es;
 
 
     // Stats
@@ -400,9 +401,13 @@ export default function CapitalMatchingGame() {
                             : content.winMsg}
                     </p>
 
+                    <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8">
+                        <RatingSystem activityId={activityId || "capitales-ue"} />
+                    </div>
+
                     <button
                         onClick={() => setupGame(false)} // Pass false to go back to start screen
-                        className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
+                        className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105 mt-8"
                     >
                         <RefreshCw className="w-5 h-5" /> {content.playAgain}
                     </button>

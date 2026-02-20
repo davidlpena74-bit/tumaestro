@@ -13,10 +13,11 @@ export default function VerbosIrregularesMasterPronunciacionClient() {
     return (
         <PhysicalGameLayout
             title="Verbos Irregulares MASTER"
-            description={t.gamesPage.gameTitles.verbsPronunciationDesc}
-            colorTheme="yellow"
+            description={t.gamesPage.gameTitles.verbsDesc}
+            colorTheme="rose"
+            activityId="verbos-irregulares-master-pronunciacion"
         >
-            <IrregularVerbsMasterGame taskId={taskId} type="pronunciation" />
+            <IrregularVerbsMasterGame taskId={taskId} type="pronunciation" activityId="verbos-irregulares-master-pronunciacion" />
         </PhysicalGameLayout>
     );
 }

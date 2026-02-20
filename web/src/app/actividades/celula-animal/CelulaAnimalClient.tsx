@@ -56,7 +56,7 @@ export default function CelulaAnimalClient() {
                         </p>
                     </div>
 
-                    <AnimalCellGame taskId={taskId} />
+                    <AnimalCellGame taskId={taskId} activityId="celula-animal" />
                 </div>
             </main>
         </div>

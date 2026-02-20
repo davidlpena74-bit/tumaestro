@@ -78,7 +78,7 @@ const GAMES = [
         title: 'Quiz de Cultura',
         category: 'Cultura General',
         image: null,
-        href: '/actividades/quiz-cultura',
+        href: '/juegos/quiz-cultura',
         color: 'from-violet-500 to-purple-600',
         icon: Brain
     }

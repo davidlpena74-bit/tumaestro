@@ -12,6 +12,7 @@ import {
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
+import RatingSystem from './RatingSystem';
 import { useGameLogic } from '@/hooks/useGameLogic';
 
 type SciencePart = {
@@ -32,7 +33,7 @@ const FEMALE_PARTS: SciencePart[] = [
     { id: 'vulva', nameKey: 'vulva', x: 373, y: 671 },
 ];
 
-export default function FemaleReproductiveGame({ taskId = null }: { taskId?: string | null }) {
+export default function FemaleReproductiveGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t, language } = useLanguage();
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
     const [dragState, setDragState] = useState<{
@@ -207,6 +208,7 @@ export default function FemaleReproductiveGame({ taskId = null }: { taskId?: str
                 colorTheme="blue"
                 message={message}
                 icon={<Dna className="w-8 h-8 text-blue-400" weight="duotone" />}
+                activityId={activityId}
             />
 
             <div className="w-full">
@@ -282,6 +284,9 @@ export default function FemaleReproductiveGame({ taskId = null }: { taskId?: str
                                     </div>
                                 </div>
 
+                                <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
+                                    <RatingSystem activityId={activityId || "female-reproductive-game"} />
+                                </div>
                                 <button
                                     onClick={() => setGameState('start')}
                                     className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"

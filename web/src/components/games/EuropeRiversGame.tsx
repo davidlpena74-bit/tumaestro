@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer } from 'lucide-react';
+import { Trophy, Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { EUROPE_RIVERS_PATHS } from './data/europe-rivers-paths';
 import { EUROPE_PATHS } from './data/europe-paths'; // For Background
 import { EUROPE_MAPPING } from './data/country-translations';
 import { EUROPE_CAPITALS_COORDS } from './data/europe-capitals-coords';
 import { calculatePathCentroid } from '@/lib/svg-utils';
+import RatingSystem from './RatingSystem';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
@@ -20,7 +21,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function EuropeRiversGame({ taskId = null }: { taskId?: string | null }) {
+export default function EuropeRiversGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
@@ -241,6 +242,7 @@ export default function EuropeRiversGame({ taskId = null }: { taskId?: string | 
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Globe className="w-8 h-8 text-teal-400" />}
+                    activityId={activityId}
                 />
 
                 {/* MAP CONTAINER */}
@@ -304,6 +306,9 @@ export default function EuropeRiversGame({ taskId = null }: { taskId?: string | 
                                 {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Ríos Completados!'}
                             </h3>
                             <p className="text-2xl text-emerald-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
+                            <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
+                                <RatingSystem activityId={activityId || "europe-rivers-game"} />
+                            </div>
                             <button
                                 onClick={resetGame}
                                 className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-emerald-500/20 transition-transform active:scale-95"

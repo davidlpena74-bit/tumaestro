@@ -26,6 +26,7 @@ interface CapitalGameProps {
     initialPan?: { x: number; y: number };
     centroids?: Record<string, { x: number; y: number }>;
     taskId?: string | null;
+    activityId?: string;
 }
 
 export default function CapitalGame({
@@ -35,7 +36,8 @@ export default function CapitalGame({
     initialZoom = 1.5,
     initialPan = { x: 0, y: 0 },
     centroids,
-    taskId = null
+    taskId = null,
+    activityId
 }: CapitalGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -285,6 +287,7 @@ export default function CapitalGame({
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Globe className="w-8 h-8 text-teal-400" />}
+                    activityId={activityId}
                 />
 
                 <div

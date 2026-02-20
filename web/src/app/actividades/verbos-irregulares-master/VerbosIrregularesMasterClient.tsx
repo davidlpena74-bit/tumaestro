@@ -13,10 +13,11 @@ export default function VerbosIrregularesMasterClient() {
     return (
         <PhysicalGameLayout
             title="Verbos Irregulares MASTER"
-            description="El desafío máximo: 150 verbos irregulares para dominar el inglés como un nativo."
+            description={t.gamesPage.gameTitles.verbsDesc}
             colorTheme="rose"
+            activityId="verbos-irregulares-master"
         >
-            <IrregularVerbsMasterGame taskId={taskId} type="writing" />
+            <IrregularVerbsMasterGame taskId={taskId} type="writing" activityId="verbos-irregulares-master" />
         </PhysicalGameLayout>
     );
 }

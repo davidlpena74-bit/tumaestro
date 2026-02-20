@@ -27,7 +27,7 @@ GAME_PROVINCE_PATHS['canarias'] = [
 delete (GAME_PROVINCE_PATHS as any)['santacruz'];
 delete (GAME_PROVINCE_PATHS as any)['laspalmas'];
 
-export default function MapGame() {
+export default function MapGame({ activityId }: { activityId?: string }) {
     const { language, t } = useLanguage();
 
     // Localized names mapping
@@ -199,6 +199,7 @@ export default function MapGame() {
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Trophy className="w-8 h-8 text-teal-400" />}
+                    activityId={activityId}
                 />
 
                 {/* MAP CONTAINER - Made transparent */}

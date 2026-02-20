@@ -58,7 +58,7 @@ export default function DivisionPageClient() {
                     </div>
                 </div>
 
-                <DivisionGame taskId={taskId} />
+                <DivisionGame taskId={taskId} activityId="divisiones" />
             </div>
         </main>
     );

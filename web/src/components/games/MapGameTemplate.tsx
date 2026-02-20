@@ -9,6 +9,7 @@ import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
+import RatingSystem from './RatingSystem';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -37,6 +38,7 @@ interface MapGameTemplateProps {
     specialTransforms?: Record<string, string>;
     svgTransform?: string;
     taskId?: string | null;
+    activityId?: string;
 }
 
 export default function MapGameTemplate({
@@ -52,7 +54,8 @@ export default function MapGameTemplate({
     insetBox,
     specialTransforms = {},
     svgTransform,
-    taskId = null
+    taskId = null,
+    activityId
 }: MapGameTemplateProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -193,6 +196,7 @@ export default function MapGameTemplate({
                     onReset={resetGame}
                     colorTheme={colorTheme as any}
                     icon={icon}
+                    activityId={activityId}
                 />
 
                 <div
@@ -239,6 +243,9 @@ export default function MapGameTemplate({
                                 <div className="flex flex-col items-center gap-1 mb-8">
                                     <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
                                     <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">{score}</span>
+                                </div>
+                                <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8 mb-4">
+                                    <RatingSystem activityId={activityId || "map-game-template"} />
                                 </div>
                                 <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
                                     <RefreshCw className="w-5 h-5" /> {t.common.playAgain}

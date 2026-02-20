@@ -71,7 +71,7 @@ export default function MultiplicationPageClient() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <MultiplicationGame taskId={taskId} />
+                    <MultiplicationGame taskId={taskId} activityId="multiplicaciones" />
                 </motion.div>
 
                 {/* Info Section */}

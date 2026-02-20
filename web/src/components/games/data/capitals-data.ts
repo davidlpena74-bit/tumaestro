@@ -148,7 +148,6 @@ export const EUROPE_CAPITALS_EN: Record<string, string> = {
     'Croatia': 'Zagreb',
     'Cyprus': 'Nicosia',
     'Czech Republic': 'Prague',
-    'Czechia': 'Prague', // Alternate
     'Denmark': 'Copenhagen',
     'Estonia': 'Tallinn',
     'Finland': 'Helsinki',

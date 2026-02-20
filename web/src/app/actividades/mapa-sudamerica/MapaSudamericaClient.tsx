@@ -16,8 +16,9 @@ export default function MapaSudamericaClient() {
             title={t.gamesPage.gameTitles.southAmericaMap}
             description={t.gamesPage.gameTitles.southAmericaMapDesc}
             colorTheme="emerald"
+            activityId="mapa-sudamerica"
         >
-            <SouthAmericaMapGame taskId={taskId} />
+            <SouthAmericaMapGame taskId={taskId} activityId="mapa-sudamerica" />
         </PhysicalGameLayout>
     );
 }

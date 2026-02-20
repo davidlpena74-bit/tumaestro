@@ -12,11 +12,12 @@ export default function VerbosIrregularesPronunciacionClient() {
 
     return (
         <PhysicalGameLayout
-            title="Verbos Irregulares MEDIO (Voz)"
-            description={t.gamesPage.gameTitles.verbsPronunciationDesc}
+            title={t.gamesPage.gameTitles.verbsPronunciation}
+            description={t.gamesPage.gameTitles.verbsDesc}
             colorTheme="rose"
+            activityId="verbos-irregulares-pronunciacion"
         >
-            <IrregularVerbsGame taskId={taskId} type="pronunciation" />
+            <IrregularVerbsGame taskId={taskId} type="pronunciation" activityId="verbos-irregulares-pronunciacion" />
         </PhysicalGameLayout>
     );
 }

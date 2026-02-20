@@ -16,7 +16,7 @@ type MatchItem = {
     id: string;
 };
 
-export default function EuropeCapitalsGame({ taskId = null }: { taskId?: string | null }) {
+export default function EuropeCapitalsGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { language, t } = useLanguage();
 
     // We'll use useGameLogic score/errors/timer, but handle gameState locally if needed or map it
@@ -227,6 +227,7 @@ export default function EuropeCapitalsGame({ taskId = null }: { taskId?: string 
                 onReset={resetGame}
                 colorTheme="purple"
                 icon={<MapPin className="w-8 h-8 text-purple-400" />}
+                activityId={activityId}
             />
 
             {/* START OVERLAY */}

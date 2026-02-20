@@ -60,7 +60,7 @@ export default function SistemaReproductorFemeninoClient() {
                         </p>
                     </div>
 
-                    <FemaleReproductiveGame taskId={taskId} />
+                    <FemaleReproductiveGame taskId={taskId} activityId="sistema-reproductor-femenino" />
                 </div>
             </main>
         </div>

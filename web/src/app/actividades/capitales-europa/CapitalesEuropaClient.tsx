@@ -17,7 +17,8 @@ export default function CapitalesEuropaClient() {
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.europeCapitalsMap}
             description={t.gamesPage.gameTitles.europeCapitalsMapDesc}
-            colorTheme="teal"
+            colorTheme="emerald"
+            activityId="capitales-europa"
         >
             <CapitalGame
                 taskId={taskId}
@@ -26,6 +27,7 @@ export default function CapitalesEuropaClient() {
                 title={t.gamesPage.gameTitles.europeCapitalsMap}
                 initialPan={{ x: -80, y: -80 }}
                 initialZoom={1.46}
+                activityId="capitales-europa"
             />
         </PhysicalGameLayout>
     );

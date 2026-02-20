@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Envelope, Lock, FloppyDisk, SignOut, CircleNotch, Trash } from '@phosphor-icons/react';
 import { useToast } from '@/context/ToastContext';
@@ -52,6 +53,7 @@ export default function ProfilePage() {
             } else {
                 setFullName(session.user.user_metadata?.full_name || '');
             }
+
 
             setEmail(session.user.email || '');
             setLoading(false);
@@ -296,6 +298,7 @@ export default function ProfilePage() {
                             Recibirás un correo en tu nueva dirección para confirmar el cambio. Tu sesión actual no se cerrará.
                         </p>
                     </div>
+
                 </div>
 
                 {/* Danger Zone */}

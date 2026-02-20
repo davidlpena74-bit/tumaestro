@@ -23,18 +23,18 @@ export default function MaresAmericaClient() {
             title={t.gamesPage.gameTitles.oceansAmerica}
             description={t.gamesPage.gameTitles.oceansAmericaDesc}
             colorTheme="blue"
+            activityId="mares-america"
         >
             <PhysicalMapGame
                 title={t.gamesPage.gameTitles.oceansAmerica}
                 description={t.gamesPage.gameTitles.oceansAmericaDesc}
                 items={AMERICA_SEAS_PATHS}
                 itemType="polygon"
-                backgroundPaths={background}
+                backgroundPaths={AMERICA_PATHS}
                 viewBox="0 0 800 600"
-                initialZoom={0.8}
-                initialPan={{ x: 80, y: 40 }}
                 elevationHeight={2}
                 taskId={taskId}
+                activityId="mares-america"
             />
         </PhysicalGameLayout>
     );

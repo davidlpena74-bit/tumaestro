@@ -18,6 +18,7 @@ export default function MaresOceaniaClient() {
             title={t.gamesPage.gameTitles.oceansOceania}
             description={t.gamesPage.gameTitles.oceansOceaniaDesc}
             colorTheme="blue"
+            activityId="mares-oceania"
         >
             <PhysicalMapGame
                 title={t.gamesPage.gameTitles.oceansOceania}
@@ -28,6 +29,7 @@ export default function MaresOceaniaClient() {
                 viewBox="0 0 800 600"
                 elevationHeight={2}
                 taskId={taskId}
+                activityId="mares-oceania"
                 colorTheme="emerald"
             />
         </PhysicalGameLayout>

@@ -18,6 +18,7 @@ export default function MaresAsiaClient() {
             title={t.gamesPage.gameTitles.oceansAsia}
             description={t.gamesPage.gameTitles.oceansAsiaDesc}
             colorTheme="blue"
+            activityId="mares-asia"
         >
             <PhysicalMapGame
                 title={t.gamesPage.gameTitles.oceansAsia}
@@ -30,7 +31,7 @@ export default function MaresAsiaClient() {
                 taskId={taskId}
                 initialZoom={1.2}
                 initialPan={{ x: -40, y: -40 }}
-                colorTheme="emerald"
+                activityId="mares-asia"
             />
         </PhysicalGameLayout>
     );

@@ -18,6 +18,7 @@ export default function MontanasEuropaClient() {
             title={t.gamesPage.gameTitles.mountainsEurope}
             description={t.gamesPage.gameTitles.mountainsEuropeDesc}
             colorTheme="emerald"
+            activityId="montanas-europa"
         >
             <PhysicalMapGame
                 title={t.gamesPage.gameTitles.mountainsEurope}
@@ -31,6 +32,7 @@ export default function MontanasEuropaClient() {
                 elevationHeight={2}
                 taskId={taskId}
                 colorTheme="emerald"
+                activityId="montanas-europa"
             />
         </PhysicalGameLayout>
     );

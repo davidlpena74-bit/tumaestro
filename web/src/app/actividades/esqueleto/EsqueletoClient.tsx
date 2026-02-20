@@ -56,7 +56,7 @@ export default function EsqueletoClient() {
                         </p>
                     </div>
 
-                    <HumanSkeletonGame taskId={taskId} />
+                    <HumanSkeletonGame taskId={taskId} activityId="esqueleto" />
                 </div>
             </main>
         </div>

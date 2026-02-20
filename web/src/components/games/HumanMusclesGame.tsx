@@ -19,6 +19,7 @@ import {
 } from '@phosphor-icons/react';
 import confetti from 'canvas-confetti';
 import GameHUD from './GameHUD';
+import RatingSystem from './RatingSystem';
 import { useGameLogic } from '@/hooks/useGameLogic';
 
 type MusclePart = {
@@ -49,7 +50,7 @@ const MUSCLE_PARTS: MusclePart[] = [
     { id: 'gastrocnemius', nameKey: 'gastrocnemius', view: 'back', x: 362, y: 694, lx: 700, ly: 694 },
 ];
 
-export default function HumanMusclesGame({ taskId = null }: { taskId?: string | null }) {
+export default function HumanMusclesGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t, language } = useLanguage();
     const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
     const [matches, setMatches] = useState<Record<string, string>>({}); // labelId -> partId
@@ -247,6 +248,7 @@ export default function HumanMusclesGame({ taskId = null }: { taskId?: string | 
                 colorTheme="blue"
                 message={message}
                 icon={<Barbell className="w-8 h-8 text-blue-400" weight="duotone" />}
+                activityId={activityId}
             />
 
             <div className="w-full">
@@ -325,6 +327,9 @@ export default function HumanMusclesGame({ taskId = null }: { taskId?: string | 
                                     </div>
                                 </div>
 
+                                <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
+                                    <RatingSystem activityId={activityId || "human-muscles-game"} />
+                                </div>
                                 <button
                                     onClick={() => setGameState('start')}
                                     className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"

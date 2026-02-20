@@ -1,10 +1,14 @@
 'use client';
 
-import { Trophy, Timer, GlobeHemisphereWest, ArrowCounterClockwise, XCircle, CheckCircle } from '@phosphor-icons/react';
+import { Trophy, Timer, GlobeHemisphereWest, ArrowCounterClockwise, XCircle, CheckCircle, ChatCircleText, Star } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import RatingSystem from './RatingSystem';
+import { MessageSquareText, Star as StarLucide, X } from 'lucide-react';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -30,6 +34,7 @@ interface GameHUDProps {
     icon?: React.ReactNode;
     gameMode?: 'challenge' | 'practice';
     elapsedTime?: number;
+    activityId?: string;
 }
 
 const THEMES = {
@@ -58,10 +63,51 @@ export default function GameHUD({
     icon,
     gameMode = 'challenge',
     elapsedTime = 0,
-    gameType
+    gameType,
+    activityId
 }: GameHUDProps) {
     const { t, language } = useLanguage();
     const theme = THEMES[colorTheme as keyof typeof THEMES] || THEMES.blue;
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [hudMessage, setHudMessage] = useState<string | null>(null);
+    const [ratingData, setRatingData] = useState<{ avg: number; count: number } | null>(null);
+
+    // Fetch activity ratings
+    useEffect(() => {
+        if (!activityId) return;
+
+        const fetchActivityRatings = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('activity_ratings')
+                    .select('rating')
+                    .eq('activity_id', activityId);
+
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    const count = data.length;
+                    const avg = data.reduce((acc, curr) => acc + curr.rating, 0) / count;
+                    setRatingData({ avg, count });
+                } else {
+                    setRatingData({ avg: 0, count: 0 });
+                }
+            } catch (err) {
+                console.error('Error fetching game ratings:', err);
+            }
+        };
+
+        fetchActivityRatings();
+    }, [activityId, isRatingModalOpen]); // Re-fetch only after modal is closed (to update if rated)
+
+    const handleOpenRating = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            setHudMessage(language === 'es' ? 'Inicia sesión para valorar la actividad' : 'Log in to rate the activity');
+            setTimeout(() => setHudMessage(null), 3000);
+            return;
+        }
+        setIsRatingModalOpen(true);
+    };
 
     // Calculate accuracy
     const completed = totalTargets - remainingTargets;
@@ -72,6 +118,58 @@ export default function GameHUD({
 
     return (
         <div className="w-full relative z-20">
+            {/* Global Rating Button (Above HUD) */}
+            {activityId && (
+                <div className="absolute -top-7 right-6 flex items-center gap-2 z-50">
+                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-tighter">Comenta:</span>
+                    <button
+                        onClick={handleOpenRating}
+                        className="p-1 px-3 bg-slate-900/60 backdrop-blur-xl hover:bg-slate-800/80 text-yellow-500 border border-white/10 rounded-xl transition-all flex items-center gap-2 group shadow-xl"
+                        title="Valorar actividad"
+                    >
+                        <MessageSquareText className="w-4 h-4" />
+                        <div className="flex items-center gap-0.5">
+                            {ratingData && ratingData.count > 0 ? (
+                                <>
+                                    {[1, 2, 3, 4, 5].map((s) => (
+                                        <StarLucide
+                                            key={s}
+                                            className={cn(
+                                                "w-3 h-3",
+                                                s <= Math.round(ratingData.avg) ? "fill-yellow-500 text-yellow-500" : "text-slate-500 fill-transparent"
+                                            )}
+                                        />
+                                    ))}
+                                    <span className="text-[10px] font-black text-yellow-500 ml-1">
+                                        {ratingData.avg.toFixed(1)}
+                                    </span>
+                                </>
+                            ) : (
+                                <div className="flex items-center gap-0.5 opacity-40">
+                                    {[1, 2, 3, 4, 5].map((s) => (
+                                        <StarLucide key={s} className="w-3 h-3 text-white fill-transparent" />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </button>
+                </div>
+            )}
+
+            {/* Auth Message Toast (above HUD) */}
+            <AnimatePresence>
+                {hudMessage && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900/90 border border-yellow-500/30 px-4 py-2 rounded-full text-xs font-bold text-yellow-400 shadow-2xl z-[60] backdrop-blur-md"
+                    >
+                        {hudMessage}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* HUD CARD - Darker Slate Glass (bg-slate-900/60) */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-slate-900/60 backdrop-blur-xl p-4 rounded-2xl border border-white/10 shadow-2xl gap-4">
 
@@ -173,6 +271,31 @@ export default function GameHUD({
                             {message}
                         </motion.div>
                     </div>
+                )}
+            </AnimatePresence>
+            {/* Rating Modal */}
+            <AnimatePresence>
+                {isRatingModalOpen && activityId && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4"
+                        onClick={() => setIsRatingModalOpen(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="w-full max-w-lg bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-2xl relative overflow-hidden"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <RatingSystem
+                                activityId={activityId}
+                                onClose={() => setIsRatingModalOpen(false)}
+                            />
+                        </motion.div>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </div>

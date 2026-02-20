@@ -18,6 +18,7 @@ export default function MontanasEspanaClient() {
             title={t.gamesPage.gameTitles.mountainsSpain}
             description={t.gamesPage.gameTitles.mountainsSpainDesc}
             colorTheme="emerald"
+            activityId="montanas-espana"
         >
             <PhysicalMapGame
                 title={t.gamesPage.gameTitles.mountainsSpain}
@@ -28,6 +29,7 @@ export default function MontanasEspanaClient() {
                 viewBox="-140 0 840 700"
                 colorTheme="emerald"
                 taskId={taskId}
+                activityId="montanas-espana"
             />
         </PhysicalGameLayout>
     );
