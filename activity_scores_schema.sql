@@ -1,7 +1,7 @@
 -- Create activity_scores table for rankings
 CREATE TABLE IF NOT EXISTS public.activity_scores (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     activity_id TEXT NOT NULL,
     score INTEGER NOT NULL DEFAULT 0,
     errors INTEGER NOT NULL DEFAULT 0,

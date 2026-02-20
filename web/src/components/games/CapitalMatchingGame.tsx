@@ -10,6 +10,9 @@ import { EU_CAPITALS_COORDS } from './data/eu-capitals-coords';
 import { useLanguage } from '@/context/LanguageContext';
 import { speak } from '@/lib/speech-utils';
 import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
+import { useGameLogic } from '@/hooks/useGameLogic';
+import confetti from 'canvas-confetti';
 
 type MatchItem = {
     country: string;
@@ -24,10 +27,24 @@ const MAP_HEIGHT = 600;
 
 export default function CapitalMatchingGame({ activityId }: { activityId?: string }) {
     const { language, t } = useLanguage();
+    const effectiveActivityId = activityId || "capitales-ue";
+    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+
+    const {
+        gameState, setGameState,
+        score, addScore,
+        errors, addError,
+        timeLeft,
+        elapsedTime,
+        message, setMessage,
+        startGame: hookStartGame,
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode, activityId: effectiveActivityId });
+
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
     const [matches, setMatches] = useState<Record<string, string>>({}); // countryId -> capitalId
-    const [gameState, setGameState] = useState<'start' | 'playing' | 'won'>('start');
 
     // Localized Texts
     const TEXTS = {
@@ -61,15 +78,6 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
     const content = TEXTS[language as keyof typeof TEXTS] || TEXTS.es;
 
 
-    // Stats
-    // Stats
-    const [errors, setErrors] = useState(0);
-    const [startTime, setStartTime] = useState<number | null>(null);
-    const [elapsedTime, setElapsedTime] = useState(0);
-    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
-    const INITIAL_TIME = 180; // 3 minutes for EU Capitals
-    const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
-
     // Custom Drag State
     const [draggedItem, setDraggedItem] = useState<MatchItem | null>(null);
     const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
@@ -79,31 +87,6 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
     useEffect(() => {
         setupGame(false);
     }, [language]);
-
-    // Timer Logic
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (gameState === 'playing' && startTime) {
-            interval = setInterval(() => {
-                const now = Date.now();
-                const secondsPassed = Math.floor((now - startTime) / 1000);
-
-                setElapsedTime(secondsPassed);
-
-                if (gameMode === 'challenge') {
-                    const remaining = INITIAL_TIME - secondsPassed;
-                    if (remaining <= 0) {
-                        setTimeLeft(0);
-                        setGameState('won'); // Using 'won' state for finished to reuse UI, but with Time's Up message
-                        clearInterval(interval);
-                    } else {
-                        setTimeLeft(remaining);
-                    }
-                }
-            }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [gameState, startTime, gameMode]);
 
     // Global drag listener to update cursor position
     useEffect(() => {
@@ -173,18 +156,20 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
         setCapitals(sortedCapitals);
 
         setMatches({});
-        setErrors(0);
-        setElapsedTime(0);
-        setStartTime(autoStart ? Date.now() : null);
-        setGameState(autoStart ? 'playing' : 'start');
+        hookResetGame(); // Reset game logic state
+        if (autoStart) {
+            hookStartGame();
+        } else {
+            setGameState('start');
+        }
     };
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
+        // setGameMode is not in useGameLogic as a setter but we can pass it if we want
+        // For now, hookStartGame handles it
         setGameMode(mode);
-        setTimeLeft(INITIAL_TIME);
-        setElapsedTime(0);
-        setStartTime(Date.now());
-        setGameState('playing');
+        hookStartGame();
+        setMatches({});
     };
 
     // Standard HTML5 Drag Start (still needed for drop targets to recognize connection)
@@ -233,14 +218,23 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
         if (countryObj.id === capitalObj.id) {
             const newMatches = { ...matches, [targetCountryId]: capitalId };
             setMatches(newMatches);
+            addScore(1); // Add score for correct match
 
             speak(language === 'es' ? '¡Correcto!' : 'Correct!', language === 'es' ? 'es-ES' : 'en-US');
 
-            if (Object.keys(newMatches).length === countries.length) {
-                setGameState('won');
+            const newMatchesCount = Object.keys(newMatches).length;
+            if (newMatchesCount === countries.length) {
+                handleFinish();
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#4f46e5', '#818cf8', '#ffffff']
+                });
+                speak(content.congrats, language);
             }
         } else {
-            setErrors(e => e + 1);
+            addError(); // Add error for incorrect match
             speak(language === 'es' ? '¡Incorrecto!' : 'Incorrect!', language === 'es' ? 'es-ES' : 'en-US');
         }
     };
@@ -367,7 +361,7 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                 />
             </div>
 
-            {gameState === 'won' ? (
+            {(gameState === 'won' || gameState === 'finished') ? (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -395,22 +389,23 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                         </div>
                     </div>
 
-                    <p className="text-gray-300 mb-8 max-w-sm">
-                        {gameMode === 'challenge' && timeLeft <= 0
-                            ? 'Se acabó el tiempo. ¡Inténtalo de nuevo!'
-                            : content.winMsg}
-                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                        <div className="space-y-4">
+                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                <RatingSystem activityId={effectiveActivityId} />
+                            </div>
+                            <button
+                                onClick={() => setupGame(false)}
+                                className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-500/20"
+                            >
+                                <RefreshCw className="w-5 h-5" /> {content.playAgain}
+                            </button>
+                        </div>
 
-                    <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8">
-                        <RatingSystem activityId={activityId || "capitales-ue"} />
+                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                            <ActivityRanking activityId={effectiveActivityId} />
+                        </div>
                     </div>
-
-                    <button
-                        onClick={() => setupGame(false)} // Pass false to go back to start screen
-                        className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105 mt-8"
-                    >
-                        <RefreshCw className="w-5 h-5" /> {content.playAgain}
-                    </button>
                 </motion.div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

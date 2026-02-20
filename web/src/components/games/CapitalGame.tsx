@@ -13,6 +13,8 @@ import { twMerge } from 'tailwind-merge';
 import { speak } from '@/lib/speech-utils';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useMemo } from 'react';
+import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -42,6 +44,8 @@ export default function CapitalGame({
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "capital-game";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -52,7 +56,7 @@ export default function CapitalGame({
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId, activityId: effectiveActivityId });
 
     // Dynamic Data based on Language
     const nameMapping = useMemo(() => language === 'es' ? PATH_TO_SPANISH_NAME : PATH_TO_ENGLISH_NAME, [language]);
@@ -287,7 +291,7 @@ export default function CapitalGame({
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Globe className="w-8 h-8 text-teal-400" />}
-                    activityId={activityId}
+                    activityId={effectiveActivityId}
                 />
 
                 <div
@@ -348,16 +352,22 @@ export default function CapitalGame({
                             </div>
                             <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
 
-                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
-                                    {score}
-                                </span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                <div className="space-y-4">
+                                    <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1 mt-4">
+                                        <RatingSystem activityId={effectiveActivityId} />
+                                    </div>
+                                    <button
+                                        onClick={resetGame}
+                                        className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-500/20"
+                                    >
+                                        <RefreshCw className="w-5 h-5" /> Jugar de nuevo
+                                    </button>
+                                </div>
+                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                    <ActivityRanking activityId={effectiveActivityId} />
+                                </div>
                             </div>
-
-                            <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                            </button>
                         </div>
                     )}
 

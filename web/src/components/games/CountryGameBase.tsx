@@ -48,6 +48,8 @@ export default function CountryGameBase({
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "country-map-game";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -58,7 +60,7 @@ export default function CountryGameBase({
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId, activityId });
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId, activityId: effectiveActivityId });
 
     const [targetCountry, setTargetCountry] = useState('');
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
@@ -204,7 +206,7 @@ export default function CountryGameBase({
                     onReset={resetGame}
                     colorTheme={colorTheme}
                     icon={<Globe className={cn("w-8 h-8", colorTheme === 'emerald' ? "text-emerald-400" : "text-blue-400")} />}
-                    activityId={activityId}
+                    activityId={effectiveActivityId}
                 />
 
                 <div
@@ -291,7 +293,7 @@ export default function CountryGameBase({
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
                                         <div className="space-y-4">
                                             <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
-                                                <RatingSystem activityId={activityId || "map-game"} />
+                                                <RatingSystem activityId={effectiveActivityId} />
                                             </div>
                                             <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
                                                 <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
@@ -299,7 +301,7 @@ export default function CountryGameBase({
                                         </div>
 
                                         <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
-                                            <ActivityRanking activityId={activityId || "map-game"} />
+                                            <ActivityRanking activityId={effectiveActivityId} />
                                         </div>
                                     </div>
                                 </div>

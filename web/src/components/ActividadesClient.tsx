@@ -23,7 +23,8 @@ import {
     Pencil,
     UserSound,
     Star,
-    ChatCircleText
+    ChatCircleText,
+    Trophy
 } from '@phosphor-icons/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -732,6 +733,16 @@ export default function ActividadesClient() {
                             color: 'from-orange-500 to-amber-600',
                             grade: t.gamesPage.grades.prim2,
                             gameType: t.gamesPage.gameTypes.math
+                        },
+                        {
+                            id: 'culture-quiz',
+                            title: t.gamesPage.gameTitles.quiz,
+                            description: t.gamesPage.gameTitles.quizDesc,
+                            href: '/actividades/culture-quiz',
+                            icon: Brain,
+                            color: 'from-orange-500 to-amber-600',
+                            grade: t.gamesPage.grades.prim6,
+                            gameType: t.gamesPage.gameTypes.quiz
                         }
                     ]
                 }
@@ -798,6 +809,21 @@ export default function ActividadesClient() {
                     >
                         {t.gamesPage.subtitle}
                     </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="mt-8 flex justify-center"
+                    >
+                        <Link
+                            href="/actividades/rankings"
+                            className="bg-yellow-500 hover:bg-yellow-400 text-slate-900 px-8 py-4 rounded-2xl font-black text-lg transition-all shadow-xl shadow-yellow-500/20 flex items-center gap-3 active:scale-95 group"
+                        >
+                            <Trophy className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                            {language === 'es' ? 'VER RANKINGS Y RÉCORDS' : 'VIEW RANKINGS & RECORDS'}
+                        </Link>
+                    </motion.div>
                 </header>
 
                 {/* Subject Jump-Links (Chips) */}

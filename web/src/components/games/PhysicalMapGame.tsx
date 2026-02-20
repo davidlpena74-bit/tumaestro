@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
+import ActivityRanking from './ActivityRanking';
 import confetti from 'canvas-confetti';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import GameHUD from './GameHUD';
@@ -68,7 +69,7 @@ export default function PhysicalMapGame({
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId, activityId });
 
     const [targetItem, setTargetItem] = useState('');
     const [remainingItems, setRemainingItems] = useState<string[]>([]);
@@ -273,28 +274,49 @@ export default function PhysicalMapGame({
                         )}
 
                         {gameState === 'finished' && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                                <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
-                                    {gameMode === 'challenge' && timeLeft === 0 ? (
-                                        <Trophy className="w-16 h-16 text-red-500 animate-pulse" />
-                                    ) : (
-                                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
-                                    )}
-                                </div>
-                                <h2 className="text-4xl font-bold text-white mb-2">
-                                    {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
-                                </h2>
-                                <div className="bg-transparent border border-white/20 p-8 rounded-3xl text-center shadow-2xl mb-8">
-                                    <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Puntuación Final</span>
-                                    <span className="block text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">{score}</span>
-                                </div>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-black/90 backdrop-blur-xl flex flex-col items-center p-8 text-center rounded-[2rem] overflow-y-auto scrollbar-hide">
+                                <div className="w-full max-w-4xl flex flex-col items-center py-8">
+                                    <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
+                                        {gameMode === 'challenge' && timeLeft === 0 ? (
+                                            <Trophy className="w-16 h-16 text-red-500 animate-pulse" />
+                                        ) : (
+                                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                        )}
+                                    </div>
+                                    <h2 className="text-4xl font-bold text-white mb-2">
+                                        {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
+                                    </h2>
+                                    <div className="flex flex-col items-center gap-1 mb-8 text-center text-white">
+                                        <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Puntuación Final</span>
+                                        <div className="relative">
+                                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
+                                                {score}
+                                            </span>
+                                            <motion.div
+                                                initial={{ scale: 0 }}
+                                                animate={{ scale: 1 }}
+                                                className="absolute -top-4 -right-8 bg-emerald-500 text-slate-900 text-xs font-black px-2 py-1 rounded-lg transform rotate-12"
+                                            >
+                                                {elapsedTime}s
+                                            </motion.div>
+                                        </div>
+                                    </div>
 
-                                <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8 mb-4">
-                                    <RatingSystem activityId={activityId || "physical-map-game"} />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                        <div className="space-y-4">
+                                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                                <RatingSystem activityId={activityId || "physical-map-game"} />
+                                            </div>
+                                            <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
+                                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                                            </button>
+                                        </div>
+
+                                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden text-left">
+                                            <ActivityRanking activityId={activityId || "physical-map-game"} />
+                                        </div>
+                                    </div>
                                 </div>
-                                <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                    <RefreshCw className="w-5 h-5" /> Jugar de nuevo
-                                </button>
                             </motion.div>
                         )}
                     </AnimatePresence>

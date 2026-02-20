@@ -6,6 +6,7 @@ import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
 import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { Hash, CheckCircle, RefreshCw, Trophy, Timer, MousePointer2 } from 'lucide-react';
 
@@ -22,6 +23,8 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
 
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "multiplicaciones";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -32,7 +35,7 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId, activityId: effectiveActivityId });
 
     const generateProblem = (targetState: 'playing' | 'feedback' | 'start' = 'playing') => {
         let max = 4;
@@ -168,16 +171,23 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
                     <h2 className="text-4xl font-black text-white mb-2">¡Reto Completado!</h2>
                     <p className="text-xl text-blue-200 mb-8 font-light">Has demostrado un gran dominio de las multiplicaciones.</p>
 
-                    <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
-                        <RatingSystem activityId={activityId || "multiplication-intersections"} />
-                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                        <div className="space-y-4 text-center">
+                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                <RatingSystem activityId={effectiveActivityId} />
+                            </div>
+                            <button
+                                onClick={() => setGameState('start')}
+                                className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-blue-500/20 transition-transform active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                <RefreshCw className="w-6 h-6" /> Jugar de nuevo
+                            </button>
+                        </div>
 
-                    <button
-                        onClick={() => setGameState('start')}
-                        className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-blue-500/20 transition-transform active:scale-95"
-                    >
-                        Jugar Otra Vez
-                    </button>
+                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                            <ActivityRanking activityId={effectiveActivityId} />
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -198,7 +208,7 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
                 colorTheme="blue"
                 message={message}
                 icon={<Hash className="w-8 h-8 text-blue-400" />}
-                activityId={activityId}
+                activityId={effectiveActivityId}
             />
 
             {/* Game Grid */}

@@ -12,6 +12,7 @@ import { calculatePathCentroid } from '@/lib/svg-utils';
 import RatingSystem from './RatingSystem';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import ActivityRanking from './ActivityRanking';
 import { useLanguage } from '@/context/LanguageContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -25,6 +26,8 @@ export default function EuropeRiversGame({ taskId = null, activityId }: { taskId
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "rios-europa";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -35,7 +38,7 @@ export default function EuropeRiversGame({ taskId = null, activityId }: { taskId
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId, activityId: effectiveActivityId });
 
     const [targetRiver, setTargetRiver] = useState('');
     const [remainingRivers, setRemainingRivers] = useState<string[]>([]);
@@ -242,7 +245,7 @@ export default function EuropeRiversGame({ taskId = null, activityId }: { taskId
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Globe className="w-8 h-8 text-teal-400" />}
-                    activityId={activityId}
+                    activityId={effectiveActivityId}
                 />
 
                 {/* MAP CONTAINER */}
@@ -306,15 +309,20 @@ export default function EuropeRiversGame({ taskId = null, activityId }: { taskId
                                 {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Ríos Completados!'}
                             </h3>
                             <p className="text-2xl text-emerald-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
-                            <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mb-8 mt-4">
-                                <RatingSystem activityId={activityId || "europe-rivers-game"} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                <div className="space-y-4">
+                                    <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1 mt-4">
+                                        <RatingSystem activityId={effectiveActivityId} />
+                                    </div>
+                                    <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-105 shadow-lg shadow-teal-500/20">
+                                        <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                                    </button>
+                                </div>
+
+                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                    <ActivityRanking activityId={effectiveActivityId} />
+                                </div>
                             </div>
-                            <button
-                                onClick={resetGame}
-                                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-emerald-500/20 transition-transform active:scale-95"
-                            >
-                                Jugar Otra Vez
-                            </button>
                         </div>
                     )}
 

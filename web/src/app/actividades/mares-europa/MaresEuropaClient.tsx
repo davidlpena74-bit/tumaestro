@@ -31,7 +31,7 @@ export default function MaresEuropaClient() {
                 initialPan={{ x: -100, y: -160 }}
                 elevationHeight={2}
                 taskId={taskId}
-                colorTheme="emerald"
+                colorTheme="blue"
                 activityId="mares-europa"
             />
         </PhysicalGameLayout>

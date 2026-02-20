@@ -10,6 +10,8 @@ import { speak } from '@/lib/speech-utils';
 import { QUESTIONS, type Question } from './data/quiz-questions';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import GameHUD from './GameHUD';
+import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
 
 // Utility for cleaner classes
 function cn(...inputs: ClassValue[]) {
@@ -42,6 +44,8 @@ export default function QuizGame({
     const sourceQuestions = customQuestions || QUESTIONS;
     const finalGameTypeLabel = gameTypeLabel || t.gamesPage.gameTypes.quiz;
 
+    const effectiveActivityId = activityId || "culture-quiz";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -51,7 +55,7 @@ export default function QuizGame({
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 0, penaltyTime: 0, gameMode: 'practice', taskId });
+    } = useGameLogic({ initialTime: 0, penaltyTime: 0, gameMode: 'practice', taskId, activityId: effectiveActivityId });
 
     useEffect(() => {
         if (gameState === 'playing') {
@@ -116,7 +120,7 @@ export default function QuizGame({
                 onReset={hookResetGame}
                 colorTheme="purple"
                 icon={<Trophy className="w-8 h-8 text-purple-400" />}
-                activityId={activityId}
+                activityId={effectiveActivityId}
             />
 
             <div className="relative w-full bg-transparent border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden min-h-[500px] flex flex-col justify-center">
@@ -235,6 +239,7 @@ export default function QuizGame({
                     )}
 
                     {/* FINISHED SCREEN - Unified with Map style */}
+                    {/* FINISHED SCREEN - Unified with Map style */}
                     {gameState === 'finished' && (
                         <motion.div
                             key="finished"
@@ -249,26 +254,30 @@ export default function QuizGame({
 
                             <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
                                 <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
+                                <span className="text-2xl font-black text-white">
                                     {score} / {gameQuestions.length}
                                 </span>
                             </div>
 
-                            <p className="text-gray-300 mb-8 max-w-sm">
-                                {score === gameQuestions.length ? "¡Perfecto! Eres un genio." :
-                                    score > gameQuestions.length / 2 ? "¡Muy bien! Casi perfecto." :
-                                        "Buen intento, sigue practicando."}
-                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                <div className="space-y-4">
+                                    <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                        <RatingSystem activityId={effectiveActivityId} />
+                                    </div>
+                                    <button
+                                        onClick={hookResetGame}
+                                        className="w-full flex items-center justify-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
+                                    >
+                                        <RefreshCcw className="w-5 h-5" /> Jugar de nuevo
+                                    </button>
+                                </div>
 
-                            <button
-                                onClick={hookResetGame}
-                                className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105"
-                            >
-                                <RefreshCcw className="w-5 h-5" /> Jugar de nuevo
-                            </button>
+                                <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                    <ActivityRanking activityId={effectiveActivityId} />
+                                </div>
+                            </div>
                         </motion.div>
                     )}
-
                 </AnimatePresence>
             </div>
         </div>

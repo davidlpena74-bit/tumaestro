@@ -13,6 +13,8 @@ import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
 import { speak } from '@/lib/speech-utils';
 import { calculatePathCentroid } from '@/lib/svg-utils';
+import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -39,6 +41,8 @@ export default function MapGame({ activityId }: { activityId?: string }) {
 
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "mapa-provincias";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -47,8 +51,9 @@ export default function MapGame({ activityId }: { activityId?: string }) {
         elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
-        resetGame: hookResetGame
-    } = useGameLogic({ initialTime: 90, penaltyTime: 5, gameMode });
+        resetGame: hookResetGame,
+        handleFinish
+    } = useGameLogic({ initialTime: 90, penaltyTime: 5, gameMode, activityId: effectiveActivityId });
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
@@ -199,7 +204,7 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Trophy className="w-8 h-8 text-teal-400" />}
-                    activityId={activityId}
+                    activityId={effectiveActivityId}
                 />
 
                 {/* MAP CONTAINER - Made transparent */}
@@ -293,16 +298,20 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                                 {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
                             </h2>
 
-                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
-                                    {score}
-                                </span>
-                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                <div className="space-y-4">
+                                    <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                        <RatingSystem activityId={effectiveActivityId} />
+                                    </div>
+                                    <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-105 shadow-lg shadow-teal-500/20">
+                                        <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                                    </button>
+                                </div>
 
-                            <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                            </button>
+                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                    <ActivityRanking activityId={effectiveActivityId} />
+                                </div>
+                            </div>
                         </div>
                     )}
 

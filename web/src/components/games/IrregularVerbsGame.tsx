@@ -12,6 +12,9 @@ import { useVoiceVolume } from '@/hooks/useVoiceVolume';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+import ActivityRanking from './ActivityRanking';
+import RatingSystem from './RatingSystem';
+
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
@@ -34,6 +37,8 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
     const [stepResults, setStepResults] = useState<boolean[]>([false, false, false]);
     const [stepCountdown, setStepCountdown] = useState(3);
 
+    const effectiveActivityId = activityId || "irregular-verbs";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -44,7 +49,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 0, gameMode, taskId });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 0, gameMode, taskId, activityId: effectiveActivityId });
     const recognitionRef = useRef<any>(null);
     const volume = useVoiceVolume(isListening);
 
@@ -417,7 +422,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                 icon={<BookOpen className="w-8 h-8 text-violet-600" />}
                 title={type === 'pronunciation' ? t.gamesPage.gameTitles.verbsPronunciation : t.gamesPage.gameTitles.verbs}
                 gameType={type}
-                activityId={activityId}
+                activityId={effectiveActivityId}
             />
 
             <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
@@ -475,16 +480,23 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                             {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
                         </h2>
 
-                        <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                            <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
-                                {score}
-                            </span>
-                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                            <div className="space-y-4 text-center">
+                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                    <RatingSystem activityId={effectiveActivityId} />
+                                </div>
+                                <button
+                                    onClick={resetGame}
+                                    className="w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-violet-500/20 transition-all active:scale-95 flex items-center justify-center gap-3"
+                                >
+                                    <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                                </button>
+                            </div>
 
-                        <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                            <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                        </button>
+                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                <ActivityRanking activityId={activityId || "irregular-verbs-game"} />
+                            </div>
+                        </div>
                     </div>
                 )}
 

@@ -55,7 +55,7 @@ export default function EuropeCapitalsMatchClient() {
                     </div>
 
                     <div className="bg-white/80 backdrop-blur-md rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
-                        <EuropeCapitalsGame taskId={taskId} activityId="capitales-europa-match" />
+                        <EuropeCapitalsGame taskId={taskId} activityId="capitales-europa" />
                     </div>
                 </div>
             </main>

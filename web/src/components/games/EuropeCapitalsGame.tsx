@@ -8,6 +8,8 @@ import { EUROPE_LIST, EUROPE_CAPITALS, EUROPE_LIST_EN, EUROPE_CAPITALS_EN } from
 import { useLanguage } from '@/context/LanguageContext';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import ActivityRanking from './ActivityRanking';
+import RatingSystem from './RatingSystem';
 import { speak } from '@/lib/speech-utils';
 
 type MatchItem = {
@@ -26,6 +28,8 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
     // Let's give it 5 minutes (300s).
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "capitales-europa";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -36,7 +40,7 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode, taskId });
+    } = useGameLogic({ initialTime: 300, penaltyTime: 0, gameMode, taskId, activityId: effectiveActivityId });
 
     const [countries, setCountries] = useState<MatchItem[]>([]);
     const [capitals, setCapitals] = useState<MatchItem[]>([]);
@@ -227,7 +231,7 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
                 onReset={resetGame}
                 colorTheme="purple"
                 icon={<MapPin className="w-8 h-8 text-purple-400" />}
-                activityId={activityId}
+                activityId={effectiveActivityId}
             />
 
             {/* START OVERLAY */}
@@ -272,20 +276,34 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
 
             {/* FINISHED OVERLAY */}
             {gameState === 'finished' && (
-                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full">
-                    <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
-                        <Globe className="w-16 h-16 text-yellow-400 animate-bounce" />
+                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full overflow-y-auto scrollbar-hide">
+                    <div className="w-full max-w-4xl flex flex-col items-center py-8">
+                        <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
+                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                        </div>
+                        <h3 className="text-5xl font-black text-white mb-6">
+                            {timeLeft === 0 ? (language === 'es' ? '¡Tiempo Agotado!' : 'Time Out!') : (language === 'es' ? '¡Juego Completado!' : 'Game Completed!')}
+                        </h3>
+                        <p className="text-2xl text-purple-200 mb-10 font-light">{language === 'es' ? 'Puntuación Final' : 'Final Score'}: <strong className="text-white">{score}</strong></p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                            <div className="space-y-4 text-center">
+                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                    <RatingSystem activityId={effectiveActivityId} />
+                                </div>
+                                <button
+                                    onClick={resetGame}
+                                    className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-500/20"
+                                >
+                                    <RefreshCw className="w-5 h-5" /> {language === 'es' ? 'Jugar Otra Vez' : 'Play Again'}
+                                </button>
+                            </div>
+
+                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                <ActivityRanking activityId={effectiveActivityId} />
+                            </div>
+                        </div>
                     </div>
-                    <h3 className="text-5xl font-black text-white mb-6">
-                        {timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Juego Completado!'}
-                    </h3>
-                    <p className="text-2xl text-purple-200 mb-10 font-light">Puntuación Final: <strong className="text-white">{score}</strong></p>
-                    <button
-                        onClick={resetGame}
-                        className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-purple-500/20 transition-transform active:scale-95"
-                    >
-                        Jugar Otra Vez
-                    </button>
                 </div>
             )}
 

@@ -8,6 +8,7 @@ import { RIVERS_PATHS } from './data/rivers-paths';
 import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from './spanish-communities-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
@@ -23,6 +24,8 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "mapa-rios";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -33,7 +36,7 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId });
+    } = useGameLogic({ initialTime: 120, penaltyTime: 10, gameMode, taskId, activityId: effectiveActivityId });
 
     const [targetRiver, setTargetRiver] = useState('');
     const [remainingRivers, setRemainingRivers] = useState<string[]>([]);
@@ -215,7 +218,7 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
                     onReset={resetGame}
                     colorTheme="teal"
                     icon={<Globe className="w-8 h-8 text-teal-400" />}
-                    activityId={activityId}
+                    activityId={effectiveActivityId}
                 />
 
                 {/* MAP CONTAINER */}
@@ -278,19 +281,20 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
                             </div>
                             <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
 
-                            <div className="bg-transparent border border-white/20 p-8 rounded-3xl text-center shadow-2xl">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">Puntuación Final</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
-                                    {score}
-                                </span>
-                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                <div className="space-y-4">
+                                    <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                        <RatingSystem activityId={effectiveActivityId} />
+                                    </div>
+                                    <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-105 shadow-xl shadow-teal-500/20">
+                                        <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                                    </button>
+                                </div>
 
-                            <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8 mb-4">
-                                <RatingSystem activityId={activityId || "rivers-game"} />
+                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                    <ActivityRanking activityId={effectiveActivityId} />
+                                </div>
                             </div>
-                            <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                            </button>
                         </div>
                     )}
 
@@ -422,6 +426,6 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
                     <span>Usa los controles o rueda del ratón para hacer zoom.</span>
                 </p>
             </div>
-        </div>
+        </div >
     );
 }

@@ -10,6 +10,7 @@ import { useGameLogic } from '@/hooks/useGameLogic';
 import { useLanguage } from '@/context/LanguageContext';
 import confetti from 'canvas-confetti';
 import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -60,6 +61,8 @@ export default function MapGameTemplate({
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
 
+    const effectiveActivityId = activityId || "map-game-template";
+
     const {
         gameState, setGameState,
         score, addScore,
@@ -70,7 +73,7 @@ export default function MapGameTemplate({
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId });
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId, activityId: effectiveActivityId });
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);
@@ -196,7 +199,7 @@ export default function MapGameTemplate({
                     onReset={resetGame}
                     colorTheme={colorTheme as any}
                     icon={icon}
-                    activityId={activityId}
+                    activityId={effectiveActivityId}
                 />
 
                 <div
@@ -244,12 +247,21 @@ export default function MapGameTemplate({
                                     <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
                                     <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">{score}</span>
                                 </div>
-                                <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 mt-8 mb-4">
-                                    <RatingSystem activityId={activityId || "map-game-template"} />
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
+                                    <div className="space-y-4">
+                                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                            <RatingSystem activityId={effectiveActivityId} />
+                                        </div>
+                                        <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
+                                            <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
+                                        </button>
+                                    </div>
+
+                                    <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
+                                        <ActivityRanking activityId={effectiveActivityId} />
+                                    </div>
                                 </div>
-                                <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                    <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                                </button>
                             </motion.div>
                         )}
                     </AnimatePresence>
