@@ -439,27 +439,19 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                             <button
                                 onClick={() => startNewGame('challenge')}
-                                className="group relative px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(139,92,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(139,92,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:-translate-y-1 flex-1 max-w-[180px]"
                             >
-                                <span className="relative z-10 flex flex-col items-center gap-1">
-                                    <div className="flex items-center gap-2">
-                                        {t.gamesPage.verbsGame.challengeMode} <Trophy className="w-5 h-5 opacity-50" />
-                                    </div>
-                                    <span className="text-xs opacity-70 font-bold tracking-wider">
-                                        {t.gamesPage.verbsGame.verbsCount.replace('{count}', '50')} • {Math.floor(180 / 60)} {t.gamesPage.verbsGame.minCount.replace('{count}', '')}
-                                    </span>
+                                <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
+                                    {t.gamesPage.verbsGame.challengeMode.toUpperCase()} <Trophy className="w-5 h-5 opacity-50" />
                                 </span>
                             </button>
 
                             <button
                                 onClick={() => startNewGame('practice')}
-                                className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
                             >
-                                <span className="relative z-10 flex flex-col items-center gap-1">
-                                    <div className="flex items-center gap-2">
-                                        {t.gamesPage.verbsGame.practiceMode} <RefreshCw className="w-5 h-5 opacity-50" />
-                                    </div>
-                                    <span className="text-xs opacity-50 font-bold tracking-wider">{t.gamesPage.verbsGame.verbsCount.replace('{count}', '10')}</span>
+                                <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
+                                    {t.gamesPage.verbsGame.practiceMode.toUpperCase()} <RefreshCw className="w-5 h-5 opacity-50" />
                                 </span>
                             </button>
                         </div>

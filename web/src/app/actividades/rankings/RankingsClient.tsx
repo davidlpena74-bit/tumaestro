@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Trophy, Clock, Globe, MapPin, Waves, Mountain, GraduationCap, Microscope, Calculator, BookOpen, Dna, Brain, Landmark } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trophy, Clock, Globe, MapPin, Waves, Mountain, GraduationCap, Microscope, Calculator, BookOpen, Dna, Brain, Landmark, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import ActivityRanking from '@/components/games/ActivityRanking';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import Link from 'next/link';
 export default function RankingsClient() {
     const { language, t } = useLanguage();
     const [selectedTab, setSelectedTab] = useState<'time' | 'score'>('time');
+    const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const activityCategories = [
         {
@@ -172,9 +173,37 @@ export default function RankingsClient() {
     ];
 
     return (
-        <main className="min-h-screen pt-24 pb-12 px-4 md:px-8 bg-[#0f172a] text-white">
+        <main className="min-h-screen pt-6 pb-12 px-4 md:px-8 bg-[#0f172a] text-white">
             <div className="max-w-7xl mx-auto">
-                <header className="mb-12 text-center">
+                <div className="flex items-center gap-6 mb-0 mt-18">
+                    <div className="relative w-fit flex-shrink-0">
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onMouseEnter={() => setTooltipOpen(true)}
+                            onMouseLeave={() => setTooltipOpen(false)}
+                            onClick={() => window.location.href = '/actividades'}
+                            className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-lg border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-200 transition-all z-20 cursor-pointer"
+                        >
+                            <ArrowLeft size={24} strokeWidth={3} />
+                            <AnimatePresence>
+                                {tooltipOpen && (
+                                    <motion.span
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-[10px] font-black rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50 uppercase tracking-wider border border-white/10"
+                                    >
+                                        {language === 'es' ? 'Volver a Actividades' : 'Back to Activities'}
+                                    </motion.span>
+                                )}
+                            </AnimatePresence>
+                        </motion.button>
+                    </div>
+                </div>
+
+                <header className="-mt-12 mb-12 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -222,7 +251,7 @@ export default function RankingsClient() {
                     </div>
                 </div>
 
-                <div className="space-y-16">
+                <div className="space-y-16 mt-0">
                     {activityCategories.map((category, catIndex) => (
                         <div key={category.name} className="space-y-8">
                             <motion.h2
@@ -274,6 +303,6 @@ export default function RankingsClient() {
                     ))}
                 </div>
             </div>
-        </main>
+        </main >
     );
 }

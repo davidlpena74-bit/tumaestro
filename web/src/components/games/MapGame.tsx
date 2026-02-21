@@ -263,21 +263,21 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                                     ? 'Demuestra que conoces cada rincón del país. Tienes 90 segundos para ubicar todas las provincias posibles.'
                                     : 'Show that you know every corner of the country. You have 90 seconds to locate as many provinces as possible.'}
                             </p>
-                            <div className="flex gap-4 items-center justify-center w-full">
+                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                                 <button
                                     onClick={() => startGame('challenge')}
-                                    className="group relative px-6 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1"
+                                    className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
                                 >
-                                    <span className="relative z-10 flex items-center gap-2">
+                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
                                         MODO RETO <Timer className="w-5 h-5 opacity-50" />
                                     </span>
                                 </button>
                                 <button
                                     onClick={() => startGame('practice')}
-                                    className="group relative px-6 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1"
+                                    className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
                                 >
-                                    <span className="relative z-10 flex items-center gap-2">
-                                        MODO PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
+                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
+                                        PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
                                     </span>
                                 </button>
                             </div>

@@ -105,17 +105,17 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
 
     // Calculate line positions
     // We'll use a viewBox of 400x400
-    const padding = 60;
-    const size = 340;
+    const padding = 80;
+    const size = 240;
 
     const getHorizontalLineY = (index: number, total: number) => {
-        if (total === 1) return 200;
+        if (total <= 1) return 200;
         const spacing = size / (total - 1);
         return padding + (index * spacing);
     };
 
     const getVerticalLineX = (index: number, total: number) => {
-        if (total === 1) return 200;
+        if (total <= 1) return 200;
         const spacing = size / (total - 1);
         return padding + (index * spacing);
     };
@@ -135,27 +135,19 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
                     <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                         <button
                             onClick={() => startGame('challenge')}
-                            className="group relative px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] hover:shadow-[0_0_60px_-10px_rgba(37,99,235,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                            className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
                         >
-                            <span className="relative z-10 flex flex-col items-center gap-1">
-                                <div className="flex items-center gap-2">
-                                    {t.gamesPage.multiplicationGame.startBtn}
-                                    <Trophy className="w-5 h-5 opacity-50" />
-                                </div>
-                                <span className="text-xs opacity-70 font-bold tracking-wider">MODO RETO</span>
+                            <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
+                                MODO RETO <Trophy className="w-5 h-5 opacity-50" />
                             </span>
                         </button>
 
                         <button
                             onClick={() => startGame('practice')}
-                            className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                            className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
                         >
-                            <span className="relative z-10 flex flex-col items-center gap-1">
-                                <div className="flex items-center gap-2">
-                                    PRÁCTICA
-                                    <RefreshCw className="w-5 h-5 opacity-50" />
-                                </div>
-                                <span className="text-xs opacity-50 font-bold tracking-wider">SIN LÍMITE</span>
+                            <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
+                                PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
                             </span>
                         </button>
                     </div>
@@ -234,9 +226,9 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
                                     initial={{ pathLength: 0, opacity: 0 }}
                                     animate={{ pathLength: 1, opacity: 1 }}
                                     transition={{ duration: 0.5, delay: i * 0.1 }}
-                                    x1="20"
+                                    x1="40"
                                     y1={getHorizontalLineY(i, numA)}
-                                    x2="380"
+                                    x2="360"
                                     y2={getHorizontalLineY(i, numA)}
                                     stroke="#3B82F6"
                                     strokeWidth="4"
@@ -252,9 +244,9 @@ export default function MultiplicationGame({ taskId = null, activityId }: { task
                                     animate={{ pathLength: 1, opacity: 1 }}
                                     transition={{ duration: 0.5, delay: (numA * 0.1) + (i * 0.1) }}
                                     x1={getVerticalLineX(i, numB)}
-                                    y1="20"
+                                    y1="40"
                                     x2={getVerticalLineX(i, numB)}
-                                    y2="380"
+                                    y2="360"
                                     stroke="#ec4899"
                                     strokeWidth="4"
                                     strokeLinecap="round"

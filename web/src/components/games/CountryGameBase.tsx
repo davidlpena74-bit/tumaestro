@@ -238,22 +238,21 @@ export default function CountryGameBase({
                                         : `Test your geography knowledge in ${regionName}.`}
                                 </p>
 
-                                <div className="flex gap-4">
+                                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                                     <button
                                         onClick={() => startGame('challenge')}
-                                        className="group relative px-6 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1"
+                                        className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1 flex-1 max-w-[180px]"
                                     >
-                                        <span className="relative z-10 flex items-center gap-2">
+                                        <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap text-center">
                                             {language === 'es' ? 'MODO RETO' : 'CHALLENGE MODE'}
                                             <Timer className="w-5 h-5 opacity-50" />
                                         </span>
                                     </button>
-
                                     <button
                                         onClick={() => startGame('practice')}
-                                        className="group relative px-6 py-4 bg-blue-500 hover:bg-blue-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1"
+                                        className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
                                     >
-                                        <span className="relative z-10 flex items-center gap-2">
+                                        <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
                                             {language === 'es' ? 'MODO PRÁCTICA' : 'PRACTICE MODE'}
                                             <RefreshCw className="w-5 h-5 opacity-50" />
                                         </span>

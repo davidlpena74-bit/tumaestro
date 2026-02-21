@@ -149,9 +149,9 @@ export default function QuizGame({
                             </p>
                             <button
                                 onClick={handleStart}
-                                className="group relative px-8 py-4 bg-violet-500 hover:bg-violet-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(139,92,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(139,92,246,0.6)] hover:-translate-y-1"
+                                className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 w-full max-w-[180px]"
                             >
-                                <span className="relative z-10 flex items-center gap-2">EMPEZAR RETO <ArrowRight className="w-5 h-5 opacity-50" /></span>
+                                <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">EMPEZAR RETO <ArrowRight className="w-5 h-5 opacity-50" /></span>
                             </button>
                         </motion.div>
                     )}

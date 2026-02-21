@@ -72,15 +72,6 @@ const GAMES = [
         href: '/actividades/multiplicaciones',
         color: 'from-blue-500 to-indigo-600',
         icon: Calculator
-    },
-    {
-        id: 'quiz-cultura',
-        title: 'Quiz de Cultura',
-        category: 'Cultura General',
-        image: null,
-        href: '/juegos/quiz-cultura',
-        color: 'from-violet-500 to-purple-600',
-        icon: Brain
     }
 ];
 

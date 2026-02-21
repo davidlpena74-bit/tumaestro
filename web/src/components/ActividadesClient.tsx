@@ -733,16 +733,6 @@ export default function ActividadesClient() {
                             color: 'from-orange-500 to-amber-600',
                             grade: t.gamesPage.grades.prim2,
                             gameType: t.gamesPage.gameTypes.math
-                        },
-                        {
-                            id: 'culture-quiz',
-                            title: t.gamesPage.gameTitles.quiz,
-                            description: t.gamesPage.gameTitles.quizDesc,
-                            href: '/actividades/culture-quiz',
-                            icon: Brain,
-                            color: 'from-orange-500 to-amber-600',
-                            grade: t.gamesPage.grades.prim6,
-                            gameType: t.gamesPage.gameTypes.quiz
                         }
                     ]
                 }
