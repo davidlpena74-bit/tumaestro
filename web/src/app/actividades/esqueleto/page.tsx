@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import EsqueletoClient from './EsqueletoClient';
 
 export const metadata: Metadata = {
