@@ -49,10 +49,19 @@ export const BOOKS: Book[] = [
         rating: 4.5,
         content: [
             {
-                text: "Era verano, y la región tenía su aspecto más amable del año. El trigo estaba dorado ya, la avena verde todavía. El heno había sido apilado en parvas sobre las fértiles praderas, por las que deambulaba la cigüeña con sus rojas patas, parloteando en egipcio, único idioma que su madre le había enseñado. En torno del campo y las praderas se veían grandes bosques, en cuyo centro había profundos lagos. Y en el lugar más desolado de la comarca se erguía una antigua mansión rodeada por un profundo foso."
+                text: "Era verano, y la región tenía su aspecto más amable del año. El trigo estaba dorado ya, la avena verde todavía. El heno había sido apilado en parvas sobre las fértiles praderas, por las que deambulaba la cigüeña con sus rojas patas, parloteando en egipcio, único idioma que su madre le había enseñado."
             },
             {
-                text: "Entre el foso y los muros crecían plantas de grandes hojas, algunas lo bastante amplias como para que un niño pudiera estar de pie bajo ella. Y allí entre las hojas, tan retirada y escondida como en lo profundo de una selva, estaba una pata empollando. Los patitos tenían que salir dentro de muy poco, pero la madre se sentía muy cansada, pues la tarea duraba ya demasiado tiempo."
+                text: "En torno del campo y las praderas se veían grandes bosques, en cuyo centro había profundos lagos. Y en el lugar más desolado de la comarca se erguía una antigua mansión rodeada por un profundo foso."
+            },
+            {
+                text: "Entre el foso y los muros crecían plantas de grandes hojas, algunas lo bastante amplias como para que un niño pudiera estar de pie bajo ella."
+            },
+            {
+                text: "Y allí entre las hojas, tan retirada y escondida como en lo profundo de una selva, estaba una pata empollando."
+            },
+            {
+                text: "Los patitos tenían que salir dentro de muy poco, pero la madre se sentía muy cansada, pues la tarea duraba ya demasiado tiempo."
             },
             {
                 text: "Por último, uno tras otro, los huevos empezaron a crujir suavemente. 'Chuí, chuí' dijeron. Toda la cría acababa de venir al mundo y estaba asomando sus cabecitas. —Cuá, cuá —dijo la pata, y al oírla los patitos respondieron a coro con sus más fuertes voces. Su madre los dejaba hacer, pues el verde es bueno para la vista. —¡Qué grande es el mundo! —dijeron todos los pequeños."
@@ -148,34 +157,88 @@ export const BOOKS: Book[] = [
         rating: 4.8,
         content: [
             {
-                text: "En una aldea rodeada por un bosque tan espeso que la luz del sol apenas lograba besar el suelo, vivía una niña cuya bondad era conocida por todos los habitantes de la comarca. Su posesión más preciada era una capa de terciopelo de un rojo tan intenso como las amapolas en verano, un regalo de su abuela que la pequeña lucía con orgullo en cada estación. Por esta razón, el nombre con el que se le conocía en los valles y senderos no era otro que Caperucita Roja."
+                text: "En una aldea rodeada por un bosque tan espeso que la luz del sol apenas lograba besar el suelo, vivía una niña cuya bondad era conocida por todos los habitantes de la comarca."
             },
             {
-                text: "Una mañana, cuando el rocío aún brillaba sobre las telas de araña en los matorrales, su madre terminó de preparar una cesta de mimbre. El aroma del pan recién horneado y la miel fresca inundaba la pequeña cocina. Con gesto preocupado, la madre llamó a la niña y, mientras ajustaba el lazo de su capa, le dio instrucciones precisas. Su abuela, que vivía en una pequeña cabaña al otro lado del bosque, se encontraba postrada en cama por una fuerte fiebre, y aquellas provisiones eran vitales para su recuperación. 'No te apartes del sendero principal', le advirtió con voz firme, 'pues el bosque tiene ojos y las sombras pueden ser engañosas'."
+                text: "Su posesión más preciada era una capa de terciopelo de un rojo tan intenso como las amapolas en verano, un regalo de su abuela que la pequeña lucía con orgullo en cada estación. Por esta razón, el nombre con el que se le conocía en los valles y senderos no era otro que Caperucita Roja."
             },
             {
-                text: "Caperucita, con la cesta colgada del brazo y el corazón lleno de buenas intenciones, se adentró en la espesura. El camino estaba flanqueado por pinos centenarios cuyas copas parecían susurrar secretos al viento. A medida que avanzaba, el silencio del bosque se volvía más denso, interrumpido solo por el crujir de las ramas bajo sus pies. Fue entonces cuando, de entre los troncos de los robles, emergió una figura imponente. Era un lobo de dimensiones extraordinarias, con un pelaje grisáceo salpicado de negro y unos ojos que destellaban con una mezcla de hambre y astucia."
+                text: "Una mañana, cuando el rocío aún brillaba sobre las telas de araña en los matorrales, su madre terminó de preparar una cesta de mimbre. El aroma del pan recién horneado y la miel fresca inundaba la pequeña cocina."
             },
             {
-                text: "El animal no la atacó de inmediato; en su lugar, se acercó con una elegancia hipnótica, casi caballeresca. '¿A dónde se dirige tan temprano una joven tan encantadora?', preguntó el lobo, suavizando su ronca voz para no asustarla. Caperucita, cuya inocencia no le permitía ver la maldad tras los colmillos, omitió el consejo de su madre y explicó que se dirigía a la casa de su abuela, bajo los tres grandes robles. El lobo le sugirió: '¿No oyes el canto de los pájaros? Un ramo de esas flores curaría el alma de tu abuela incluso antes que el pan que llevas'."
+                text: "Con gesto preocupado, la madre llamó a la niña y, mientras ajustaba el lazo de su capa, le dio instrucciones precisas."
             },
             {
-                text: "Seducida por la idea, la niña se desvió del camino. Mientras tanto, el lobo corrió hacia la cabaña de la anciana. Al llegar, llamó a la puerta con tres golpes secos. 'Soy yo, tu nieta Caperucita', mintió, agudizando la voz. La anciana le indicó cómo abrir y, en un instante, el lobo irrumpió y devoró a la mujer. Acto seguido, se vistió con su camisón, se colocó la cofia y se metió en la cama, cubriéndose hasta la nariz para ocultar su hocico."
+                text: "Su abuela, que vivía en una pequeña cabaña al otro lado del bosque, se encontraba postrada en cama por una fuerte fiebre, y aquellas provisiones eran vitales para su recuperación."
             },
             {
-                text: "Cuando Caperucita llegó finalmente a la cabaña, cargada de flores, encontró la puerta abierta de par en par. Un presentimiento extraño le oprimió el pecho, pero entró llamando a su abuela. La luz que se filtraba por las cortinas apenas iluminaba el rostro de la figura que yacía en el lecho. Al acercarse, notó que algo no encajaba; la fisonomía de su abuela parecía haber mutado bajo la fiebre."
+                text: "'No te apartes del sendero principal', le advirtió con voz firme, 'pues el bosque tiene ojos y las sombras pueden ser engañosas'."
             },
             {
-                text: "—'¡Oh, abuelita, qué orejas tan grandes tienes!', exclamó la niña con un susurro tembloroso. —'Son para oírte mejor, mi niña', respondió el lobo. —'¡Abuelita, qué ojos tan grandes tienes!'. —'Son para verte mejor en la penumbra'. —'¡Y qué manos tan grandes tienes!'. —'Son para abrazarte con más fuerza'. —'Pero abuelita... ¡qué boca tan terriblemente grande tienes!'. —'¡Es para comerte mejor!'."
+                text: "Caperucita, con la cesta colgada del brazo y el corazón lleno de buenas intenciones, se adentró en la espesura. El camino estaba flanqueado por pinos centenarios cuyas copas parecían susurrar secretos al viento."
             },
             {
-                text: "El lobo saltó de la cama con una ferocidad salvaje y, antes de que Caperucita pudiera gritar, la engulló por completo. Saciado y exhausto por su propio festín, el animal volvió a la cama y cayó en un sueño profundo, roncando con tal fuerza que las paredes de la cabaña parecían temblar."
+                text: "A medida que avanzaba, el silencio del bosque se volvía más denso, interrumpido solo por el crujir de las ramas bajo sus pies."
             },
             {
-                text: "Poco después, un cazador que patrullaba la zona escuchó aquellos ruidos antinaturales. Entró en la casa y se encontró con el lobo durmiendo plácidamente con la barriga hinchada. Comprendiendo la situación, tomó un par de tijeras de costura y, con cuidado, abrió el vientre de la bestia. De la oscuridad del estómago surgieron primero la capa roja y luego Caperucita, seguida de la abuela, ambas ilesas pero aterrorizadas por la asfixiante experiencia."
+                text: "Fue entonces cuando, de entre los troncos de los robles, emergió una figura imponente. Era un lobo de dimensiones extraordinarias, con un pelaje grisáceo salpicado de negro y unos ojos que destellaban con una mezcla de hambre y astucia."
             },
             {
-                text: "La niña recogió grandes piedras del río, con las que rellenaron el cuerpo del lobo. Cuando el animal despertó e intentó huir, su peso era tal que cayó al suelo sin vida. La cabaña recuperó su paz, y mientras la abuela comía el pastel, Caperucita prometió que jamás volvería a abandonar el sendero seguro, pues había comprendido que la belleza de las flores no compensaba el peligro que acecha en las sombras de lo desconocido."
+                text: "El animal no la atacó de inmediato; en su lugar, se acercó con una elegancia hipnótica, casi caballeresca. '¿A dónde se dirige tan temprano una joven tan encantadora?', preguntó el lobo, suavizando su ronca voz para no asustarla."
+            },
+            {
+                text: "Caperucita, cuya inocencia no le permitía ver la maldad tras los colmillos, omitió el consejo de su madre y explicó que se dirigía a la casa de su abuela, bajo los tres grandes robles."
+            },
+            {
+                text: "El lobo le sugirió: '¿No oyes el canto de los pájaros? Un ramo de esas flores curaría el alma de tu abuela incluso antes que el pan que llevas'."
+            },
+            {
+                text: "Seducida por la idea, la niña se desvió del camino. Mientras tanto, el lobo corrió hacia la cabaña de la anciana. Al llegar, llamó a la puerta con tres golpes secos."
+            },
+            {
+                text: "'Soy yo, tu nieta Caperucita', mintió, agudizando la voz. La anciana le indicó cómo abrir y, en un instante, el lobo irrumpió y devoró a la mujer."
+            },
+            {
+                text: "Acto seguido, se vistió con su camisón, se colocó la cofia y se metió en la cama, cubriéndose hasta la nariz para ocultar su hocico."
+            },
+            {
+                text: "Cuando Caperucita llegó finalmente a la cabaña, cargada de flores, encontró la puerta abierta de par en par. Un presentimiento extraño le oprimió el pecho, pero entró llamando a su abuela."
+            },
+            {
+                text: "La luz que se filtraba por las cortinas apenas iluminaba el rostro de la figura que yacía en el lecho. Al acercarse, notó que algo no encajaba; la fisonomía de su abuela parecía haber mutado bajo la fiebre."
+            },
+            {
+                text: "—'¡Oh, abuelita, qué orejas tan grandes tienes!', exclamó la niña con un susurro tembloroso. —'Son para oírte mejor, mi niña', respondió el lobo."
+            },
+            {
+                text: "—'¡Abuelita, qué ojos tan grandes tienes!'. —'Son para verte mejor en la penumbra'. —'¡Y qué manos tan grandes tienes!'. —'Son para abrazarte con más fuerza'."
+            },
+            {
+                text: "—'Pero abuelita... ¡qué boca tan terriblemente grande tienes!'. —'¡Es para comerte mejor!'."
+            },
+            {
+                text: "El lobo saltó de la cama con una ferocidad salvaje y, antes de que Caperucita pudiera gritar, la engulló por completo."
+            },
+            {
+                text: "Saciado y exhausto por su propio festín, el animal volvió a la cama y cayó en un sueño profundo, roncando con tal fuerza que las paredes de la cabaña parecían temblar."
+            },
+            {
+                text: "Poco después, un cazador que patrullaba la zona escuchó aquellos ruidos antinaturales. Entró en la casa y se encontró con el lobo durmiendo plácidamente con la barriga hinchada."
+            },
+            {
+                text: "Comprendiendo la situación, tomó un par de tijeras de costura y, con cuidado, abrió el vientre de la bestia."
+            },
+            {
+                text: "De la oscuridad del estómago surgieron primero la capa roja y luego Caperucita, seguida de la abuela, ambas ilesas pero aterrorizadas por la asfixiante experiencia."
+            },
+            {
+                text: "La niña recogió grandes piedras del río, con las que rellenaron el cuerpo del lobo. Cuando el animal despertó e intentó huir, su peso era tal que cayó al suelo sin vida."
+            },
+            {
+                text: "La cabaña recuperó su paz, y mientras la abuela comía el pastel, Caperucita prometió que jamás volvería a abandonar el sendero seguro."
+            },
+            {
+                text: "Había comprendido que la belleza de las flores no compensaba el peligro que acecha en las sombras de lo desconocido."
             }
         ],
         contentEn: [
@@ -295,25 +358,64 @@ export const BOOKS: Book[] = [
         rating: 4.2,
         content: [
             {
-                text: "Érase una vez un molinero que tenía tres hijos, su molino, un asno y un gato. Los hijos tenían que moler, el asno tenía que llevar el grano y el gato tenía que cazar ratones. Cuando el molinero murió, los hijos se repartieron la herencia: el mayor el molino, el segundo el asno y al tercero le tocó el gato. El joven se entristeció: '¿Qué voy a hacer yo con un gato? Si me hago unos guantes con su piel, no me quedará nada'."
+                text: "Érase una vez un molinero que tenía tres hijos, su molino, un asno y un gato. Los hijos tenían que moler, el asno tenía que llevar el grano y el gato tenía que cazar ratones."
             },
             {
-                text: "-Escucha -dijo el gato, que lo había entendido todo-, no debes matarme. Encarga que me hagan un par de botas para que pueda salir y que la gente me vea, y pronto obtendrás ayuda. El joven se asombró de que el gato hablara, pero llamó al zapatero para que le tomara medidas. Cuando estuvieron listas, el gato se las calzó, tomó un saco con grano y salió por la puerta andando sobre dos patas como si fuera una persona."
+                text: "Cuando el molinero murió, los hijos se repartieron la herencia: el mayor el molino, el segundo el asno y al tercero le tocó el gato."
             },
             {
-                text: "Llegó al bosque, esparció el grano en el saco y se escondió. Pronto capturó varias perdices, el manjar favorito del Rey, que nadie podía atrapar. Se fue al palacio y dijo: 'Mi señor el conde presenta sus respetos al rey y le envía estas perdices'. El Rey, encantado con el regalo, mandó llenar el saco del gato con todo el oro que pudiera cargar. El gato regresó y esparció el oro ante su amo: 'Aquí tienes algo a cambio de las botas'."
+                text: "El joven se entristeció: '¿Qué voy a hacer yo con un gato? Si me hago unos guantes con su piel, no me quedará nada'."
             },
             {
-                text: "El gato continuó llevando regalos al palacio cada día, y el Rey llegó a apreciarlo mucho. Un día, supo que el Rey y la Princesa irían al lago. Corrió a casa y dijo a su amo: 'Si quieres ser rico, vente al lago y báñate'. Mientras el joven se bañaba, el gato escondió su ropa. Cuando el Rey pasó, el gato gritó: '¡Socorro! ¡Al señor conde le han robado la ropa!'. El Rey ordenó traer sus mejores galas para vestir al joven."
+                text: "-Escucha -dijo el gato, que lo había entendido todo-, no debes matarme. Encarga que me hagan un par de botas para que pueda salir y que la gente me vea, y pronto obtendrás ayuda."
             },
             {
-                text: "Vestido con ropas reales, el joven parecía un noble y la Princesa quedó encantada. El Rey lo invitó a la carroza. El gato se adelantó y ordenó a todos los campesinos: 'Si el Rey pregunta, decid que estos prados y campos de trigo pertenecen al conde, ¡o moriréis!'. Al pasar el Rey y preguntar, todos respondieron: '¡Son del señor conde!'. El Rey estaba asombrado: 'Grandes y bonitas tierras tienes, conde'."
+                text: "El joven se asombró de que el gato hablara, pero llamó al zapatero para que le tomara medidas."
             },
             {
-                text: "El gato llegó finalmente al palacio de un gran mago capaz de transformarse en cualquier animal. Entró con descaro y le dijo: 'He oído que puedes transformarte en elefante o león, pero seguro que no puedes convertirte en algo tan pequeño como un ratón'. El mago, herido en su orgullo, se transformó de inmediato en un ratón. ¡Era lo que el gato esperaba! De un salto lo atrapó y se lo comió de un bocado."
+                text: "Cuando estuvieron listas, el gato se las calzó, tomó un saco con grano y salió por la puerta andando sobre dos patas como si fuera una persona."
             },
             {
-                text: "Cuando la carroza real llegó al castillo, el gato salió a recibirlos: '¡Bienvenidos al palacio de mi señor el conde!'. El Rey se maravilló del magnífico edificio, que era más hermoso que su propio palacio. Aquel día, el Rey prometió la mano de su hija al joven. Cuando el monarca murió, el conde se convirtió en Rey y el gato con botas en su Primer Ministro, viviendo felices para siempre."
+                text: "Llegó al bosque, esparció el grano en el saco y se escondió. Pronto capturó varias perdices, el manjar favorito del Rey, que nadie podía atrapar."
+            },
+            {
+                text: "Se fue al palacio y dijo: 'Mi señor el conde presenta sus respetos al rey y le envía estas perdices'."
+            },
+            {
+                text: "El Rey, encantado con el regalo, mandó llenar el saco del gato con todo el oro que pudiera cargar. El gato regresó y esparció el oro ante su amo: 'Aquí tienes algo a cambio de las botas'."
+            },
+            {
+                text: "El gato continuó llevando regalos al palacio cada día, y el Rey llegó a apreciarlo mucho. Un día, supo que el Rey y la Princesa irían al lago."
+            },
+            {
+                text: "Corrió a casa y dijo a su amo: 'Si quieres ser rico, vente al lago y báñate'. Mientras el joven se bañaba, el gato escondió su ropa."
+            },
+            {
+                text: "Cuando el Rey pasó, el gato gritó: '¡Socorro! ¡Al señor conde le han robado la ropa!'. El Rey ordenó traer sus mejores galas para vestir al joven."
+            },
+            {
+                text: "Vestido con ropas reales, el joven parecía un noble y la Princesa quedó encantada. El Rey lo invitó a la carroza."
+            },
+            {
+                text: "El gato se adelantó y ordenó a todos los campesinos: 'Si el Rey pregunta, decid que estos prados y campos de trigo pertenecen al conde, ¡o moriréis!'."
+            },
+            {
+                text: "Al pasar el Rey y preguntar, todos respondieron: '¡Son del señor conde!'. El Rey estaba asombrado: 'Grandes y bonitas tierras tienes, conde'."
+            },
+            {
+                text: "El gato llegó finalmente al palacio de un gran mago capaz de transformarse en cualquier animal. Entró con descaro y le dijo: 'He oído que puedes transformarte en elefante o león, pero seguro que no puedes convertirte en algo tan pequeño como un ratón'."
+            },
+            {
+                text: "El mago, herido en su orgullo, se transformó de inmediato en un ratón. ¡Era lo que el gato esperaba! De un salto lo atrapó y se lo comió de un bocado."
+            },
+            {
+                text: "Cuando la carroza real llegó al castillo, el gato salió a recibirlos: '¡Bienvenidos al palacio de mi señor el conde!'."
+            },
+            {
+                text: "El Rey se maravilló del magnífico edificio, que era más hermoso que su propio palacio. Aquel día, el Rey prometió la mano de su hija al joven."
+            },
+            {
+                text: "Cuando el monarca murió, el conde se convirtió en Rey y el gato con botas en su Primer Ministro, viviendo felices para siempre."
             }
         ],
         contentEn: [
@@ -364,25 +466,61 @@ export const BOOKS: Book[] = [
         rating: 4.0,
         content: [
             {
-                text: "Érase una vez un leñador y una leñadora que tenían siete hijos varones. Eran muy pobres y sus hijos una pesada carga. El menor de ellos era muy pequeñito y cuando llegó al mundo no era más gordo que un pulgar, por lo cual lo llamaron Pulgarcito. Aunque hablaba poco, era el más agudo de sus hermanos y escuchaba mucho todo lo que ocurría en casa."
+                text: "Érase una vez un leñador y una leñadora que tenían siete hijos varones. Eran muy pobres y sus hijos una pesada carga."
             },
             {
-                text: "Sobrevino un año de hambruna y los padres, desesperados, decidieron dejar a los niños en el bosque. Pulgarcito oyó el plan escondido bajo el taburete de su padre. Sin decir nada, se levantó de madrugada y fue al riachuelo a llenarse los bolsillos de guijarros blancos. Cuando los llevaron al bosque y sus padres huyeron, Pulgarcito guió a sus hermanos de vuelta siguiendo el rastro de las piedras."
+                text: "El menor de ellos era muy pequeñito y cuando llegó al mundo no era más gordo que un pulgar, por lo cual lo llamaron Pulgarcito."
             },
             {
-                text: "Los padres se alegraron de verlos, pero pronto el dinero volvió a faltar y decidieron perderlos de nuevo, esta vez más lejos. Pulgarcito, que no pudo recoger piedras por estar la puerta cerrada, usó migas de pan para marcar el camino. Pero al intentar regresar, descubrió con horror que los pájaros se habían comido todas las migas. Estaban perdidos en lo más profundo y oscuro del bosque."
+                text: "Aunque hablaba poco, era el más agudo de sus hermanos y escuchaba mucho todo lo que ocurría en casa."
             },
             {
-                text: "Tras caminar mucho bajo la lluvia, Pulgarcito divisó una luz desde la cima de un árbol. Llegaron a una casa donde una mujer les advirtió: '¡Huid! Aquí vive un ogro que come niños'. Pulgarcito suplicó albergue, pues temían más a los lobos del bosque. La mujer los escondió bajo la cama, pero al llegar el ogro, este gritó: '¡Huelo a carne fresca!', y no tardó en descubrirlos."
+                text: "Sobrevino un año de hambruna y los padres, desesperados, decidieron dejar a los niños en el bosque. Pulgarcito oyó el plan escondido bajo el taburete de su padre."
             },
             {
-                text: "La ogresa convenció al ogro de esperar a la mañana para comérselos. Los mandó a dormir al cuarto donde estaban sus siete hijas, cada una con una corona de oro. Pulgarcito, temiendo un ataque nocturno, cambió las coronas de las niñas por los gorros de sus hermanos. En mitad de la noche, el ogro entró a oscuras y, al tocar los gorros, acabó con sus propias hijas por error. Los niños aprovecharon para huir."
+                text: "Sin decir nada, se levantó de madrugada y fue al riachuelo a llenarse los bolsillos de guijarros blancos."
             },
             {
-                text: "Al despertar y ver lo ocurrido, el ogro se puso sus botas de siete leguas para darles caza. Pulgarcito vio al gigante saltar de montaña en montaña y escondió a sus hermanos en una roca hueca. El ogro, cansado, se sentó a descansar sobre esa misma roca y se quedó profundamente dormido. Pulgarcito aprovechó para quitarle las botas mágicas, que se ajustaron perfectamente a sus pies al ser encantadas."
+                text: "Cuando los llevaron al bosque y sus padres huyeron, Pulgarcito guió a sus hermanos de vuelta siguiendo el rastro de las piedras."
             },
             {
-                text: "Con las botas puestas, Pulgarcito regresó a la casa del ogro y engañó a la mujer diciéndole que unos ladrones pedían todo su oro para liberar al marido. La mujer le dio todas sus riquezas. Pulgarcito volvió a casa cargado de oro, salvando a su familia de la miseria para siempre. Compró tierras para sus padres y hermanos, demostrando que el tamaño no importa cuando se tiene un gran corazón e inteligencia."
+                text: "Los padres se alegraron de verlos, pero pronto el dinero volvió a faltar y decidieron perderlos de nuevo, esta vez más lejos."
+            },
+            {
+                text: "Pulgarcito, que no pudo recoger piedras por estar la puerta cerrada, usó migas de pan para marcar el camino."
+            },
+            {
+                text: "Pero al intentar regresar, descubrió con horror que los pájaros se habían comido todas las migas. Estaban perdidos en lo más profundo y oscuro del bosque."
+            },
+            {
+                text: "Tras caminar mucho bajo la lluvia, Pulgarcito divisó una luz desde la cima de un árbol. Llegaron a una casa donde una mujer les advirtió: '¡Huid! Aquí vive un ogro que come niños'."
+            },
+            {
+                text: "Pulgarcito suplicó albergue, pues temían más a los lobos del bosque. La mujer los escondió bajo la cama, pero al llegar el ogro, este gritó: '¡Huelo a carne fresca!', y no tardó en descubrirlos."
+            },
+            {
+                text: "La ogresa convenció al ogro de esperar a la mañana para comérselos. Los mandó a dormir al cuarto donde estaban sus siete hijas, cada una con una corona de oro."
+            },
+            {
+                text: "Pulgarcito, temiendo un ataque nocturno, cambió las coronas de las niñas por los gorros de sus hermanos."
+            },
+            {
+                text: "En mitad de la noche, el ogro entró a oscuras y, al tocar los gorros, acabó con sus propias hijas por error. Los niños aprovecharon para huir."
+            },
+            {
+                text: "Al despertar y ver lo ocurrido, el ogro se puso sus botas de siete leguas para darles caza. Pulgarcito vio al gigante saltar de montaña en montaña y escondió a sus hermanos en una roca hueca."
+            },
+            {
+                text: "El ogro, cansado, se sentó a descansar sobre esa misma roca y se quedó profundamente dormido. Pulgarcito aprovechó para quitarle las botas mágicas, que se ajustaron perfectamente a sus pies al ser encantadas."
+            },
+            {
+                text: "Con las botas puestas, Pulgarcito regresó a la casa del ogro y engañó a la mujer diciéndole que unos ladrones pedían todo su oro para liberar al marido."
+            },
+            {
+                text: "La mujer le dio todas sus riquezas. Pulgarcito volvió a casa cargado de oro, salvando a su familia de la miseria para siempre."
+            },
+            {
+                text: "Compró tierras para sus padres y hermanos, demostrando que el tamaño no importa cuando se tiene un gran corazón e inteligencia."
             }
         ],
         contentEn: [
@@ -434,26 +572,80 @@ export const BOOKS: Book[] = [
         rating: 4.7,
         content: [
             {
-                text: "En los márgenes de un bosque vasto y sombrío, donde los árboles parecen entrelazar sus ramas para ocultar el cielo, vivía un humilde leñador con su esposa y sus dos hijos: Hansel, un niño de mirada despierta, y Gretel, su hermana de corazón valiente. La pobreza se había asentado en su hogar como un polvo denso que no se podía sacudir. El hambre era una presencia constante que hacía rugir sus estómagos y nublaba el juicio de los adultos. Una noche, mientras la escasez apretaba más que nunca, la madrastra, con el corazón endurecido por la desesperación, susurró al oído del leñador un plan atroz: llevarían a los niños a lo más profundo de la maleza y los abandonarían allí."
+                text: "En los márgenes de un bosque vasto y sombrío, donde los árboles parecen entrelazar sus ramas para ocultar el cielo, vivía un humilde leñador con su esposa y sus dos hijos: Hansel, un niño de mirada despierta, y Gretel, su hermana de corazón valiente."
             },
             {
-                text: "Los niños, que el hambre mantenía despiertos, escucharon cada palabra tras la delgada pared de madera. Gretel lloró amargamente, pero Hansel la consoló con un plan astuto. Al amparo de la luna, el niño salió al patio y llenó sus bolsillos con pequeños guijarros blancos que brillaban en la oscuridad como monedas de plata. Al amanecer, mientras la familia se internaba en el corazón del bosque, Hansel se quedaba atrás a cada pocos pasos, dejando caer una piedra blanca sobre la tierra negra. Cuando el fuego que sus padres les habían encendido se extinguió y se vieron solos bajo la luz de la luna, los guijarros guiaron sus pasos de regreso a casa."
+                text: "La pobreza se había asentado en su hogar como un polvo denso que no se podía sacudir. El hambre era una presencia constante que hacía rugir sus estómagos y nublaba el juicio de los adultos."
             },
             {
-                text: "Sin embargo, la miseria no dio tregua. Semanas después, la historia se repitió, pero esta vez la puerta estaba cerrada bajo llave y Hansel no pudo recoger piedras. En su lugar, desmenuzó el último trozo de pan que tenían y fue dejando un rastro de migas por el sendero. Lo que el niño no previó fue que los pájaros del bosque, hambrientos como ellos, devorarían cada rastro de pan. Cuando la noche cayó y la luna se alzó, no encontraron nada más que tierra y sombra. Caminaron durante tres días y tres noches, perdidos en un laberinto de troncos retorcidos, hasta que un pájaro de plumaje blanco como la nieve los guio con su canto hacia un claro extraordinario."
+                text: "Una noche, mientras la escasez apretaba más que nunca, la madrastra, con el corazón endurecido por la desesperación, susurró al oído del leñador un plan atroz: llevarían a los niños a lo más profundo de la maleza y los abandonarían allí."
             },
             {
-                text: "Frente a ellos se alzaba una casita que parecía un sueño febril de un confitero: las paredes eran de pan de jengibre, el tejado de tarta de chocolate y las ventanas de azúcar transparente como el cristal. Los niños, empujados por un hambre voraz, comenzaron a arrancar trozos de la estructura. 'Roer, roer, ratoncito, ¿quién roe mi casita?', dijo una voz cascada desde el interior. De la puerta salió una mujer encorvada, apoyada en un bastón, que los invitó a entrar con una sonrisa que no llegaba a sus ojos pequeños y rojizos. Aunque parecía una anciana bondadosa, era en realidad una bruja malvada que construía casas de dulce para atraer y devorar a los niños."
+                text: "Los niños, que el hambre mantenía despiertos, escucharon cada palabra tras la delgada pared de madera. Gretel lloró amargamente, pero Hansel la consoló con un plan astuto."
             },
             {
-                text: "A la mañana siguiente, la bruja encerró a Hansel en una jaula de hierro y ordenó a Gretel cocinar los mejores manjares para engordar a su hermano. Cada mañana, la mujer, cuya vista era muy pobre, pedía a Hansel que sacara un dedo para comprobar si ya estaba lo suficientemente tierno. El niño, astuto, extendía un hueso de pollo que había encontrado en el suelo. La bruja se asombraba de que el niño siguiera tan flaco, hasta que un día perdió la paciencia. Decidió que, gordo o flaca, se comería a Hansel ese mismo medio día."
+                text: "Al amparo de la luna, el niño salió al patio y llenó sus bolsillos con pequeños guijarros blancos que brillaban en la oscuridad como monedas de plata."
             },
             {
-                text: "La bruja ordenó a Gretel que se asomara al horno para ver si el fuego estaba listo para cocer el pan, con la intención de empujarla dentro y asarla a ella también. Pero la niña, que había adivinado sus negras intenciones, fingió torpeza. 'No sé cómo hacerlo, ¿por dónde debo entrar?', preguntó Gretel. La anciana, gruñendo de rabia por la ignorancia de la niña, se acercó al horno y metió la cabeza para mostrarle cómo hacerlo. En ese instante de descuido, Gretel reunió todas sus fuerzas, le dio un empujón soberbio y cerró la pesada puerta de hierro, dejando que la malvada mujer encontrara su propio final entre las llamas."
+                text: "Al amanecer, mientras la familia se internaba en el corazón del bosque, Hansel se quedaba atrás a cada pocos pasos, dejando caer una piedra blanca sobre la tierra negra."
             },
             {
-                text: "Gretel corrió a liberar a Hansel, y ambos se abrazaron llorando de alegría. Antes de marcharse, exploraron la casa y encontraron cofres repletos de perlas y piedras preciosas que la bruja había acumulado de sus víctimas. Llenaron sus bolsillos y emprendieron el regreso. Tras mucho caminar, llegaron a un gran río que no podían cruzar, pero un pato blanco, conmovido por su historia, los llevó uno a uno sobre su lomo hasta la otra orilla. Al final del sendero, divisaron su antigua casa. Su madrastra había muerto y su padre, consumido por el remordimiento, los recibió con lágrimas de perdón. Con las joyas de la bruja, la pobreza abandonó su hogar para siempre."
-            }
+                text: "Cuando el fuego que sus padres les habían encendido se extinguió y se vieron solos bajo la luz de la luna, los guijarros guiaron sus pasos de regreso a casa."
+            },
+            {
+                text: "Sin embargo, la miseria no dio tregua. Semanas después, la historia se repitió, pero esta vez la puerta estaba cerrada bajo llave y Hansel no pudo recoger piedras."
+            },
+            {
+                text: "En su lugar, desmenuzó el último trozo de pan que tenían y fue dejando un rastro de migas por el sendero. Lo que el niño no previó fue que los pájaros del bosque, hambrientos como ellos, devorarían cada rastro de pan."
+            },
+            {
+                text: "Cuando la noche cayó y la luna se alzó, no encontraron nada más que tierra y sombra. Caminaron durante tres días y tres noches, perdidos en un laberinto de troncos retorcidos, hasta que un pájaro de plumaje blanco como la nieve los guio con su canto hacia un claro extraordinario."
+            },
+            {
+                text: "Frente a ellos se alzaba una casita que parecía un sueño febril de un confitero: las paredes eran de pan de jengibre, el tejado de tarta de chocolate y las ventanas de azúcar transparente como el cristal."
+            },
+            {
+                text: "Los niños, empujados por un hambre voraz, comenzaron a arrancar trozos de la estructura. 'Roer, roer, ratoncito, ¿quién roe mi casita?', dijo una voz cascada desde el interior."
+            },
+            {
+                text: "De la puerta salió una mujer encorvada, apoyada en un bastón, que los invitó a entrar con una sonrisa que no llegaba a sus ojos pequeños y rojizos."
+            },
+            {
+                text: "Aunque parecía una anciana bondadosa, era en realidad una bruja malvada que construía casas de dulce para atraer y devorar a los niños."
+            },
+            {
+                text: "A la mañana siguiente, la bruja encerró a Hansel en una jaula de hierro y ordenó a Gretel cocinar los mejores manjares para engordar a su hermano."
+            },
+            {
+                text: "Cada mañana, la mujer, cuya vista era muy pobre, pedía a Hansel que sacara un dedo para comprobar si ya estaba lo suficientemente tierno."
+            },
+            {
+                text: "El niño, astuto, extendía un hueso de pollo que había encontrado en el suelo. La bruja se asombraba de que el niño siguiera tan flaco, hasta que un día perdió la paciencia."
+            },
+            {
+                text: "Decidió que, gordo o flaca, se comería a Hansel ese mismo medio día."
+            },
+            {
+                text: "La bruja ordenó a Gretel que se asomara al horno para ver si el fuego estaba listo para cocer el pan, con la intención de empujarla dentro y asarla a ella también."
+            },
+            {
+                text: "Pero la niña, que había adivinado sus negras intenciones, fingió torpeza. 'No sé cómo hacerlo, ¿por dónde debo entrar?', preguntó Gretel."
+            },
+            {
+                text: "La anciana, gruñendo de rabia por la ignorancia de la niña, se acercó al horno y metió la cabeza para mostrarle cómo hacerlo."
+            },
+            {
+                text: "En ese instante de descuido, Gretel reunió todas sus fuerzas, le dio un empujón soberbio y cerró la pesada puerta de hierro, dejando que la malvada mujer encontrara su propio final entre las llamas."
+            },
+            {
+                text: "Gretel corrió a liberar a Hansel, y ambos se abrazaron llorando de alegría. Antes de marcharse, exploraron la casa y encontraron cofres repletos de perlas y piedras preciosas que la bruja había acumulado de sus víctimas."
+            },
+            {
+                text: "Llenaron sus bolsillos y emprendieron el regreso. Tras mucho caminar, llegaron a un gran río que no podían cruzar, pero un pato blanco, conmovido por su historia, los llevó uno a uno sobre su lomo hasta la otra orilla."
+            },
+            {
+                text: "Al final del sendero, divisaron su antigua casa. Su madrastra había muerto y su padre, consumido por el remordimiento, los recibió con lágrimas de perdón. Con las joyas de la bruja, la pobreza abandonó su hogar para siempre."
+            },
         ],
         contentEn: [
             { text: "On the edges of a vast and gloomy forest, where trees seem to intertwine their branches to hide the sky, lived a humble woodcutter with his wife and two children: Hansel, a boy with a bright look, and Gretel, his sister with a brave heart. Poverty had settled in their home like dense dust that could not be shaken off. Hunger was a constant presence that made their stomachs rumble and clouded the adults' judgment. One night, while scarcity squeezed more than ever, the stepmother, with a heart hardened by despair, whispered an atrocious plan into the woodcutter's ear: they would take the children to the deepest part of the undergrowth and abandon them there." },
@@ -506,37 +698,82 @@ export const BOOKS: Book[] = [
                 text: "En las profundidades más remotas del océano, donde el azul del agua es tan puro como el cristal más fino, se extendía el reino de los hombres del mar. Allí crecen árboles de un coral carmesí y plantas que se ondulan ante las corrientes. En el punto más profundo se alzaba el castillo del Rey del Mar: una estructura de coral con techos de conchas gigantes que se abren para dejar pasar las corrientes, y ventanas de ámbar transparente."
             },
             {
-                text: "El Rey tenía seis hijas, pero la menor era la más singular. Mientras sus hermanas decoraban sus jardines con restos de naufragios, ella solo quería una estatua de mármol de un joven apuesto y unas flores rojas que recordaban al sol. Su skin era delicada como un pétalo de rosa y sus ojos azules como el abismo, pero al igual que sus hermanas, no tenía pies; su cuerpo terminaba en una cola de pez cubierta de escamas plateadas."
+                text: "El Rey tenía seis hijas, pero la menor era la más singular. Mientras sus hermanas decoraban sus jardines con restos de naufragios, ella solo quería una estatua de mármol de un joven apuesto y unas flores rojas que recordaban al sol."
             },
             {
-                text: "La tradición dictaba que, al cumplir quince años, cada princesa podía subir a la superficie. La sirenita escuchó durante años las historias de sus hermanas: barcos que pasaban como sombras y ciudades que brillaban como estrellas. Cuando llegó su turno, su abuela le colocó ocho ostras blancas en la cola para marcar su rango y le permitió ascender por primera vez al mundo de los hombres."
+                text: "Su piel era delicada como un pétalo de rosa y sus ojos azules como el abismo, pero al igual que sus hermanas, no tenía pies; su cuerpo terminaba en una cola de pez cubierta de escamas plateadas."
             },
             {
-                text: "Al emerger, el sol se ponía y una estrella parpadeaba sobre un gran barco de tres mástiles. A través de una ventana, vio a un joven príncipe de ojos negros que celebraba su cumpleaños. Pero de pronto, el cielo se oscureció y las olas se convirtieron en montañas. El barco se hundió en las entrañas del océano. Recordando que los humanos no pueden respirar bajo el agua, la sirenita buscó al príncipe entre los restos del naufragio."
+                text: "La tradición dictaba que, al cumplir quince años, cada princesa podía subir a la superficie. La sirenita escuchó durante años las historias de sus hermanas: barcos que pasaban como sombras y ciudades que brillaban como estrellas."
             },
             {
-                text: "Lo encontró inconsciente y, sosteniendo su cabeza fuera de las olas, nadó con él hasta llegar a una costa desconocida. Lo dejó sobre la arena tibia y se escondió tras unas rocas. Vio cómo una joven lo encontraba y pedía ayuda. El príncipe despertó, pero nunca supo que una criatura del mar le había salvado la vida; pensó que su salvadora era la muchacha de aquel lugar."
+                text: "Cuando llegó su turno, su abuela le colocó ocho ostras blancas en la cola para marcar su rango y le permitió ascender por primera vez al mundo de los hombres."
             },
             {
-                text: "La sirenita regresó a su palacio, pero su corazón se quedó en la superficie. Desesperada por obtener un alma inmortal (pues los seres del mar al morir se convierten en espuma, mientras que las almas humanas ascienden a las estrellas), decidió visitar a la Bruja del Mar. El camino era aterrador, cruzando remolinos rugientes y campos de pólipos hambrientos que extendían sus tentáculos como serpientes."
+                text: "Al emerger, el sol se ponía y una estrella parpadeaba sobre un gran barco de tres mástiles. A través de una ventana, vio a un joven príncipe de ojos negros que celebraba su cumpleaños."
             },
             {
-                text: "La bruja aceptó ayudarla, pero a un precio terrible. —'Te prepararé una pócima', dijo con risa sibilante. 'Sentirás como si una espada atravesara tu cuerpo al transformarte. Tendrás las piernas más bellas, pero cada paso será como caminar sobre cuchillos afilados. Y a cambio, me darás tu voz, la voz más dulce del océano'. La sirenita aceptó y la bruja le cortó la lengua, sumiéndola en el silencio."
+                text: "Pero de pronto, el cielo se oscureció y las olas se convirtieron en montañas. El barco se hundió en las entrañas del océano. Recordando que los humanos no pueden respirar bajo el agua, la sirenita buscó al príncipe entre los restos del naufragio."
             },
             {
-                text: "Frente al palacio del príncipe, la sirenita bebió el brebaje y se desmayó por el dolor. Cuando despertó, el príncipe estaba ante ella. Él la acogió fascinado por aquella criatura muda que bailaba con gracia celestial a pesar del dolor insoportable de sus pies. Ella se convirtió en su compañera constante, amándolo en silencio mientras él la trataba como a una niña querida, pero sin pensar en casarse con ella."
+                text: "Lo encontró inconsciente y, sosteniendo su cabeza fuera de las olas, nadó con él hasta llegar a una costa desconocida. Lo dejó sobre la arena tibia y se escondió tras unas rocas."
             },
             {
-                text: "Un día, el Rey ordenó que el príncipe se casara con la princesa vecina. Para horror de la sirenita, resultó ser la misma joven que lo encontró en la playa. El príncipe, creyendo que ella era su verdadera salvadora, se enamoró. Se celebró una boda fastuosa en un barco. La sirenita, vestida de seda, tuvo que sostener la cola de la novia, sabiendo que al salir el sol ella moriría y se convertiría en espuma."
+                text: "Vio cómo una joven lo encontraba y pedía ayuda. El príncipe despertó, pero nunca supo que una criatura del mar le había salvado la vida; pensó que su salvadora era la muchacha de aquel lugar."
             },
             {
-                text: "Mientras observaba el horizonte, sus hermanas emergieron con sus cabellos cortados. —'¡Hermana!', gritaron. 'Hemos dado nuestro cabello a la bruja por este puñal. Si atraviesas el corazón del príncipe antes del amanecer y dejas que su sangre caiga sobre tus pies, volverás a ser una sirena'. La sirenita entró en la tienda nupcial, pero al mirar el rostro sereno del príncipe, no pudo hacerlo."
+                text: "La sirenita regresó a su palacio, pero su corazón se quedó en la superficie. Desesperada por obtener un alma inmortal, decidió visitar a la Bruja del Mar."
             },
             {
-                text: "Lanzó el arma a las olas y se arrojó ella misma al mar al aparecer el sol. Sintió que su cuerpo se disolvía, pero no se convirtió en nada. Miles de criaturas transparentes la rodeaban. —'¿Quiénes sois?', preguntó con una voz espiritual. —'Somos las hijas del aire', respondieron. 'No tenemos alma, pero podemos ganarla con buenas acciones. Tú has sufrido y has amado, y ahora te unes a nosotras'."
+                text: "El camino era aterrador, cruzando remolinos rugientes y campos de pólipos hambrientos que extendían sus tentáculos como serpientes."
             },
             {
-                text: "Y así, mientras el príncipe y su novia buscaban a la hermosa desconocida entre la espuma del mar, la sirenita, invisible, les dio un beso en la frente y se elevó hacia las nubes rosadas, dispuesta a comenzar su largo camino de trescientos años hacia las estrellas, donde finalmente obtendría su anhelada alma inmortal."
+                text: "La bruja aceptó ayudarla, pero a un precio terrible. —'Te prepararé una pócima', dijo con risa sibilante."
+            },
+            {
+                text: "'Sentirás como si una espada atravesara tu cuerpo al transformarte. Tendrás las piernas más bellas, pero cada paso será como caminar sobre cuchillos afilados'."
+            },
+            {
+                text: "'Y a cambio, me darás tu voz, la voz más dulce del océano'. La sirenita aceptó y la bruja le cortó la lengua, sumiéndola en el silencio."
+            },
+            {
+                text: "Frente al palacio del príncipe, la sirenita bebió el brebaje y se desmayó por el dolor. Cuando despertó, el príncipe estaba ante ella."
+            },
+            {
+                text: "Él la acogió fascinado por aquella criatura muda que bailaba con gracia celestial a pesar del dolor insoportable de sus pies."
+            },
+            {
+                text: "Ella se convirtió en su compañera constante, amándolo en silencio mientras él la trataba como a una niña querida, pero sin pensar en casarse con ella."
+            },
+            {
+                text: "Un día, el Rey ordenó que el príncipe se casara con la princesa vecina. Para horror de la sirenita, resultó ser la misma joven que lo encontró en la playa."
+            },
+            {
+                text: "El príncipe, creyendo que ella era su verdadera salvadora, se enamoró. Se celebró una boda fastuosa en un barco."
+            },
+            {
+                text: "La sirenita, vestida de seda, tuvo que sostener la cola de la novia, sabiendo que al salir el sol ella moriría y se convertiría en espuma."
+            },
+            {
+                text: "Mientras observaba el horizonte, sus hermanas emergieron con sus cabellos cortados. —'¡Hermana!', gritaron. 'Hemos dado nuestro cabello a la bruja por este puñal'."
+            },
+            {
+                text: "'Si atraviesas el corazón del príncipe antes del amanecer y dejas que su sangre caiga sobre tus pies, volverás a ser una sirena'."
+            },
+            {
+                text: "La sirenita entró en la tienda nupcial, pero al mirar el rostro sereno del príncipe, no pudo hacerlo."
+            },
+            {
+                text: "Lanzó el arma a las olas y se arrojó ella misma al mar al aparecer el sol. Sintió que su cuerpo se disolvía, pero no se convirtió en nada. Miles de criaturas transparentes la rodeaban."
+            },
+            {
+                text: "—'¿Quiénes sois?', preguntó con una voz espiritual. —'Somos las hijas del aire', respondieron. 'No tenemos alma, pero podemos ganarla con buenas acciones. Tú has sufrido y has amado, y ahora te unes a nosotras'."
+            },
+            {
+                text: "Y así, mientras el príncipe y su novia buscaban a la hermosa desconocida entre la espuma del mar, la sirenita, invisible, les dio un beso en la frente y se elevó hacia las nubes rosadas."
+            },
+            {
+                text: "Dispuesta a comenzar su largo camino de trescientos años hacia las estrellas, donde finalmente obtendría su anhelada alma inmortal."
             }
         ],
         contentEn: [
@@ -704,10 +941,22 @@ export const BOOKS: Book[] = [
                 text: "El viaje fue un fracaso: el barco había sido embargado y el padre regresaba más pobre que antes. Al cruzar un bosque bajo una tormenta de nieve, se perdió en un sendero desconocido que lo condujo a un palacio de una opulencia irreal. Las puertas se abrieron solas; mesas repletas de comida humeante lo esperaban, pero no había ni un alma a la vista. Tras pasar la noche, al salir por el jardín, vio un rosal de flores rojas como la sangre. Recordando el deseo de Bella, cortó una. En ese instante, un rugido espantoso hizo temblar la tierra y una criatura de aspecto aterrador, con colmillos de jabalí y pelaje espeso, apareció ante él."
             },
             {
-                text: "—\"¡Inagradecido!\", tronó la Bestia. \"Te he dado comida y techo, ¿y me pagas robando mis flores? Morirás por esto, a menos que una de tus hijas acepte morir en tu lugar\". El padre regresó a casa desolado. Bella, al conocer la historia, no permitió que su padre sufriera por su culpa. \"Yo iré\", dijo con una firmeza que no admitía réplica. Al llegar al palacio, la Bestia no la devoró. Por el contrario, la instaló en la habitación más lujosa y le dio libertad total, con una sola condición: cenar con él cada noche."
+                text: "—\"¡Ingrato!\", tronó la Bestia. \"Te he dado comida y techo, ¿y me pagas robando mis flores? Morirás por esto, a menos que una de tus hijas acepte morir en tu lugar\"."
             },
             {
-                text: "Al principio, Bella sentía un terror paralizante cada vez que veía aquella figura deforme. Pero con el paso de los meses, las cenas se convirtieron en largas conversaciones. Descubrió que tras esa apariencia monstruosa se escondía un alma culta, sensible y profundamente solitaria. La Bestia le regaló una biblioteca inmensa y un espejo mágico que le permitía ver a su familia. A pesar de la fealdad externa, Bella empezó a apreciar la nobleza del corazón de su anfitrión. Sin embargo, cada noche, la Bestia le hacía la misma pregunta con voz trémula: —\"Bella, ¿te casarías conmigo?\". Y ella, con honestidad pero con tristeza, siempre respondía: \"No, Bestia\"."
+                text: "El padre regresó a casa desolado. Bella, al conocer la historia, no permitió que su padre sufriera por su culpa. \"Yo iré\", dijo con una firmeza que no admitía réplica."
+            },
+            {
+                text: "Al llegar al palacio, la Bestia no la devoró. Por el contrario, la instaló en la habitación más lujosa y le dio libertad total, con una sola condición: cenar con él cada noche."
+            },
+            {
+                text: "Al principio, Bella sentía un terror paralizante cada vez que veía aquella figura deforme. Pero con el paso de los meses, las cenas se convirtieron en largas conversaciones."
+            },
+            {
+                text: "Descubrió que tras esa apariencia monstruosa se escondía un alma culta, sensible y profundamente solitaria. La Bestia le regaló una biblioteca inmensa y un espejo mágico."
+            },
+            {
+                text: "A pesar de la fealdad externa, Bella empezó a apreciar la nobleza del corazón de su anfitrión. Sin embargo, cada noche, la Bestia le hacía la misma pregunta: —\"Bella, ¿te casarías conmigo?\". Y ella respondía siempre: \"No, Bestia\"."
             },
             {
                 text: "Un día, el espejo le mostró que su padre estaba gravemente enfermo. Bella suplicó que le permitiera visitarlo. La Bestia, cuyo amor por ella era ya superior a su propio deseo de compañía, aceptó: \"Ve, pero si no regresas en ocho días, moriré de dolor\". Le entregó un anillo que, al girarlo, la transportaría de regreso."
@@ -830,31 +1079,73 @@ export const BOOKS: Book[] = [
         rating: 4.6,
         content: [
             {
-                text: "Hace mucho tiempo, en una pequeña casa adosada a un jardín mágico, vivían un hombre y una mujer. El jardín, cercado por un muro altísimo, pertenecía a una hechicera temida en toda la comarca, a quien nadie se atrevía a desafiar. Un día, la mujer sintió un antojo irrefrenable, un deseo incontrolable por las rapunces, una especie de lechuga silvestre que crecía en aquel jardín encantado. Su anhelo era tan fuerte que languidecía, amenazando con morir si no las probaba. Su marido, desesperado por salvarla, decidió una noche escalar el muro y robar algunas rapunces."
+                text: "Hace mucho tiempo, en una pequeña casa adosada a un jardín mágico, vivían un hombre y una mujer. El jardín, cercado por un muro altísimo, pertenecía a una hechicera temida."
             },
             {
-                text: "Al día siguiente, el antojo de la mujer volvió, más fuerte que nunca. El hombre, con el corazón encogido de miedo, regresó al jardín. Pero esta vez, al descender, se encontró cara a cara con la hechicera. Sus ojos lanzaban chispas de ira. —\"¡Cómo te atreves a entrar en mi jardín como un ladrón!\", bramó la hechicera, con una voz que helaba la sangre. \"¡Pagarás caro tu insolencia!\". El hombre suplicó clemencia, explicando la desesperación de su esposa. La hechicera, con una sonrisa malévola, aceptó dejarlo ir a cambio de una promesa terrible: el hijo que su esposa esperaba le sería entregado al nacer. El hombre, aterrado, aceptó."
+                text: "Un día, la mujer sintió un antojo irrefrenable por las rapunces, una especie de lechuga silvestre que crecía en aquel jardín encantado."
             },
             {
-                text: "Cuando la niña nació, era la criatura más hermosa que se había visto. La hechicera apareció de inmediato, la tomó en brazos y la llamó Rapunzel, en honor a las lechugas que habían provocado su destino. Se la llevó a lo más profundo del bosque y la encerró en una torre altísima, sin puertas ni escaleras, con una sola ventana diminuta en la cima. Allí, Rapunzel creció aislada del mundo, con la hechicera como única compañía."
+                text: "Su marido, desesperado por salvarla, decidió una noche escalar el muro y robar algunas rapunces."
             },
             {
-                text: "Rapunzel tenía una voz melodiosa y el cabello más largo y hermoso que jamás se haya visto: una cascada dorada que caía hasta el suelo. Cuando la hechicera quería subir a la torre, se paraba al pie y gritaba: —\"¡Rapunzel, Rapunzel, suelta tu cabello!\". Y Rapunzel, con un suspiro, desenrollaba sus trenzas doradas y las dejaba caer por la ventana, formando una escalera que la hechicera escalaba con facilidad."
+                text: "Al día siguiente, el antojo de la mujer volvió, más fuerte que nunca. El hombre regresó al jardín, pero esta vez se encontró cara a cara con la hechicera."
             },
             {
-                text: "Pasaron los años. Un día, un joven príncipe, que cabalgaba por el bosque, escuchó una voz tan hermosa que detuvo su caballo. Era Rapunzel, que cantaba para pasar sus largas horas de soledad. Fascinado, el príncipe buscó el origen de la voz y encontró la torre sin puertas. Intrigado, se escondió entre los arbustos y observó a la hechicera llamar a Rapunzel y subir por su cabello."
+                text: "—\"¡Cómo te atreves a entrar en mi jardín como un ladrón!\", bramó la hechicera. \"¡Pagarás caro tu insolencia!\"."
             },
             {
-                text: "Al día siguiente, el príncipe regresó y, imitando la voz de la hechicera, gritó: —\"¡Rapunzel, Rapunzel, suelta tu cabello!\". Las trenzas doradas cayeron, y el príncipe escaló hasta la cima. Al principio, Rapunzel se asustó terriblemente al ver a un hombre, pues nunca había visto a ninguno. Pero el príncipe, con palabras amables y una voz suave, le habló de su admiración por su canto y su belleza. Poco a poco, Rapunzel se sintió cómoda en su compañía. Se enamoraron."
+                text: "La hechicera aceptó dejarlo ir a cambio de una promesa terrible: el hijo que su esposa esperaba le sería entregado al nacer. El hombre, aterrado, aceptó."
             },
             {
-                text: "El príncipe la visitaba cada tarde, escalando por su cabello. Juntos, idearon un plan de escape: él le traería un ovillo de seda cada vez que fuera, y ella tejería una escalera con él. Cuando la escalera estuviera lista, ella descendería y escaparían juntos."
+                text: "Cuando la niña nació, la hechicera la llamó Rapunzel, en honor a las lechugas que habían provocado su destino."
+            },
+            {
+                text: "La encerró en una torre altísima, sin puertas ni escaleras. Allí, Rapunzel creció aislada del mundo, con la hechicera como única compañía."
+            },
+            {
+                text: "Rapunzel tenía una voz melodiosa y el cabello más largo y hermoso que jamás se haya visto: una cascada dorada que caía hasta el suelo."
+            },
+            {
+                text: "Cuando la hechicera quería subir a la torre, se paraba al pie y gritaba: —\"¡Rapunzel, Rapunzel, suelta tu cabello!\"."
+            },
+            {
+                text: "Y Rapunzel, con un suspiro, desenrollaba sus trenzas doradas y las dejaba caer por la ventana, formando una escalera que la hechicera escalaba con facilidad."
+            },
+            {
+                text: "Pasaron los años. Un día, un joven príncipe, que cabalgaba por el bosque, escuchó una voz tan hermosa que detuvo su caballo."
+            },
+            {
+                text: "Era Rapunzel, que cantaba para pasar sus largas horas de soledad. Fascinado, el príncipe buscó el origen de la voz y encontró la torre sin puertas."
+            },
+            {
+                text: "Intrigado, se escondió entre los arbustos y observó a la hechicera llamar a Rapunzel y subir por su cabello."
+            },
+            {
+                text: "Al día siguiente, el príncipe regresó y gritó: —\"¡Rapunzel, Rapunzel, suelta tu cabello!\"."
+            },
+            {
+                text: "Al principio, Rapunzel se asustó al ver a un hombre. Pero el príncipe, con palabras amables, le habló de su admiración por su canto."
+            },
+            {
+                text: "Poco a poco, Rapunzel se sintió cómoda en su compañía. Se enamoraron."
+            },
+            {
+                text: "Juntos idearon un plan: él le traería seda cada tarde y ella tejería una escalera."
+            },
+            {
+                text: "Cuando la escalera estuviera lista, ella descendería y escaparían juntos."
             },
             {
                 text: "Un día, sin embargo, Rapunzel cometió un error. Le preguntó a la hechicera con ingenuidad: \"Dime, madrina, ¿por qué mi príncipe sube tan rápido por tu pelo mientras que a ti te cuesta tanto?\". La hechicera, con una mirada de furia, comprendió la traición. Con un par de tijeras, cortó la larga cabellera dorada de Rapunzel, dejándola con el cabello corto. Luego, con un hechizo, la desterró a un desierto lejano, donde viviría en la miseria."
             },
             {
-                text: "Esa misma noche, la hechicera ató las trenzas cortadas a la ventana. Cuando el príncipe llegó y gritó, el cabello cayó, pero al subir, no encontró a su amada Rapunzel, sino el rostro furioso de la hechicera. —\"¡Jamás volverás a verla!\", gritó la hechicera con una risa cruel. \"¡El pájaro se ha ido, el nido está vacío!\". Desesperado, el príncipe se arrojó desde la torre. Sobrevivió a la caída, pero cayó sobre un lecho de espinas que le arrancaron los ojos. Ciego y desolado, vagó por el bosque durante años, alimentándose de raíces y bayas, llamando a Rapunzel en su sufrimiento."
+                text: "Esa misma noche, la hechicera ató las trenzas cortadas a la ventana. Cuando el príncipe llegó y gritó, el cabello cayó."
+            },
+            {
+                text: "Pero al subir, no encontró a su amada Rapunzel, sino el rostro furioso de la hechicera. —\"¡Jamás volverás a verla!\", gritó con una risa cruel."
+            },
+            {
+                text: "Desesperado, el príncipe se arrojó desde la torre. Sobrevivió a la caída, pero cayó sobre un lecho de espinas que le arrancaron los ojos. Ciego y desolado, vagó por el bosque durante años."
             },
             {
                 text: "Un día, el príncipe ciego llegó a un desierto árido y desolado. Escuchó un canto familiar, una voz que reconocería entre mil. Era Rapunzel, que vivía allí con dos pequeños gemelos, fruto de su amor. Ella lo reconoció de inmediato y se arrojó a sus brazos, llorando de alegría. Dos de sus lágrimas cayeron sobre los ojos ciegos del príncipe. Milagrosamente, en ese instante, su vista regresó."
@@ -989,19 +1280,46 @@ export const BOOKS: Book[] = [
         rating: 4.1,
         content: [
             {
-                text: "Esta es la historia de Jack y las Habichuelas Mágicas, una crónica sobre la ambición, el coraje y cómo un acto de aparente locura puede cambiar el destino de una familia sumida en la miseria. En los márgenes de una aldea donde la tierra era tan pobre que apenas daba para alimentar a los gorriones, vivía una viuda con su único hijo, Jack. Eran tan humildes que su posesión más valiosa no era oro ni tierras, sino una vaca vieja y escuálida llamada Blanca Lechera. Pero llegó un invierno tan crudo que la vaca dejó de dar leche, y el hambre empezó a roer las paredes del estómago de Jack y su madre. Con lágrimas en los ojos, la mujer le pidió a su hijo que llevara al animal al mercado para venderlo: \"Hijo, asegúrate de traer una buena bolsa de monedas, o no sobreviviremos al mes\"."
+                text: "Jack y las habichuelas mágicas es una crónica sobre la ambición, el coraje y cómo un acto de aparente locura puede cambiar el destino de una familia sumida en la miseria."
             },
             {
-                text: "Jack se puso en camino, tirando de la soga de la vaca. No había avanzado mucho cuando se cruzó con un hombre de aspecto extraño, que vestía una capa hecha de retazos de colores y cuyos ojos brillaban con una luz inusual. El hombre se detuvo y, tras observar a la vaca, le hizo una oferta inaudita: —\"Muchacho, te daré estas cinco habichuelas por tu vaca. Pero no son semillas comunes; son habichuelas mágicas. Si las siembras esta noche, para mañana habrán llegado al cielo\". Jack, llevado por un impulso juvenil y la fascinación por lo sobrenatural, aceptó el trato. Al regresar a casa, su madre, al ver que traía semillas en lugar de oro, estalló en furia y llanto. Lanzó las habichuelas por la ventana hacia el jardín y mandó a Jack a la cama sin cenar."
+                text: "En los márgenes de una aldea vivía una viuda con su único hijo, Jack. Eran tan humildes que su posesión más valiosa era una vaca vieja y escuálida llamada Blanca Lechera."
             },
             {
-                text: "A la mañana siguiente, la habitación de Jack estaba sumida en una penumbra verdosa. Al asomarse, se quedó sin aliento: donde antes había tierra seca, ahora se alzaba una planta colosal, un tallo de habichuela tan grueso como un tronco de encina que se retorcía hacia arriba, atravesando las nubes hasta perderse de vista. Sin dudarlo, Jack comenzó a trepar. Escaló durante horas, sintiendo cómo el aire se volvía más puro y el mundo de abajo se transformaba en un juguete diminuto."
+                text: "Llegó un invierno tan crudo que la vaca dejó de dar leche. Con lágrimas en los ojos, la mujer le pidió a su hijo que vendiera al animal: \"Hijo, trae una buena bolsa de monedas\"."
             },
             {
-                text: "Al llegar a la cima, se encontró en un país extraño, un desierto de nubes sólidas que conducía a un castillo de dimensiones ciclópeas. Jack, movido por el hambre, llamó a la puerta. Le abrió una mujer gigante que, al verlo tan pequeño, se apiadó de él y lo dejó entrar para darle un poco de pan y leche. \"Pero escóndete rápido\", le advirtió, \"que mi marido, el Ogro, está a punto de llegar, y nada le gusta más que el aroma de un niño asado\"."
+                text: "Jack se puso en camino. No había avanzado mucho cuando se cruzó con un hombre extraño que vestía una capa de retazos."
             },
             {
-                text: "De pronto, la tierra tembló bajo pasos que sonaban como truenos. El Ogro entró olfateando el aire con su nariz ganchuda. —\"¡Fi-fai-fo-fum! Huelo la sangre de un hombre común. Esté vivo o esté muerto, moleré sus huesos para hacer mi pan\". La mujer lo distrajo con un enorme jabalí asado. Después de comer, el Ogro sacó una bolsa de monedas de oro y se puso a contarlas hasta que el sueño lo venció. Jack, saliendo de su escondite, tomó la bolsa de oro, bajó a toda prisa por la planta y entregó la fortuna a su madre."
+                text: "—\"Muchacho, te daré estas cinco habichuelas por tu vaca. Son mágicas. Si las siembras esta noche, para mañana habrán llegado al cielo\"."
+            },
+            {
+                text: "Jack aceptó el trato. Al regresar, su madre, furiosa al ver semillas en lugar de oro, las lanzó por la ventana y mandó a Jack a la cama sin cenar."
+            },
+            {
+                text: "A la mañana siguiente, donde antes había tierra seca, ahora se alzaba una planta colosal que atravesaba las nubes hasta perderse de vista."
+            },
+            {
+                text: "Sin dudarlo, Jack comenzó a trepar. Escaló durante horas, sintiendo cómo el aire se volvía más puro y el mundo de abajo se transformaba en un juguete diminuto."
+            },
+            {
+                text: "Al llegar a la cima, se encontró en un país extraño, un desierto de nubes sólidas que conducía a un castillo de dimensiones ciclópeas."
+            },
+            {
+                text: "Jack, movido por el hambre, llamó a la puerta. Le abrió una mujer gigante que se apiadó de él y le dio un poco de pan y leche."
+            },
+            {
+                text: "\"Pero escóndete rápido\", le advirtió, \"que mi marido, el Ogro, está a punto de llegar, y nada le gusta más que el aroma de un niño asado\"."
+            },
+            {
+                text: "De pronto, la tierra tembló. El Ogro entró olfateando: —\"¡Fi-fai-fo-fum! Huelo la sangre de un hombre común. Moleré sus huesos para hacer mi pan\"."
+            },
+            {
+                text: "La mujer lo distrajo con un enorme jabalí asado. Después de comer, el Ogro contó sus monedas de oro hasta que el sueño lo venció."
+            },
+            {
+                text: "Jack tomó la bolsa de oro, bajó a toda prisa por la planta y entregó la fortuna a su madre."
             },
             {
                 text: "Durante un tiempo vivieron con holgura, pero la curiosidad y la audacia volvieron a llamar a la puerta de Jack. Trepó por segunda vez. En esta ocasión, vio al Ogro sacar una gallina mágica que, al ordenarle \"¡Pon!\", ponía un huevo de oro puro. Jack esperó a que el gigante roncara, robó la gallina y regresó a la tierra. Ahora eran ricos, pero el espíritu de aventura de Jack no descansaba."
@@ -1112,25 +1430,46 @@ export const BOOKS: Book[] = [
         rating: 3.8,
         content: [
             {
-                text: "Esta es la historia de El Flautista de Hamelín, un relato que camina por la delgada línea entre la gratitud y la venganza, ambientado en una ciudad que aprendió por las malas el valor de una promesa cumplida. Hamelín era una ciudad próspera, de casas de madera tallada y mercados bulliciosos a orillas del río Weser."
+                text: "Hamelín era una ciudad próspera a orillas del río Weser. Sin embargo, un verano de calor extremo trajo una plaga que ningún gato podía detener."
             },
             {
-                text: "Sin embargo, un verano especialmente caluroso trajo consigo una plaga que ningún gato ni veneno podía detener. Las ratas, miles de ellas, surgieron de las alcantarillas y los sótanos. Eran ratas audaces que robaban la comida de los platos de los niños, se escondían en los zapatos de los caballeros y hacían nidos en los sombreros de las damas. La ciudad vivía en un estado de histeria; el chillido de los roedores era el único sonido que se escuchaba por las noches."
+                text: "Las ratas surgieron de las alcantarillas por miles. Robaban la comida, se escondían en los zapatos y hacían nidos en los sombreros."
             },
             {
-                text: "El alcalde y los concejales, hombres gordos y pomposos, se reunieron en el ayuntamiento, pero sus mentes estaban tan vacías como sus soluciones. Fue entonces cuando apareció un extraño. Era un hombre alto y delgado, vestido con una chaqueta de tela de colores vivos y un sombrero con una pluma de faisán. Alrededor de su cuello colgaba una flauta de madera oscura y pulida. —\"Sé cómo librar a vuestra ciudad de esta plaga\", dijo el desconocido con una voz que sonaba como el viento entre los juncos. \"A cambio, pido mil monedas de oro\". Los concejales, desesperados, habrían prometido incluso el sol. \"¡Mil! ¡Te daremos cincuenta mil si nos libras de estos monstruos!\", exclamó el alcalde."
+                text: "La ciudad vivía en un estado de histeria; el chillido de los roedores era el único sonido que se escuchaba por las noches."
             },
             {
-                text: "El flautista salió a la plaza principal, se llevó el instrumento a los labios y comenzó a tocar una melodía extraña, una secuencia de notas que parecía vibrar en los huesos. Al instante, el silencio cayó sobre la ciudad, seguido por un estruendo de millones de patas diminutas. Las ratas salieron de todas partes: de los graneros, de las iglesias, de las camas y de los armarios. Formaron un río de pelaje gris que seguía al flautista mientras este caminaba hacia el río Weser. Sin dejar de tocar, el hombre entró en el agua, y las ratas, hipnotizadas por la música, se lanzaron tras él y fueron arrastradas por la corriente hasta desaparecer."
+                text: "El alcalde y los concejales se reunieron, pero no tenían soluciones. Fue entonces cuando apareció un extraño con una chaqueta de colores y una flauta de madera."
             },
             {
-                text: "La ciudad estalló en vítores. Se tocaron las campanas y se prepararon banquetes. Pero cuando el flautista regresó al ayuntamiento para reclamar su pago, la avaricia se había apoderado del corazón del alcalde. —\"¿Mil monedas por un rato de música?\", se mofó el alcalde. \"Toma estas cincuenta y date por satisfecho. Las ratas ya están muertas, no pueden volver\". El flautista no discutió. Sus ojos brillaron con una luz fría y peligrosa. \"Os arrepentiréis de romper vuestra palabra\", susurró antes de desaparecer entre las sombras de un callejón."
+                text: "—\"Sé cómo librar a vuestra ciudad de esta plaga\", dijo el desconocido. \"A cambio, pido mil monedas de oro\"."
+            },
+            {
+                text: "Los concejales, desesperados, prometieron incluso cincuenta mil si los libraba de los monstruos."
+            },
+            {
+                text: "El flautista tocó una melodía extraña que vibraba en los huesos. Al instante, un río de pelaje gris salió de todas partes: graneros, iglesias y camas."
+            },
+            {
+                text: "Las ratas siguieron al flautista hasta el río Weser. Él entró en el agua y las ratas, hipnotizadas, se lanzaron tras él y fueron arrastradas por la corriente."
+            },
+            {
+                text: "La ciudad estalló en vítores. Pero cuando el flautista regresó para reclamar su pago, la avaricia se apoderó del alcalde."
+            },
+            {
+                text: "—\"¿Mil monedas por un rato de música?\", se mofó. \"Toma estas cincuenta. Las ratas ya están muertas\"."
+            },
+            {
+                text: "El flautista no discutió. Sus ojos brillaron con luz fría. \"Os arrepentiréis de romper vuestra palabra\", susurró antes de desaparecer."
             },
             {
                 text: "Llegó el día de San Juan y San Pablo. Mientras los adultos estaban en la iglesia, el flautista regresó. Esta vez, la melodía de su flauta era diferente: dulce, mágica, como el susurro de un bosque encantado o el aroma de los pasteles recién horneados. Esta vez no fueron las ratas. De todas las casas salieron los niños, corriendo con risas y saltos de alegría. Seguían al flautista como si fueran mariposas tras una flor. Los padres, atrapados en la iglesia, solo pudieron observar con horror a través de las ventanas cómo sus hijos se alejaban."
             },
             {
-                text: "El flautista los guio fuera de la ciudad, hacia la montaña Koppelberg. Cuando llegaron a la ladera, una puerta de roca sólida se abrió mágicamente y todos, el flautista y los niños, entraron en el corazón de la montaña, que se cerró tras ellos para siempre. Solo tres niños quedaron atrás: uno que era cojo y no pudo correr lo suficiente, uno que era sordo y no pudo oír la música, y otro que era ciego y se perdió en el camino."
+                text: "El flautista los guio fuera de la ciudad. Al llegar a la montaña Koppelberg, una puerta de roca se abrió y todos entraron en su corazón, que se cerró para siempre."
+            },
+            {
+                text: "Solo tres niños quedaron atrás: uno cojo que no pudo correr, uno sordo que no oyó la música, y uno ciego que se perdió."
             },
             {
                 text: "Ellos contaron cómo el flautista había prometido llevarlos a un lugar donde los árboles siempre tenían frutos, los pájaros hablaban y nadie lloraba jamás. Hamelín se convirtió en una ciudad de silencio y luto, un lugar donde, desde aquel día, está prohibido tocar música en la calle por la que se fueron los niños, para que nunca se olvide el precio de una promesa rota."
@@ -1235,25 +1574,70 @@ export const BOOKS: Book[] = [
         rating: 4.4,
         content: [
             {
-                text: "Esta es la historia de Pinocho, una crónica sobre la formación del alma, la lucha contra las tentaciones y el arduo camino que separa a un trozo de madera de un corazón humano. En un pequeño pueblo italiano de calles empedradas y talleres angostos, vivía un viejo carpintero llamado Geppetto. Era un hombre de manos nudosas y corazón solitario que, para aliviar su melancolía, decidió tallar una marioneta de madera de pino. Sin embargo, apenas comenzó a esculpir, sucedió algo extraordinario: la madera empezó a reírse de sus cosquillas y a protestar por los golpes del mazo. Geppetto, asombrado, terminó la figura de un niño al que llamó Pinocho. Pero antes de que pudiera enseñarle a caminar, el muñeco cobró vida propia, le dio una patada y huyó corriendo hacia la calle."
+                text: "Pinocho es una crónica sobre la formación del alma y el arduo camino que separa a un trozo de madera de un corazón humano."
             },
             {
-                text: "Aquella marioneta era un torbellino de imprudencia. Geppetto, tratándolo como a un hijo, vendió su única chaqueta de abrigo, a pesar del crudo invierno, para comprarle un abecedario y enviarlo a la escuela. Pinocho, conmovido por un momento, prometió ser el mejor estudiante del mundo. Pero el camino a la escuela está lleno de distracciones para quien tiene la cabeza hecha de madera. Al oír el sonido de los platillos y los tambores, Pinocho olvidó su promesa y vendió su abecedario para comprar una entrada al Gran Teatro de Marionetas de Comefuego."
+                text: "En un pequeño pueblo italiano vivía un viejo carpintero llamado Geppetto. Solitario, decidió tallar una marioneta de madera de pino."
             },
             {
-                text: "Allí, tras casi ser quemado para cocinar un carnero, el dueño del teatro se apiadó de él y le regaló cinco monedas de oro para su padre. Pinocho regresaba a casa orgulloso, pero en el trayecto se topó con el Zorro y el Gato, dos estafadores que se hacían pasar por cojo y ciego. Con palabras melosas, convencieron al muñeco de que, si enterraba sus monedas en el \"Campo de los Milagros\", crecería un árbol cargado de oro. Pinocho, cegado por la codicia, los siguió, ignorando las advertencias del Espíritu del Grillo Parlante, a quien terminó por silenciar de un manotazo. Por supuesto, los malandros lo emboscaron, lo colgaron de una encina y le robaron sus tesoros."
+                text: "Apenas comenzó, la madera empezó a reírse y protestar. Geppetto terminó la figura de un niño al que llamó Pinocho."
             },
             {
-                text: "Fue entonces cuando apareció el Hada Azul, una criatura de cabellos color turquesa que vivía en una casa de cristal. Ella rescató a Pinocho y, al preguntarle dónde estaban las monedas, el muñeco mintió. En ese instante, su nariz comenzó a crecer y crecer, extendiéndose tanto que no podía moverse por la habitación. \"Las mentiras, Pinocho\", dijo el Hada con una sonrisa triste, \"tienen las piernas cortas o la nariz larga\". Solo tras muchas lágrimas y arrepentimiento, el Hada llamó a unos pájaros carpinteros para que le devolvieran la nariz a su tamaño original."
+                text: "Pero antes de que pudiera enseñarle a caminar, el muñeco cobró vida propia, le dio una patada y huyó corriendo hacia la calle."
             },
             {
-                text: "Pero la naturaleza de Pinocho seguía siendo voluble. De camino a casa, se encontró con su amigo \"Mecha\", quien lo invitó al País de los Juguetes, un lugar donde no había libros, ni maestros, ni leyes, y donde los niños jugaban de la mañana a la noche. Pinocho pasó cinco meses de diversión desenfrenada, hasta que una mañana despertó con una sensación extraña: sus orejas se habían vuelto largas y peludas, y le había crecido una cola. El País de los Juguetes era en realidad una trampa para convertir a los niños perezosos en asnos y venderlos en el mercado."
+                text: "Aquella marioneta era un torbellino de imprudencia. Geppetto vendió su única chaqueta para comprarle un abecedario."
             },
             {
-                text: "Convertido en burro, Pinocho fue maltratado y arrojado al mar, donde el hechizo se rompió y volvió a ser una marioneta. Pero su desgracia no terminó ahí, pues fue tragado por el Gran Tiburón, un monstruo marino de dimensiones colosales. En la oscuridad del vientre de la bestia, vio una luz lejana. Era Geppetto, que había salido a buscarlo al mar y había sido devorado tiempo atrás. El reencuentro fue puro llanto y alegría. Pinocho, demostrando por primera vez una valentía genuina, cargó a su padre sobre sus hombros de madera y aprovechó un bostezo del monstruo para escapar nadando hacia la orilla."
+                text: "Pinocho prometió ser el mejor estudiante, pero el camino a la escuela está lleno de distracciones para quien tiene la cabeza de madera."
             },
             {
-                text: "A partir de ese día, Pinocho cambió por completo. Trabajó duro en una granja, cuidó de su padre enfermo y ahorró cada céntimo para ayudar al Hada Azul cuando supo que ella también pasaba penurias. Una noche, mientras dormía, el Hada lo visitó en sueños. Al despertar, Pinocho ya no sintió el tacto frío y rígido de la madera. Al mirarse en el espejo, vio a un niño de carne y hueso, con ojos brillantes y una sonrisa llena de vida. A su lado, Geppetto sonreía, y en un rincón de la habitación, el viejo cuerpo de madera de la marioneta descansaba como el capullo vacío de una mariposa que finalmente ha aprendido que ser humano no es una cuestión de forma, sino de amor y sacrificio."
+                text: "Al oír los tambores, Pinocho olvidó su promesa y vendió su abecedario para entrar al Teatro de Marionetas."
+            },
+            {
+                text: "Pinocho regresaba a casa orgulloso, pero se topó con el Zorro y el Gato, dos estafadores que se hacían pasar por cojo y ciego."
+            },
+            {
+                text: "Lo convencieron de que, si enterraba sus monedas en el \"Campo de los Milagros\", crecería un árbol cargado de oro."
+            },
+            {
+                text: "Pinocho los siguió, ignorando las advertencias del Grillo Parlante. Los malandros lo emboscaron y le robaron sus tesoros."
+            },
+            {
+                text: "Fue entonces cuando apareció el Hada Azul, de cabellos turquesa. Ella rescató a Pinocho y le preguntó por las monedas."
+            },
+            {
+                text: "El muñeco mintió y, en ese instante, su nariz comenzó a crecer tanto que no podía moverse por la habitación."
+            },
+            {
+                text: "\"Las mentiras, Pinocho\", dijo el Hada, \"tienen las piernas cortas o la nariz larga\". Solo tras su arrepentimiento, el Hada le devolvió su nariz normal."
+            },
+            {
+                text: "Pinocho se encontró con su amigo \"Mecha\", quien lo invitó al País de los Juguetes, un lugar donde no había libros, ni maestros, ni leyes."
+            },
+            {
+                text: "Pinocho pasó cinco meses de diversión, hasta que una mañana despertó con una sensación extraña: sus orejas se habían vuelto largas y peludas."
+            },
+            {
+                text: "El País de los Juguetes era en realidad una trampa para convertir a los niños perezosos en asnos y venderlos en el mercado."
+            },
+            {
+                text: "Convertido en burro, Pinocho fue arrojado al mar, donde el hechizo se rompió. Pero fue tragado por el Gran Tiburón, un monstruo marino colosal."
+            },
+            {
+                text: "En la oscuridad del vientre de la bestia, vio una luz lejana. Era Geppetto, que había salido a buscarlo al mar y había sido devorado tiempo atrás."
+            },
+            {
+                text: "Pinocho cargó a su padre sobre sus hombros y aprovechó un bostezo del monstruo para escapar nadando hacia la orilla."
+            },
+            {
+                text: "Pinocho trabajó duro en una granja y cuidó de su padre. Una noche, el Hada lo visitó en sueños."
+            },
+            {
+                text: "Al despertar, Pinocho ya no sintió el tacto frío del pino. Vio a un niño de carne y hueso con una sonrisa llena de vida."
+            },
+            {
+                text: "Geppetto sonreía, y en un rincón descansaba el viejo cuerpo de la marioneta, como el capullo vacío de una mariposa."
             }
         ],
         contentEn: [
@@ -1346,46 +1730,109 @@ export const BOOKS: Book[] = [
         rating: 4.7,
         content: [
             {
-                text: "Esta es la historia de El Gigante Egoísta, un relato sobre cómo el hielo de la soledad y la dureza del corazón solo pueden ser derretidos por la calidez de la generosidad y la inocencia de la niñez. Todas las tardes, a la salida de la escuela, los niños de la aldea solían ir a jugar al jardín del Gigante. Era un jardín amplio y hermoso, tapizado de un césped suave y verde como el terciopelo. Por todas partes surgían flores brillantes como estrellas, y había doce melocotoneros que, en primavera, se cubrían de una delicada floración de color rosa y perla, y en otoño daban frutos dulces y jugosos. Los pájaros se posaban en las ramas y cantaban con tal dulzura que los niños solían detener sus juegos para escucharlos. —\"¡Qué felices somos aquí!\", se decían unos a otros."
+                text: "El Gigante Egoísta es un relato sobre cómo el hielo de la soledad solo puede ser derretido por la generosidad y la inocencia."
             },
             {
-                text: "Pero un día, el Gigante regresó. Había estado fuera durante siete años visitando a su amigo, el ogro de Cornualles, y al volver, lo primero que vio fue a los niños jugando entre sus flores. —\"¿Qué hacéis aquí?\", gritó con una voz tan retumbante que los niños escaparon despavoridos. \"Mi jardín es mi jardín\", sentenció. \"No permitiré que nadie más que yo juegue en él\". Sin perder tiempo, construyó un muro altísimo alrededor de la propiedad y colgó un cartel que decía: PROHIBIDA LA ENTRADA. LOS TRANSGRESORES SERÁN CASTIGADOS. Era, en efecto, un Gigante muy egoísta."
+                text: "Todas las tardes, los niños de la aldea solían jugar en el jardín del Gigante. Era un lugar hermoso con césped suave y flores brillantes."
             },
             {
-                text: "Llegó la primavera y toda la comarca se llenó de brotes y pajarillos. Sin embargo, en el jardín del Gigante Egoísta seguía siendo invierno. Los pájaros no querían cantar allí porque no había niños, y los árboles se olvidaron de florecer. Una vez, una hermosa flor asomó su cabeza sobre el césped, pero al ver el cartel de prohibición, sintió tanta lástima por los niños que volvió a meterse bajo tierra y se quedó dormida. Los únicos que se sentían a gusto allí eran la Nieve y la Escarcha. \"La primavera se ha olvidado de este jardín\", exclamaban, \"así que viviremos aquí todo el año\"."
+                text: "Había doce melocotoneros que se cubrían de flores rosas. Los pájaros cantaban tan dulce que los niños se detenían a escucharlos."
             },
             {
-                text: "La Nieve cubrió el césped con su gran manto blanco y la Escarcha pintó de plata todos los árboles. Luego invitaron al Viento del Norte, quien llegó envuelto en pieles, rugiendo por el jardín y derribando las chimeneas. \"Este es un lugar delicioso\", dijo el Viento, \"deberíamos invitar también al Granizo\". Y así, el Granizo llegó, golpeando el tejado del castillo durante tres horas al día hasta romper casi todas las pizarras, corriendo luego alrededor del jardín tan rápido como podía."
+                text: "Pero un día, el Gigante regresó. Al volver, vio a los niños jugando entre sus flores. —\"¿Qué hacéis aquí?\", gritó con voz retumbante."
             },
             {
-                text: "—\"No entiendo por qué la primavera tarda tanto en llegar\", decía el Gigante Egoísta mientras se asomaba a la ventana y contemplaba su jardín blanco y frío. \"Espero que el tiempo cambie pronto\". Pero la primavera no llegó nunca, ni tampoco el verano. El otoño dio frutos dorados a todos los jardines, pero al jardín del Gigante no le dio ninguno. \"Es demasiado egoísta\", decía el otoño. Así, el Invierno se instaló allí permanentemente, y el Viento del Norte, el Granizo, la Escarcha y la Nieve bailaban entre los árboles."
+                text: "\"Mi jardín es mi jardín\", sentenció. \"No permitiré que nadie más que yo juegue en él\". Construyó un muro altísimo y colgó un cartel de PROHIBIDA LA ENTRADA."
             },
             {
-                text: "Una mañana, el Gigante estaba acostado en su cama cuando escuchó una música deliciosa. Era tan dulce que pensó que debían ser los músicos del Rey que pasaban por allí. En realidad, era solo un jilguero que cantaba ante su ventana, pero hacía tanto tiempo que el Gigante no oía el canto de un pájaro que le pareció la melodía más bella del mundo. Entonces, el Granizo dejó de bailar sobre su cabeza, el Viento del Norte cesó sus rugidos y un perfume delicioso llegó hasta él a través de la ventana abierta. —\"¡Creo que la primavera ha llegado por fin!\", exclamó el Gigante, y saltó de la cama para mirar hacia afuera."
+                text: "Llegó la primavera, pero en el jardín del Gigante Egoísta seguía siendo invierno. Los pájaros no querían cantar allí porque no había niños."
             },
             {
-                text: "¿Y qué fue lo que vio? Vio algo maravilloso. Por una brecha en el muro, los niños se habían colado y estaban sentados en las ramas de los árboles. En cada árbol que alcanzaba a ver había un niño, y los árboles estaban tan felices de tenerlos de vuelta que se habían cubierto de flores y balanceaban sus ramas suavemente sobre las cabezas de los pequeños. Los pájaros revoloteaban gorjeando de alegría y las flores se asomaban entre el césped riendo."
+                text: "Los únicos que se sentían a gusto eran la Nieve y la Escarcha. \"La primavera se ha olvidado de este jardín\", exclamaban."
             },
             {
-                text: "Era un cuadro encantador, salvo en un rincón. En el rincón más apartado del jardín todavía era invierno. Allí se encontraba un niño muy pequeño, tan pequeño que no alcanzaba las ramas del árbol y daba vueltas a su alrededor llorando amargamente. El pobre árbol estaba todavía cubierto de escarcha y nieve, y el Viento del Norte soplaba y rugía sobre él. —\"¡Sube, pequeño!\", decía el árbol, y bajaba sus ramas todo lo que podía, pero el niño era demasiado menudo."
+                text: "La Nieve cubrió el césped y la Escarcha pintó de plata los árboles. Invitaron al Viento del Norte, que rugía por el jardín."
             },
             {
-                text: "El corazón del Gigante se derritió al mirar hacia afuera. \"¡Qué egoísta he sido!\", pensó. \"Ahora sé por qué la primavera no quería venir aquí. Subiré a ese pobre niño al árbol y luego derribaré el muro, y mi jardín será para siempre el campo de juegos de los niños\". Estaba verdaderamente arrepentido."
+                text: "Luego llegó el Granizo, que golpeaba el tejado del castillo tres horas al día hasta romper casi todas las pizarras."
             },
             {
-                text: "Bajó las escaleras, abrió la puerta con sigilo y salió al jardín. Pero cuando los niños lo vieron, se asustaron tanto que todos huyeron y el invierno volvió al jardín. Solo el niño pequeño no escapó, porque sus ojos estaban tan llenos de lágrimas que no vio venir al Gigante. El Gigante se le acercó por detrás, lo tomó con delicadeza en su mano y lo subió al árbol. Al punto, el árbol floreció, los pájaros vinieron a cantar en él y el niño extendió sus brazos, rodeó el cuello del Gigante y lo besó."
+                text: "—\"No entiendo por qué la primavera tarda tanto\", decía el Gigante. Pero la primavera no llegó nunca, ni tampoco el verano."
             },
             {
-                text: "Los otros niños, al ver que el Gigante ya no era malo, regresaron corriendo, y con ellos volvió la primavera. —\"Desde ahora, este es vuestro jardín, pequeñuelos\", dijo el Gigante, y tomando un hacha enorme, derribó el muro."
+                text: "El otoño dio frutos a todos los jardines, menos al del Gigante. Así, el Invierno se instaló allí permanentemente."
             },
             {
-                text: "A las doce, cuando la gente iba al mercado, encontraron al Gigante jugando con los niños en el jardín más hermoso que se hubiera visto jamás. Jugaron durante todo el día, y al atardecer los niños fueron a despedirse del Gigante. —\"¿Pero dónde está vuestro pequeño compañero?\", preguntó él. \"El niño que subí al árbol\". El Gigante lo quería más que a los otros porque lo había besado. —\"No lo sabemos\", respondieron los niños, \"se ha ido\"."
+                text: "Una mañana, el Gigante escuchó una música deliciosa. Era un jilguero que cantaba ante su ventana."
             },
             {
-                text: "Pasaron los años y el Gigante se volvió viejo y débil. Ya no podía jugar, así que se sentaba en un gran sillón a ver jugar a los niños y admiraba su jardín. \"Tengo muchas flores bellas\", decía, \"pero los niños son las flores más bellas de todas\". Una mañana de invierno, mientras se vestía, miró por la ventana. Ya no odiaba el invierno, pues sabía que no era sino la primavera dormida. De pronto, se frotó los ojos con asombro y miró de nuevo. En el rincón más apartado del jardín había un árbol cubierto de flores blancas. Sus ramas eran de oro y de ellas colgaban frutos de plata, y debajo del árbol estaba el niño a quien él tanto había querido."
+                text: "Hacía tanto tiempo que no oía el canto de un pájaro que le pareció la melodía más bella del mundo."
             },
             {
-                text: "El Gigante corrió hacia abajo con gran alegría. Pero al acercarse al niño, su rostro se puso rojo de cólera. —\"¿Quién se ha atrevido a herirte?\", gritó. Pues en las palmas de las manos del niño había señales de dos clavos, y las mismas señales estaban en sus pequeños pies. \"¿Quién se ha atrevido a herirte? ¡Dímelo para que tome mi espada y lo mate!\". —\"No\", respondió el niño con una voz de una dulzura celestial. \"Estas son las heridas del Amor\". El Gigante sintió un extraño temor y cayó de rodillas ante el pequeño. —\"¿Quién eres?\", le preguntó en un susurro. Y el niño sonrió al Gigante y le dijo: —\"Una vez me dejaste jugar en tu jardín; hoy vendrás conmigo a mi jardín, que es el Paraíso\". Cuando los niños llegaron esa tarde para jugar, encontraron al Gigante muerto bajo el árbol, todo cubierto de flores blancas."
+                text: "El Granizo dejó de bailar, el Viento cesó y un perfume delicioso llegó hasta él. —\"¡La primavera ha llegado!\", exclamó."
+            },
+            {
+                text: "¿Y qué vio? Por una brecha en el muro, los niños se habían colado y estaban sentados en las ramas de los árboles."
+            },
+            {
+                text: "Los árboles estaban tan felices que se habían cubierto de flores y balanceaban sus ramas suavemente."
+            },
+            {
+                text: "Los pájaros revoloteaban de alegría y las flores se asomaban entre el césped riendo."
+            },
+            {
+                text: "Era un cuadro encantador, salvo en un rincón. Allí se encontraba un niño muy pequeño llorando amargamente."
+            },
+            {
+                text: "No alcanzaba las ramas del árbol, que todavía estaba cubierto de nieve. —\"¡Sube, pequeño!\", decía el árbol."
+            },
+            {
+                text: "El corazón del Gigante se derritió. \"¡Qué egoísta he sido!\", pensó. \"Ahora sé por qué la primavera no quería venir aquí\"."
+            },
+            {
+                text: "\"Subiré a ese niño al árbol y luego derribaré el muro\". Estaba verdaderamente arrepentido."
+            },
+            {
+                text: "Bajó las escaleras y salió al jardín. Pero cuando los niños lo vieron, se asustaron tanto que todos huyeron y el invierno volvió."
+            },
+            {
+                text: "Solo el niño pequeño no escapó, porque sus ojos estaban tan llenos de lágrimas que no vio venir al Gigante."
+            },
+            {
+                text: "El Gigante lo tomó con delicadeza y lo subió al árbol. Al punto, el árbol floreció y el niño besó al Gigante."
+            },
+            {
+                text: "Los otros niños regresaron corriendo, y con ellos volvió la primavera. —\"Es vuestro jardín, pequeñuelos\", dijo el Gigante."
+            },
+            {
+                text: "Tomando un hacha enorme, derribó el muro para siempre."
+            },
+            {
+                text: "Al mercado iban a las doce y encontraron al Gigante jugando con los niños en el jardín más hermoso jamás visto."
+            },
+            {
+                text: "—\"¿Dónde está vuestro pequeño compañero?\", preguntaba el Gigante. El Gigante lo quería más que a los otros."
+            },
+            {
+                text: "—\"No lo sabemos\", respondieron los niños, \"se ha ido\"."
+            },
+            {
+                text: "Pasaron los años y el Gigante se volvió viejo. \"Tengo muchas flores bellas\", decía, \"pero los niños son las flores más bellas de todas\"."
+            },
+            {
+                text: "Una mañana, vio un árbol cubierto de flores blancas con ramas de oro. Debajo estaba el niño a quien él tanto había querido."
+            },
+            {
+                text: "El Gigante corrió hacia abajo. Pero al ver las señales de clavos en las manos del niño, se llenó de cólera."
+            },
+            {
+                text: "—\"¿Quién se ha atrevido a herirte?\", gritó. —\"No\", respondió el niño. \"Estas son las heridas del Amor\"."
+            },
+            {
+                text: "El niño le dijo: —\"Una vez me dejaste jugar en tu jardín; hoy vendrás conmigo al mío, que es el Paraíso\"."
+            },
+            {
+                text: "Esa tarde, los niños encontraron al Gigante muerto bajo el árbol, cubierto de flores blancas."
             }
         ],
         contentEn: [
@@ -3493,22 +3940,31 @@ export const BOOKS: Book[] = [
         rating: 4.6,
         content: [
             { text: "Había una vez un joven y gallardo príncipe que vivía en un reino lejano, una tierra de montañas majestuosas y valles fértiles donde el sol parecía brillar con un color dorado especial. A pesar de tener todo cuanto pudiera desear —caballos veloces, maestros sabios y los tesoros más brillantes—, su corazón albergaba un deseo profundo y persistente. Anhelaba encontrar una compañera de vida. Pero no buscaba a una mujer cualquiera que fuera simplemente hermosa o inteligente; su ideal era supremo y casi inalcanzable. Tenía la firme convicción de que solo podría ser feliz si se casaba con una princesa de verdad, una joven que poseyera una esencia real tan pura y delicada que fuera imposible de fingir." },
-            { text: "Su madre, la vieja Reina, era una mujer de gran sabiduría y elegancia, conocida por su paladar refinado y sus modales impecables. Ella siempre le recordaba la importancia de este estándar. 'Hijo mío, debes casarte con una princesa de verdad. No una duquesa, ni una condesa, sino una princesa de sangre real, tan delicada como un pétalo de orquídea al amanecer'. 'Debes buscar a alguien tan auténtica como el diamante más puro tallado por manos expertas. No te conformes con menos, pues solo una verdadera princesa comprenderá el peso de tu corona'. Estas palabras se grabaron a fuego en el alma del príncipe, marcando el inicio de su gran búsqueda por todos los horizontes conocidos." },
+            { text: "Su madre, la vieja Reina, siempre recordaba la importancia de este estándar. 'Hijo mío, debes casarte con una princesa de verdad'." },
+            { text: "'No una duquesa, sino alguien tan delicada como un pétalo de orquídea al amanecer. Solo ella comprenderá el peso de tu corona'." },
+            { text: "Estas palabras se grabaron en el alma del príncipe, marcando el inicio de su gran búsqueda por todos los horizontes." },
             { text: "El príncipe, impulsado por la esperanza y el mandato materno, emprendió un viaje épico que lo llevó más allá de las fronteras de su propio mapa. Durante meses, sus naves surcaron mares embravecidos y sus caravanas cruzaron desiertos ardientes bajo soles implacables. En las Tierras del Norte, visitó palacios de cristal. En los Reinos del Este, se sentó en banquetes rodeados de sedas. Recorrió el Oeste y el Sur buscando esa verdad." },
             { text: "En cada parada encontraba princesas que a primera vista parecían perfectas. Eran hermosas, sabían tocar el arpa con maestría y hablaban varios idiomas con fluidez. Sin embargo, el príncipe detectaba algún pequeño detalle que rompía el hechizo. Tal vez una reía con un tono ronco, o mostraba una impaciencia impropia al hablar con los sirvientes. '¿Son realmente princesas de corazón o solo de nombre?', se preguntaba con una sombra de dudas en su rostro al partir de cada corte extranjera." },
             { text: "Los días se convirtieron en semanas y las semanas en largos meses de fatigas, hasta que el príncipe hubo visitado cada rincón del mundo conocido. Al final de un año entero de búsqueda infructuosa, cruzó el puente levadizo de su propio castillo con los hombros caídos y el ánimo por los suelos. 'Padre, madre', dijo al encontrarlos, 'he visto mil rostros y escuchado mil voces dulces, pero mi corazón no ha latido con la certeza de haber encontrado a esa princesa verdadera'." },
-            { text: "Aquella misma noche se desató una tormenta de una violencia inaudita. El viento comenzó a aullar entre las gárgolas del castillo, transformándose en un rugido que estremecía los cimientos. Las nubes, negras como el carbón, cubrieron por completo la luna, dejando el mundo en una oscuridad absoluta solo rota por el destello cegador de los relámpagos. La lluvia no caía suavemente; más bien parecía que las cataratas del cielo se hubieran abierto de par en par, descargando torrentes de agua helada. Nadie, absolutamente nadie, podría sobrevivir mucho tiempo a la intemperie en medio de tal caos elemental. La familia real estaba reunida alrededor de la chimenea." },
-            { text: "Durante un breve silencio entre dos truenos ensordecedores, se oyó un sonido inesperado. Fueron tres golpes claros, aunque débiles, que resonaron en el grueso portón principal. El viejo Rey, sorprendido de que alguien pudiera estar afuera en semejante tempestad, frunció el ceño. Él mismo se levantó y se dirigió hacia la entrada principal con un candelabro. Al abrir la enorme puerta de roble, una ráfaga de lluvia helada penetró en el hall. Allí se encontraba una joven muchacha cuyo aspecto era sencillamente desgarrador." },
+            { text: "Aquella misma noche se desató una tormenta de una violencia inaudita. El viento aullaba entre las gárgolas del castillo con furia." },
+            { text: "La lluvia no caía suavemente; parecía que las cataratas del cielo se hubieran abierto. Nadie podría sobrevivir a la intemperie." },
+            { text: "Entre dos truenos ensordecedores, se oyó un sonido inesperado. Fueron tres golpes claros que resonaron en el grueso portón principal." },
+            { text: "El viejo Rey, sorprendido, se dirigió hacia la entrada principal con un candelabro y abrió la enorme puerta de roble." },
             { text: "¡Pero santo cielo, qué aspecto tenía la pobre criatura! El agua le chorreaba por el pelo castaño y se escurría por sus hombros en largos hilos fríos. Su vestido estaba ahora arruinado, sucio de barro y pesadamente empapado. El agua le entraba por la punta de sus zapatos de cuero roto y le salía por los talones. Tiritaba tan violentamente que sus dientes castañeteaban de forma sonora, y sus manos estaban azules por el frío cortante de la tormenta." },
-            { text: "A pesar de su apariencia, la joven miró directamente a los ojos del Rey con una dignidad serena que el barro de los caminos no podía ocultar. 'Soy una princesa', dijo con una voz que mantenía una firmeza y un tono de nobleza que dejaron al Rey momentáneamente sin palabras. 'Me he perdido en el bosque cuando el carruaje de mi escolta fue arrastrado por el río. Os ruego que me deis cobijo y calor, pues mis fuerzas se agotan'." },
+            { text: "La joven miró al Rey con una dignidad que el barro no podía ocultar. 'Soy una princesa', dijo con una firmeza sorprendente." },
+            { text: "'Me he perdido en el bosque cuando mi carruaje fue arrastrado por el río. Os ruego que me deis cobijo, pues mis fuerzas se agotan'." },
             { text: "La noticia de la llegada de la misteriosa joven llegó rápidamente a oídos de la Reina y del Príncipe. Cuando la vieron entrar, su sorpresa fue mayúscula. La vieja Reina guardó un silencio calculador mientras observaba a la invitada. 'Ya lo veremos', pensó con una sonrisa enigmática. 'Habrá una forma de comprobarlo que no admita dudas'." },
             { text: "Mientras los criados proporcionaban a la joven ropas secas, la Reina se dirigió al dormitorio. Quitó toda la ropa de cama hasta que solo se veía el somier de madera labrada. Extrajo de su bolsillo una pequeña bolsa de seda roja con un único guisante verde, pequeño y tan duro como una piedra, y lo colocó en el centro exacto de la base de la cama." },
             { text: "Ordenó que trajeran veinte colchones de la mejor lana de oveja, gruesos y pesados, y que los apilaran uno sobre otro justo encima del guisante. No contenta con esto, mandó colocar veinte edredones de plumas de eider, rellenos con el plumón más suave y esponjoso, creando una montaña de suavidad." },
-            { text: "La joven princesa tuvo que subir por una larga escalera de mano para alcanzar la cima. Allí arriba, los edredones la envolvieron en un abrazo de seda. Durante toda la noche, la joven se dio la vuelta una y otra vez. Sentía algo debajo de ella que la molestaba de una forma inexplicable y dolorosa. Era una sensación de algo duro, pequeño pero persistente, que parecía clavarse en su espalda. La oscuridad de la noche se le hizo eterna por la incomodidad." },
-            { text: "A la mañana siguiente, el Rey le preguntó con amabilidad: 'Dime, querida joven, ¿qué tal has descansado en tu primera noche con nosotros?'. '¡Oh, Majestad, ha sido una noche terriblemente difícil! No he podido cerrar los ojos. ¡Solo Dios sabe qué es lo que había debajo de esos colchones!'. 'Parecía que estaba acostada sobre una piedra redonda y afilada. Ese objeto molesto me ha causado tales estragos que hoy tengo el cuerpo lleno de moretones'." },
+            { text: "La joven tivo que subir por una larga escalera para alcanzar la cima. Allí, los edredones la envolvieron en un abrazo de seda." },
+            { text: "Durante toda la noche, se dio la vuelta una y otra vez. Sentía algo debajo de ella que la molestaba de forma dolorosa." },
+            { text: "Era algo duro y persistente que se clavaba en su espalda. La oscuridad de la noche se le hizo eterna por la incomodidad." },
+            { text: "'¡Ha sido una noche difícil! No he podido cerrar los ojos. ¡Solo Dios sabe qué es lo que había debajo de esos colchones!'." },
+            { text: "'Parecía que estaba acostada sobre una piedra redonda y afilada. Tengo el cuerpo lleno de moretones', dijo la joven." },
             { text: "Ante aquellas palabras, la Reina soltó una carcajada de triunfo. Solo una verdadera princesa podría haber sentido la molestia de un pequeño guisante a través de cuarenta capas. El Príncipe se acercó a la joven y le tomó las manos con ternura. 'He encontrado finalmente a la princesa de verdad que mi corazón siempre anheló'." },
             { text: "Se organizó la boda más magnífica que la historia de los cuentos jamás hubiera registrado. Invitados de todos los reinos acudieron para presenciar la unión. La princesa lucía radiante, confirmando en cada gesto que su esencia era, en efecto, de una nobleza exquisita y sensible." },
-            { text: "Y en cuanto al pequeño guisante verde, fue tratado como una reliquia sagrada. Los orfebres fabricaron una caja de oro macizo y cristal de roca para protegerlo. Fue llevado al Museo Real como testimonio de que la verdadera nobleza no reside en la riqueza exterior, sino en la sensibilidad más profunda del alma." }
+            { text: "El pequeño guisante verde fue tratado como una reliquia sagrada. Los orfebres fabricaron una caja de oro macizo para protegerlo." },
+            { text: "Fue llevado al Museo Real como testimonio de que la verdadera nobleza reside en la sensibilidad más profunda del alma." },
         ],
         contentEn: [
             { text: "Once upon a time there was a young prince who lived in a distant and splendid kingdom. Like all princes in fairy tales, his greatest wish was to marry, but not just anyone." },
@@ -3785,25 +4241,73 @@ export const BOOKS: Book[] = [
         category: 'juvenile',
         content: [
             {
-                text: "CAPÍTULO 1: LA TRAGEDIA DEL CROMO PERDIDO\n\nSi crees que la vida de un genio incomprendido de once años es fácil, es que no has intentado recuperar un cromo de 'Calamar Cósmico edición holográfica' de detrás de una taquilla que lleva sin moverse desde la caída del Imperio Romano. \n\n—Nico, si perdemos ese cromo, mi plan para dominar el mercado de intercambios del recreo se irá al traste —le dije a mi mejor amigo mientras él intentaba introducir su brazo, peligrosamente delgado, en la rendija de la taquilla 42.\n\n—Dani, mi brazo está haciendo ruidos que no debería hacer un brazo —respondió Nico con la cara pegada al metal frío—. Además, aquí atrás hay algo más que polvo. Hay algo... de cuero."
+                text: "CAPÍTULO 1: LA TRAGEDIA DEL CROMO PERDIDO (Y MI PLAN DE DOMINACIÓN MUNDIAL)\n\nSi crees que la vida de un genio incomprendido de once años es fácil, es que no has intentado recuperar un cromo de 'Calamar Cósmico edición holográfica' de detrás de una taquilla que lleva sin moverse desde la caída del Imperio Romano. \n\nPara el resto de los mortales de 6ºB, ese trozo de cartón brillante es solo un juego. Para mí, Daniel 'El Arquitecto' Pérez, es un activo financiero estratégico. Mi plan era sencillo: canjear al Calamar Cósmico por tres dragones de fuego, vender los dragones por una colección completa de tazos vintage y, finalmente, usar esos tazos para sobornar a los de 1º de la ESO y que me dejen usar las canastas de basket los martes."
             },
             {
-                text: "Lo que Nico sacó no fue mi cromo. Fue un sobre de piel marrón, atado con un cordel que se deshizo en polvo en cuanto lo tocó. Dentro no había cromos. Había un mapa. Pero no era un mapa de tesoros piratas en islas desiertas. Era un plano detallado de nuestro colegio, el San Bonifacio, pero con una diferencia inquietante: bajo la biblioteca no debería haber nada más que cimientos y ratas educadas, pero el mapa mostraba una red de túneles llamada 'El Sector de Silencio'.\n\n—Genial —murmuré—. Mi cromo ha sido sustituido por un mapa que probablemente nos meterá en un lío monumental. Es el destino. Los genios siempre atraemos los problemas de alto nivel."
+                text: "—Nico, si perdemos ese cromo, mi imperio se derrumbará antes de la merienda —le dije a mi mejor amigo mientras él intentaba introducir su brazo, peligrosamente delgado, en la rendija de la taquilla 42.\n\nNico es mi 'Especialista en Espacios Estrechos'. No es que sea un experto, es que es el único niño del colegio que puede comerse un sándwich de tres pisos sin desabrocharse el cinturón. \n\n—Dani, mi brazo está haciendo ruidos que no debería hacer un brazo humano —respondió Nico con la mejilla aplastada contra el metal frío de la taquilla—. Siento algo... está frío y tiene pelos. Por favor, dime que no es la rata mutante de la que habla el mito del gimnasio."
             },
             {
-                text: "CAPÍTULO 2: OPERACIÓN RATÓN DE BIBLIOTECA\n\nPasar desapercibido en la biblioteca con Nico es como intentar esconder un elefante en una tienda de cristales. Nico tiene la mala costumbre de estornudar cuando se pone nervioso, y la bibliotecaria, la Sra. Gruñidos, tiene un oído entrenado para detectar hasta el parpadeo de un alumno.\n\n—Según el mapa, la entrada está tras la sección de 'Manuales de Taxidermia en el Medievo' —susurré. \n\nEfectivamente, allí estaba. Al mover un tomo especialmente pesado que olía a naftalina y olvido, una sección de la estantería cedió con un gemido metálico. No era una puerta secreta de cine; era una trampilla industrial, fría y con un cierre de presión que claramente decía: 'No deberías estar aquí'."
+                text: "—Ignora el vello aleatorio, Nico. Céntrate en el brillo holográfico. ¡Usa la fuerza o la palanca, lo que prefieras!\n\nDe repente, Nico pegó un tirón seco. Su codo salió disparado hacia atrás y casi me deja sin nariz. Pero no traía al Calamar Cósmico. Su mano aferraba un sobre de piel marrón, atado con un cordel que parecía estar a punto de deshacerse en átomos.\n\n—Esto no brilla nada, Dani. Y huele como la mochila de deporte de Martínez un viernes por la tarde."
             },
             {
-                text: "CAPÍTULO 3: EL LABERINTO DE TUBERÍAS\n\nBajamos por una escalera de caracol tan estrecha que si hubiera desayunado un ganchito más esa mañana, me habría quedado atascado. Al llegar abajo, la temperatura bajó diez grados. El lugar era inmenso. Techos altos cruzados por tuberías de cobre que vibraban con un zumbido eléctrico constante.\n\n—¿Oyes eso, Dani? —Nico señaló una de las tuberías más gruesas—. Suena a... voces.\n\nNo eran voces humanas. Era una especie de murmullo digital, una corriente de datos que corría bajo nuestros pies. El mapa indicaba que estábamos en el 'Nodo de Control'. ¿Desde cuándo un colegio de primaria necesita un nodo de control bajo las enciclopedias?"
+                text: "CAPÍTULO 2: EL MAPA QUE NO DEBERÍA EXISTIR\n\nNos refugiamos en el rincón más oscuro del patio, detrás de los contenedores de reciclaje, el único lugar donde los ojos de los profesores no llegan porque el olor a plátano pasado actúa como un escudo de invisibilidad.\n\nNico abrió el sobre con manos temblorosas. El cordel se convirtió en polvo en cuanto lo tocó, literalmente. Dentro no había cromos. No había explicaciones. Había un mapa.\n\n—Genial —murmuré—. Mi cromo de 50 euros ha sido sustituido por un papel viejo que probablemente sea una lista de la compra del siglo XIX."
             },
             {
-                text: "CAPÍTULO 4: EL EXPEDIENTE DEL DOCENTE ROBOT\n\nLlegamos a una antecámara llena de archivadores metálicos que se extendían hasta donde alcanzaba la vista. Abrí uno al azar marcado con el año 1985. \n\n—Mira esto, Nico —saqué una ficha con la foto de un joven Sr. Martínez, nuestro profesor de mates—. 'Sujeto: Martínez. Estado: Actualización de Firmware 4.2 completada. Programación de falta de humor: Éxito total'.\n\n—¡Lo sabía! —exclamó Nico, olvidando el silencio—. ¡Martínez es un robot! Todo el mundo pensaba que era aburrido por naturaleza, ¡pero está programado!"
+                text: "Pero al desplegarlo, mi cerebro de casi genio hizo clic. No era un mapa de tesoros piratas en islas desiertas. Era un plano técnico, extremadamente detallado, de nuestro propio colegio, el San Bonifacio. Solo que el mapa mostraba cosas que no deberían estar ahí. El comedor tenía una planta inferior marcada como 'Criogenización de Purés'. El gimnasio estaba conectado con el despacho del director por un conducto llamado 'Túnel de la Disciplina Extrema'.\n\nPero lo más inquietante estaba bajo la biblioteca. El mapa mostraba una red de habitaciones llamada 'El Sector de Silencio'."
             },
             {
-                text: "CAPÍTULO 5: EL AGENTE ESCOBA\n\nDe repente, el zumbido de las tuberías cambió de tono. Una luz roja empezó a girar en el techo y una voz metálica anunció: 'Detección de intrusos en sector archivos. Nivel de amenaza: Ganchito'.\n\n—Tenemos que salir —dije, sintiendo que mi cerebro de genio entraba en modo pánico avanzado.\n\nFue entonces cuando lo vimos. Al final del pasillo, una figura caminaba hacia nosotros. No era un guardia de seguridad con porra. Era Pepe, el conserje. Pero no llevaba su mono azul manchado de lejía. Llevaba un traje táctico negro y una linterna que parecía un láser.\n\n—Aquí Agente Escoba —dijo por un walkie-talkie—. He localizado a las unidades de distracción. Procedo a la neutralización con el Protocolo Merienda."
+                text: "—Nico, ¿te das cuenta de lo que es esto? —le pregunté, ajustándome mis gafas (que no tienen graduación, pero me dan un aire de analista de sistemas que necesito). \n\n—¿Un castigo seguro de tres semanas sin recreo? —aventuró Nico.\n\n—No. Es el destino. Los genios siempre atraemos los problemas de alto nivel. El cromo desapareció para que encontráramos esto. Bajo las enciclopedias que nadie lee hay un búnker. Y nosotros vamos a entrar."
             },
             {
-                text: "CAPÍTULO 6: LA HUIDA DESESPERADA\n\nCorrimos como si nos fuera la vida en ello (que probablemente nos iba). Subimos por los conductos de ventilación, gateando sobre metal que crujía a cada paso. Nico estuvo a punto de estornudar tres veces, pero logré taparle la nariz con un calcetín de repuesto que siempre llevo por si acaso.\n\nLogramos salir por una rejilla que daba al patio trasero, justo cuando el sol empezaba a ponerse. Pepe estaba allí fuera, barriendo el patio con su escoba normal, como si nada hubiera pasado. Pero al vernos salir, nos guiñó un ojo y señaló su walkie-talkie.\n\n—La próxima vez, chicos, buscad el cromo en el aula de música —dijo con una sonrisa inquietante—. Allí es donde guardan las cosas que realmente importan."
+                text: "CAPÍTULO 3: MISIÓN IMPOSIBLE (VERSIÓN BIBLIOTECA PÚBLICA)\n\nInfiltrarse en la biblioteca del San Bonifacio es más difícil que pasarse el jefe final de un Souls con los ojos cerrados. El obstáculo principal tiene nombre y apellido: la Sra. Gruñidos. Es una mujer que, según el mito escolar, puede oír el latido de una hormiga a tres pasillos de distancia.\n\n—Escucha el plan, Nico. Entraremos usando la formación 'Avestruz Somnolienta'. Tú caminas mirando un libro de gramática y yo voy detrás, oculto por tu estrecha pero efectiva silueta."
+            },
+            {
+                text: "—Dani, ¿por qué siempre tengo que ser yo el escudo humano? —susurró Nico mientras cruzábamos el umbral de la biblioteca.\n\n—Porque tu metabolismo es aerodinámico, Nico. Es ingeniería básica.\n\nPasamos junto al mostrador. La Sra. Gruñidos estaba sellando libros con una fuerza que parecía que quería atravesar la mesa. Nos miró por encima de sus gafas de media luna. Su mirada era como un escáner térmico que buscaba culpables. Nico estornudó. El 'Estornudo de la Autoridad'. Es un reflejo condicionado que tiene cada vez que ve a alguien que puede ponerle un parte."
+            },
+            {
+                text: "—¡SILENCIO! —bramó la Sra. Gruñidos. Las ventanas vibraron. Una planta se marchitó en una esquina.\n\nNos congelamos. Tras diez segundos de tensión insoportable, ella volvió a sus sellos. Llegamos a la sección de 'Manuales de Taxidermia en el Medievo', un lugar tan aburrido que la propia luz del sol se niega a entrar. Según el mapa, el interruptor estaba tras un tomo titulado 'El Arte de Rellenar Lemures'.\n\nAl tirar del libro, un gemido metálico recorrió la estantería. Fue una trampilla industrial de acero, fría y con un cierre de presión que decía claramente en letras rojas: 'ACCESO RESTRINGIDO - PERSONAL DE MANTENIMIENTO NIVEL 9'."
+            },
+            {
+                text: "CAPÍTULO 4: EL SECTOR DEL SILENCIO Y LAS TUBERÍAS DEL MISTERIO\n\nBajamos por una escalera de caracol de metal oxidado que chirriaba como un coro de gatos desafinados. El lugar era tan estrecho que si hubiera desayunado un ganchito más esa mañana, me habría quedado atascado permanentemente, convirtiéndome en una curiosidad arqueológica para futuras generaciones.\n\nAl llegar al final, la temperatura bajó de golpe. Podíamos ver nuestro aliento en el aire, formando pequeñas nubes de vapor. No era un sótano normal con calderas y trastos viejos."
+            },
+            {
+                text: "El lugar era inmenso, una catedral de hormigón y tecnología obsoleta.\n\n—Dani... —Nico tiró de mi sudadera—. Mira las tuberías.\n\nNo eran tuberías de agua. Estaban hechas de un cobre brillante que vibraba con un zumbido eléctrico constante. Algunas estaban cubiertas de cables de fibra óptica que parpadeaban con una luz azul rítmica, como el pulso de un gigante dormido.\n\n—¿Oyes eso? —preguntó Nico, acercando su oído a una de las tuberías más gruesas."
+            },
+            {
+                text: "Me acerqué. No era el sonido del agua corriendo. Era una especie de murmullo digital, una corriente de datos que corría bajo nuestros pies. Miles de voces, códigos y pitidos procesados a toda velocidad. El mapa indicaba que estábamos en el 'Nodo de Control Primario'.\n\n—Mis teorías se quedan cortas, Nico —dije, sintiendo un escalofrío que no era solo por el frío—. Este colegio no es un centro de enseñanza. Es un servidor. El San Bonifacio es un ordenador gigante y nosotros estamos caminando por su placa base."
+            },
+            {
+                text: "CAPÍTULO 5: ARCHIVOS X (X DE EXTREMADAMENTE ABURRIDO, PERO PERTURBADOR)\n\nLlegamos a una antecámara llena de archivadores metálicos que se extendían hasta donde alcanzaba la vista. Todo estaba etiquetado con fechas que se remontaban a los años 70.\n\n—Dani, mira esto. 'Proyecto Educación Programada' —Nico señaló un cajón entreabierto.\n\nSaqué una ficha al azar. Era del Sr. Martínez, nuestro profesor de matemáticas, el hombre capaz de hacer que un parque de atracciones parezca un funeral de lo aburrido."
+            },
+            {
+                text: "La ficha tenía una foto suya de joven, pero con cables saliendo de su nuca.\n\n—'Sujeto: Martínez' —leí en voz alta—. 'Estado: Actualización de Firmware 4.2 completada. Programación de falta de humor: Éxito total. Resistencia a las bromas de los alumnos: 99.8%'.\n\n—¡Lo sabía! —exclamó Nico, olvidando por completo el protocolo de sigilo—. ¡Martínez es un robot! Todo el mundo pensaba que era aburrido por naturaleza, pero es que ha sido optimizado para la eficiencia matemática extrema."
+            },
+            {
+                text: "Seguí revisando. Había expedientes de todos. La Sra. Gruñidos aparecía marcada como 'Unidad de Vigilancia Acústica de Largo Alcance'. El director tenía una etiqueta que decía 'Interfaz de Usuario con el Ministerio del Silencio'.\n\n—Si todos son robots o agentes... ¿quiénes somos nosotros? —preguntó Nico con voz temblorosa.\n\n—Nosotros somos las variables no controladas, Nico. El error en el sistema. Y parece que el sistema acaba de darse cuenta de que estamos aquí."
+            },
+            {
+                text: "CAPÍTULO 6: EL AGENTE ESCOBA Y EL PROTOCOLO MERIENDA\n\nDe repente, el zumbido de las tuberías cambió de tono, volviéndose un pitido agudo que hacía que me dolieran los empastes. Una voz metálica, que sonaba sospechosamente parecida a la de la megafonía del colegio pero sin el eco habitual, anunció por los altavoces ocultos:\n\n'DETECCIÓN DE INTRUSOS EN SECTOR ARCHIVOS. NIVEL DE AMENAZA: GANCHITO. ACTIVANDO PROTOCOLO DE CONTENCIÓN ADYACENTE'."
+            },
+            {
+                text: "—¿Nivel de amenaza Ganchito? —Nico miró su bolsa de snacks a medio terminar—. ¿Cómo saben lo que he desayunado?\n\n—Tienen sensores de partículas de maíz frito, Nico. ¡Es tecnología de punta! ¡Tenemos que salir de aquí!\n\nFue entonces cuando lo vimos. Al final del pasillo, una figura caminaba hacia nosotros con una calma aterradora. No era un guardia de seguridad con porra y cara de pocos amigos. Era Pepe, el conserje."
+            },
+            {
+                text: "Pero no era el Pepe que conocíamos. No llevaba su mono azul manchado de lejía y su gorra de lado. Llevaba un traje táctico de material sintético negro, gafas de visión nocturna y una linterna que proyectaba un haz de luz láser rojo.\n\nSe llevó una mano al hombro y presionó un walkie-talkie.\n\n—Aquí Agente Escoba para Base —dijo con una voz profunda y profesional—. He localizado a las unidades de distracción. Son los sujetos 102 (Pérez) y 103 (Nico). Procedo a la neutralización con el Protocolo Merienda. Corto."
+            },
+            {
+                text: "CAPÍTULO 7: HUIDA TÁCTICA (Y EL PORQUÉ SIEMPRE LLEVO UN CALCETÍN DE REPUESTO)\n\nCorrimos como si nos fuera la vida en ello (que, técnicamente, era nuestra teoría principal en ese momento). Subimos por una rejilla de ventilación que estaba tan sucia que creo que he inhalado polvo del Jurásico.\n\n—¡Dani, me persigue una luz roja! —gritaba Nico mientras gateábamos por los conductos de metal que crujían de forma alarmante.\n\n—¡Es el láser de Pepe, Nico! ¡No mires atrás!"
+            },
+            {
+                text: "Llegamos a una intersección de tubos. El aire caliente de la calefacción nos golpeaba la cara. Escuché los pasos de Pepe justo debajo de nosotros. Estaba golpeando el conducto con el palo de su escoba (que ahora parecía algún tipo de arma sónica por cómo vibraba el metal).\n\n—¡Dani, voy a estornudar! ¡El polvo! ¡Lo siento! —Nico estaba entrando en la fase pre-estornudo, con la nariz arrugada y los ojos en blanco."
+            },
+            {
+                text: "Si estornudaba, Pepe sabría exactamente en qué conducto estábamos. Fue en ese momento cuando mi previsión de casi genio salvó el día. Metí la mano en mi mochila y saqué mi calcetín de repuesto (limpio, por suerte para él). \n\n—¡Muerde esto, Nico! ¡Amortigua el impacto acústico!\n\nNico obedeció con los ojos llorosos. El estornudo salió como un sordo 'pffft'. Pepe pasó de largo por el pasillo de abajo, convencido de que seguíamos en el sector de archivos."
+            },
+            {
+                text: "Logramos salir por una rejilla que daba al patio trasero, cerca de las cocinas, justo cuando el sol empezaba a ponerse. Pepe estaba allí fuera, barriendo el patio con su escoba normal, silbando una melodía de los años 80 como si nada hubiera pasado. Pero al vernos salir por el suelo, nos guiñó un ojo con una precisión militar y señaló su walkie-talkie disimuladamente.\n\n—La próxima vez, chicos, buscad el cromo en el aula de música —dijo con una sonrisa inquietante—. Allí es donde guardan las cosas que realmente importan. Y las llaves del sótano real."
+            },
+            {
+                text: "Nico y yo nos miramos. Mi cromo holográfico ya no importaba. Teníamos un mapa, sabíamos que los profes eran robots y ahora teníamos una pista. El Juego de los Genios acababa de empezar."
             }
         ]
     },

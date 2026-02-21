@@ -532,7 +532,10 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es',
                         "transition-all duration-500 relative flex flex-col justify-center",
                         isMaximized
                             ? "w-full max-w-5xl max-h-[78vh] z-10 px-8 md:px-12 lg:px-20 py-4 md:py-6 lg:py-10 text-white flex flex-col mb-8"
-                            : "bg-white/40 backdrop-blur-xl rounded-[3rem] p-10 md:p-16 border border-white/20 flex-grow shadow-2xl min-h-[400px]"
+                            : cn(
+                                "backdrop-blur-xl rounded-[3rem] p-4 md:p-8 border flex-grow shadow-2xl min-h-[400px]",
+                                selectedBook.category === 'juvenile' ? "bg-[#fffdf5] border-amber-100" : "bg-white/40 border-white/20"
+                            )
                     )}>
                         {/* Glass Overlay for Immersive Mode */}
                         {isMaximized && <div className="absolute inset-0 bg-white/10 backdrop-blur-[120px] rounded-[3rem] border border-white/20 shadow-2xl" />}
@@ -589,33 +592,29 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es',
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     className={cn(
-                                        "relative z-10 leading-relaxed text-center flex flex-col items-center justify-center w-full h-full overflow-hidden",
-                                        selectedBook.category === 'juvenile' ? "text-left items-start md:px-16" : "text-center items-center"
+                                        "relative z-10 leading-relaxed w-full h-full overflow-y-auto custom-scrollbar px-6 md:px-16 py-8",
+                                        selectedBook.category === 'juvenile' ? "text-left font-handwriting" : "text-center font-serif",
+                                        selectedBook.category === 'juvenile' && !isMaximized ? "shadow-inner min-h-[500px]" : ""
                                     )}
                                     style={{ fontSize: `${isMaximized ? fontSize + 4 : fontSize}px`, color: isMaximized ? 'white' : undefined }}
                                 >
-                                    <div className={cn(
-                                        "relative max-w-4xl overflow-y-auto custom-scrollbar px-4 py-8 rounded-xl",
-                                        selectedBook.category === 'juvenile' && !isMaximized ? "bg-[#fffdf5] shadow-inner border border-amber-100 min-h-[500px] w-full" : ""
+                                    {selectedBook.category === 'juvenile' && !isMaximized && (
+                                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px)', backgroundSize: '100% 2.5rem' }} />
+                                    )}
+                                    <span className={cn(
+                                        "transition-all duration-75 whitespace-pre-wrap",
+                                        selectedBook.category === 'juvenile' ? "text-blue-900 font-bold" : "font-medium",
+                                        isMaximized ? "text-white" : "text-slate-900"
                                     )}>
-                                        {selectedBook.category === 'juvenile' && !isMaximized && (
-                                            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px)', backgroundSize: '100% 2.5rem' }} />
-                                        )}
-                                        <span className={cn(
-                                            "transition-all duration-75 whitespace-pre-wrap",
-                                            selectedBook.category === 'juvenile' ? "text-blue-900 font-bold" : "font-medium",
-                                            isMaximized ? "text-white" : "text-slate-900"
-                                        )}>
-                                            {currentBookContent[currentPage]?.text.slice(0, charIndex)}
-                                        </span>
-                                        <span className={cn(
-                                            "whitespace-pre-wrap",
-                                            selectedBook.category === 'juvenile' ? "text-blue-900/40 font-bold" : "font-medium",
-                                            isMaximized ? "text-white/50" : "text-slate-500"
-                                        )}>
-                                            {currentBookContent[currentPage]?.text.slice(charIndex)}
-                                        </span>
-                                    </div>
+                                        {currentBookContent[currentPage]?.text.slice(0, charIndex)}
+                                    </span>
+                                    <span className={cn(
+                                        "whitespace-pre-wrap",
+                                        selectedBook.category === 'juvenile' ? "text-blue-900/40 font-bold" : "font-medium",
+                                        isMaximized ? "text-white/50" : "text-slate-500"
+                                    )}>
+                                        {currentBookContent[currentPage]?.text.slice(charIndex)}
+                                    </span>
                                 </motion.div>
                             </AnimatePresence>
                         </div>
