@@ -87,11 +87,14 @@ export default function StorySearch({ books }: StorySearchProps) {
     const handleSelectBook = (bookId: string) => {
         setQuery('');
         setIsOpen(false);
+        const book = books.find(b => b.id === bookId);
+        const basePath = book?.category === 'juvenile' ? 'lectura-juvenil' : 'cuentos-clasicos';
+
         // Navigate to the book in the CURRENT language
         if (language === 'es') {
-            router.push(`/material/cuentacuentos/${bookId}`);
+            router.push(`/material/${basePath}/${bookId}`);
         } else {
-            router.push(`/material/cuentacuentos/${bookId}/${language}`);
+            router.push(`/material/${basePath}/${bookId}/${language}`);
         }
     };
 

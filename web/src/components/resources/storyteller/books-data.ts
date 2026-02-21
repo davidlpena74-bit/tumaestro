@@ -25,6 +25,7 @@ export interface Book {
     genre: string;
     themeColor: string;
     rating?: number;
+    category?: 'classic' | 'juvenile';
 }
 
 export const BOOKS: Book[] = [
@@ -3767,6 +3768,80 @@ export const BOOKS: Book[] = [
             { text: "Zusammen, Hand in Hand, reisten sie durch einen magischen verschneiten Wald, wo Schneeflocken wie Feen tanzten und die Kälte nicht zu spüren war, und führten sie zu einem hellen Licht in der Ferne." },
             { text: "Sie kamen schließlich im Reich der Süßigkeiten an, einem Ort aus Marzipan und Bonbons. Die Zuckerfee hieß sie willkommen und organisierte ein Bankett der Wunder zu ihren Ehren." },
             { text: "Sie tanzten den Blumenwalzer unter Applaus und Farben, und Clara fühlte sich als das glücklichste Mädchen im Universum. Aber am Ende wachte sie unter dem Baum auf, mit dem Nussknacker in ihren Armen. War alles nur ein Traum?" }
+        ]
+    },
+    {
+        id: 'casi-genio-tomo-1',
+        title: 'Crónicas de un Casi Genio I: El Enigma del Sótano Prohibido',
+        author: 'Tu Maestro',
+        description: 'Todo empieza con un cromo perdido y termina con el descubrimiento de una sociedad secreta bajo el patio del colegio. Primera parte de las aventuras de Dani.',
+        level: 'Medio',
+        age: '10-12',
+        coverImage: 'https://images.unsplash.com/photo-1547032175-7fc8c7bd15b3?auto=format&fit=crop&q=80&w=800',
+        chipImage: '🗺️',
+        genre: 'Aventura/Misterio',
+        themeColor: 'from-amber-100 to-orange-200',
+        rating: 4.9,
+        category: 'juvenile',
+        content: [
+            {
+                text: "CAPÍTULO 1: LA TRAGEDIA DEL CROMO PERDIDO\n\nSi crees que la vida de un genio incomprendido de once años es fácil, es que no has intentado recuperar un cromo de 'Calamar Cósmico edición holográfica' de detrás de una taquilla que lleva sin moverse desde la caída del Imperio Romano. \n\n—Nico, si perdemos ese cromo, mi plan para dominar el mercado de intercambios del recreo se irá al traste —le dije a mi mejor amigo mientras él intentaba introducir su brazo, peligrosamente delgado, en la rendija de la taquilla 42.\n\n—Dani, mi brazo está haciendo ruidos que no debería hacer un brazo —respondió Nico con la cara pegada al metal frío—. Además, aquí atrás hay algo más que polvo. Hay algo... de cuero."
+            },
+            {
+                text: "Lo que Nico sacó no fue mi cromo. Fue un sobre de piel marrón, atado con un cordel que se deshizo en polvo en cuanto lo tocó. Dentro no había cromos. Había un mapa. Pero no era un mapa de tesoros piratas en islas desiertas. Era un plano detallado de nuestro colegio, el San Bonifacio, pero con una diferencia inquietante: bajo la biblioteca no debería haber nada más que cimientos y ratas educadas, pero el mapa mostraba una red de túneles llamada 'El Sector de Silencio'.\n\n—Genial —murmuré—. Mi cromo ha sido sustituido por un mapa que probablemente nos meterá en un lío monumental. Es el destino. Los genios siempre atraemos los problemas de alto nivel."
+            },
+            {
+                text: "CAPÍTULO 2: OPERACIÓN RATÓN DE BIBLIOTECA\n\nPasar desapercibido en la biblioteca con Nico es como intentar esconder un elefante en una tienda de cristales. Nico tiene la mala costumbre de estornudar cuando se pone nervioso, y la bibliotecaria, la Sra. Gruñidos, tiene un oído entrenado para detectar hasta el parpadeo de un alumno.\n\n—Según el mapa, la entrada está tras la sección de 'Manuales de Taxidermia en el Medievo' —susurré. \n\nEfectivamente, allí estaba. Al mover un tomo especialmente pesado que olía a naftalina y olvido, una sección de la estantería cedió con un gemido metálico. No era una puerta secreta de cine; era una trampilla industrial, fría y con un cierre de presión que claramente decía: 'No deberías estar aquí'."
+            },
+            {
+                text: "CAPÍTULO 3: EL LABERINTO DE TUBERÍAS\n\nBajamos por una escalera de caracol tan estrecha que si hubiera desayunado un ganchito más esa mañana, me habría quedado atascado. Al llegar abajo, la temperatura bajó diez grados. El lugar era inmenso. Techos altos cruzados por tuberías de cobre que vibraban con un zumbido eléctrico constante.\n\n—¿Oyes eso, Dani? —Nico señaló una de las tuberías más gruesas—. Suena a... voces.\n\nNo eran voces humanas. Era una especie de murmullo digital, una corriente de datos que corría bajo nuestros pies. El mapa indicaba que estábamos en el 'Nodo de Control'. ¿Desde cuándo un colegio de primaria necesita un nodo de control bajo las enciclopedias?"
+            },
+            {
+                text: "CAPÍTULO 4: EL EXPEDIENTE DEL DOCENTE ROBOT\n\nLlegamos a una antecámara llena de archivadores metálicos que se extendían hasta donde alcanzaba la vista. Abrí uno al azar marcado con el año 1985. \n\n—Mira esto, Nico —saqué una ficha con la foto de un joven Sr. Martínez, nuestro profesor de mates—. 'Sujeto: Martínez. Estado: Actualización de Firmware 4.2 completada. Programación de falta de humor: Éxito total'.\n\n—¡Lo sabía! —exclamó Nico, olvidando el silencio—. ¡Martínez es un robot! Todo el mundo pensaba que era aburrido por naturaleza, ¡pero está programado!"
+            },
+            {
+                text: "CAPÍTULO 5: EL AGENTE ESCOBA\n\nDe repente, el zumbido de las tuberías cambió de tono. Una luz roja empezó a girar en el techo y una voz metálica anunció: 'Detección de intrusos en sector archivos. Nivel de amenaza: Ganchito'.\n\n—Tenemos que salir —dije, sintiendo que mi cerebro de genio entraba en modo pánico avanzado.\n\nFue entonces cuando lo vimos. Al final del pasillo, una figura caminaba hacia nosotros. No era un guardia de seguridad con porra. Era Pepe, el conserje. Pero no llevaba su mono azul manchado de lejía. Llevaba un traje táctico negro y una linterna que parecía un láser.\n\n—Aquí Agente Escoba —dijo por un walkie-talkie—. He localizado a las unidades de distracción. Procedo a la neutralización con el Protocolo Merienda."
+            },
+            {
+                text: "CAPÍTULO 6: LA HUIDA DESESPERADA\n\nCorrimos como si nos fuera la vida en ello (que probablemente nos iba). Subimos por los conductos de ventilación, gateando sobre metal que crujía a cada paso. Nico estuvo a punto de estornudar tres veces, pero logré taparle la nariz con un calcetín de repuesto que siempre llevo por si acaso.\n\nLogramos salir por una rejilla que daba al patio trasero, justo cuando el sol empezaba a ponerse. Pepe estaba allí fuera, barriendo el patio con su escoba normal, como si nada hubiera pasado. Pero al vernos salir, nos guiñó un ojo y señaló su walkie-talkie.\n\n—La próxima vez, chicos, buscad el cromo en el aula de música —dijo con una sonrisa inquietante—. Allí es donde guardan las cosas que realmente importan."
+            }
+        ]
+    },
+    {
+        id: 'casi-genio-tomo-2',
+        title: 'Crónicas de un Casi Genio II: Infiltración en el Aula de Música',
+        author: 'Tu Maestro',
+        description: 'La búsqueda de las llaves del sótano lleva a Dani y Nico al lugar más ruidoso del colegio: el aula de música. Pero los instrumentos esconden algo más que notas desafinadas.',
+        level: 'Medio',
+        age: '10-12',
+        coverImage: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&q=80&w=800',
+        chipImage: '🎹',
+        genre: 'Aventura/Misterio',
+        themeColor: 'from-blue-100 to-indigo-200',
+        rating: 5.0,
+        category: 'juvenile',
+        content: [
+            {
+                text: "CAPÍTULO 1: ACORDES SOSPECHOSOS\n\nEl aula de música del colegio San Bonifacio es el lugar donde las esperanzas mueren y los oídos sufren. Imagina a treinta niños de primaria intentando tocar la flauta dulce a la vez. Suena como una reunión de delfines con dolor de muelas.\n\n—Dani, si Pepe dijo que el cromo y las llaves están aquí, tiene que ser una broma —dijo Nico, cubriéndose los oídos mientras el resto de la clase perpetraba una versión de 'Himno a la alegría' que habría hecho llorar al mismísimo Beethoven."
+            },
+            {
+                text: "Mi plan era sencillo pero brillante (como todo lo que diseño). Aprovecharíamos el caos del recreo interno para registrar el piano de cola del Sr. Solfeo. El Sr. Solfeo es un hombre que cree que el mundo se divide en gente que sabe solfeo y gente que no merece vivir. Siempre lleva una batuta en el bolsillo superior de la chaqueta y un diapasón como colgante.\n\n—Nico, tú vigila la puerta. Si ves aparecer una batuta, haz la señal del búho —le ordené."
+            },
+            {
+                text: "CAPÍTULO 2: EL PIANO QUE NO QUERÍA SONAR\n\nMe deslicé bajo la tapa del piano de cola. El interior era un laberinto de cuerdas y martillos de fieltro. Pero al mirar de cerca, noté algo extraño: las cuerdas no eran normales. Estaban hechas de un material sintético translúcido que brillaba con una luz azulada muy tenue.\n\nAl presionar la tecla del 'Do' central, no sonó una nota. En su lugar, una pequeña pantalla LCD se iluminó en el lateral interno del piano.\n\n'INTRODUZCA CÓDIGO DE ACCESO ARMONIZADO', decía el mensaje."
+            },
+            {
+                text: "CAPÍTULO 3: SOLFEO PARA ESPÍAS\n\n—¡Dani! ¡Viene Solfeo! —gritó Nico haciendo un ruido que se parecía más a un pato con hipo que a un búho.\n\nMe quedé atrapado dentro del piano. Sentí los pasos pesados del profesor acercarse. Escuché cómo dejaba su café sobre la tapa, justo encima de mi cabeza. \n\n—Hoy las notas no están en su sitio... —murmuró Solfeo. Empezó a tocar una escala. Cada nota que tocaba me golpeaba el pecho como un tambor. Pero entonces, tocó una secuencia extraña: Do, Mi, Sol, Si bemol... El piano hizo un ruido de succión y sentí que el suelo bajo el instrumento cedía."
+            },
+            {
+                text: "CAPÍTULO 4: LA CÁMARA DE RESONANCIA\n\nEl piano no era solo un instrumento; era un ascensor. Bajé unos metros hasta aparecer en una sala circular forrada de paneles acústicos. En el centro, sobre un pedestal de terciopelo rojo, estaban las tres llaves de bronce que habíamos visto en el mapa del sótano.\n\n—¡Bingo! —exclamé. \n\nPero al agarrar las llaves, todos los altavoces de la sala empezaron a emitir una frecuencia tan alta que mis empastes de las muelas empezaron a vibrar. Las paredes empezaron a cerrarse. Era una trampa de sonido."
+            },
+            {
+                text: "CAPÍTULO 5: SALIDA POR LA IZQUIERDA\n\nTuve que usar mi ingenio de casi genio. Si Solfeo usaba la música para entrar, yo debía usar el silencio para salir. Recordé que en mi mochila llevaba los auriculares de cancelación de ruido de mi hermano mayor (los había 'tomado prestados' para no oír los ronquidos de Pelusa).\n\nMe los puse y, milagrosamente, el mecanismo de las paredes se detuvo al detectar la ausencia de vibración en mi zona. Agarré las llaves, encontré un túnel de ventilación marcado con una clave de sol y trepé hasta salir por el fregadero del cuarto de limpieza."
+            },
+            {
+                text: "Nico me esperaba en el pasillo, pálido como un folio.\n\n—Dani, Solfeo ha preguntado por ti. Le he dicho que estabas en el baño investigando la hidrodinámica del váter.\n\n—Buen trabajo, Nico. Ahora tenemos las llaves. Es hora de volver al sótano y descubrir qué está tramando el Agente Escoba y su firmware de robots. Esta aventura acaba de subir de volumen."
+            }
         ]
     }
 ];

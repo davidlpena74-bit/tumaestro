@@ -37,7 +37,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export default function StorytellerTool({ initialBookId, initialLanguage = 'es' }: { initialBookId?: string, initialLanguage?: 'es' | 'en' | 'fr' | 'de' }) {
+export default function StorytellerTool({ initialBookId, initialLanguage = 'es', category = 'classic' }: { initialBookId?: string, initialLanguage?: 'es' | 'en' | 'fr' | 'de', category?: 'classic' | 'juvenile' }) {
     const { t, language } = useLanguage();
     const { setBackgroundImage, setIsImmersive, setThemeColor } = useBackground();
     const router = useRouter();
@@ -473,7 +473,8 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                 onClick={() => {
                                     setIsMaximized(false);
                                     setSelectedBook(null);
-                                    router.push('/material/cuentacuentos');
+                                    const backPath = selectedBook?.category === 'juvenile' ? 'lectura-juvenil' : 'cuentos-clasicos';
+                                    router.push(`/material/${backPath}`);
                                 }}
                                 className="flex items-center justify-center w-11 h-11 bg-white rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-100 transition-all z-20 cursor-pointer pointer-events-auto"
                             >
@@ -577,21 +578,41 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                         </div>
 
 
-                        <div className="flex-grow flex flex-col items-center justify-center overflow-hidden w-full relative z-10">
+                        <div className={cn(
+                            "flex-grow flex flex-col items-center justify-center overflow-hidden w-full relative z-10",
+                            selectedBook.category === 'juvenile' ? "font-handwriting" : "font-serif"
+                        )}>
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentPage}
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="relative z-10 font-serif leading-relaxed text-center flex flex-col items-center justify-center w-full h-full overflow-hidden"
+                                    className={cn(
+                                        "relative z-10 leading-relaxed text-center flex flex-col items-center justify-center w-full h-full overflow-hidden",
+                                        selectedBook.category === 'juvenile' ? "text-left items-start md:px-16" : "text-center items-center"
+                                    )}
                                     style={{ fontSize: `${isMaximized ? fontSize + 4 : fontSize}px`, color: isMaximized ? 'white' : undefined }}
                                 >
-                                    <div className="relative max-w-4xl overflow-y-auto custom-scrollbar px-4 py-2">
-                                        <span className={cn("font-medium transition-all duration-75", isMaximized ? "text-white" : "text-slate-900")}>
+                                    <div className={cn(
+                                        "relative max-w-4xl overflow-y-auto custom-scrollbar px-4 py-8 rounded-xl",
+                                        selectedBook.category === 'juvenile' && !isMaximized ? "bg-[#fffdf5] shadow-inner border border-amber-100 min-h-[500px] w-full" : ""
+                                    )}>
+                                        {selectedBook.category === 'juvenile' && !isMaximized && (
+                                            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px)', backgroundSize: '100% 2.5rem' }} />
+                                        )}
+                                        <span className={cn(
+                                            "transition-all duration-75 whitespace-pre-wrap",
+                                            selectedBook.category === 'juvenile' ? "text-blue-900 font-bold" : "font-medium",
+                                            isMaximized ? "text-white" : "text-slate-900"
+                                        )}>
                                             {currentBookContent[currentPage]?.text.slice(0, charIndex)}
                                         </span>
-                                        <span className={cn("font-medium", isMaximized ? "text-white/50" : "text-slate-500")}>
+                                        <span className={cn(
+                                            "whitespace-pre-wrap",
+                                            selectedBook.category === 'juvenile' ? "text-blue-900/40 font-bold" : "font-medium",
+                                            isMaximized ? "text-white/50" : "text-slate-500"
+                                        )}>
                                             {currentBookContent[currentPage]?.text.slice(charIndex)}
                                         </span>
                                     </div>
@@ -638,7 +659,8 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                     onClick={() => {
                                         setIsMaximized(false);
                                         setSelectedBook(null);
-                                        router.push('/material/cuentacuentos');
+                                        const backPath = selectedBook?.category === 'juvenile' ? 'lectura-juvenil' : 'cuentos-clasicos';
+                                        router.push(`/material/${backPath}`);
                                     }}
                                     className="p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2 h-[44px]"
                                     title={t.storyteller.backToLibrary}
@@ -729,7 +751,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                         ? "text-white/60 bg-white/10 border-white/10 h-[44px]"
                                         : "text-slate-500 bg-slate-100/50 border-slate-200/50 py-1.5"
                                 )}>
-                                    {currentPage + 1} / {currentBookContent.length}
+                                    Página {currentPage + 1} / {currentBookContent.length}
                                 </div>
                                 {/* Language Selector */}
                                 <div className="relative">
@@ -780,7 +802,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                                                 {selectedBook && (
                                                     <>
                                                         <Link
-                                                            href={`/material/cuentacuentos/${selectedBook.id}`}
+                                                            href={`/material/cuentos-clasicos/${selectedBook.id}`}
                                                             onClick={(e) => setIsLangMenuOpen(false)}
                                                             className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                 isMaximized
@@ -794,7 +816,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
                                                         {selectedBook?.contentEn && (
                                                             <Link
-                                                                href={`/material/cuentacuentos/${selectedBook.id}/en`}
+                                                                href={`/material/cuentos-clasicos/${selectedBook.id}/en`}
                                                                 onClick={(e) => setIsLangMenuOpen(false)}
                                                                 className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                     isMaximized
@@ -809,7 +831,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
                                                         {selectedBook?.contentFr && (
                                                             <Link
-                                                                href={`/material/cuentacuentos/${selectedBook.id}/fr`}
+                                                                href={`/material/cuentos-clasicos/${selectedBook.id}/fr`}
                                                                 onClick={(e) => setIsLangMenuOpen(false)}
                                                                 className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                     isMaximized
@@ -824,7 +846,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
 
                                                         {selectedBook?.contentDe && (
                                                             <Link
-                                                                href={`/material/cuentacuentos/${selectedBook.id}/de`}
+                                                                href={`/material/cuentos-clasicos/${selectedBook.id}/de`}
                                                                 onClick={(e) => setIsLangMenuOpen(false)}
                                                                 className={cn("w-full flex items-center gap-2.5 px-2.5 py-1.5 transition-colors cursor-pointer relative z-50",
                                                                     isMaximized
@@ -912,7 +934,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                 {/* Gradient Overlay removed */}
 
                 <div className="relative z-10">
-                    <div className="mb-8 flex items-center gap-4">
+                    <div className="mb-4 flex items-center gap-4">
                         <div className="relative flex items-center">
                             <motion.button
                                 initial={{ opacity: 0, scale: 0.8 }}
@@ -942,7 +964,7 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                         </div>
                     </div>
 
-                    <header className="text-center mb-12 -mt-24">
+                    <header className="text-center mb-8 -mt-24">
                         <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
                         <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
                             {t.storyteller.subtitle}
@@ -953,14 +975,15 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es' 
                     </header>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {BOOKS.map((book) => (
+                        {BOOKS.filter(b => category === 'juvenile' ? b.category === 'juvenile' : b.category !== 'juvenile').map((book) => (
                             <motion.div
                                 key={book.id}
                                 whileHover={{ y: -10 }}
                                 className="group relative cursor-pointer"
                                 onClick={() => {
                                     setSelectedBook(book);
-                                    router.push(`/material/cuentacuentos/${book.id}`);
+                                    const basePath = book.category === 'juvenile' ? 'lectura-juvenil' : 'cuentos-clasicos';
+                                    router.push(`/material/${basePath}/${book.id}`);
                                 }}
                             >
                                 {/* Sombra Dinámica */}

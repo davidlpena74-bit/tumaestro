@@ -45,3 +45,6 @@ button *,
 .cursor-pointer * {
   cursor: inherit !important;
 }
+.font-handwriting {
+  font-family: var(--font-handwriting), handwriting, cursive !important;
+}

@@ -27,7 +27,7 @@ const SEO_CONTENT = {
 
 export async function generateStaticParams() {
     const paths = [];
-    for (const book of BOOKS) {
+    for (const book of BOOKS.filter(b => b.category !== 'juvenile')) {
         // Generate for supported secondary languages
         for (const lang of ['en', 'fr', 'de']) {
             paths.push({ slug: book.id, lang });
@@ -73,12 +73,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             type: 'book',
         },
         alternates: {
-            canonical: `/material/cuentacuentos/${slug}/${lang}`,
+            canonical: `/material/cuentos-clasicos/${slug}/${lang}`,
             languages: {
-                'es': `/material/cuentacuentos/${slug}`,
-                'en': `/material/cuentacuentos/${slug}/en`,
-                'fr': `/material/cuentacuentos/${slug}/fr`,
-                'de': `/material/cuentacuentos/${slug}/de`,
+                'es': `/material/cuentos-clasicos/${slug}`,
+                'en': `/material/cuentos-clasicos/${slug}/en`,
+                'fr': `/material/cuentos-clasicos/${slug}/fr`,
+                'de': `/material/cuentos-clasicos/${slug}/de`,
+                'x-default': `/material/cuentos-clasicos/${slug}`,
             }
         }
     };
@@ -88,7 +89,7 @@ export default async function BookStoryLanguagePage({ params }: Props) {
     const { slug, lang } = await params;
     const book = BOOKS.find((b) => b.id === slug);
 
-    if (!book) {
+    if (!book || book.category === 'juvenile') {
         notFound();
     }
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Architects_Daughter } from "next/font/google";
 import Script from 'next/script';
 import { Suspense } from "react";
 import "./globals.css";
@@ -12,6 +12,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const handwriting = Architects_Daughter({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-handwriting",
 });
 
 export const metadata: Metadata = {
@@ -89,7 +95,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${handwriting.variable} antialiased`}
       >
         <LanguageProvider>
           <BackgroundProvider>

@@ -354,7 +354,7 @@ export const TRANSLATIONS = {
             }
         },
         storyteller: {
-            title: 'El Cuenta Cuentos',
+            title: 'Cuentos Clásicos',
             subtitle: 'Sumérgete en grandes historias narradas con voz mágica. Lectura inmersiva para pequeños y grandes soñadores.',
             backToLibrary: 'Volver a Material Didáctico',
             backToResources: 'Volver a Material Didáctico',
@@ -805,7 +805,7 @@ export const TRANSLATIONS = {
             }
         },
         storyteller: {
-            title: 'The Storyteller',
+            title: 'Classic Stories',
             subtitle: 'Immerse yourself in great stories narrated with a magical voice. Immersive reading for little and big dreamers.',
             backToLibrary: 'Back to Library',
             backToResources: 'Back to Resources',
@@ -1252,7 +1252,7 @@ export const TRANSLATIONS = {
             }
         },
         storyteller: {
-            title: 'Le Conteur',
+            title: 'Contes Classiques',
             subtitle: 'Plongez dans de grandes histoires racontées avec une voix magique. Lecture immersive pour petits et grands rêveurs.',
             backToLibrary: 'Retour à la Bibliothèque',
             backToResources: 'Retour aux Ressources',
@@ -1694,7 +1694,7 @@ export const TRANSLATIONS = {
             }
         },
         storyteller: {
-            title: 'Der Geschichtenerzähler',
+            title: 'Klassische Geschichten',
             subtitle: 'Tauche ein in große Geschichten, erzählt mit einer magischen Stimme. Immersives Lesen für kleine und große Träumer.',
             backToLibrary: 'Zurück zur Bibliothek',
             backToResources: 'Zurück zu Ressourcen',
