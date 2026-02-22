@@ -161,7 +161,7 @@ export const TRANSLATIONS = {
                 riddlesDesc: 'Pon a prueba tu ingenio con acertijos y adivinanzas clásicas.',
                 logic: 'Desafío de Lógica',
                 logicDesc: 'Resuelve problemas de lógica y razonamiento espacial.',
-                mountainsSpain: 'Sistemas Montañosos Esp.',
+                mountainsSpain: 'Montañas de España',
                 mountainsSpainDesc: 'Ubica los principales sistemas montañosos de España.',
                 mountainsEurope: 'Montañas de Europa',
                 mountainsEuropeDesc: 'Aprende los principales sistemas montañosos del continente europeo.',

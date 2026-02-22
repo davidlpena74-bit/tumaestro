@@ -39,6 +39,9 @@ interface PhysicalMapGameProps {
     colorTheme?: "teal" | "emerald" | "blue" | "purple" | "orange" | "cyan";
     taskId?: string | null;
     activityId?: string;
+    theme?: 'dark' | 'light';
+    insetFrame?: { x: number; y: number; width: number; height: number };
+    backgroundTransforms?: Record<string, string>;
 }
 
 export default function PhysicalMapGame({
@@ -54,7 +57,10 @@ export default function PhysicalMapGame({
     elevationHeight = 8,
     colorTheme = "teal",
     taskId = null,
-    activityId
+    activityId,
+    theme = 'dark',
+    insetFrame,
+    backgroundTransforms = {}
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -225,7 +231,7 @@ export default function PhysicalMapGame({
     }, [items, hoveredItem]);
 
     return (
-        <div ref={gameContainerRef} className={cn("w-full flex flex-col items-center select-none transition-all duration-300", isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : "")}>
+        <div ref={gameContainerRef} className={cn("w-full flex flex-col items-center select-none transition-all duration-300", isFullscreen ? (theme === 'dark' ? "bg-[#0f172a]" : "bg-slate-50") : "")}>
             <div className={cn("w-full flex flex-col items-center relative", isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4")}>
 
                 <GameHUD
@@ -246,7 +252,11 @@ export default function PhysicalMapGame({
                 />
 
                 <div
-                    className={cn("relative w-full aspect-square md:aspect-[1.4] bg-slate-900/40 rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl", isFullscreen && "flex-1 min-h-[500px]")}
+                    className={cn(
+                        "relative w-full aspect-square md:aspect-[1.4] rounded-[2rem] overflow-hidden border shadow-2xl transition-colors duration-500",
+                        theme === 'dark' ? "bg-slate-900/40 border-white/5" : "bg-slate-900/60 border-white/10 shadow-2xl",
+                        isFullscreen && "flex-1 min-h-[500px]"
+                    )}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
@@ -377,23 +387,83 @@ export default function PhysicalMapGame({
                         </defs>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                            {/* INSET FRAME */}
+                            {insetFrame && (
+                                <rect
+                                    x={insetFrame.x}
+                                    y={insetFrame.y}
+                                    width={insetFrame.width}
+                                    height={insetFrame.height}
+                                    className={cn(
+                                        "fill-none stroke-1 pointer-events-none",
+                                        theme === 'dark' ? "stroke-white/10" : "stroke-white shadow-sm"
+                                    )}
+                                    rx="8"
+                                    strokeDasharray="4 4"
+                                />
+                            )}
+
                             {/* BACKGROUND PATHS */}
-                            <g className="pointer-events-none opacity-40">
-                                {Object.entries(backgroundPaths).map(([id, d], i) => (
-                                    Array.isArray(d) ? d.map((path, j) => (
-                                        <path key={`${id}-${j}`} d={path} className="fill-slate-700 stroke-slate-600 stroke-[0.5]" />
-                                    )) : (
-                                        <path key={id} d={d} className="fill-slate-700 stroke-slate-600 stroke-[0.5]" />
-                                    )
-                                ))}
+                            <g className="pointer-events-none">
+                                {Object.entries(backgroundPaths).map(([id, d], i) => {
+                                    const regionTransform = backgroundTransforms[id];
+
+                                    return (
+                                        <g key={id} transform={regionTransform}>
+                                            {Array.isArray(d) ? d.map((path, j) => (
+                                                <path
+                                                    key={`${id}-${j}`}
+                                                    d={path}
+                                                    className={cn(
+                                                        "stroke-[0.5]",
+                                                        theme === 'dark' ? "fill-slate-700 stroke-slate-600 opacity-40" : "fill-white/90 stroke-slate-900/10"
+                                                    )}
+                                                />
+                                            )) : (
+                                                <path
+                                                    key={id}
+                                                    d={d}
+                                                    className={cn(
+                                                        "stroke-[0.5]",
+                                                        theme === 'dark' ? "fill-slate-700 stroke-slate-600 opacity-40" : "fill-white/90 stroke-slate-900/10"
+                                                    )}
+                                                />
+                                            )}
+                                        </g>
+                                    );
+                                })}
                             </g>
 
                             {/* LABELS */}
-                            {backgroundLabels.map((label, i) => (
-                                <text key={i} x={label.x} y={label.y} className="text-[3px] fill-slate-500 font-bold uppercase pointer-events-none select-none" textAnchor="middle" style={{ fontSize: '3px' }}>
-                                    {label.name}
-                                </text>
-                            ))}
+                            {backgroundLabels.map((label, i) => {
+                                const transformStr = backgroundTransforms[label.id];
+                                let labelX = label.x;
+                                let labelY = label.y;
+
+                                if (transformStr && transformStr.includes('translate')) {
+                                    const matches = transformStr.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/);
+                                    if (matches) {
+                                        labelX += parseFloat(matches[1]);
+                                        labelY += parseFloat(matches[2]);
+                                    }
+                                }
+
+                                return (
+                                    <text
+                                        key={i}
+                                        x={labelX}
+                                        y={labelY}
+                                        className={cn(
+                                            "font-bold uppercase pointer-events-none select-none tracking-tight",
+                                            theme === 'dark' ? "fill-slate-500 opacity-100" : "fill-slate-400 opacity-50"
+                                        )}
+                                        textAnchor="middle"
+                                        style={{ fontSize: theme === 'dark' ? '3px' : '8px' }}
+                                    >
+                                        {label.name}
+                                    </text>
+                                );
+                            })}
 
                             {/* INTERACTIVE ITEMS */}
                             {sortedItems.map(([name, d]) => {
@@ -415,15 +485,22 @@ export default function PhysicalMapGame({
                                         onMouseLeave={() => setHoveredItem(null)}
                                         onClick={(e) => handleItemClick(name, e)}
                                     >
-                                        <path d={d} fill={itemType === 'polygon' ? "transparent" : "none"} stroke="transparent" strokeWidth="20" />
+                                        <path
+                                            d={d}
+                                            fill={itemType === 'polygon' ? "white" : "none"}
+                                            stroke="white"
+                                            strokeWidth="30"
+                                            opacity="0"
+                                            className="pointer-events-auto"
+                                        />
 
                                         {itemType === 'line' ? (
-                                            <g style={{ filter: 'url(#mountain-shadow)' }}>
+                                            <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
                                                 {/* LAYER 1: Deep Shadow (Wide Stipple) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#064e3b" : isFailed ? "#7f1d1d" : "#1a130e"}
-                                                    strokeWidth={isHovered ? 6 : 5}
+                                                    stroke={isCompleted ? "#064e3b" : isFailed ? "#7f1d1d" : (isHovered ? "#22d3ee" : "#1a130e")}
+                                                    strokeWidth={isHovered ? 8 : 5}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
@@ -434,8 +511,8 @@ export default function PhysicalMapGame({
                                                 {/* LAYER 2: Base Rock (Textured) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#10b981" : isFailed ? "#dc2626" : (isHovered ? "#3d2b1f" : "#4a3728")}
-                                                    strokeWidth={4}
+                                                    stroke={isCompleted ? "#10b981" : isFailed ? "#dc2626" : (isHovered ? "#0891b2" : "#4a3728")}
+                                                    strokeWidth={isHovered ? 6 : 4}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
@@ -446,8 +523,8 @@ export default function PhysicalMapGame({
                                                 {/* LAYER 3: Mid Elevation */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#34d399" : isFailed ? "#f87171" : (isHovered ? "#8b6d5c" : "#7d5c4d")}
-                                                    strokeWidth={2.5}
+                                                    stroke={isCompleted ? "#34d399" : isFailed ? "#f87171" : (isHovered ? "#22d3ee" : "#7d5c4d")}
+                                                    strokeWidth={isHovered ? 4 : 2.5}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
@@ -458,7 +535,7 @@ export default function PhysicalMapGame({
                                                 {/* LAYER 4: High Ridge (Slightly rough solid) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#6ee7b7" : isFailed ? "#fca5a5" : (isHovered ? "#a3a3a3" : "#737373")}
+                                                    stroke={isCompleted ? "#6ee7b7" : isFailed ? "#fca5a5" : (isHovered ? "#ecfeff" : "#737373")}
                                                     strokeWidth={0.6}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
