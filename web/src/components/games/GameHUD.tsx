@@ -71,6 +71,10 @@ export default function GameHUD({
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
     const [hudMessage, setHudMessage] = useState<string | null>(null);
     const [ratingData, setRatingData] = useState<{ avg: number; count: number } | null>(null);
+    const [records, setRecords] = useState<{
+        bestScore: number | null; bestTime: number | null;
+        myBestScore: number | null; myBestTime: number | null;
+    }>({ bestScore: null, bestTime: null, myBestScore: null, myBestTime: null });
 
     // Fetch activity ratings
     useEffect(() => {
@@ -101,7 +105,48 @@ export default function GameHUD({
 
         fetchActivityRatings();
         return () => { isMounted = false; };
-    }, [activityId, isRatingModalOpen]); // Re-fetch only after modal is closed (to update if rated)
+    }, [activityId, isRatingModalOpen]);
+
+    // Fetch global best + personal best
+    useEffect(() => {
+        if (!activityId) return;
+        let isMounted = true;
+        const run = async () => {
+            try {
+                const { data: global } = await supabase
+                    .from('activity_scores')
+                    .select('score, time_spent')
+                    .eq('activity_id', activityId)
+                    .order('score', { ascending: false })
+                    .limit(100);
+                if (!isMounted) return;
+                const bestScore = global && global.length > 0 ? Math.max(...global.map((r: any) => r.score)) : null;
+                const bestTime = global && global.length > 0 ? Math.min(...global.map((r: any) => r.time_spent)) : null;
+
+                let myBestScore: number | null = null;
+                let myBestTime: number | null = null;
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user && isMounted) {
+                    const { data: mine } = await supabase
+                        .from('activity_scores')
+                        .select('score, time_spent')
+                        .eq('activity_id', activityId)
+                        .eq('user_id', session.user.id)
+                        .limit(50);
+                    if (!isMounted) return;
+                    if (mine && mine.length > 0) {
+                        myBestScore = Math.max(...mine.map((r: any) => r.score));
+                        myBestTime = Math.min(...mine.map((r: any) => r.time_spent));
+                    }
+                }
+                if (isMounted) setRecords({ bestScore, bestTime, myBestScore, myBestTime });
+            } catch (err: any) {
+                if (err?.name === 'AbortError') return;
+            }
+        };
+        run();
+        return () => { isMounted = false; };
+    }, [activityId]);
 
     const handleOpenRating = async () => {
         try {
@@ -162,6 +207,43 @@ export default function GameHUD({
                             )}
                         </div>
                     </button>
+                </div>
+            )}
+
+            {/* Records strip — centered, same row as Comenta button */}
+            {activityId && (
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-50 pointer-events-none">
+                    <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-xl px-3 py-1 shadow-xl">
+                        {/* 🏆 Récord absoluto */}
+                        <Trophy className="w-3 h-3 text-yellow-400" weight="fill" />
+                        <div className="flex flex-col items-center leading-none">
+                            <span className="text-yellow-400/50 text-[7px] font-black uppercase tracking-wider">RECORD</span>
+                            <span className="text-yellow-300 font-black text-[10px]">
+                                {records.bestScore !== null ? `${records.bestScore}pts` : '—'}
+                            </span>
+                        </div>
+                        {records.bestTime !== null && (
+                            <span className="text-yellow-400/60 font-bold text-[9px]">
+                                {Math.floor(records.bestTime / 60)}:{(records.bestTime % 60).toString().padStart(2, '0')}
+                            </span>
+                        )}
+
+                        <div className="w-px h-5 bg-white/10" />
+
+                        {/* ⭐ Mi mejor marca */}
+                        <Star className="w-3 h-3 text-emerald-400" weight="fill" />
+                        <div className="flex flex-col items-center leading-none">
+                            <span className="text-emerald-400/50 text-[7px] font-black uppercase tracking-wider">MI MEJOR</span>
+                            <span className="text-emerald-300 font-black text-[10px]">
+                                {records.myBestScore !== null ? `${records.myBestScore}pts` : '—'}
+                            </span>
+                        </div>
+                        {records.myBestTime !== null && (
+                            <span className="text-emerald-400/60 font-bold text-[9px]">
+                                {Math.floor(records.myBestTime / 60)}:{(records.myBestTime % 60).toString().padStart(2, '0')}
+                            </span>
+                        )}
+                    </div>
                 </div>
             )}
 
