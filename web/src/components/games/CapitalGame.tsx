@@ -284,7 +284,7 @@ export default function CapitalGame({
                     gameMode={gameMode}
                     totalTargets={totalTargets}
                     remainingTargets={remainingCountries.length}
-                    targetName={targetCapital}
+                    targetName={targetCapital || '...'}
                     region={t.gamesPage.regions.europe}
                     gameType={t.gamesPage.gameTypes.map}
                     message={message}

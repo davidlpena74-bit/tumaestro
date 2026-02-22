@@ -128,13 +128,19 @@ export default function ActividadesClient() {
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchRatings = async () => {
             try {
                 const { data, error } = await supabase
                     .from('activity_ratings')
                     .select('activity_id, rating');
 
+                if (!isMounted) return;
+
                 if (error) {
+                    // Silently ignore AbortError - happens on StrictMode double-mount
+                    if (error.message?.includes('AbortError') || error.code === '') return;
                     console.error('Error fetching ratings from Supabase:', JSON.stringify(error, null, 2));
                     return;
                 }
@@ -155,14 +161,20 @@ export default function ActividadesClient() {
                         count: counts[id].count
                     };
                 });
-                setRatings(processed);
-            } catch (err) {
-                console.error('Error fetching ratings:', err);
+
+                if (isMounted) setRatings(processed);
+            } catch (err: any) {
+                // Silently ignore AbortError - it's expected on component unmount
+                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('signal is aborted')) return;
+                if (isMounted) console.error('Error fetching ratings:', err);
             }
         };
 
         fetchRatings();
+
+        return () => { isMounted = false; };
     }, []);
+
 
     const scrollToCategory = (id: string) => {
         const element = document.getElementById(id);

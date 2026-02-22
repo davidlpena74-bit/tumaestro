@@ -44,24 +44,24 @@ export default function MontanasEspanaClient() {
             colorTheme="emerald"
             activityId="montanas-espana"
         >
-            <div className="w-full max-w-5xl mx-auto">
-                <PhysicalMapGame
-                    title={t.gamesPage.gameTitles.mountainsSpain}
-                    description={t.gamesPage.gameTitles.mountainsSpainDesc}
-                    items={SPANISH_MOUNTAINS_PATHS}
-                    itemType="line"
-                    backgroundPaths={SPANISH_COMMUNITIES_PATHS}
-                    backgroundLabels={regionLabels}
-                    backgroundTransforms={backgroundTransforms}
-                    theme="light"
-                    insetFrame={{ x: -190, y: 510, width: 280, height: 180 }}
-                    viewBox="-140 0 840 700"
-                    colorTheme="emerald"
-                    taskId={taskId}
-                    activityId="montanas-espana"
-                    elevationHeight={12}
-                />
-            </div>
+            <PhysicalMapGame
+                title={t.gamesPage.gameTitles.mountainsSpain}
+                description={t.gamesPage.gameTitles.mountainsSpainDesc}
+                items={SPANISH_MOUNTAINS_PATHS}
+                itemType="line"
+                backgroundPaths={SPANISH_COMMUNITIES_PATHS}
+                backgroundLabels={regionLabels}
+                backgroundTransforms={backgroundTransforms}
+                theme="light"
+                insetFrame={{ x: -190, y: 510, width: 280, height: 180 }}
+                viewBox="-140 0 840 700"
+                colorTheme="emerald"
+                taskId={taskId}
+                activityId="montanas-espana"
+                elevationHeight={12}
+                region={t.gamesPage.regions.spain}
+                gameType={t.gamesPage.gameTypes.map}
+            />
         </PhysicalGameLayout>
     );
 }

@@ -199,7 +199,7 @@ export default function CountryGameBase({
                     gameMode={gameMode}
                     totalTargets={Object.keys(nameMapping).length}
                     remainingTargets={remainingCountries.length}
-                    targetName={targetCountry}
+                    targetName={targetCountry || '...'}
                     region={regionName}
                     gameType={t.gamesPage.gameTypes.map}
                     message={message}
@@ -211,7 +211,7 @@ export default function CountryGameBase({
 
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}
@@ -241,7 +241,7 @@ export default function CountryGameBase({
                                 <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                                     <button
                                         onClick={() => startGame('challenge')}
-                                        className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-lg hover:-translate-y-1 flex-1 max-w-[180px]"
+                                        className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
                                     >
                                         <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap text-center">
                                             {language === 'es' ? 'MODO RETO' : 'CHALLENGE MODE'}
@@ -269,24 +269,22 @@ export default function CountryGameBase({
                                 className="absolute inset-0 z-30 bg-black/90 backdrop-blur-xl flex flex-col items-center p-8 text-center rounded-[2rem] overflow-y-auto scrollbar-hide"
                             >
                                 <div className="w-full max-w-2xl flex flex-col items-center py-8">
-                                    <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
-                                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                    <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
+                                        {gameMode === 'challenge' && timeLeft === 0 ? (
+                                            <Timer className="w-16 h-16 text-red-500 animate-pulse" />
+                                        ) : (
+                                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                        )}
                                     </div>
-                                    <h2 className="text-4xl font-bold text-white mb-2">{t.common.completed}</h2>
-                                    <div className="flex flex-col items-center gap-1 mb-8 text-center text-white">
-                                        <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                                        <div className="relative">
-                                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
-                                                {score}
-                                            </span>
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="absolute -top-4 -right-8 bg-emerald-500 text-slate-900 text-xs font-black px-2 py-1 rounded-lg transform rotate-12"
-                                            >
-                                                {elapsedTime}s
-                                            </motion.div>
-                                        </div>
+                                    <h2 className="text-4xl font-bold text-white mb-2">
+                                        {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
+                                    </h2>
+
+                                    <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
+                                        <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
+                                        <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
+                                            {score}
+                                        </span>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
@@ -294,7 +292,7 @@ export default function CountryGameBase({
                                             <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
                                                 <RatingSystem activityId={effectiveActivityId} />
                                             </div>
-                                            <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
+                                            <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20 hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]">
                                                 <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                                             </button>
                                         </div>

@@ -254,8 +254,8 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                     {/* START OVERLAY - Unified with Map style */}
                     {gameState === 'start' && (
                         <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                            <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
-                                <MapPin className="w-12 h-12 text-teal-400" />
+                            <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
+                                <MapPin className="w-12 h-12 text-emerald-400" />
                             </div>
                             <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.gameTitles.provinces}</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
@@ -287,9 +287,9 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                     {/* WON OVERLAY - Unified with Map style */}
                     {gameState === 'finished' && (
                         <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                            <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
+                            <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                 {gameMode === 'challenge' && timeLeft === 0 ? (
-                                    <Trophy className="w-16 h-16 text-red-500 animate-pulse" />
+                                    <Timer className="w-16 h-16 text-red-500 animate-pulse" />
                                 ) : (
                                     <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                                 )}
@@ -298,12 +298,19 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                                 {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
                             </h2>
 
+                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
+                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
+                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
+                                    {score}
+                                </span>
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
                                 <div className="space-y-4">
                                     <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
                                         <RatingSystem activityId={effectiveActivityId} />
                                     </div>
-                                    <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-105 shadow-lg shadow-teal-500/20">
+                                    <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20 hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]">
                                         <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
                                     </button>
                                 </div>

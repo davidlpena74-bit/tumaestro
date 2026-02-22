@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, ZoomIn, ZoomOut, Maximize, Minimize, HelpCircle, RefreshCw, Timer } from 'lucide-react';
+import { MapPin, ZoomIn, ZoomOut, Maximize, Minimize, HelpCircle, RefreshCw, Timer, Trophy } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import GameHUD from './GameHUD';
@@ -204,7 +204,7 @@ export default function MapGameTemplate({
 
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-slate-800/20 rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={(e) => { isClick.current = true; handleMouseDown(e); }}
@@ -215,13 +215,13 @@ export default function MapGameTemplate({
                     <AnimatePresence>
                         {gameState === 'start' && (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                                <div className={cn("p-4 rounded-full mb-6 ring-1", colorTheme === 'teal' ? "bg-teal-500/10 ring-teal-500/30" : "bg-emerald-500/10 ring-emerald-500/30")}>
-                                    <div className={cn("w-12 h-12", colorTheme === 'teal' ? "text-teal-400" : "text-emerald-400")}>{icon}</div>
+                                <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
+                                    <div className="w-12 h-12 text-emerald-400">{icon}</div>
                                 </div>
                                 <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
                                 <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">{description}</p>
                                 <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                                    <button onClick={() => startGame('challenge')} className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:-translate-y-1 flex-1 max-w-[180px]">
+                                    <button onClick={() => startGame('challenge')} className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]">
                                         <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">MODO RETO <Timer className="w-5 h-5 opacity-50" /></span>
                                     </button>
                                     <button onClick={() => startGame('practice')} className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]">
@@ -233,19 +233,20 @@ export default function MapGameTemplate({
 
                         {gameState === 'finished' && (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                                <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
+                                <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                     {gameMode === 'challenge' && timeLeft === 0 ? (
                                         <Timer className="w-16 h-16 text-red-500 animate-pulse" />
                                     ) : (
-                                        <RefreshCw className="w-16 h-16 text-yellow-400 animate-spin-slow" />
+                                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
                                     )}
                                 </div>
                                 <h2 className="text-4xl font-bold text-white mb-2">
                                     {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
                                 </h2>
-                                <div className="flex flex-col items-center gap-1 mb-8">
-                                    <span className="text-gray-400 text-sm uppercase tracking-widest">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                                    <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">{score}</span>
+
+                                <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
+                                    <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
+                                    <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">{score}</span>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
