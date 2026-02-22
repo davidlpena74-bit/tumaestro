@@ -61,6 +61,7 @@ export default function Header() {
     }, [langMenuOpen, notifMenuOpen, userMenuOpen]);
 
     useEffect(() => {
+        let isMounted = true;
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
 
@@ -68,6 +69,7 @@ export default function Header() {
         const checkUser = async () => {
             try {
                 const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (!isMounted) return;
                 if (sessionError) throw sessionError;
 
                 const currentUser = session?.user ?? null;
@@ -76,15 +78,18 @@ export default function Header() {
                     fetchNotifications(currentUser.id);
                     // Fetch profile for role
                     const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
-                    if (p) setProfile(p);
+                    if (isMounted && p) setProfile(p);
                 }
             } catch (err: any) {
+                if (err?.name === 'AbortError') return; // Expected in React StrictMode
                 console.warn("Supabase auth session error (expected if token expired):", err.message);
                 if (err.message?.includes('Refresh Token Not Found')) {
                     // Force sign out to clear local storage if token is corrupted
                     await supabase.auth.signOut();
-                    setUser(null);
-                    setProfile(null);
+                    if (isMounted) {
+                        setUser(null);
+                        setProfile(null);
+                    }
                 }
             }
         };
@@ -92,13 +97,14 @@ export default function Header() {
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            if (!isMounted) return;
             const currentUser = session?.user ?? null;
             setUser(currentUser);
             if (currentUser) {
                 fetchNotifications(currentUser.id);
                 // Fetch profile for role
                 const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
-                if (p) setProfile(p);
+                if (isMounted && p) setProfile(p);
             } else {
                 setNotifications([]);
                 setProfile(null);
@@ -106,6 +112,7 @@ export default function Header() {
         });
 
         return () => {
+            isMounted = false;
             window.removeEventListener('scroll', handleScroll);
             subscription.unsubscribe();
         };

@@ -42,8 +42,6 @@ interface PhysicalMapGameProps {
     theme?: 'dark' | 'light';
     insetFrame?: { x: number; y: number; width: number; height: number };
     backgroundTransforms?: Record<string, string>;
-    region?: string;
-    gameType?: string;
 }
 
 export default function PhysicalMapGame({
@@ -62,9 +60,7 @@ export default function PhysicalMapGame({
     activityId,
     theme = 'dark',
     insetFrame,
-    backgroundTransforms = {},
-    region,
-    gameType
+    backgroundTransforms = {}
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -247,20 +243,18 @@ export default function PhysicalMapGame({
                     gameMode={gameMode}
                     totalTargets={Object.keys(items).length}
                     remainingTargets={remainingItems.length}
-                    targetName={targetItem ? getTranslatedName(targetItem) : '...'}
-                    region={region}
-                    gameType={gameType}
+                    targetName={getTranslatedName(targetItem)}
                     message={message}
                     onReset={resetGame}
                     colorTheme={colorTheme}
-                    icon={<Globe className={cn("w-8 h-8", colorTheme === 'emerald' ? "text-emerald-400" : colorTheme === 'teal' ? "text-teal-400" : "text-blue-400")} />}
+                    icon={<Globe className="w-8 h-8" />}
                     activityId={activityId}
                 />
 
                 <div
                     className={cn(
                         "relative w-full aspect-square md:aspect-[1.4] rounded-[2rem] overflow-hidden border shadow-2xl transition-colors duration-500",
-                        theme === 'dark' ? "bg-slate-900/40 border-white/5" : "bg-transparent border-white/5",
+                        theme === 'dark' ? "bg-slate-900/40 border-white/5" : "bg-slate-900/60 border-white/10 shadow-2xl",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}

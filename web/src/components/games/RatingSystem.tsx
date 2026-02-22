@@ -20,12 +20,15 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
     const [globalStats, setGlobalStats] = useState({ avg: 0, count: 0 });
 
     useEffect(() => {
-        const fetchExistingRating = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) return;
+        let isMounted = true;
 
-            setStatus('loading');
+        const fetchExistingRating = async () => {
             try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session || !isMounted) return;
+
+                if (isMounted) setStatus('loading');
+
                 const { data, error } = await supabase
                     .from('activity_ratings')
                     .select('*')
@@ -33,6 +36,7 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                     .eq('user_id', session.user.id)
                     .maybeSingle();
 
+                if (!isMounted) return;
                 if (error) throw error;
 
                 if (data) {
@@ -40,10 +44,11 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                     setComment(data.comment || '');
                     setIsEdit(true);
                 }
-            } catch (err) {
-                console.error('Error fetching existing rating:', err);
+            } catch (err: any) {
+                if (err?.name === 'AbortError') return; // Expected in React StrictMode
+                if (isMounted) console.error('Error fetching existing rating:', err);
             } finally {
-                setStatus('idle');
+                if (isMounted) setStatus('idle');
             }
         };
 
@@ -54,20 +59,24 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                     .select('rating')
                     .eq('activity_id', activityId);
 
+                if (!isMounted) return;
                 if (error) throw error;
 
                 if (data) {
                     const count = data.length;
                     const avg = count > 0 ? (data.reduce((acc, curr) => acc + curr.rating, 0) / count).toFixed(1) : 0;
-                    setGlobalStats({ avg: Number(avg), count });
+                    if (isMounted) setGlobalStats({ avg: Number(avg), count });
                 }
-            } catch (err) {
-                console.error('Error fetching global stats:', err);
+            } catch (err: any) {
+                if (err?.name === 'AbortError') return;
+                if (isMounted) console.error('Error fetching global stats:', err);
             }
         };
 
         fetchExistingRating();
         fetchGlobalStats();
+
+        return () => { isMounted = false; };
     }, [activityId]);
 
     const handleSubmit = async () => {

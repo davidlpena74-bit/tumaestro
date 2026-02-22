@@ -75,6 +75,7 @@ export default function GameHUD({
     // Fetch activity ratings
     useEffect(() => {
         if (!activityId) return;
+        let isMounted = true;
 
         const fetchActivityRatings = async () => {
             try {
@@ -83,30 +84,38 @@ export default function GameHUD({
                     .select('rating')
                     .eq('activity_id', activityId);
 
+                if (!isMounted) return;
                 if (error) throw error;
                 if (data && data.length > 0) {
                     const count = data.length;
                     const avg = data.reduce((acc, curr) => acc + curr.rating, 0) / count;
-                    setRatingData({ avg, count });
+                    if (isMounted) setRatingData({ avg, count });
                 } else {
-                    setRatingData({ avg: 0, count: 0 });
+                    if (isMounted) setRatingData({ avg: 0, count: 0 });
                 }
-            } catch (err) {
-                console.error('Error fetching game ratings:', err);
+            } catch (err: any) {
+                if (err?.name === 'AbortError') return; // Expected in React StrictMode
+                if (isMounted) console.error('Error fetching game ratings:', err);
             }
         };
 
         fetchActivityRatings();
+        return () => { isMounted = false; };
     }, [activityId, isRatingModalOpen]); // Re-fetch only after modal is closed (to update if rated)
 
     const handleOpenRating = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            setHudMessage(language === 'es' ? 'Inicia sesión para valorar la actividad' : 'Log in to rate the activity');
-            setTimeout(() => setHudMessage(null), 3000);
-            return;
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                setHudMessage(language === 'es' ? 'Inicia sesión para valorar la actividad' : 'Log in to rate the activity');
+                setTimeout(() => setHudMessage(null), 3000);
+                return;
+            }
+            setIsRatingModalOpen(true);
+        } catch (err: any) {
+            if (err?.name === 'AbortError') return;
+            console.error('Error checking session for rating:', err);
         }
-        setIsRatingModalOpen(true);
     };
 
     // Calculate accuracy
