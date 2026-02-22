@@ -131,6 +131,7 @@ export default function GameHUD({
                     `)
                     .eq('activity_id', activityId)
                     .order('score', { ascending: false })
+                    .order('time_spent', { ascending: true })
                     .limit(1);
 
                 if (!isMounted) return;

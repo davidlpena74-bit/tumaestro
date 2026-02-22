@@ -42,7 +42,6 @@ export function useGameLogic({
     }, [gameState, gameMode, timeLeft]);
 
     const handleFinish = useCallback(async () => {
-        setGameState('finished');
         const results = { score, errors, timeSpent: elapsedTime };
 
         if (onFinish) onFinish(results);
@@ -76,6 +75,8 @@ export function useGameLogic({
             }
         } catch (err) {
             console.error("Error saving game results:", err);
+        } finally {
+            setGameState('finished');
         }
     }, [score, errors, elapsedTime, taskId, activityId, onFinish]);
 

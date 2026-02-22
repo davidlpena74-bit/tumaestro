@@ -87,6 +87,9 @@ export default function ActivityRanking({
                     .order(sortBy === 'score' ? 'score' : 'time_spent', {
                         ascending: sortBy !== 'score'
                     })
+                    .order(sortBy === 'score' ? 'time_spent' : 'score', {
+                        ascending: sortBy !== 'score' ? false : true
+                    })
                     .limit(limit)
                     .abortSignal(abortController.signal);
 
