@@ -14,8 +14,49 @@ export default function RankingsClient() {
 
     const activityCategories = [
         {
+            name: language === 'es' ? 'Geografía de España' : 'Geography of Spain',
+            activities: [
+                {
+                    id: 'mapa-comunidades',
+                    title: language === 'es' ? 'Comunidades Autónomas' : 'Regions of Spain',
+                    icon: Globe,
+                    color: 'emerald'
+                },
+                {
+                    id: 'mapa-provincias',
+                    title: language === 'es' ? 'Provincias de España' : 'Spanish Provinces',
+                    icon: MapPin,
+                    color: 'emerald'
+                },
+                {
+                    id: 'mapa-rios',
+                    title: language === 'es' ? 'Ríos de España' : 'Rivers of Spain',
+                    icon: Waves,
+                    color: 'blue'
+                },
+                {
+                    id: 'montanas-espana',
+                    title: language === 'es' ? 'Montañas de España' : 'Mountains of Spain',
+                    icon: Mountain,
+                    color: 'emerald'
+                }
+            ]
+        },
+        {
             name: language === 'es' ? 'Geografía de Europa' : 'Geography of Europe',
             activities: [
+                {
+                    id: 'mapa-europa',
+                    title: language === 'es' ? 'Países de Europa' : 'Europe Countries',
+                    icon: Globe,
+                    color: 'emerald'
+                },
+                {
+                    id: 'capitales-ue',
+                    title: language === 'es' ? 'Capitales de la UE' : 'EU Capitals',
+                    icon: MapPin,
+                    color: 'indigo'
+                },
                 {
                     id: 'capitales-europa',
                     title: language === 'es' ? 'Capitales de Europa' : 'Europe Capitals',
@@ -29,51 +70,126 @@ export default function RankingsClient() {
                     color: 'cyan'
                 },
                 {
-                    id: 'capitales-ue',
-                    title: language === 'es' ? 'Capitales de la UE' : 'EU Capitals',
-                    icon: Globe,
-                    color: 'indigo'
-                }
-            ]
-        },
-        {
-            name: language === 'es' ? 'Geografía de España' : 'Geography of Spain',
-            activities: [
-                {
-                    id: 'mapa-provincias',
-                    title: language === 'es' ? 'Provincias de España' : 'Spanish Provinces',
-                    icon: MapPin,
+                    id: 'capitales-europa-match',
+                    title: language === 'es' ? 'Puzzle Capitales Europa' : 'Europe Capitals Puzzle',
+                    icon: Landmark,
                     color: 'emerald'
                 },
                 {
-                    id: 'mapa-comunidades',
-                    title: language === 'es' ? 'Comunidades Autónomas' : 'Regions of Spain',
-                    icon: Globe,
-                    color: 'teal'
+                    id: 'montanas-europa',
+                    title: language === 'es' ? 'Montañas de Europa' : 'Mountains of Europe',
+                    icon: Mountain,
+                    color: 'emerald'
                 },
                 {
-                    id: 'mapa-rios',
-                    title: language === 'es' ? 'Ríos de España' : 'Rivers of Spain',
+                    id: 'mares-europa',
+                    title: language === 'es' ? 'Mares y Océanos de Europa' : 'Seas & Oceans of Europe',
                     icon: Waves,
                     color: 'blue'
                 }
             ]
         },
         {
-            name: language === 'es' ? 'Ciencias Naturales' : 'Natural Sciences',
+            name: language === 'es' ? 'Geografía de América' : 'Geography of America',
             activities: [
                 {
-                    id: 'esqueleto',
-                    title: language === 'es' ? 'El Esqueleto Humano' : 'Human Skeleton',
-                    icon: Brain,
-                    color: 'slate'
+                    id: 'mapa-norteamerica',
+                    title: language === 'es' ? 'Países de Norteamérica' : 'North America Countries',
+                    icon: Globe,
+                    color: 'emerald'
                 },
                 {
-                    id: 'musculos',
-                    title: language === 'es' ? 'Los Músculos' : 'Human Muscles',
-                    icon: Dna,
-                    color: 'red'
+                    id: 'mapa-sudamerica',
+                    title: language === 'es' ? 'Países de Sudamérica' : 'South America Countries',
+                    icon: Globe,
+                    color: 'blue'
                 },
+                {
+                    id: 'mapa-usa',
+                    title: language === 'es' ? 'Estados de EE.UU.' : 'USA States',
+                    icon: Globe,
+                    color: 'blue'
+                },
+                {
+                    id: 'mapa-america',
+                    title: language === 'es' ? 'Países de América' : 'America Countries',
+                    icon: Globe,
+                    color: 'emerald'
+                },
+                {
+                    id: 'montanas-america',
+                    title: language === 'es' ? 'Montañas de América' : 'Mountains of America',
+                    icon: Mountain,
+                    color: 'emerald'
+                },
+                {
+                    id: 'mares-america',
+                    title: language === 'es' ? 'Mares y Océanos de América' : 'Seas & Oceans of America',
+                    icon: Waves,
+                    color: 'blue'
+                }
+            ]
+        },
+        {
+            name: language === 'es' ? 'Geografía de África' : 'Geography of Africa',
+            activities: [
+                {
+                    id: 'mapa-africa',
+                    title: language === 'es' ? 'Países de África' : 'Africa Countries',
+                    icon: Globe,
+                    color: 'emerald'
+                }
+            ]
+        },
+        {
+            name: language === 'es' ? 'Geografía de Asia' : 'Geography of Asia',
+            activities: [
+                {
+                    id: 'mapa-asia',
+                    title: language === 'es' ? 'Países de Asia' : 'Asia Countries',
+                    icon: Globe,
+                    color: 'orange'
+                },
+                {
+                    id: 'montanas-asia',
+                    title: language === 'es' ? 'Montañas de Asia' : 'Mountains of Asia',
+                    icon: Mountain,
+                    color: 'orange'
+                },
+                {
+                    id: 'mares-asia',
+                    title: language === 'es' ? 'Mares y Océanos de Asia' : 'Seas & Oceans of Asia',
+                    icon: Waves,
+                    color: 'orange'
+                }
+            ]
+        },
+        {
+            name: language === 'es' ? 'Geografía de Oceanía' : 'Geography of Oceania',
+            activities: [
+                {
+                    id: 'mapa-oceania',
+                    title: language === 'es' ? 'Países de Oceanía' : 'Oceania Countries',
+                    icon: Globe,
+                    color: 'teal'
+                },
+                {
+                    id: 'montanas-oceania',
+                    title: language === 'es' ? 'Montañas de Oceanía' : 'Mountains of Oceania',
+                    icon: Mountain,
+                    color: 'teal'
+                },
+                {
+                    id: 'mares-oceania',
+                    title: language === 'es' ? 'Mares y Océanos de Oceanía' : 'Seas & Oceans of Oceania',
+                    icon: Waves,
+                    color: 'teal'
+                }
+            ]
+        },
+        {
+            name: language === 'es' ? 'Ciencias Naturales' : 'Natural Sciences',
+            activities: [
                 {
                     id: 'celula-animal',
                     title: language === 'es' ? 'Célula Animal' : 'Animal Cell',
@@ -87,21 +203,91 @@ export default function RankingsClient() {
                     color: 'green'
                 },
                 {
+                    id: 'sistema-reproductor-masculino',
+                    title: language === 'es' ? 'Aparato Reproductor Masculino' : 'Male Reproductive System',
+                    icon: Dna,
+                    color: 'blue'
+                },
+                {
                     id: 'sistema-reproductor-femenino',
                     title: language === 'es' ? 'Aparato Reproductor Femenino' : 'Female Reproductive System',
                     icon: Dna,
                     color: 'pink'
                 },
                 {
-                    id: 'sistema-reproductor-masculino',
-                    title: language === 'es' ? 'Aparato Reproductor Masculino' : 'Male Reproductive System',
+                    id: 'musculos',
+                    title: language === 'es' ? 'Los Músculos' : 'Human Muscles',
+                    icon: Brain,
+                    color: 'red'
+                },
+                {
+                    id: 'esqueleto',
+                    title: language === 'es' ? 'El Esqueleto Humano' : 'Human Skeleton',
                     icon: Dna,
-                    color: 'blue'
+                    color: 'slate'
                 }
             ]
         },
         {
-            name: language === 'es' ? 'Matemáticas y Otros' : 'Mathematics & Others',
+            name: language === 'es' ? 'Verbos Irregulares — Escritura ✏️' : 'Irregular Verbs — Writing ✏️',
+            activities: [
+                {
+                    id: 'verbos-irregulares-basico',
+                    title: language === 'es' ? 'Nivel Básico' : 'Basic Level',
+                    icon: BookOpen,
+                    color: 'violet'
+                },
+                {
+                    id: 'verbos-irregulares',
+                    title: language === 'es' ? 'Nivel Intermedio' : 'Medium Level',
+                    icon: BookOpen,
+                    color: 'violet'
+                },
+                {
+                    id: 'verbos-irregulares-pro',
+                    title: language === 'es' ? 'Nivel Avanzado' : 'Advanced Level',
+                    icon: BookOpen,
+                    color: 'indigo'
+                },
+                {
+                    id: 'verbos-irregulares-master',
+                    title: language === 'es' ? 'Nivel Master' : 'Master Level',
+                    icon: BookOpen,
+                    color: 'indigo'
+                }
+            ]
+        },
+        {
+            name: language === 'es' ? 'Verbos Irregulares — Pronunciación 🎤' : 'Irregular Verbs — Pronunciation 🎤',
+            activities: [
+                {
+                    id: 'verbos-irregulares-basico-pronunciacion',
+                    title: language === 'es' ? 'Nivel Básico' : 'Basic Level',
+                    icon: BookOpen,
+                    color: 'violet'
+                },
+                {
+                    id: 'verbos-irregulares-pronunciacion',
+                    title: language === 'es' ? 'Nivel Intermedio' : 'Medium Level',
+                    icon: BookOpen,
+                    color: 'violet'
+                },
+                {
+                    id: 'verbos-irregulares-pro-pronunciacion',
+                    title: language === 'es' ? 'Nivel Avanzado' : 'Advanced Level',
+                    icon: BookOpen,
+                    color: 'indigo'
+                },
+                {
+                    id: 'verbos-irregulares-master-pronunciacion',
+                    title: language === 'es' ? 'Nivel Master' : 'Master Level',
+                    icon: BookOpen,
+                    color: 'indigo'
+                }
+            ]
+        },
+        {
+            name: language === 'es' ? 'Matemáticas' : 'Mathematics',
             activities: [
                 {
                     id: 'divisiones',
@@ -112,61 +298,8 @@ export default function RankingsClient() {
                 {
                     id: 'multiplicaciones',
                     title: language === 'es' ? 'Multiplicación Espacial' : 'Space Multiplication',
-                    icon: Trophy,
-                    color: 'purple'
-                },
-                {
-                    id: 'verbos-irregulares',
-                    title: language === 'es' ? 'Verbos Irregulares' : 'Irregular Verbs',
-                    icon: BookOpen,
-                    color: 'blue'
-                },
-                {
-                    id: 'culture-quiz',
-                    title: language === 'es' ? 'Quiz de Cultura' : 'Culture Quiz',
-                    icon: Landmark,
-                    color: 'violet'
-                }
-            ]
-        },
-        {
-            name: language === 'es' ? 'Geografía del Mundo' : 'World Geography',
-            activities: [
-                {
-                    id: 'mapa-africa',
-                    title: language === 'es' ? 'Países de África' : 'Africa Countries',
-                    icon: Globe,
-                    color: 'emerald'
-                },
-                {
-                    id: 'mapa-america',
-                    title: language === 'es' ? 'Países de América' : 'America Countries',
-                    icon: Globe,
-                    color: 'blue'
-                },
-                {
-                    id: 'mapa-asia',
-                    title: language === 'es' ? 'Países de Asia' : 'Asia Countries',
-                    icon: Globe,
+                    icon: Calculator,
                     color: 'orange'
-                },
-                {
-                    id: 'mapa-oceania',
-                    title: language === 'es' ? 'Países de Oceanía' : 'Oceania Countries',
-                    icon: Globe,
-                    color: 'teal'
-                },
-                {
-                    id: 'mapa-norteamerica',
-                    title: language === 'es' ? 'Países de Norteamérica' : 'North America Countries',
-                    icon: Globe,
-                    color: 'emerald'
-                },
-                {
-                    id: 'mapa-sudamerica',
-                    title: language === 'es' ? 'Países de Sudamérica' : 'South America Countries',
-                    icon: Globe,
-                    color: 'blue'
                 }
             ]
         }

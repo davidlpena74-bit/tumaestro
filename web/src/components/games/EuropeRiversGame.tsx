@@ -246,12 +246,13 @@ export default function EuropeRiversGame({ taskId = null, activityId }: { taskId
                     colorTheme="emerald"
                     icon={<Globe className="w-8 h-8 text-emerald-400" />}
                     activityId={effectiveActivityId}
+                    gameState={gameState}
                 />
 
                 {/* MAP CONTAINER */}
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center -mt-1",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}

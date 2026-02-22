@@ -41,7 +41,7 @@ export default function MontanasEspanaClient() {
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.mountainsSpain}
             description={t.gamesPage.gameTitles.mountainsSpainDesc}
-            colorTheme="emerald"
+            colorTheme="teal"
             activityId="montanas-espana"
         >
             <PhysicalMapGame
@@ -55,7 +55,7 @@ export default function MontanasEspanaClient() {
                 theme="light"
                 insetFrame={{ x: -190, y: 510, width: 280, height: 180 }}
                 viewBox="-140 0 840 700"
-                colorTheme="emerald"
+                colorTheme="teal"
                 taskId={taskId}
                 activityId="montanas-espana"
                 elevationHeight={12}

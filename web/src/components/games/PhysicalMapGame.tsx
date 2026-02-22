@@ -42,6 +42,8 @@ interface PhysicalMapGameProps {
     theme?: 'dark' | 'light';
     insetFrame?: { x: number; y: number; width: number; height: number };
     backgroundTransforms?: Record<string, string>;
+    region?: string;
+    gameType?: string;
 }
 
 export default function PhysicalMapGame({
@@ -60,7 +62,9 @@ export default function PhysicalMapGame({
     activityId,
     theme = 'dark',
     insetFrame,
-    backgroundTransforms = {}
+    backgroundTransforms = {},
+    region,
+    gameType
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -249,12 +253,14 @@ export default function PhysicalMapGame({
                     colorTheme={colorTheme}
                     icon={<Globe className="w-8 h-8" />}
                     activityId={activityId}
+                    region={region}
+                    gameType={gameType}
+                    gameState={gameState}
                 />
 
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] rounded-[2rem] overflow-hidden border shadow-2xl transition-colors duration-500",
-                        theme === 'dark' ? "bg-slate-900/40 border-white/5" : "bg-slate-900/60 border-white/10 shadow-2xl",
+                        "relative w-full aspect-square md:aspect-[1.4] rounded-[2rem] overflow-hidden transition-colors duration-500 -mt-1 bg-transparent",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={handleMouseDown}
@@ -284,7 +290,7 @@ export default function PhysicalMapGame({
                         )}
 
                         {gameState === 'finished' && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-black/90 backdrop-blur-xl flex flex-col items-center p-8 text-center rounded-[2rem] overflow-y-auto scrollbar-hide">
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center p-8 text-center rounded-[2rem] overflow-y-auto scrollbar-hide">
                                 <div className="w-full max-w-4xl flex flex-col items-center py-8">
                                     <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
                                         {gameMode === 'challenge' && timeLeft === 0 ? (
@@ -473,8 +479,8 @@ export default function PhysicalMapGame({
                                 const isHovered = name === hoveredItem;
 
                                 let color = "rgba(255,255,255,0.6)";
-                                if (isCompleted) color = "#10b981";
-                                if (isFailed) color = "#ef4444";
+                                if (isCompleted) color = "rgba(34, 197, 94, 0.8)"; // green-500 with 0.8 opacity (RegionGame style)
+                                if (isFailed) color = "rgba(239, 68, 68, 0.8)";
                                 if (isHovered && gameState === 'playing' && !isCompleted) color = "#22d3ee";
 
                                 return (
@@ -499,7 +505,7 @@ export default function PhysicalMapGame({
                                                 {/* LAYER 1: Deep Shadow (Wide Stipple) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#064e3b" : isFailed ? "#7f1d1d" : (isHovered ? "#22d3ee" : "#1a130e")}
+                                                    stroke={isCompleted ? "#166534" : isFailed ? "#7f1d1d" : (isHovered ? "#22d3ee" : "#1a130e")}
                                                     strokeWidth={isHovered ? 8 : 5}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
@@ -511,7 +517,7 @@ export default function PhysicalMapGame({
                                                 {/* LAYER 2: Base Rock (Textured) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#10b981" : isFailed ? "#dc2626" : (isHovered ? "#0891b2" : "#4a3728")}
+                                                    stroke={isCompleted ? "#22c55e" : isFailed ? "#dc2626" : (isHovered ? "#0891b2" : "#4a3728")}
                                                     strokeWidth={isHovered ? 6 : 4}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
@@ -523,7 +529,7 @@ export default function PhysicalMapGame({
                                                 {/* LAYER 3: Mid Elevation */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#34d399" : isFailed ? "#f87171" : (isHovered ? "#22d3ee" : "#7d5c4d")}
+                                                    stroke={isCompleted ? "#4ade80" : isFailed ? "#f87171" : (isHovered ? "#22d3ee" : "#7d5c4d")}
                                                     strokeWidth={isHovered ? 4 : 2.5}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
@@ -535,7 +541,7 @@ export default function PhysicalMapGame({
                                                 {/* LAYER 4: High Ridge (Slightly rough solid) */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#6ee7b7" : isFailed ? "#fca5a5" : (isHovered ? "#ecfeff" : "#737373")}
+                                                    stroke={isCompleted ? "#86efac" : isFailed ? "#fca5a5" : (isHovered ? "#ecfeff" : "#737373")}
                                                     strokeWidth={0.6}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"

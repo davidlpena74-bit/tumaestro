@@ -200,11 +200,12 @@ export default function MapGameTemplate({
                     colorTheme={colorTheme as any}
                     icon={icon}
                     activityId={effectiveActivityId}
+                    gameState={gameState}
                 />
 
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group -mt-1",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={(e) => { isClick.current = true; handleMouseDown(e); }}

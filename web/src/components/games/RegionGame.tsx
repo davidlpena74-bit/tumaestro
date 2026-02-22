@@ -209,6 +209,7 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
                     colorTheme="emerald"
                     icon={<MapIcon className="w-8 h-8 text-emerald-400" />}
                     activityId={effectiveActivityId}
+                    gameState={gameState}
                 />
 
                 {/* MAP CONTAINER - Made transparent */}

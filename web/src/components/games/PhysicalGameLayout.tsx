@@ -46,7 +46,7 @@ export default function PhysicalGameLayout({
 
                 <div className="relative z-10 w-full max-w-6xl mx-auto">
                     <div className="px-4">
-                        <div className="flex items-center gap-6 mb-6">
+                        <div className="flex items-center gap-6 mb-7 -ml-[80px]">
                             <div className="relative w-fit flex-shrink-0">
                                 <motion.button
                                     whileHover={{ scale: 1.1 }}
@@ -76,7 +76,7 @@ export default function PhysicalGameLayout({
                                 {title}
                             </h1>
                         </div>
-                        <p className="text-slate-700 font-medium text-lg mb-8 leading-relaxed">
+                        <p className="text-slate-700 font-medium text-lg mb-[60px] leading-relaxed -mt-6">
                             {description}
                         </p>
                     </div>

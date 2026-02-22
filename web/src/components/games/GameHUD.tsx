@@ -34,6 +34,7 @@ interface GameHUDProps {
     icon?: React.ReactNode;
     gameMode?: 'challenge' | 'practice';
     elapsedTime?: number;
+    gameState?: string;
     activityId?: string;
 }
 
@@ -63,6 +64,7 @@ export default function GameHUD({
     icon,
     gameMode = 'challenge',
     elapsedTime = 0,
+    gameState,
     gameType,
     activityId
 }: GameHUDProps) {
@@ -113,6 +115,7 @@ export default function GameHUD({
     useEffect(() => {
         if (!activityId) return;
         let isMounted = true;
+
         const run = async () => {
             try {
                 // 1. Mejor PUNTUACION global
@@ -121,9 +124,7 @@ export default function GameHUD({
                     .select(`
                         score,
                         time_spent,
-                        profiles (
-                            full_name
-                        )
+                        profiles (full_name)
                     `)
                     .eq('activity_id', activityId)
                     .order('score', { ascending: false })
@@ -137,9 +138,7 @@ export default function GameHUD({
                     .select(`
                         score,
                         time_spent,
-                        profiles (
-                            full_name
-                        )
+                        profiles (full_name)
                     `)
                     .eq('activity_id', activityId)
                     .order('time_spent', { ascending: true })
@@ -147,47 +146,58 @@ export default function GameHUD({
 
                 if (!isMounted) return;
 
-                const getFirstName = (entry: any) => {
+                const getFullName = (entry: any) => {
                     const name = entry?.profiles?.full_name as string | undefined;
-                    return name ? name.split(' ')[0] : null;
+                    if (name) return name;
+                    return entry ? (language === 'es' ? 'Estudiante' : 'Student') : null;
                 };
 
-                const topScorer = scoreRows?.[0] ?? null;
-                const topTimer = timeRows?.[0] ?? null;
+                // Check if we have real data or should use mock
+                if ((!scoreRows || scoreRows.length === 0) && (!timeRows || timeRows.length === 0)) {
+                    setRecords({
+                        bestScore: 1000,
+                        bestScoreName: language === 'es' ? 'Mateo El Sabio' : 'Wise Matt',
+                        bestTime: 42,
+                        bestTimeName: language === 'es' ? 'Lucía Explorer' : 'Lucia Explorer',
+                        myBestScore: null,
+                        myBestTime: null
+                    });
+                } else {
+                    const topScorer = scoreRows?.[0] ?? null;
+                    const topTimer = timeRows?.[0] ?? null;
 
-                const bestScore = topScorer?.score ?? null;
-                const bestScoreName = getFirstName(topScorer);
-                const bestTime = topTimer?.time_spent ?? null;
-                const bestTimeName = getFirstName(topTimer);
+                    const bestScore = topScorer?.score ?? null;
+                    const bestScoreName = getFullName(topScorer);
+                    const bestTime = topTimer?.time_spent ?? null;
+                    const bestTimeName = getFullName(topTimer);
 
-                // 3. Mis mejores marcas personales
-                let myBestScore: number | null = null;
-                let myBestTime: number | null = null;
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session?.user && isMounted) {
-                    const { data: mine } = await supabase
-                        .from('activity_scores')
-                        .select('score, time_spent')
-                        .eq('activity_id', activityId)
-                        .eq('user_id', session.user.id)
-                        .order('score', { ascending: false });
+                    // 3. Mis mejores marcas personales (siempre reales)
+                    let myBestScore: number | null = null;
+                    let myBestTime: number | null = null;
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session?.user && isMounted) {
+                        const { data: mine } = await supabase
+                            .from('activity_scores')
+                            .select('score, time_spent')
+                            .eq('activity_id', activityId)
+                            .eq('user_id', session.user.id)
+                            .order('score', { ascending: false });
 
-                    if (!isMounted) return;
-                    if (mine && mine.length > 0) {
-                        myBestScore = mine[0].score;
-                        myBestTime = Math.min(...mine.map((r: any) => r.time_spent));
+                        if (mine && mine.length > 0) {
+                            myBestScore = mine[0].score;
+                            myBestTime = Math.min(...mine.map((r: any) => r.time_spent));
+                        }
                     }
-                }
 
-                if (isMounted) setRecords({ bestScore, bestScoreName, bestTime, bestTimeName, myBestScore, myBestTime });
+                    if (isMounted) setRecords({ bestScore, bestScoreName, bestTime, bestTimeName, myBestScore, myBestTime });
+                }
             } catch (err: any) {
-                if (err?.name === 'AbortError') return;
                 console.error('Records fetch error:', err);
             }
         };
         run();
         return () => { isMounted = false; };
-    }, [activityId]);
+    }, [activityId, gameState, language]);
 
     const handleOpenRating = async () => {
         try {
@@ -215,13 +225,12 @@ export default function GameHUD({
         <div className="w-full relative z-20">
             {/* Global Rating Button (Above HUD) */}
             {activityId && (
-                <div className="absolute -top-7 right-6 flex items-center gap-2 z-50">
-                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-tighter">Comenta:</span>
+                <div className="absolute -top-[20px] right-6 flex flex-col items-end gap-1 z-50">
+                    <span className="text-slate-500 text-[14px] font-black uppercase tracking-wider pr-1">Comenta:</span>
                     <button
                         onClick={handleOpenRating}
                         className="p-1 px-3 bg-slate-900/60 backdrop-blur-xl hover:bg-slate-800/80 text-yellow-500 border border-white/10 rounded-xl transition-all flex items-center gap-2 group shadow-xl"
-                        title="Valorar actividad"
-                    >
+                        title="Valorar actividad">
                         <MessageSquareText className="w-4 h-4" />
                         <div className="flex items-center gap-0.5">
                             {ratingData && ratingData.count > 0 ? (
@@ -235,7 +244,7 @@ export default function GameHUD({
                                             )}
                                         />
                                     ))}
-                                    <span className="text-[10px] font-black text-yellow-500 ml-1">
+                                    <span className="text-[18px] font-black text-yellow-500 ml-1">
                                         {ratingData.avg.toFixed(1)}
                                     </span>
                                 </>
@@ -253,57 +262,63 @@ export default function GameHUD({
 
             {/* Records strip — centered, same row as Comenta button */}
             {activityId && (
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-50 pointer-events-none">
-                    <div className="flex items-center gap-3 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-xl px-3 py-1 shadow-xl">
+                <div className="absolute -top-[68px] left-1/2 -translate-x-1/2 flex items-center gap-2 z-50 pointer-events-none">
+                    <div className="flex items-start gap-4 bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-2xl px-7 py-2.5 shadow-2xl">
 
                         {/* 🏆 Mejor puntuación global */}
-                        <div className="flex items-center gap-1.5">
-                            <Trophy className="w-3 h-3 text-yellow-400 flex-shrink-0" weight="fill" />
-                            <div className="flex flex-col leading-none">
-                                <span className="text-yellow-400/50 text-[7px] font-black uppercase tracking-wider">RÉCORD PTS</span>
-                                <span className="text-yellow-300 font-black text-[10px]">
-                                    {records.bestScore !== null ? `${records.bestScore}pts` : '—'}
-                                    {records.bestScoreName && (
-                                        <span className="text-yellow-400/60 font-normal"> · {records.bestScoreName}</span>
-                                    )}
-                                </span>
-                            </div>
+                        <div className="flex flex-col items-center text-center min-w-[110px]">
+                            <Trophy className="w-5 h-5 text-yellow-400 mb-1" weight="fill" />
+                            <span className="text-yellow-400/50 text-[11px] font-black uppercase tracking-wider">RÉCORD PTS</span>
+                            <span className="text-yellow-300 font-black text-[18px] tabular-nums">
+                                {records.bestScore !== null ? `${records.bestScore}pts` : '—'}
+                                {records.bestScoreName && (
+                                    <span className="block text-yellow-400/60 font-medium text-[12px] italic truncate max-w-[120px]" title={records.bestScoreName}>
+                                        {records.bestScoreName}
+                                    </span>
+                                )}
+                            </span>
                         </div>
 
-                        <div className="w-px h-5 bg-white/10" />
+                        <div className="w-px h-10 bg-white/10" />
 
                         {/* ⏱ Mejor tiempo global */}
-                        <div className="flex items-center gap-1.5">
-                            <Timer className="w-3 h-3 text-sky-400 flex-shrink-0" weight="fill" />
-                            <div className="flex flex-col leading-none">
-                                <span className="text-sky-400/50 text-[7px] font-black uppercase tracking-wider">RÉCORD TIEMPO</span>
-                                <span className="text-sky-300 font-black text-[10px]">
-                                    {records.bestTime !== null
-                                        ? `${Math.floor(records.bestTime / 60)}:${(records.bestTime % 60).toString().padStart(2, '0')}`
-                                        : '—'}
-                                    {records.bestTimeName && (
-                                        <span className="text-sky-400/60 font-normal"> · {records.bestTimeName}</span>
-                                    )}
-                                </span>
-                            </div>
+                        <div className="flex flex-col items-center text-center min-w-[110px]">
+                            <Timer className="w-5 h-5 text-sky-400 mb-1" weight="fill" />
+                            <span className="text-sky-400/50 text-[11px] font-black uppercase tracking-wider">RÉCORD SG</span>
+                            <span className="text-sky-300 font-black text-[18px] tabular-nums">
+                                {records.bestTime !== null
+                                    ? `${Math.floor(records.bestTime / 60)}:${(records.bestTime % 60).toString().padStart(2, '0')}`
+                                    : '—'}
+                                {records.bestTimeName && (
+                                    <span className="block text-sky-400/60 font-medium text-[12px] italic truncate max-w-[120px]" title={records.bestTimeName}>
+                                        {records.bestTimeName}
+                                    </span>
+                                )}
+                            </span>
                         </div>
 
-                        <div className="w-px h-5 bg-white/10" />
+                        <div className="w-px h-10 bg-white/10" />
 
-                        {/* ⭐ Mis mejores marcas */}
-                        <div className="flex items-center gap-1.5">
-                            <Star className="w-3 h-3 text-emerald-400 flex-shrink-0" weight="fill" />
-                            <div className="flex flex-col leading-none">
-                                <span className="text-emerald-400/50 text-[7px] font-black uppercase tracking-wider">MI MEJOR</span>
-                                <span className="text-emerald-300 font-black text-[10px]">
-                                    {records.myBestScore !== null ? `${records.myBestScore}pts` : '—'}
-                                    {records.myBestTime !== null && (
-                                        <span className="text-emerald-400/60 font-normal">
-                                            {' · '}{Math.floor(records.myBestTime / 60)}:{(records.myBestTime % 60).toString().padStart(2, '0')}
-                                        </span>
-                                    )}
-                                </span>
-                            </div>
+                        {/* ⭐ Mi mejor puntuación personal */}
+                        <div className="flex flex-col items-center text-center min-w-[110px]">
+                            <Star className="w-5 h-5 text-emerald-400 mb-1" weight="fill" />
+                            <span className="text-emerald-400/50 text-[11px] font-black uppercase tracking-wider">MI MEJOR PTS</span>
+                            <span className="text-emerald-300 font-black text-[18px] tabular-nums">
+                                {records.myBestScore !== null ? `${records.myBestScore}pts` : '—'}
+                            </span>
+                        </div>
+
+                        <div className="w-px h-10 bg-white/10" />
+
+                        {/* ⏱ Mi mejor tiempo personal */}
+                        <div className="flex flex-col items-center text-center min-w-[110px]">
+                            <Timer className="w-5 h-5 text-emerald-400 mb-1" weight="fill" />
+                            <span className="text-emerald-400/50 text-[11px] font-black uppercase tracking-wider">MI MEJOR SG</span>
+                            <span className="text-emerald-300 font-black text-[18px] tabular-nums">
+                                {records.myBestTime !== null
+                                    ? `${Math.floor(records.myBestTime / 60)}:${(records.myBestTime % 60).toString().padStart(2, '0')}`
+                                    : '—'}
+                            </span>
                         </div>
 
                     </div>
@@ -325,7 +340,7 @@ export default function GameHUD({
             </AnimatePresence>
 
             {/* HUD CARD - Darker Slate Glass (bg-slate-900/60) */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-slate-900/60 backdrop-blur-xl p-4 rounded-2xl border border-white/10 shadow-2xl gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-center mt-12 mb-4 bg-slate-900/60 backdrop-blur-xl p-4 rounded-2xl border border-white/10 shadow-2xl gap-4">
 
                 {/* LEFT: Score & Accuracy */}
                 <div className="flex items-center gap-4 w-full md:w-auto">
@@ -346,8 +361,8 @@ export default function GameHUD({
                     </div>
                 </div>
 
-                {/* CENTER: Target Display - Only show if targetName is provided */}
-                {targetName !== "" && (
+                {/* CENTER: Target Display - Always show if prop is defined (even if empty) */}
+                {targetName !== undefined && (
                     <div className="flex-1 text-center bg-slate-900/50 px-1 py-2 rounded-xl border border-white/10 w-full md:w-auto flex flex-col items-center justify-center min-h-[80px]">
                         <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1">
                             {(gameType === 'pronunciation' || gameType === 'writing') ? (language === 'es' ? 'Conjuga el verbo:' : 'Conjugate the verb:') : t.common.find}
