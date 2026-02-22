@@ -425,7 +425,7 @@ export default function GameHUD({
             {/* FEEDBACK BANNER (Absolute) */}
             <AnimatePresence>
                 {message && (
-                    <div className="absolute left-0 right-0 -bottom-16 md:bottom-auto md:top-24 flex justify-center pointer-events-none z-30">
+                    <div className="absolute left-0 right-0 -bottom-20 md:bottom-auto md:top-36 flex justify-center pointer-events-none z-30">
                         <motion.div
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
