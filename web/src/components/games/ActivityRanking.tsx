@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Trophy, Clock, User as UserIcon, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -29,10 +29,45 @@ export default function ActivityRanking({
     const { language } = useLanguage();
     const [scores, setScores] = useState<ScoreEntry[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: '100px' }
+        );
+
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!isVisible || !activityId) return;
+
+        let isMounted = true;
+        const abortController = new AbortController();
+
         async function fetchScores() {
             setLoading(true);
+
+            const timeoutId = setTimeout(() => {
+                if (isMounted && loading) {
+                    console.warn(`⏳ Timeout al cargar rankings para ${activityId}, mostrando mock data...`);
+                    abortController.abort();
+                    showMockData();
+                    setLoading(false);
+                }
+            }, 8000);
+
             try {
                 // CONSULTA RESILIENTE: Intentamos el join pero con sintaxis explícita
                 const { data, error, status } = await supabase
@@ -52,7 +87,11 @@ export default function ActivityRanking({
                     .order(sortBy === 'score' ? 'score' : 'time_spent', {
                         ascending: sortBy !== 'score'
                     })
-                    .limit(limit);
+                    .limit(limit)
+                    .abortSignal(abortController.signal);
+
+                clearTimeout(timeoutId);
+                if (!isMounted) return;
 
                 if (error) {
                     console.group('❌ Error en Ranking');
@@ -80,10 +119,18 @@ export default function ActivityRanking({
                     showMockData();
                 }
             } catch (err: any) {
-                console.error('Error crítico en fetchScores:', err);
+                clearTimeout(timeoutId);
+                if (!isMounted) return;
+
+                if (err.name !== 'AbortError') {
+                    console.error('Error crítico en fetchScores:', err);
+                }
                 showMockData();
             } finally {
-                setLoading(false);
+                clearTimeout(timeoutId);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
 
@@ -114,8 +161,13 @@ export default function ActivityRanking({
             setScores(mockScores);
         }
 
-        if (activityId) fetchScores();
-    }, [activityId, sortBy, limit, language]);
+        fetchScores();
+
+        return () => {
+            isMounted = false;
+            abortController.abort();
+        };
+    }, [activityId, sortBy, limit, language, isVisible]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -123,15 +175,15 @@ export default function ActivityRanking({
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
-    if (loading) return (
-        <div className="flex flex-col items-center justify-center p-8 space-y-4">
+    if (!isVisible || loading) return (
+        <div ref={containerRef} className="flex flex-col items-center justify-center p-8 space-y-4">
             <div className="w-10 h-10 border-t-2 border-emerald-500 border-solid rounded-full animate-spin"></div>
             <p className="text-gray-400 text-sm animate-pulse">{language === 'es' ? 'Cargando ranking...' : 'Loading rankings...'}</p>
         </div>
     );
 
     if (scores.length === 0) return (
-        <div className="p-8 text-center text-gray-500 bg-slate-900/40 rounded-3xl border border-white/5">
+        <div ref={containerRef} className="p-8 text-center text-gray-500 bg-slate-900/40 rounded-3xl border border-white/5">
             <Trophy className="w-12 h-12 mx-auto mb-4 opacity-20" />
             <p className="font-medium">{language === 'es' ? 'Aún no hay puntuaciones' : 'No scores yet'}</p>
             <p className="text-sm opacity-60 mt-1 uppercase">{language === 'es' ? '¡Sé el primero en el top!' : 'Be the first on top!'}</p>
@@ -139,7 +191,7 @@ export default function ActivityRanking({
     );
 
     return (
-        <div className="w-full max-w-2xl mx-auto space-y-3">
+        <div ref={containerRef} className="w-full max-w-2xl mx-auto space-y-3">
             <div className="flex items-center justify-between px-2 mb-2">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     {sortBy === 'score' ? <Trophy className="w-5 h-5 text-yellow-500" /> : <Clock className="w-5 h-5 text-sky-400" />}
