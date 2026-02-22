@@ -90,7 +90,7 @@ export default function ActivityRanking({
                     .order(sortBy === 'score' ? 'time_spent' : 'score', {
                         ascending: sortBy !== 'score' ? false : true
                     })
-                    .limit(limit)
+                    .limit(50)
                     .abortSignal(abortController.signal);
 
                 clearTimeout(timeoutId);
@@ -107,7 +107,18 @@ export default function ActivityRanking({
                 }
 
                 if (data && data.length > 0) {
-                    const formattedScores = data.map((item: any) => ({
+                    const uniqueUsers = new Set();
+                    const filteredData = [];
+                    for (const item of data) {
+                        const uid = item.user_id || item.profiles?.full_name || item.id;
+                        if (!uniqueUsers.has(uid)) {
+                            uniqueUsers.add(uid);
+                            filteredData.push(item);
+                            if (filteredData.length >= limit) break;
+                        }
+                    }
+
+                    const formattedScores = filteredData.map((item: any) => ({
                         id: item.id,
                         score: item.score,
                         time_spent: item.time_spent,
