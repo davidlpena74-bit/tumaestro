@@ -964,9 +964,11 @@ export default function StorytellerTool({ initialBookId, initialLanguage = 'es',
                     </div>
 
                     <header className="text-center mb-8 -mt-24">
-                        <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">{t.storyteller.title}</h2>
+                        <h2 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight">
+                            {category === 'juvenile' ? 'Lectura Juvenil' : t.storyteller.title}
+                        </h2>
                         <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-8">
-                            {t.storyteller.subtitle}
+                            {category === 'juvenile' ? 'Nuevas aventuras y misterios te esperan.' : t.storyteller.subtitle}
                         </p>
 
                         {/* Search Component */}
