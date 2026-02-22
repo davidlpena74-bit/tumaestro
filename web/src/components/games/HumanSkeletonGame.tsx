@@ -13,7 +13,7 @@ import {
     HandGrabbing,
     ArrowCounterClockwise,
     Skull,
-    Skeleton,
+    Bone,
     Timer
 } from '@phosphor-icons/react';
 import confetti from 'canvas-confetti';
@@ -270,7 +270,7 @@ export default function HumanSkeletonGame({ taskId = null, activityId }: { taskI
                             {/* Top Header */}
                             <div className="flex flex-col items-center mb-8 shrink-0 mt-4">
                                 <div className="bg-blue-500/10 p-4 rounded-full mb-4 ring-1 ring-blue-500/30">
-                                    <Skeleton className="w-12 h-12 text-blue-400" />
+                                    <Bone className="w-12 h-12 text-blue-400" />
                                 </div>
                                 <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">El Esqueleto</h2>
                                 <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
