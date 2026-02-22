@@ -794,12 +794,12 @@ export default function ActividadesClient() {
     return (
         <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto relative z-10">
-                <header className="mb-12 text-center relative">
+                <header className="mb-4 text-center relative">
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-8 leading-tight text-slate-800 pb-2"
+                        className="text-5xl md:text-7xl font-black mb-4 leading-tight text-slate-800 pb-2"
                     >
                         {t.gamesPage.title}
                     </motion.h1>
@@ -816,7 +816,7 @@ export default function ActividadesClient() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="mt-8 flex justify-center"
+                        className="mt-4 flex justify-center"
                     >
                         <Link
                             href="/actividades/rankings"
