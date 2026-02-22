@@ -133,9 +133,11 @@ export default function RecursosClient() {
                                         className="relative group/img"
                                     >
                                         <div className="absolute inset-0 bg-rose-500/20 rounded-3xl blur-2xl group-hover/img:bg-rose-500/30 transition-all -z-10" />
-                                        <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-rose-500 to-pink-600 rounded-3xl border-4 border-white/50 shadow-2xl flex items-center justify-center transform rotate-3 group-hover:rotate-0 transition-all duration-500 relative">
-                                            <Sparkle className="w-32 h-32 text-white/90" weight="duotone" />
-                                        </div>
+                                        <img
+                                            src="/images/resources/lectura-juvenil-main.png"
+                                            alt="Lectura Juvenil"
+                                            className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform rotate-3 group-hover/img:rotate-0 transition-all duration-500 relative bg-white"
+                                        />
                                     </motion.div>
                                 </div>
 
@@ -187,24 +189,11 @@ export default function RecursosClient() {
                                         className="relative group/img"
                                     >
                                         <div className="absolute inset-0 bg-sky-500/20 rounded-3xl blur-2xl group-hover/img:bg-sky-500/30 transition-all -z-10" />
-                                        <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-sky-500 to-indigo-600 rounded-3xl border-4 border-white/50 shadow-2xl flex items-center justify-center transform -rotate-3 group-hover:rotate-0 transition-all duration-500 relative">
-                                            <BookOpen className="w-32 h-32 text-white/90" weight="duotone" />
-                                            {/* Floating Particles/Icons */}
-                                            <motion.div
-                                                animate={{ y: [0, -10, 0] }}
-                                                transition={{ duration: 2, repeat: Infinity }}
-                                                className="absolute -top-4 -right-4 p-3 bg-white rounded-2xl shadow-xl text-sky-600"
-                                            >
-                                                <GraduationCap className="w-8 h-8" weight="fill" />
-                                            </motion.div>
-                                            <motion.div
-                                                animate={{ y: [0, 10, 0] }}
-                                                transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
-                                                className="absolute -bottom-4 -left-4 p-3 bg-white rounded-2xl shadow-xl text-indigo-600"
-                                            >
-                                                <Sparkle className="w-8 h-8" weight="fill" />
-                                            </motion.div>
-                                        </div>
+                                        <img
+                                            src="/images/resources/profesor-lectura-main.png"
+                                            alt="Profesor de Lectura"
+                                            className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl border-4 border-white/50 shadow-2xl transform -rotate-3 group-hover/img:rotate-0 transition-all duration-500 relative bg-white"
+                                        />
                                     </motion.div>
                                 </div>
 
