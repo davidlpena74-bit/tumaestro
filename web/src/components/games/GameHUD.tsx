@@ -109,46 +109,58 @@ export default function GameHUD({
         return () => { isMounted = false; };
     }, [activityId, isRatingModalOpen]);
 
-    // Fetch global best + personal best (with user names)
+    // Fetch global best + personal best — mismo patrón que ActivityRanking.tsx
     useEffect(() => {
         if (!activityId) return;
         let isMounted = true;
         const run = async () => {
             try {
-                // 1. Global best SCORE (top scorer name + score)
-                const { data: topScore } = await supabase
+                // 1. Mejor PUNTUACION global
+                const { data: scoreRows } = await supabase
                     .from('activity_scores')
-                    .select('score, time_spent, profiles(full_name)')
+                    .select(`
+                        score,
+                        time_spent,
+                        profiles (
+                            full_name
+                        )
+                    `)
                     .eq('activity_id', activityId)
                     .order('score', { ascending: false })
-                    .limit(1)
-                    .single();
+                    .limit(1);
 
                 if (!isMounted) return;
 
-                // 2. Global best TIME (fastest player name + time)
-                const { data: topTime } = await supabase
+                // 2. Mejor TIEMPO global
+                const { data: timeRows } = await supabase
                     .from('activity_scores')
-                    .select('score, time_spent, profiles(full_name)')
+                    .select(`
+                        score,
+                        time_spent,
+                        profiles (
+                            full_name
+                        )
+                    `)
                     .eq('activity_id', activityId)
                     .order('time_spent', { ascending: true })
-                    .limit(1)
-                    .single();
+                    .limit(1);
 
                 if (!isMounted) return;
 
-                const getFirstName = (d: any) => {
-                    const name = d?.profiles?.full_name as string | undefined;
-                    if (!name) return null;
-                    return name.split(' ')[0];
+                const getFirstName = (entry: any) => {
+                    const name = entry?.profiles?.full_name as string | undefined;
+                    return name ? name.split(' ')[0] : null;
                 };
 
-                const bestScore = (topScore as any)?.score ?? null;
-                const bestScoreName = getFirstName(topScore);
-                const bestTime = (topTime as any)?.time_spent ?? null;
-                const bestTimeName = getFirstName(topTime);
+                const topScorer = scoreRows?.[0] ?? null;
+                const topTimer = timeRows?.[0] ?? null;
 
-                // 3. My personal bests
+                const bestScore = topScorer?.score ?? null;
+                const bestScoreName = getFirstName(topScorer);
+                const bestTime = topTimer?.time_spent ?? null;
+                const bestTimeName = getFirstName(topTimer);
+
+                // 3. Mis mejores marcas personales
                 let myBestScore: number | null = null;
                 let myBestTime: number | null = null;
                 const { data: { session } } = await supabase.auth.getSession();
@@ -157,11 +169,12 @@ export default function GameHUD({
                         .from('activity_scores')
                         .select('score, time_spent')
                         .eq('activity_id', activityId)
-                        .eq('user_id', session.user.id);
+                        .eq('user_id', session.user.id)
+                        .order('score', { ascending: false });
 
                     if (!isMounted) return;
                     if (mine && mine.length > 0) {
-                        myBestScore = Math.max(...mine.map((r: any) => r.score));
+                        myBestScore = mine[0].score;
                         myBestTime = Math.min(...mine.map((r: any) => r.time_spent));
                     }
                 }
@@ -169,6 +182,7 @@ export default function GameHUD({
                 if (isMounted) setRecords({ bestScore, bestScoreName, bestTime, bestTimeName, myBestScore, myBestTime });
             } catch (err: any) {
                 if (err?.name === 'AbortError') return;
+                console.error('Records fetch error:', err);
             }
         };
         run();
