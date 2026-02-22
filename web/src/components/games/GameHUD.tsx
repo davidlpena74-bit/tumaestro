@@ -102,8 +102,11 @@ export default function GameHUD({
                     if (isMounted) setRatingData({ avg: 0, count: 0 });
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError') return; // Expected in React StrictMode
-                if (isMounted) console.error('Error fetching game ratings:', err);
+                if (err?.name === 'AbortError') return;
+                if (isMounted) {
+                    const errorMessage = err?.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
+                    console.error('Error fetching game ratings:', errorMessage);
+                }
             }
         };
 
@@ -219,7 +222,7 @@ export default function GameHUD({
     const totalAttempts = completed + errors;
     const accuracy = totalAttempts > 0 ? Math.round((completed / totalAttempts) * 100) : 100;
 
-    const displayTime = gameMode === 'challenge' ? timeLeft : elapsedTime;
+    const displayTime = elapsedTime;
 
     return (
         <div className="w-full relative z-20">
@@ -284,7 +287,7 @@ export default function GameHUD({
                         {/* ⏱ Mejor tiempo global */}
                         <div className="flex flex-col items-center text-center min-w-[110px]">
                             <Timer className="w-5 h-5 text-sky-400 mb-1" weight="fill" />
-                            <span className="text-sky-400/50 text-[11px] font-black uppercase tracking-wider">RÉCORD SG</span>
+                            <span className="text-sky-400/50 text-[11px] font-black uppercase tracking-wider">RÉCORD TMP</span>
                             <span className="text-sky-300 font-black text-[18px] tabular-nums">
                                 {records.bestTime !== null
                                     ? `${Math.floor(records.bestTime / 60)}:${(records.bestTime % 60).toString().padStart(2, '0')}`
@@ -313,7 +316,7 @@ export default function GameHUD({
                         {/* ⏱ Mi mejor tiempo personal */}
                         <div className="flex flex-col items-center text-center min-w-[110px]">
                             <Timer className="w-5 h-5 text-emerald-400 mb-1" weight="fill" />
-                            <span className="text-emerald-400/50 text-[11px] font-black uppercase tracking-wider">MI MEJOR SG</span>
+                            <span className="text-emerald-400/50 text-[11px] font-black uppercase tracking-wider">MI MEJOR TMP</span>
                             <span className="text-emerald-300 font-black text-[18px] tabular-nums">
                                 {records.myBestTime !== null
                                     ? `${Math.floor(records.myBestTime / 60)}:${(records.myBestTime % 60).toString().padStart(2, '0')}`
@@ -387,10 +390,8 @@ export default function GameHUD({
                     {/* Timer & Remaining */}
                     <div className="flex flex-col items-center gap-1">
                         <div className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-xl font-mono font-bold text-xl border transition-all shadow-lg min-w-[100px] justify-center",
-                            gameMode === 'challenge' && timeLeft < 20
-                                ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse"
-                                : "bg-slate-800/80 border-white/10 " + theme.text
+                            "flex items-center gap-2 px-3 py-2 rounded-xl font-mono font-bold text-xl border transition-all shadow-lg min-w-[100px] justify-center bg-slate-800/80 border-white/10 ",
+                            theme.text
                         )}>
                             <Timer className="w-5 h-5" weight="bold" />
                             <span>

@@ -270,67 +270,110 @@ export default function PhysicalMapGame({
                 >
                     <AnimatePresence>
                         {gameState === 'start' && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                                <Globe className="w-16 h-16 text-teal-400 mb-6" />
-                                <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase leading-tight max-w-2xl">{title}</h2>
-                                <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">{description}</p>
-                                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                                    <button onClick={() => startGame('challenge')} className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]">
-                                        <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                            MODO RETO <Timer className="w-5 h-5 opacity-50" />
-                                        </span>
-                                    </button>
-                                    <button onClick={() => startGame('practice')} className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]">
-                                        <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                            PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
-                                        </span>
-                                    </button>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center rounded-[2rem] overflow-y-auto custom-scrollbar">
+                                {/* Top Header */}
+                                <div className="flex flex-col items-center mb-8 shrink-0 mt-4">
+                                    <div className="bg-emerald-500/10 p-4 rounded-full mb-4 ring-1 ring-emerald-500/30">
+                                        <Globe className="w-10 h-10 text-emerald-400" />
+                                    </div>
+                                    <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">{title}</h2>
+                                    <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
+                                        {language === 'es'
+                                            ? '¿Podrás entrar en el Salón de la Fama personal del maestro David?'
+                                            : 'Will you be able to enter Master Davids personal Hall of Fame?'}
+                                    </p>
+                                </div>
+
+                                {/* Rankings Section */}
+                                <div className="w-full max-w-6xl flex flex-col gap-8 mb-10">
+
+                                    {/* Rankings Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                            <ActivityRanking activityId={activityId || "physical-map-game"} limit={3} sortBy="score" />
+                                        </div>
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                            <ActivityRanking activityId={activityId || "physical-map-game"} limit={3} sortBy="time" />
+                                        </div>
+                                    </div>
+
+                                    {/* Start Buttons Row (Now Below) */}
+                                    <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl mx-auto w-full">
+                                        <button
+                                            onClick={() => startGame('challenge')}
+                                            className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
+                                        >
+                                            MODO RETO <Timer className="w-8 h-8 opacity-70" />
+                                        </button>
+
+                                        <button
+                                            onClick={() => startGame('practice')}
+                                            className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-widest"
+                                        >
+                                            PRÁCTICA <RefreshCw className="w-6 h-6 opacity-50" />
+                                        </button>
+                                    </div>
+
+                                    <div className="text-center opacity-50 shrink-0">
+                                        <p className="text-white text-xs font-black uppercase tracking-[0.3em]">
+                                            {language === 'es' ? '¡Prepárate para la aventura!' : 'Get ready for the adventure!'}
+                                        </p>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
 
                         {gameState === 'finished' && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center p-8 text-center rounded-[2rem] overflow-y-auto scrollbar-hide">
-                                <div className="w-full max-w-4xl flex flex-col items-center py-8">
-                                    <div className="bg-yellow-500/10 p-4 rounded-full mb-6 ring-1 ring-yellow-500/30">
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start py-8 px-6 text-center rounded-[2rem] overflow-y-auto custom-scrollbar">
+                                {/* Top Section: Score & Trophy (Pushing up) */}
+                                <div className="flex flex-col items-center mb-10 shrink-0">
+                                    <div className="bg-yellow-500/10 p-3 rounded-full mb-3 ring-1 ring-yellow-500/30">
                                         {gameMode === 'challenge' && timeLeft === 0 ? (
-                                            <Trophy className="w-16 h-16 text-red-500 animate-pulse" />
+                                            <Timer className="w-10 h-10 text-red-500 animate-pulse" />
                                         ) : (
-                                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                                            <Trophy className="w-10 h-10 text-yellow-400 animate-bounce" />
                                         )}
                                     </div>
-                                    <h2 className="text-4xl font-bold text-white mb-2">
+                                    <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tight">
                                         {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
                                     </h2>
-                                    <div className="flex flex-col items-center gap-1 mb-8 text-center text-white">
-                                        <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Puntuación Final</span>
-                                        <div className="relative">
-                                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
+
+                                    <div className="flex items-baseline gap-3 bg-white/5 px-6 py-2 rounded-2xl border border-white/10">
+                                        <span className="text-gray-400 text-xs uppercase tracking-widest font-black">{language === 'es' ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-5xl font-black text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.4)]">
                                                 {score}
                                             </span>
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="absolute -top-4 -right-8 bg-emerald-500 text-slate-900 text-xs font-black px-2 py-1 rounded-lg transform rotate-12"
-                                            >
-                                                {elapsedTime}s
-                                            </motion.div>
+                                            <span className="text-emerald-400 font-black text-xl">{elapsedTime}s</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Main Content Area: Rankings & Actions */}
+                                <div className="w-full max-w-6xl grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+
+                                    {/* Left Side: Rankings (8 columns) */}
+                                    <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                            <ActivityRanking activityId={activityId || "physical-map-game"} limit={3} sortBy="score" />
+                                        </div>
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                            <ActivityRanking activityId={activityId || "physical-map-game"} limit={3} sortBy="time" />
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
-                                        <div className="space-y-4">
-                                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
-                                                <RatingSystem activityId={activityId || "physical-map-game"} />
-                                            </div>
-                                            <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
-                                                <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                                            </button>
+                                    {/* Right Side: Actions & Feedback (4 columns) */}
+                                    <div className="xl:col-span-4 space-y-4">
+                                        <div className="bg-slate-900/60 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-1 shadow-xl">
+                                            <RatingSystem activityId={activityId || "physical-map-game"} />
                                         </div>
 
-                                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden text-left">
-                                            <ActivityRanking activityId={activityId || "physical-map-game"} />
-                                        </div>
+                                        <button
+                                            onClick={resetGame}
+                                            className="w-full flex items-center justify-center gap-4 px-8 py-6 bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-xl rounded-[2rem] transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-emerald-500/30 uppercase tracking-widest"
+                                        >
+                                            <RefreshCw className="w-7 h-7" /> {t.common.playAgain}
+                                        </button>
                                     </div>
                                 </div>
                             </motion.div>

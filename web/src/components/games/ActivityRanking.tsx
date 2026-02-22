@@ -19,7 +19,7 @@ interface ScoreEntry {
 
 export default function ActivityRanking({
     activityId,
-    limit = 10,
+    limit = 3,
     sortBy = 'score'
 }: {
     activityId: string,
@@ -142,10 +142,10 @@ export default function ActivityRanking({
         <div className="w-full max-w-2xl mx-auto space-y-3">
             <div className="flex items-center justify-between px-2 mb-2">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-yellow-500" />
+                    {sortBy === 'score' ? <Trophy className="w-5 h-5 text-yellow-500" /> : <Clock className="w-5 h-5 text-sky-400" />}
                     {sortBy === 'score'
-                        ? (language === 'es' ? 'Top 10 Puntos' : 'Top 10 Scores')
-                        : (language === 'es' ? 'Mejores Tiempos' : 'Best Times')}
+                        ? (language === 'es' ? `Top ${limit} Puntos` : `Top ${limit} Scores`)
+                        : (language === 'es' ? `Top ${limit} Tiempos` : `Top ${limit} Times`)}
                 </h3>
             </div>
 
@@ -183,18 +183,22 @@ export default function ActivityRanking({
                                 {entry.profiles?.full_name || (language === 'es' ? 'Estudiante' : 'Student')}
                             </p>
                             <div className="flex items-center gap-3 text-[10px] text-gray-400 mt-0.5 uppercase tracking-wider">
-                                <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatTime(entry.time_spent)}</span>
+                                {sortBy === 'score' ? (
+                                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatTime(entry.time_spent)}</span>
+                                ) : (
+                                    <span className="flex items-center gap-1 font-bold text-emerald-400/80"><Star className="w-3 h-3" /> {entry.score} pts</span>
+                                )}
                                 <span className="flex items-center gap-1"><Star className="w-3 h-3" /> {new Date(entry.created_at).toLocaleDateString()}</span>
                             </div>
                         </div>
 
                         <div className="flex-shrink-0 text-right">
                             <span className={`text-xl font-black ${index === 0 ? 'text-yellow-400' :
-                                    index === 1 ? 'text-slate-300' :
-                                        index === 2 ? 'text-orange-400' :
-                                            'text-emerald-400'
+                                index === 1 ? 'text-slate-300' :
+                                    index === 2 ? 'text-orange-400' :
+                                        'text-emerald-400'
                                 }`}>
-                                {entry.score}
+                                {sortBy === 'score' ? entry.score : formatTime(entry.time_spent)}
                             </span>
                         </div>
                     </motion.div>

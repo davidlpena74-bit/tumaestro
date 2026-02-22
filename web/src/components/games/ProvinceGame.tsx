@@ -55,7 +55,7 @@ export default function ProvinceGame({ taskId = null, activityId }: { taskId?: s
                 ceuta: "translate(188, 541) scale(3) translate(-188, -541)",
                 melilla: "translate(322, 582) scale(3) translate(-322, -582)"
             }}
-            activityId={activityId}
+            activityId={activityId || "mapa-provincias"}
         />
     );
 }

@@ -235,70 +235,108 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
 
                     {/* START OVERLAY - Unified with Map style */}
                     {gameState === 'start' && (
-                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                            <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
-                                <MapPin className="w-12 h-12 text-emerald-400" />
+                        <div className="absolute inset-0 z-30 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center rounded-[2rem] overflow-y-auto custom-scrollbar">
+                            {/* Top Header */}
+                            <div className="flex flex-col items-center mb-8 shrink-0 mt-4">
+                                <div className="bg-emerald-500/10 p-4 rounded-full mb-4 ring-1 ring-emerald-500/30">
+                                    <MapPin className="w-10 h-10 text-emerald-400" />
+                                </div>
+                                <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase">{t.gamesPage.gameTitles.region}</h2>
+                                <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
+                                    {language === 'es'
+                                        ? 'Demuestra tus conocimientos y escala en el ranking global.'
+                                        : 'Show your knowledge and climb the global ranking.'}
+                                </p>
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.gameTitles.region}</h2>
-                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                                {language === 'es'
-                                    ? '¿Te sabes las 17 Comunidades y 2 Ciudades Autónomas de España?'
-                                    : 'Do you know the 17 Communities and 2 Autonomous Cities of Spain?'}
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                                <button
-                                    onClick={() => startGame('challenge')}
-                                    className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        MODO RETO <Timer className="w-5 h-5 opacity-50" />
-                                    </span>
-                                </button>
-                                <button
-                                    onClick={() => startGame('practice')}
-                                    className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
-                                    </span>
-                                </button>
+
+                            {/* Rankings Section */}
+                            <div className="w-full max-w-5xl flex flex-col gap-8 mb-10">
+
+                                {/* Rankings Row */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                    </div>
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                    </div>
+                                </div>
+
+                                {/* Start Buttons Row (Now Below) */}
+                                <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl mx-auto w-full">
+                                    <button
+                                        onClick={() => startGame('challenge')}
+                                        className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
+                                    >
+                                        MODO RETO <Timer className="w-8 h-8 opacity-70" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => startGame('practice')}
+                                        className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-widest"
+                                    >
+                                        PRÁCTICA <RefreshCw className="w-6 h-6 opacity-50" />
+                                    </button>
+                                </div>
+
+                                <div className="text-center opacity-50 shrink-0">
+                                    <p className="text-white text-xs font-black uppercase tracking-[0.3em]">
+                                        {language === 'es' ? '¡Prepárate para el éxito!' : 'Get ready for success!'}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     )}
 
                     {/* WON OVERLAY - Unified with Map style */}
                     {gameState === 'finished' && (
-                        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                            <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
-                                {gameMode === 'challenge' && timeLeft === 0 ? (
-                                    <Timer className="w-16 h-16 text-red-500 animate-pulse" />
-                                ) : (
-                                    <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
-                                )}
-                            </div>
-                            <h2 className="text-4xl font-bold text-white mb-2">
-                                {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
-                            </h2>
+                        <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
 
-                            <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                                <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
-                                    {score}
-                                </span>
+                            {/* Top Section: Score & Trophy (Pushing up) */}
+                            <div className="flex flex-col items-center mb-8 shrink-0">
+                                <div className="bg-emerald-500/10 p-3 rounded-full mb-3 ring-1 ring-emerald-500/30">
+                                    {gameMode === 'challenge' && timeLeft === 0 ? (
+                                        <Timer className="w-10 h-10 text-red-500 animate-pulse" />
+                                    ) : (
+                                        <Trophy className="w-10 h-10 text-yellow-400 animate-bounce" />
+                                    )}
+                                </div>
+                                <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
+                                    {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
+                                </h2>
+
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                    <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                        {score}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
-                                <div className="space-y-4">
-                                    <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
-                                        <RatingSystem activityId={effectiveActivityId} />
+                            {/* Main Content Area: Rankings & Actions */}
+                            <div className="w-full max-w-5xl flex flex-col gap-8 mb-10">
+                                {/* Rankings Row */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
                                     </div>
-                                    <button onClick={resetGame} className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
-                                        <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                                    </button>
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                    </div>
                                 </div>
 
-                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
-                                    <ActivityRanking activityId={effectiveActivityId} />
+                                {/* Actions Row */}
+                                <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-5xl mx-auto w-full">
+                                    <div className="flex-1 bg-slate-900/40 backdrop-blur-md rounded-3xl border border-white/10 p-1 shadow-xl">
+                                        <RatingSystem activityId={effectiveActivityId} />
+                                    </div>
+
+                                    <button
+                                        onClick={resetGame}
+                                        className="flex-1 flex items-center justify-center gap-4 px-10 py-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-2xl rounded-3xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                                    >
+                                        <RefreshCw className="w-8 h-8" /> {t.common.playAgain}
+                                    </button>
                                 </div>
                             </div>
                         </div>

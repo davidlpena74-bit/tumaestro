@@ -7,7 +7,9 @@ import {
     CheckCircle,
     HandGrabbing,
     ArrowCounterClockwise,
-    Dna
+    Dna,
+    Skull,
+    Timer
 } from '@phosphor-icons/react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
@@ -241,85 +243,102 @@ export default function AnimalCellGame({ taskId = null, activityId }: { taskId?:
                     className="w-full bg-transparent border border-white/10 p-6 rounded-[2.5rem] relative flex items-center justify-center z-10 min-h-[850px] overflow-hidden cursor-crosshair select-none shadow-2xl"
                 >
                     {gameState === 'start' && (
-                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-[2rem]">
-                            <div className="bg-blue-500/10 p-6 rounded-full mb-6 ring-1 ring-blue-500/30">
-                                <HandGrabbing className="w-16 h-16 text-blue-400" />
+                        <div className="absolute inset-0 z-30 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center rounded-[2rem] overflow-y-auto custom-scrollbar">
+                            {/* Top Header */}
+                            <div className="flex flex-col items-center mb-8 shrink-0 mt-4">
+                                <div className="bg-blue-500/10 p-4 rounded-full mb-4 ring-1 ring-blue-500/30">
+                                    <Dna className="w-12 h-12 text-blue-400" />
+                                </div>
+                                <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">La Célula Animal</h2>
+                                <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
+                                    Aprende las partes fundamentales de la célula animal. Arrastra cada etiqueta para conectarla con su ubicación correspondiente. Si te equivocas, la línea no se fijará.
+                                </p>
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">La Célula Animal</h2>
-                            <p className="text-gray-300 mb-8 max-w-xl text-lg leading-relaxed font-medium">
-                                Aprende las partes fundamentales de la célula animal. Arrastra cada etiqueta para conectarla con su ubicación correspondiente. Si te equivocas, la línea no se fijará.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                                <button
-                                    onClick={() => startGame('challenge')}
-                                    className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        MODO RETO <Trophy className="w-5 h-5 opacity-50" />
-                                    </span>
-                                </button>
 
-                                <button
-                                    onClick={() => startGame('practice')}
-                                    className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        PRÁCTICA <ArrowCounterClockwise className="w-5 h-5 opacity-50" />
-                                    </span>
-                                </button>
+                            {/* Rankings Section */}
+                            <div className="w-full max-w-5xl flex flex-col gap-8 mb-10">
+                                {/* Rankings Row */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                    </div>
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                    </div>
+                                </div>
+
+                                {/* Start Buttons Row */}
+                                <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl mx-auto w-full">
+                                    <button
+                                        onClick={() => startGame('challenge')}
+                                        className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
+                                    >
+                                        MODO RETO <Timer className="w-8 h-8 opacity-70" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => startGame('practice')}
+                                        className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-widest"
+                                    >
+                                        PRÁCTICA <Dna className="w-6 h-6 opacity-50" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}
 
                     <AnimatePresence>
                         {gameState === 'finished' && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]"
-                            >
-                                <div className="bg-blue-500/10 p-4 rounded-full mb-6 ring-1 ring-blue-500/30">
-                                    {gameMode === 'challenge' && timeLeft === 0 ? (
-                                        <Trophy className="w-16 h-16 text-red-400 animate-pulse" /> // Actually should be Skull or X, but I'll stick to Trophy logic or maybe import skull.
-                                        // Wait, I didn't import Skull in this file. I'll just use Trophy color change for now or add import.
-                                        // Let's use Trophy since I see Trophy imported.
-                                    ) : (
-                                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
-                                    )}
-                                </div>
-                                <h2 className="text-4xl font-bold text-white mb-2">
-                                    {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Reto Completado!'}
-                                </h2>
+                            <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
 
-                                <div className="flex gap-12 mb-8 mt-4">
-                                    <div className="flex flex-col items-center gap-1">
-                                        <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Tiempo</span>
-                                        <span className="text-4xl font-black text-white">{elapsedTime}s</span>
+                                {/* Top Section: Score & Trophy (Pushing up) */}
+                                <div className="flex flex-col items-center mb-8 shrink-0">
+                                    <div className="bg-blue-500/10 p-3 rounded-full mb-3 ring-1 ring-blue-500/30">
+                                        {gameMode === 'challenge' && timeLeft === 0 ? (
+                                            <Skull className="w-10 h-10 text-red-500 animate-pulse" />
+                                        ) : (
+                                            <Trophy className="w-10 h-10 text-yellow-400 animate-bounce" />
+                                        )}
                                     </div>
-                                    <div className="flex flex-col items-center gap-1">
-                                        <span className="text-gray-400 text-xs uppercase tracking-widest font-bold">Errores</span>
-                                        <span className="text-4xl font-black text-red-500">{errors}</span>
+                                    <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
+                                        {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : '¡Reto Completado!'}
+                                    </h2>
+
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                        <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                            {score}
+                                        </span>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
-                                    <div className="space-y-4">
-                                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
+                                {/* Main Content Area: Rankings & Actions */}
+                                <div className="w-full max-w-5xl flex flex-col gap-8 mb-10">
+                                    {/* Rankings Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                            <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                        </div>
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
+                                            <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                        </div>
+                                    </div>
+
+                                    {/* Actions Row */}
+                                    <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-5xl mx-auto w-full">
+                                        <div className="flex-1 bg-slate-900/40 backdrop-blur-md rounded-3xl border border-white/10 p-1 shadow-xl">
                                             <RatingSystem activityId={effectiveActivityId} />
                                         </div>
+
                                         <button
                                             onClick={() => setGameState('start')}
-                                            className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-teal-500/20"
+                                            className="flex-1 flex items-center justify-center gap-4 px-10 py-6 bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-black text-2xl rounded-3xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-blue-500/20 uppercase tracking-wider"
                                         >
-                                            <ArrowCounterClockwise className="w-5 h-5" /> Jugar de nuevo
+                                            <ArrowCounterClockwise className="w-8 h-8" /> Jugar de nuevo
                                         </button>
                                     </div>
-
-                                    <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
-                                        <ActivityRanking activityId={effectiveActivityId} />
-                                    </div>
                                 </div>
-                            </motion.div>
+                            </div>
                         )}
                     </AnimatePresence>
 

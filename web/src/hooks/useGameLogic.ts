@@ -30,20 +30,16 @@ export function useGameLogic({
     useEffect(() => {
         if (gameState === 'playing') {
             const timer = setInterval(() => {
-                if (gameMode === 'challenge') {
-                    if (timeLeft > 0) {
-                        setElapsedTime(prev => prev + 1);
-                        setTimeLeft((prev) => prev - 1);
-                    } else {
-                        handleFinish();
-                    }
-                } else {
-                    setElapsedTime(prev => prev + 1);
+                setElapsedTime(prev => prev + 1);
+                // We keep decrementing timeLeft just for visual display if needed
+                // but we REMOVE the auto-finish trigger.
+                if (gameMode === 'challenge' && timeLeft > 0) {
+                    setTimeLeft(prev => Math.max(0, prev - 1));
                 }
             }, 1000);
             return () => clearInterval(timer);
         }
-    }, [gameState, timeLeft, gameMode]);
+    }, [gameState, gameMode, timeLeft]);
 
     const handleFinish = useCallback(async () => {
         setGameState('finished');
