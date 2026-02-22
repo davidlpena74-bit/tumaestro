@@ -799,7 +799,7 @@ export default function ActividadesClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-black mb-4 leading-tight text-slate-800 pb-2"
+                        className="text-5xl md:text-7xl font-black leading-tight text-slate-800"
                     >
                         {t.gamesPage.title}
                     </motion.h1>
@@ -807,7 +807,7 @@ export default function ActividadesClient() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-slate-700 max-w-2xl mx-auto mt-2 font-medium"
+                        className="text-xl text-slate-700 max-w-2xl mx-auto font-medium mb-10"
                     >
                         {t.gamesPage.subtitle}
                     </motion.p>
@@ -816,7 +816,7 @@ export default function ActividadesClient() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="mt-4 flex justify-center"
+                        className="mt-4 mb-12 flex justify-center"
                     >
                         <Link
                             href="/actividades/rankings"
@@ -885,7 +885,7 @@ export default function ActividadesClient() {
                 </motion.div>
 
                 {/* GRADE FILTER DROPDOWN */}
-                <div className="mb-12 flex justify-center">
+                <div className="mb-2 flex justify-center">
                     <div className="relative" ref={filterRef}>
                         <button
                             onClick={() => setFilterOpen(!filterOpen)}

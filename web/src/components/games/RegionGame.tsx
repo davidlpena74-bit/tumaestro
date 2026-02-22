@@ -39,7 +39,7 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime: 60, penaltyTime: 5, gameMode, taskId, activityId: effectiveActivityId });
+    } = useGameLogic({ initialTime: 2, penaltyTime: 5, gameMode, taskId, activityId: effectiveActivityId });
 
     const [targetId, setTargetId] = useState<string | null>(null);
     const [clickedId, setClickedId] = useState<string | null>(null);

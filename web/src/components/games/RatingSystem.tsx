@@ -131,14 +131,14 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
     }
 
     return (
-        <div className="w-full relative px-6 py-8">
+        <div className="w-full relative px-2 py-8">
             {onClose && (
                 <button onClick={onClose} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white transition-colors">
                     <X className="w-6 h-6" />
                 </button>
             )}
 
-            <h3 className="text-5xl font-bold text-white mb-4 text-center mt-6">
+            <h3 className="text-4xl font-bold text-white mb-4 text-center mt-6 whitespace-nowrap tracking-tight">
                 {isEdit ? 'Modifica tu experiencia' : '¿Cómo va tu experiencia?'}
             </h3>
             <p className="text-xl text-slate-400 text-center mb-6">
