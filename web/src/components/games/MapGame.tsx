@@ -96,9 +96,14 @@ export default function MapGame({ activityId }: { activityId?: string }) {
         pickNewTarget();
     };
 
-    const pickNewTarget = () => {
+    const pickNewTarget = (currentSolvedIds = solvedIds) => {
         const allKeys = Object.keys(GAME_PROVINCE_NAMES);
-        const availableKeys = allKeys.filter(k => !solvedIds.includes(k));
+        const availableKeys = allKeys.filter(k => !currentSolvedIds.includes(k));
+
+        if (availableKeys.length === 0) {
+            handleFinish();
+            return;
+        }
 
         const keys = availableKeys.length > 0 ? availableKeys : allKeys;
 
@@ -126,10 +131,11 @@ export default function MapGame({ activityId }: { activityId?: string }) {
         if (id === targetId) {
             // Correct
             addScore(10);
-            setSolvedIds(prev => [...prev, id]); // Add to solved list
+            const newSolved = [...solvedIds, id];
+            setSolvedIds(newSolved); // Add to solved list
             setCorrectCount(prev => prev + 1);
             setMessage(`${t.common.correct} ${GAME_PROVINCE_NAMES[id]}`);
-            setTimeout(pickNewTarget, 600);
+            setTimeout(() => pickNewTarget(newSolved), 600);
 
             // Celebration
             if (score > 1000 && score % 1000 < 20) confetti({ particleCount: 50 });

@@ -87,21 +87,14 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
         pickNewTarget();
     };
 
-    const pickNewTarget = () => {
-        // Exclude already solved regions if we want to force completion without repeats?
-        // Original logic was random. User just wants correct ones to stay marked.
-        // Let's keep logic simple: if solved, it stays green. Can it be target again?
-        // Typically in "locate all" games, solved ones are removed from pool.
-        // Let's try to remove solved ones from pool if possible, OR just mark them.
-        // User asked "que se quede marcada".
-        // Let's persist the mark first.
-
+    const pickNewTarget = (currentSolvedIds = solvedIds) => {
         const allKeys = Object.keys(SPANISH_COMMUNITIES_PATHS);
-        const availableKeys = allKeys.filter(k => !solvedIds.includes(k));
+        const availableKeys = allKeys.filter(k => !currentSolvedIds.includes(k));
 
-        // If all solved, maybe game over? hook typically handles time or we can check here.
-        // If solvedIds.length === allKeys.length -> win?
-        // Let's just pick from available if any, otherwise fallback to any (random practice).
+        if (availableKeys.length === 0) {
+            handleFinish();
+            return;
+        }
 
         const keys = availableKeys.length > 0 ? availableKeys : allKeys;
 
@@ -126,9 +119,10 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
         if (id === targetId) {
             // Correct
             addScore(100);
-            setSolvedIds(prev => [...prev, id]);
+            const newSolved = [...solvedIds, id];
+            setSolvedIds(newSolved);
             setMessage(`${t.common.correct} ${NAMES[id] || id}`);
-            setTimeout(pickNewTarget, 600);
+            setTimeout(() => pickNewTarget(newSolved), 600);
         } else {
             // Incorrect
             addError();
