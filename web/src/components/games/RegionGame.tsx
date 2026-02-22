@@ -304,36 +304,50 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
                                 <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
                                     {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
                                 </h2>
-
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Puntuación:' : 'Your Score:'}</span>
-                                    <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
-                                        {score}
-                                    </span>
-                                </div>
                             </div>
 
                             {/* Main Content Area: Rankings & Actions */}
-                            <div className="w-full max-w-5xl flex flex-col gap-8 mb-10">
+                            <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
                                 {/* Rankings Row */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
-                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                    {/* Left: Score Box */}
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                        <div className="flex flex-col items-center gap-1 mb-4">
+                                            <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                            <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                                {score}
+                                            </span>
+                                        </div>
+                                        <div className="w-full text-left">
+                                            <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                        </div>
                                     </div>
-                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
-                                        <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+
+                                    {/* Right: Time Box */}
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                        <div className="flex flex-col items-center gap-1 mb-4">
+                                            <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Tiempo:' : 'Your Time:'}</span>
+                                            <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                                                {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                                            </span>
+                                        </div>
+                                        <div className="w-full text-left">
+                                            <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Actions Row */}
-                                <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-5xl mx-auto w-full">
-                                    <div className="flex-1 bg-slate-900/40 backdrop-blur-md rounded-3xl border border-white/10 p-1 shadow-xl">
-                                        <RatingSystem activityId={effectiveActivityId} />
+                                {/* Actions Row - Reduced Height */}
+                                <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
+                                    <div className="flex-1 w-full bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                        <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
+                                            <RatingSystem activityId={effectiveActivityId} />
+                                        </div>
                                     </div>
 
                                     <button
                                         onClick={resetGame}
-                                        className="flex-1 flex items-center justify-center gap-4 px-10 py-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-2xl rounded-3xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                                        className="flex-1 w-full h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
                                     >
                                         <RefreshCw className="w-8 h-8" /> {t.common.playAgain}
                                     </button>
