@@ -72,9 +72,11 @@ export default function GameHUD({
     const [hudMessage, setHudMessage] = useState<string | null>(null);
     const [ratingData, setRatingData] = useState<{ avg: number; count: number } | null>(null);
     const [records, setRecords] = useState<{
-        bestScore: number | null; bestTime: number | null;
-        myBestScore: number | null; myBestTime: number | null;
-    }>({ bestScore: null, bestTime: null, myBestScore: null, myBestTime: null });
+        bestScore: number | null; bestScoreName: string | null;
+        bestTime: number | null; bestTimeName: string | null;
+        myBestScore: number | null;
+        myBestTime: number | null;
+    }>({ bestScore: null, bestScoreName: null, bestTime: null, bestTimeName: null, myBestScore: null, myBestTime: null });
 
     // Fetch activity ratings
     useEffect(() => {
@@ -107,22 +109,46 @@ export default function GameHUD({
         return () => { isMounted = false; };
     }, [activityId, isRatingModalOpen]);
 
-    // Fetch global best + personal best
+    // Fetch global best + personal best (with user names)
     useEffect(() => {
         if (!activityId) return;
         let isMounted = true;
         const run = async () => {
             try {
-                const { data: global } = await supabase
+                // 1. Global best SCORE (top scorer name + score)
+                const { data: topScore } = await supabase
                     .from('activity_scores')
-                    .select('score, time_spent')
+                    .select('score, time_spent, profiles(full_name)')
                     .eq('activity_id', activityId)
                     .order('score', { ascending: false })
-                    .limit(100);
-                if (!isMounted) return;
-                const bestScore = global && global.length > 0 ? Math.max(...global.map((r: any) => r.score)) : null;
-                const bestTime = global && global.length > 0 ? Math.min(...global.map((r: any) => r.time_spent)) : null;
+                    .limit(1)
+                    .single();
 
+                if (!isMounted) return;
+
+                // 2. Global best TIME (fastest player name + time)
+                const { data: topTime } = await supabase
+                    .from('activity_scores')
+                    .select('score, time_spent, profiles(full_name)')
+                    .eq('activity_id', activityId)
+                    .order('time_spent', { ascending: true })
+                    .limit(1)
+                    .single();
+
+                if (!isMounted) return;
+
+                const getFirstName = (d: any) => {
+                    const name = d?.profiles?.full_name as string | undefined;
+                    if (!name) return null;
+                    return name.split(' ')[0];
+                };
+
+                const bestScore = (topScore as any)?.score ?? null;
+                const bestScoreName = getFirstName(topScore);
+                const bestTime = (topTime as any)?.time_spent ?? null;
+                const bestTimeName = getFirstName(topTime);
+
+                // 3. My personal bests
                 let myBestScore: number | null = null;
                 let myBestTime: number | null = null;
                 const { data: { session } } = await supabase.auth.getSession();
@@ -131,15 +157,16 @@ export default function GameHUD({
                         .from('activity_scores')
                         .select('score, time_spent')
                         .eq('activity_id', activityId)
-                        .eq('user_id', session.user.id)
-                        .limit(50);
+                        .eq('user_id', session.user.id);
+
                     if (!isMounted) return;
                     if (mine && mine.length > 0) {
                         myBestScore = Math.max(...mine.map((r: any) => r.score));
                         myBestTime = Math.min(...mine.map((r: any) => r.time_spent));
                     }
                 }
-                if (isMounted) setRecords({ bestScore, bestTime, myBestScore, myBestTime });
+
+                if (isMounted) setRecords({ bestScore, bestScoreName, bestTime, bestTimeName, myBestScore, myBestTime });
             } catch (err: any) {
                 if (err?.name === 'AbortError') return;
             }
@@ -213,36 +240,58 @@ export default function GameHUD({
             {/* Records strip — centered, same row as Comenta button */}
             {activityId && (
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-50 pointer-events-none">
-                    <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-xl px-3 py-1 shadow-xl">
-                        {/* 🏆 Récord absoluto */}
-                        <Trophy className="w-3 h-3 text-yellow-400" weight="fill" />
-                        <div className="flex flex-col items-center leading-none">
-                            <span className="text-yellow-400/50 text-[7px] font-black uppercase tracking-wider">RECORD</span>
-                            <span className="text-yellow-300 font-black text-[10px]">
-                                {records.bestScore !== null ? `${records.bestScore}pts` : '—'}
-                            </span>
+                    <div className="flex items-center gap-3 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-xl px-3 py-1 shadow-xl">
+
+                        {/* 🏆 Mejor puntuación global */}
+                        <div className="flex items-center gap-1.5">
+                            <Trophy className="w-3 h-3 text-yellow-400 flex-shrink-0" weight="fill" />
+                            <div className="flex flex-col leading-none">
+                                <span className="text-yellow-400/50 text-[7px] font-black uppercase tracking-wider">RÉCORD PTS</span>
+                                <span className="text-yellow-300 font-black text-[10px]">
+                                    {records.bestScore !== null ? `${records.bestScore}pts` : '—'}
+                                    {records.bestScoreName && (
+                                        <span className="text-yellow-400/60 font-normal"> · {records.bestScoreName}</span>
+                                    )}
+                                </span>
+                            </div>
                         </div>
-                        {records.bestTime !== null && (
-                            <span className="text-yellow-400/60 font-bold text-[9px]">
-                                {Math.floor(records.bestTime / 60)}:{(records.bestTime % 60).toString().padStart(2, '0')}
-                            </span>
-                        )}
 
                         <div className="w-px h-5 bg-white/10" />
 
-                        {/* ⭐ Mi mejor marca */}
-                        <Star className="w-3 h-3 text-emerald-400" weight="fill" />
-                        <div className="flex flex-col items-center leading-none">
-                            <span className="text-emerald-400/50 text-[7px] font-black uppercase tracking-wider">MI MEJOR</span>
-                            <span className="text-emerald-300 font-black text-[10px]">
-                                {records.myBestScore !== null ? `${records.myBestScore}pts` : '—'}
-                            </span>
+                        {/* ⏱ Mejor tiempo global */}
+                        <div className="flex items-center gap-1.5">
+                            <Timer className="w-3 h-3 text-sky-400 flex-shrink-0" weight="fill" />
+                            <div className="flex flex-col leading-none">
+                                <span className="text-sky-400/50 text-[7px] font-black uppercase tracking-wider">RÉCORD TIEMPO</span>
+                                <span className="text-sky-300 font-black text-[10px]">
+                                    {records.bestTime !== null
+                                        ? `${Math.floor(records.bestTime / 60)}:${(records.bestTime % 60).toString().padStart(2, '0')}`
+                                        : '—'}
+                                    {records.bestTimeName && (
+                                        <span className="text-sky-400/60 font-normal"> · {records.bestTimeName}</span>
+                                    )}
+                                </span>
+                            </div>
                         </div>
-                        {records.myBestTime !== null && (
-                            <span className="text-emerald-400/60 font-bold text-[9px]">
-                                {Math.floor(records.myBestTime / 60)}:{(records.myBestTime % 60).toString().padStart(2, '0')}
-                            </span>
-                        )}
+
+                        <div className="w-px h-5 bg-white/10" />
+
+                        {/* ⭐ Mis mejores marcas */}
+                        <div className="flex items-center gap-1.5">
+                            <Star className="w-3 h-3 text-emerald-400 flex-shrink-0" weight="fill" />
+                            <div className="flex flex-col leading-none">
+                                <span className="text-emerald-400/50 text-[7px] font-black uppercase tracking-wider">MI MEJOR</span>
+                                <span className="text-emerald-300 font-black text-[10px]">
+                                    {records.myBestScore !== null ? `${records.myBestScore}pts` : '—'}
+                                    {records.myBestTime !== null && (
+                                        <span className="text-emerald-400/60 font-normal">
+                                            {' · '}{Math.floor(records.myBestTime / 60)}:{(records.myBestTime % 60).toString().padStart(2, '0')}
+                                        </span>
+                                    )}
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             )}
