@@ -333,7 +333,7 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
 
                                 {/* Actions Row - Reduced Height */}
                                 <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
-                                    <div className="flex-1 w-full bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                    <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
                                         <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
                                             <RatingSystem activityId={effectiveActivityId} />
                                         </div>
@@ -341,7 +341,7 @@ export default function RegionGame({ taskId = null, activityId }: { taskId?: str
 
                                     <button
                                         onClick={resetGame}
-                                        className="flex-1 w-full h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                                        className="w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
                                     >
                                         <RefreshCw className="w-8 h-8" /> {t.common.playAgain}
                                     </button>
