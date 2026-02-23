@@ -1054,6 +1054,8 @@ export const TRANSLATIONS = {
                 femaleReproductiveDesc: 'Identifiez les parties et organes du système reproducteur féminin.',
                 verbs: 'Verbes Irréguliers',
                 verbsDesc: 'Pratiquez les verbes irréguliers en anglais.',
+                verbsPronunciation: 'Verbes Irréguliers',
+                verbsPronunciationDesc: 'Pratiquez l\'exacte prononciation des 50 verbes irréguliers.',
                 multiplication: 'Multiplication Visuelle',
                 multiplicationDesc: 'Apprenez à multiplier en dessinant des lignes. C\'est magique !',
                 riddles: 'Énigmes Magiques',
@@ -1248,7 +1250,8 @@ export const TRANSLATIONS = {
                 proIntro: 'Niveau expert : 100 verbes irréguliers pour maîtriser pleinement l\'anglais.',
                 verbsCount: '{count} VERBES',
                 timeCount: '{count} SEC',
-                minCount: '{count} MIN'
+                minCount: '{count} MIN',
+                pressToStart: 'Appuyez pour commencer'
             }
         },
         storyteller: {
@@ -1314,7 +1317,12 @@ export const TRANSLATIONS = {
             completed: 'Lecture Terminée !',
             repeat: 'Répéter la Lecture',
             comprehension: 'Questions de Compréhension',
-            checkAnswers: 'Vérifier les Réponses'
+            checkAnswers: 'Vérifier les Réponses',
+            readAloud: 'Lire à voix haute',
+            listening: 'Écoute...',
+            stopListening: 'Arrêter le micro',
+            keepReading: 'Je vous écoute... Continuez à lire !',
+            pronounceClear: 'Prononcez chaque mot clairement'
         },
         physical: {
             mountains: {
@@ -1338,7 +1346,7 @@ export const TRANSLATIONS = {
                 "Mar Mediterráneo": "Mer Méditerranée", "Mar del Norte": "Mer du Nord", "Mar Báltico": "Mer Baltique",
                 "Mar Negro": "Mer Noire", "Mar Caspio": "Mer Caspienne", "Mar Adriático": "Mer Adriatique",
                 "Mar Arábigo": "Mer d'Arabie", "Bahía de Bengala": "Golfe du Bengale", "Mar de China Meridional": "Mer de Chine méridionale",
-                "Mar de Japón": "Mer du Japon", "Mar Rojo": "Mer Rouge", "Golfe Persique": "Golfe Persique",
+                "Mar de Japón": "Mer du Japon", "Mar Rojo": "Mer Rouge", "Golfo Pérsico": "Golfe Persique",
                 "Mar Caribe": "Mer des Caraïbes", "Golfo de México": "Golfe du Mexique", "Bahía de Hudson": "Baie d'Hudson",
                 "Mar de Bering": "Mer de Béring", "Golfo de California": "Golfe de Californie", "Mar del Coral": "Mer de Corail",
                 "Mar de Tasmania": "Mer de Tasman", "Mar de Arafura": "Mer d'Arafura", "Gran Bahía Australiana": "Grande Baie australienne"
@@ -1496,6 +1504,8 @@ export const TRANSLATIONS = {
                 femaleReproductiveDesc: 'Identifiziere die Teile und Organe des weiblichen Fortpflanzungssystems.',
                 verbs: 'Unregelmäßige Verben',
                 verbsDesc: 'Übe unregelmäßige Verben im Englischen.',
+                verbsPronunciation: 'Unregelmäßige Verben',
+                verbsPronunciationDesc: 'Üben Sie die exakte Aussprache der 50 unregelmäßigen Verben.',
                 multiplication: 'Visuelle Multiplikation',
                 multiplicationDesc: 'Lerne zu multiplizieren, indem du Linien zeichnest. Es ist pure Magie!',
                 riddles: 'Magische Rätsel',
@@ -1690,7 +1700,8 @@ export const TRANSLATIONS = {
                 proIntro: 'Expertenniveau: 100 unregelmäßige Verben zur vollständigen Beherrschung des Englischen.',
                 verbsCount: '{count} VERBEN',
                 timeCount: '{count} SEK',
-                minCount: '{count} MIN'
+                minCount: '{count} MIN',
+                pressToStart: 'Zum Starten drücken'
             }
         },
         storyteller: {
@@ -1756,7 +1767,12 @@ export const TRANSLATIONS = {
             completed: 'Lesen Abgeschlossen!',
             repeat: 'Lesen Wiederholen',
             comprehension: 'Verständnisfragen',
-            checkAnswers: 'Antworten Überprüfen'
+            checkAnswers: 'Antworten Überprüfen',
+            readAloud: 'Laut vorlesen',
+            listening: 'Hören...',
+            stopListening: 'Mikrofon stoppen',
+            keepReading: 'Ich höre zu... Lies weiter!',
+            pronounceClear: 'Sprich jedes Wort deutlich aus'
         },
         physical: {
             mountains: {

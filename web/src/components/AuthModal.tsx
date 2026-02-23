@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '@/lib/supabaseClient';
@@ -61,9 +63,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 redirectTo: mode === 'signup'
                     ? `${window.location.origin}/auth/callback?role=${role}`
                     : `${window.location.origin}/auth/callback`,
-                data: {
-                    role: role // Supabase internally maps this to raw_user_meta_data
-                }
             },
         });
         if (err) {

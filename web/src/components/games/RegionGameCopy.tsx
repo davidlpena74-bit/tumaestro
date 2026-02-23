@@ -1,5 +1,10 @@
 'use client';
 
+import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshCwIconGame } from 'lucide-react';
+import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
+
+
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ZoomIn, ZoomOut, Maximize, Minimize, HelpCircle, RefreshCw } from 'lucide-react';
@@ -8,6 +13,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { useLanguage } from '@/context/LanguageContext';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -39,11 +45,13 @@ const REGION_DISPLAY_NAMES: Record<string, string> = {
 export default function RegionGame({ activityId }: { activityId?: string }) {
     // Note: RegionGame usually has 60s for Regions (fewer targets).
     // Rivers has 120s. Let's use 60s here.
+    const { language, t } = useLanguage();
     const {
         gameState, setGameState,
         score, addScore,
         errors, addError,
         timeLeft,
+        elapsedTime,
         message, setMessage,
         startGame: hookStartGame,
         resetGame: hookResetGame,
@@ -196,7 +204,7 @@ export default function RegionGame({ activityId }: { activityId?: string }) {
                     onReset={resetGame}
                     colorTheme="teal" // Using teal to match original styling
                     icon={<MapPin className="w-8 h-8 text-teal-400" />}
-                    activityId={activityId}
+                    activityId={activityId || 'game'}
                 />
 
                 {/* MAP CONTAINER */}
@@ -241,20 +249,69 @@ export default function RegionGame({ activityId }: { activityId?: string }) {
 
                     {/* GAME OVER OVERLAY */}
                     {gameState === 'finished' && (
-                        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 rounded-[2rem]">
-                            <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
-                                <MapPin className="w-16 h-16 text-yellow-400 animate-bounce" />
+                        <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
+
+                            {/* Top Section: Score & Trophy (Pushing up) */}
+                            <div className="flex flex-col items-center mb-8 shrink-0">
+                                <div className="bg-emerald-500/10 p-3 rounded-full mb-3 ring-1 ring-emerald-500/30">
+                                    {true && timeLeft === 0 ? (
+                                        <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
+                                    ) : (
+                                        <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
+                                    )}
+                                </div>
+                                <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
+                                    {true && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
+                                </h2>
                             </div>
-                            <h2 className="text-4xl font-bold text-white mb-2">¡Reto Completado!</h2>
-                            <div className="flex flex-col items-center gap-1 mb-8">
-                                <span className="text-gray-400 text-sm uppercase tracking-widest">Puntuación Final</span>
-                                <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600">
-                                    {score}
-                                </span>
+
+                            {/* Main Content Area: Rankings & Actions */}
+                            <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
+                                {/* Rankings Row */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Left: Score Box */}
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                        <div className="flex flex-col items-center gap-1 mb-4">
+                                            <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">Tu Puntuación:</span>
+                                            <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                                {score}
+                                            </span>
+                                        </div>
+                                        <div className="w-full text-left">
+                                            <ActivityRanking activityId={activityId || 'game'} limit={3} sortBy="score" />
+                                        </div>
+                                    </div>
+
+                                    {/* Right: Time Box */}
+                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                        <div className="flex flex-col items-center gap-1 mb-4">
+                                            <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">Tu Tiempo:</span>
+                                            <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                                                {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                                            </span>
+                                        </div>
+                                        <div className="w-full text-left">
+                                            <ActivityRanking activityId={activityId || 'game'} limit={3} sortBy="time" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Actions Row - Reduced Height */}
+                                <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
+                                    <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                        <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
+                                            <RatingSystem activityId={activityId || 'game'} />
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={resetGame}
+                                        className="w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                                    >
+                                        <RefreshCwIconGame className="w-8 h-8" /> {t?.common?.playAgain || 'Jugar de nuevo'}
+                                    </button>
+                                </div>
                             </div>
-                            <button onClick={startGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                                <RefreshCw className="w-5 h-5" /> Jugar de nuevo
-                            </button>
                         </div>
                     )}
 
@@ -267,7 +324,7 @@ export default function RegionGame({ activityId }: { activityId?: string }) {
                             {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                         </button>
                         <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10" title="Reset View">
-                            <RefreshCw className="w-5 h-5" />
+                            <RefreshCwIconGame className="w-5 h-5" />
                         </button>
                     </div>
 

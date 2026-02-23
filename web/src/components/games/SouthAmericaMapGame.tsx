@@ -33,7 +33,7 @@ export default function SouthAmericaMapGame({ taskId = null, activityId }: { tas
             initialZoom={1.5}
             initialPan={{ x: 0, y: 0 }}
             taskId={taskId}
-            activityId={activityId}
+            activityId={activityId || 'game'}
         />
     );
 }

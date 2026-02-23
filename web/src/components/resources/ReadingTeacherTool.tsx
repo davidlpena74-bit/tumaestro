@@ -22,14 +22,9 @@ import {
     Waveform
 } from '@phosphor-icons/react';
 import { READING_TEXTS, ReadingText } from './data/reading-texts';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { getBestVoice } from '@/lib/speech-utils';
 import { useLanguage } from '@/context/LanguageContext';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+import { cn } from '@/lib/utils';
 
 export default function ReadingTeacherTool() {
     const { t, language } = useLanguage();

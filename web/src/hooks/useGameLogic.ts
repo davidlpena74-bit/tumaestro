@@ -97,14 +97,14 @@ export function useGameLogic({
         setMessage('');
     }, [initialTime]);
 
-    const addScore = useCallback((points: number = 10) => {
+    const addScore = useCallback((points: number = 100) => {
         setScore(s => s + points);
     }, []);
 
     const addError = useCallback(() => {
         setErrors(e => e + 1);
         if (gameMode === 'challenge') {
-            setScore(s => Math.max(0, s - 5)); // Fixed penalty score in challenge
+            setScore(s => Math.max(0, s - 25)); // Fixed penalty score in challenge
             setTimeLeft(t => Math.max(0, t - penaltyTime));
         }
     }, [penaltyTime, gameMode]);

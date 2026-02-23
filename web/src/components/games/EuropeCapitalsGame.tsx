@@ -1,5 +1,8 @@
 'use client';
 
+import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshCwIconGame } from 'lucide-react';
+
+
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -231,7 +234,7 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
                 onReset={resetGame}
                 colorTheme="purple"
                 icon={<MapPin className="w-8 h-8 text-purple-400" />}
-                activityId={effectiveActivityId}
+                activityId={effectiveActivityId || 'game'}
             />
 
             {/* START OVERLAY */}
@@ -250,7 +253,7 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
                             className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
                         >
                             <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                MODO RETO <Timer className="w-5 h-5 opacity-50" />
+                                MODO RETO <TimerIconGame className="w-5 h-5 opacity-50" />
                             </span>
                         </button>
 
@@ -259,7 +262,7 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
                             className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
                         >
                             <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
+                                PRÁCTICA <RefreshCwIconGame className="w-5 h-5 opacity-50" />
                             </span>
                         </button>
                     </div>
@@ -268,32 +271,67 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
 
             {/* FINISHED OVERLAY */}
             {gameState === 'finished' && (
-                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full overflow-y-auto scrollbar-hide">
-                    <div className="w-full max-w-4xl flex flex-col items-center py-8">
-                        <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
-                            <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
+                <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
+
+                    {/* Top Section: Score & Trophy (Pushing up) */}
+                    <div className="flex flex-col items-center mb-8 shrink-0">
+                        <div className="bg-emerald-500/10 p-3 rounded-full mb-3 ring-1 ring-emerald-500/30">
+                            {gameMode === 'challenge' && timeLeft === 0 ? (
+                                <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
+                            ) : (
+                                <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
+                            )}
                         </div>
-                        <h3 className="text-5xl font-black text-white mb-6">
-                            {timeLeft === 0 ? (language === 'es' ? '¡Tiempo Agotado!' : 'Time Out!') : (language === 'es' ? '¡Juego Completado!' : 'Game Completed!')}
-                        </h3>
-                        <p className="text-2xl text-purple-200 mb-10 font-light">{language === 'es' ? 'Puntuación Final' : 'Final Score'}: <strong className="text-white">{score}</strong></p>
+                        <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
+                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
+                        </h2>
+                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
-                            <div className="space-y-4 text-center">
-                                <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
-                                    <RatingSystem activityId={effectiveActivityId} />
+                    {/* Main Content Area: Rankings & Actions */}
+                    <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
+                        {/* Rankings Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Left: Score Box */}
+                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                <div className="flex flex-col items-center gap-1 mb-4">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                    <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                        {score}
+                                    </span>
                                 </div>
-                                <button
-                                    onClick={resetGame}
-                                    className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-500/20"
-                                >
-                                    <RefreshCw className="w-5 h-5" /> {language === 'es' ? 'Jugar Otra Vez' : 'Play Again'}
-                                </button>
+                                <div className="w-full text-left">
+                                    <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="score" />
+                                </div>
                             </div>
 
-                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
-                                <ActivityRanking activityId={effectiveActivityId} />
+                            {/* Right: Time Box */}
+                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                <div className="flex flex-col items-center gap-1 mb-4">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Tiempo:' : 'Your Time:'}</span>
+                                    <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                                        {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                                    </span>
+                                </div>
+                                <div className="w-full text-left">
+                                    <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="time" />
+                                </div>
                             </div>
+                        </div>
+
+                        {/* Actions Row - Reduced Height */}
+                        <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
+                            <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
+                                    <RatingSystem activityId={effectiveActivityId || 'game'} />
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={resetGame}
+                                className="w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                            >
+                                <RefreshCwIconGame className="w-8 h-8" /> {t?.common?.playAgain || 'Jugar de nuevo'}
+                            </button>
                         </div>
                     </div>
                 </div>

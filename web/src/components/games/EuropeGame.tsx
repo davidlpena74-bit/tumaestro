@@ -33,7 +33,7 @@ export default function EuropeGame({ taskId = null, activityId }: { taskId?: str
             initialPan={{ x: -120, y: -40 }}
             elevationHeight={6}
             taskId={taskId}
-            activityId={activityId}
+            activityId={activityId || 'game'}
         />
     );
 }

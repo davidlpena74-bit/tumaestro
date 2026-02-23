@@ -1,5 +1,8 @@
 'use client';
 
+import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshCwIconGame } from 'lucide-react';
+
+
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
@@ -21,7 +24,7 @@ interface DivisionProblem {
 }
 
 export default function DivisionGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [level, setLevel] = useState(1);
     const [problem, setProblem] = useState<DivisionProblem>({ dividend: 6, divisor: 2, quotient: 3, remainder: 0 });
     const [distributedCounts, setDistributedCounts] = useState<number[]>([]); // Items per person currently
@@ -157,7 +160,7 @@ export default function DivisionGame({ taskId = null, activityId }: { taskId?: s
 
         if (isQuotientCorrect && isRemainderCorrect) {
             setGameState('feedback');
-            addScore(10 + (streak * 2));
+            addScore(100 + (streak * 20));
             setStreak(s => s + 1);
             confetti({
                 particleCount: 100,
@@ -201,7 +204,7 @@ export default function DivisionGame({ taskId = null, activityId }: { taskId?: s
                             className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:-translate-y-1 flex-1 max-w-[180px]"
                         >
                             <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                MODO RETO <Trophy className="w-5 h-5 opacity-50" />
+                                MODO RETO <TrophyIconGame className="w-5 h-5 opacity-50" />
                             </span>
                         </button>
 
@@ -210,7 +213,7 @@ export default function DivisionGame({ taskId = null, activityId }: { taskId?: s
                             className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
                         >
                             <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                PRÁCTICA <RefreshCw className="w-5 h-5 opacity-50" />
+                                PRÁCTICA <RefreshCwIconGame className="w-5 h-5 opacity-50" />
                             </span>
                         </button>
                     </div>
@@ -219,28 +222,67 @@ export default function DivisionGame({ taskId = null, activityId }: { taskId?: s
 
             {/* FINISHED OVERLAY */}
             {gameState === 'finished' && (
-                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl h-full min-h-[500px]">
-                    <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30">
-                        <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
-                    </div>
-                    <h2 className="text-4xl font-black text-white mb-2">¡Reto Completado!</h2>
-                    <p className="text-xl text-orange-200 mb-8 font-light">Has demostrado un gran dominio de las divisiones.</p>
+                <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mt-4">
-                        <div className="space-y-4 text-center">
-                            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-1">
-                                <RatingSystem activityId={effectiveActivityId} />
+                    {/* Top Section: Score & Trophy (Pushing up) */}
+                    <div className="flex flex-col items-center mb-8 shrink-0">
+                        <div className="bg-emerald-500/10 p-3 rounded-full mb-3 ring-1 ring-emerald-500/30">
+                            {gameMode === 'challenge' && timeLeft === 0 ? (
+                                <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
+                            ) : (
+                                <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
+                            )}
+                        </div>
+                        <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
+                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
+                        </h2>
+                    </div>
+
+                    {/* Main Content Area: Rankings & Actions */}
+                    <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
+                        {/* Rankings Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Left: Score Box */}
+                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                <div className="flex flex-col items-center gap-1 mb-4">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                    <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                        {score}
+                                    </span>
+                                </div>
+                                <div className="w-full text-left">
+                                    <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="score" />
+                                </div>
                             </div>
-                            <button
-                                onClick={() => setGameState('start')}
-                                className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl shadow-orange-500/20 transition-transform active:scale-95 flex items-center justify-center gap-2"
-                            >
-                                <RefreshCw className="w-6 h-6" /> Jugar de nuevo
-                            </button>
+
+                            {/* Right: Time Box */}
+                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                <div className="flex flex-col items-center gap-1 mb-4">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Tiempo:' : 'Your Time:'}</span>
+                                    <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                                        {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                                    </span>
+                                </div>
+                                <div className="w-full text-left">
+                                    <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="time" />
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/10 p-6 overflow-hidden">
-                            <ActivityRanking activityId={effectiveActivityId} />
+                        {/* Actions Row - Reduced Height */}
+                        <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
+                            <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
+                                    <RatingSystem activityId={effectiveActivityId || 'game'} />
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={hookResetGame}
+                                className="w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                            >
+                                <RefreshCwIconGame className="w-8 h-8" /> {t?.common?.playAgain || 'Jugar de nuevo'}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -261,7 +303,7 @@ export default function DivisionGame({ taskId = null, activityId }: { taskId?: s
                 colorTheme="orange"
                 message={message}
                 icon={<Pizza className="w-8 h-8 text-orange-400" />}
-                activityId={effectiveActivityId}
+                activityId={effectiveActivityId || 'game'}
             />
 
             {/* Game Grid */}
@@ -341,7 +383,7 @@ export default function DivisionGame({ taskId = null, activityId }: { taskId?: s
                             {t.gamesPage.divisionGame.distributeAll}
                         </button>
                         <button onClick={() => { setItemsLeft(problem.dividend); setDistributedCounts(new Array(problem.divisor).fill(0)); }} className="text-xs bg-white/5 hover:bg-white/10 text-red-300 hover:text-red-200 px-3 py-2 rounded-lg transition">
-                            <RefreshCw className="w-3 h-3 inline mr-1" /> {t.gamesPage.divisionGame.reset}
+                            <RefreshCwIconGame className="w-3 h-3 inline mr-1" /> {t.gamesPage.divisionGame.reset}
                         </button>
                     </div>
                 </div>

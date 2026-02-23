@@ -1,5 +1,10 @@
 'use client';
 
+import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshCwIconGame } from 'lucide-react';
+import RatingSystem from './RatingSystem';
+import ActivityRanking from './ActivityRanking';
+
+
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, CheckCircle2, Trophy, ArrowRight, BookOpen, Volume2, Timer, Star, Mic, XCircle } from 'lucide-react';
@@ -397,7 +402,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                 icon={<BookOpen className="w-8 h-8 text-violet-600" />}
                 title={type === 'pronunciation' ? t.gamesPage.gameTitles.verbsPronunciation : t.gamesPage.gameTitles.verbs}
                 gameType={type}
-                activityId={activityId}
+                activityId={activityId || 'game'}
             />
 
             <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
@@ -417,7 +422,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
-                                        {t.gamesPage.verbsGame.challengeMode} <Trophy className="w-5 h-5 opacity-50" />
+                                        {t.gamesPage.verbsGame.challengeMode} <TrophyIconGame className="w-5 h-5 opacity-50" />
                                     </div>
                                     <span className="text-xs opacity-70 font-bold tracking-wider">
                                         {t.gamesPage.verbsGame.verbsCount.replace('{count}', '25')} • 1 Min
@@ -431,7 +436,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                             >
                                 <span className="relative z-10 flex flex-col items-center gap-1">
                                     <div className="flex items-center gap-2">
-                                        {t.gamesPage.verbsGame.practiceMode} <RefreshCw className="w-5 h-5 opacity-50" />
+                                        {t.gamesPage.verbsGame.practiceMode} <RefreshCwIconGame className="w-5 h-5 opacity-50" />
                                     </div>
                                     <span className="text-xs opacity-50 font-bold tracking-wider">{t.gamesPage.verbsGame.verbsCount.replace('{count}', '5')}</span>
                                 </span>
@@ -441,28 +446,69 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                 )}
 
                 {gameState === 'finished' && (
-                    <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
-                        <div className="bg-violet-500/10 p-4 rounded-full mb-6 ring-1 ring-violet-500/30">
-                            {gameMode === 'challenge' && timeLeft === 0 ? (
-                                <Timer className="w-16 h-16 text-red-500 animate-pulse" />
-                            ) : (
-                                <Trophy className="w-16 h-16 text-yellow-400 animate-bounce" />
-                            )}
-                        </div>
-                        <h2 className="text-4xl font-bold text-white mb-2">
-                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : t.common.completed}
-                        </h2>
+                    <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
 
-                        <div className="flex flex-col items-center gap-2 mb-10 bg-white/5 p-8 rounded-3xl border border-white/10">
-                            <span className="text-gray-400 text-xs uppercase tracking-[0.2em] font-bold">{language === 'es' ? 'Puntuación Final' : 'Final Score'}</span>
-                            <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-sm">
-                                {score}
-                            </span>
+                        {/* Top Section: Score & Trophy (Pushing up) */}
+                        <div className="flex flex-col items-center mb-8 shrink-0">
+                            <div className="bg-emerald-500/10 p-3 rounded-full mb-3 ring-1 ring-emerald-500/30">
+                                {gameMode === 'challenge' && timeLeft === 0 ? (
+                                    <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
+                                ) : (
+                                    <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
+                                )}
+                            </div>
+                            <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
+                                {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
+                            </h2>
                         </div>
 
-                        <button onClick={resetGame} className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all hover:scale-105">
-                            <RefreshCw className="w-5 h-5" /> {t.common.playAgain}
-                        </button>
+                        {/* Main Content Area: Rankings & Actions */}
+                        <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
+                            {/* Rankings Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Left: Score Box */}
+                                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                    <div className="flex flex-col items-center gap-1 mb-4">
+                                        <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                        <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                            {score}
+                                        </span>
+                                    </div>
+                                    <div className="w-full text-left">
+                                        <ActivityRanking activityId={activityId || 'game'} limit={3} sortBy="score" />
+                                    </div>
+                                </div>
+
+                                {/* Right: Time Box */}
+                                <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                    <div className="flex flex-col items-center gap-1 mb-4">
+                                        <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Tiempo:' : 'Your Time:'}</span>
+                                        <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                                            {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                                        </span>
+                                    </div>
+                                    <div className="w-full text-left">
+                                        <ActivityRanking activityId={activityId || 'game'} limit={3} sortBy="time" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Actions Row - Reduced Height */}
+                            <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
+                                <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                    <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
+                                        <RatingSystem activityId={activityId || 'game'} />
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={resetGame}
+                                    className="w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                                >
+                                    <RefreshCwIconGame className="w-8 h-8" /> {t?.common?.playAgain || 'Jugar de nuevo'}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
 
@@ -521,7 +567,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                             onChange={(e) => setInputs(prev => ({ ...prev, pastSimple: e.target.value }))}
                                             onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
                                             disabled={showResult !== null}
-                                            placeholder={language === 'es' ? "Escribe aquí..." : "Type here..."}
+                                            placeholder={true ? "Escribe aquí..." : "Type here..."}
                                             className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
                                                     ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
                                                     showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
@@ -542,7 +588,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                             onChange={(e) => setInputs(prev => ({ ...prev, pastParticiple: e.target.value }))}
                                             onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
                                             disabled={showResult !== null}
-                                            placeholder={language === 'es' ? "Escribe aquí..." : "Type here..."}
+                                            placeholder={true ? "Escribe aquí..." : "Type here..."}
                                             className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
                                                     ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
                                                     showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
@@ -646,7 +692,7 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                                                         className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition-all shadow-xl shadow-red-500/20 border-2 border-white/20 hover:scale-110 active:scale-95 group"
                                                         title="Repetir"
                                                     >
-                                                        <RefreshCw className="w-8 h-8 group-hover:rotate-180 transition-transform duration-500" />
+                                                        <RefreshCwIconGame className="w-8 h-8 group-hover:rotate-180 transition-transform duration-500" />
                                                     </button>
                                                     {showResult !== null && (
                                                         <button

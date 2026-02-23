@@ -32,7 +32,7 @@ export default function OceaniaMapGame({ taskId = null, activityId }: { taskId?:
             initialTime={120} // Fewer countries
             initialPan={{ x: 0, y: 0 }}
             taskId={taskId}
-            activityId={activityId}
+            activityId={activityId || 'game'}
         />
     );
 }

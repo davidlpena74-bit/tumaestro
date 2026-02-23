@@ -9,12 +9,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import PageBackground from '@/components/PageBackground';
 import ContentWrapper from '@/components/ContentWrapper';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+import { cn } from '@/lib/utils';
 
 interface Rating {
     id: string;

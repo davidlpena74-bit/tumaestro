@@ -1,7 +1,7 @@
-
 'use client';
 
 import Link from 'next/link';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from '@phosphor-icons/react';
 import { useLanguage } from '@/context/LanguageContext';
@@ -22,7 +22,7 @@ export default function PhysicalGameLayout({
     colorTheme = 'emerald',
     activityId
 }: PhysicalGameLayoutProps) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const themeColors = {

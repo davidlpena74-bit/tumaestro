@@ -1,0 +1,149 @@
+src/app/perfil/valoraciones/MyRatingsClient.tsx(12,20): error TS2307: Cannot find module '@/lib/utils' or its corresponding type declarations.
+src/components/AnimatedIcon.tsx(43,13): error TS2339: Property 'lord-icon' does not exist on type 'JSX.IntrinsicElements'.
+src/components/AuthModal.tsx(64,17): error TS2353: Object literal may only specify known properties, and 'data' does not exist in type '{ redirectTo?: string | undefined; scopes?: string | undefined; queryParams?: { [key: string]: string; } | undefined; skipBrowserRedirect?: boolean | undefined; }'.
+src/components/games/ActivityRanking.tsx(113,68): error TS2339: Property 'full_name' does not exist on type '{ full_name: any; avatar_url: any; }[]'.
+src/components/games/AnimalCellGame.tsx(351,42): error TS2304: Cannot find name 'RefreshCw'.
+src/components/games/CapitalGame.tsx(347,42): error TS2304: Cannot find name 'Timer'.
+src/components/games/FemaleReproductiveGame.tsx(261,42): error TS2304: Cannot find name 'Timer'.
+src/components/games/FemaleReproductiveGame.tsx(314,42): error TS2304: Cannot find name 'RefreshCw'.
+src/components/games/HumanMusclesGame.tsx(371,42): error TS2304: Cannot find name 'RefreshCw'.
+src/components/games/HumanSkeletonGame.tsx(375,42): error TS2304: Cannot find name 'RefreshCw'.
+src/components/games/MaleReproductiveGame.tsx(268,42): error TS2304: Cannot find name 'Timer'.
+src/components/games/MaleReproductiveGame.tsx(321,42): error TS2304: Cannot find name 'RefreshCw'.
+src/components/games/PlantCellGame.tsx(407,42): error TS2304: Cannot find name 'RefreshCw'.
+src/components/games/QuizGame.tsx(249,38): error TS2304: Cannot find name 'gameMode'.
+src/components/games/QuizGame.tsx(256,38): error TS2304: Cannot find name 'gameMode'.
+src/components/games/QuizGame.tsx(303,42): error TS2304: Cannot find name 'RefreshCw'.
+src/components/games/RegionGameCopy.tsx(251,38): error TS2304: Cannot find name 'gameMode'.
+src/components/games/RegionGameCopy.tsx(252,42): error TS2304: Cannot find name 'Timer'.
+src/components/games/RegionGameCopy.tsx(254,42): error TS2304: Cannot find name 'Trophy'.
+src/components/games/RegionGameCopy.tsx(258,38): error TS2304: Cannot find name 'gameMode'.
+src/components/games/RegionGameCopy.tsx(258,105): error TS2304: Cannot find name 't'.
+src/components/games/RegionGameCopy.tsx(269,127): error TS2304: Cannot find name 'language'.
+src/components/games/RegionGameCopy.tsx(282,127): error TS2304: Cannot find name 'language'.
+src/components/games/RegionGameCopy.tsx(284,61): error TS2304: Cannot find name 'elapsedTime'.
+src/components/games/RegionGameCopy.tsx(284,82): error TS2304: Cannot find name 'elapsedTime'.
+src/components/games/RegionGameCopy.tsx(305,76): error TS2304: Cannot find name 't'.
+src/components/games/spanish-communities-paths.ts(66,5): error TS1117: An object literal cannot have multiple properties with the same name.
+src/components/games/spanish-communities-paths.ts(67,5): error TS1117: An object literal cannot have multiple properties with the same name.
+src/components/icons/PremiumIcons.tsx(36,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(46,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(55,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(64,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(83,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(113,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(123,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(131,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(143,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(180,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(191,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(198,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(204,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(211,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(219,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(237,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(257,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(266,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(287,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(294,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(301,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(310,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/icons/PremiumIcons.tsx(330,13): error TS2322: Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+  Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+    Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/context/LanguageContext.tsx(37,35): error TS2322: Type '{ language: Language; setLanguage: (lang: Language) => void; t: { common: { start: string; playAgain: string; score: string; errors: string; time: string; remaining: string; correct: string; ... 16 more ...; subjects: { ...; }; }; ... 7 more ...; physical: { ...; }; } | { ...; } | { ...; } | { ...; }; }' is not assignable to type 'LanguageContextType'.
+  Types of property 't' are incompatible.
+    Type '{ common: { start: string; playAgain: string; score: string; errors: string; time: string; remaining: string; correct: string; completed: string; loading: string; congrats: string; victoryMessage: string; ... 12 more ...; subjects: { ...; }; }; ... 7 more ...; physical: { ...; }; } | { ...; } | { ...; } | { ...; }' is not assignable to type '{ common: { start: string; playAgain: string; score: string; errors: string; time: string; remaining: string; correct: string; completed: string; loading: string; congrats: string; victoryMessage: string; ... 12 more ...; subjects: { ...; }; }; ... 7 more ...; physical: { ...; }; }'.
+      Type '{ common: { start: string; playAgain: string; score: string; errors: string; time: string; remaining: string; correct: string; completed: string; loading: string; congrats: string; victoryMessage: string; ... 12 more ...; subjects: { ...; }; }; ... 7 more ...; physical: { ...; }; }' is not assignable to type '{ common: { start: string; playAgain: string; score: string; errors: string; time: string; remaining: string; correct: string; completed: string; loading: string; congrats: string; victoryMessage: string; ... 12 more ...; subjects: { ...; }; }; ... 7 more ...; physical: { ...; }; }'. Two different types with this name exist, but they are unrelated.
+        The types of 'gamesPage.gameTitles' are incompatible between these types.
+          Type '{ region: string; regionDesc: string; provinces: string; provincesDesc: string; europeMap: string; europeMapDesc: string; euCapitalsMap: string; euCapitalsMapDesc: string; europeCapitalsMap: string; ... 66 more ...; oceansOceaniaDesc: string; }' is missing the following properties from type '{ region: string; regionDesc: string; provinces: string; provincesDesc: string; europeMap: string; europeMapDesc: string; euCapitalsMap: string; euCapitalsMapDesc: string; europeCapitalsMap: string; ... 68 more ...; oceansOceaniaDesc: string; }': verbsPronunciation, verbsPronunciationDesc

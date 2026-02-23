@@ -33,7 +33,7 @@ export default function AfricaMapGame({ taskId = null, activityId }: { taskId?: 
             initialZoom={1.2} // Further 20% increase over optimized height
             initialPan={{ x: 0, y: 0 }}
             taskId={taskId}
-            activityId={activityId}
+            activityId={activityId || 'game'}
         />
     );
 }

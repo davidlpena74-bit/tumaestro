@@ -26,14 +26,9 @@ import {
     ChatCircleText,
     Trophy
 } from '@phosphor-icons/react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { supabase } from '@/lib/supabaseClient';
 import { useToast } from '@/context/ToastContext';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+import { cn } from '@/lib/utils';
 
 type Game = {
     id: string;

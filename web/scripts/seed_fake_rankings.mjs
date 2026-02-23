@@ -98,7 +98,7 @@ async function seedDatabase() {
 
         // 3. Insert easy-to-beat scores
         for (const activityId of ACTIVITIES) {
-            const randomScore = Math.floor(Math.random() * 200) + 300; // 300-500 pts
+            const randomScore = Math.floor(Math.random() * 201) + 250; // 250-450 pts
             const randomTime = Math.floor(Math.random() * 120) + 180; // 180-300 seconds
 
             const { error: sError } = await supabase

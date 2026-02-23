@@ -32,7 +32,7 @@ export default function AsiaMapGame({ taskId = null, activityId }: { taskId?: st
             initialTime={180}
             initialPan={{ x: 0, y: 0 }}
             taskId={taskId}
-            activityId={activityId}
+            activityId={activityId || 'game'}
         />
     );
 }

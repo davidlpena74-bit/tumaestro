@@ -132,7 +132,7 @@ async function seedDatabase() {
             // Easy to beat ranges:
             // Score: 300 to 600 pts
             // Time: 180 to 420 seconds (3 to 7 mins)
-            const randomScore = Math.floor(Math.random() * 301) + 300;
+            const randomScore = Math.floor(Math.random() * 201) + 250;
             const randomTime = Math.floor(Math.random() * 241) + 180;
             const randomErrors = Math.floor(Math.random() * 11) + 5; // 5 to 15 errors
 

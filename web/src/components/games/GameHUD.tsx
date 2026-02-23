@@ -1,5 +1,8 @@
 'use client';
 
+import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshCwIconGame } from 'lucide-react';
+
+
 import { Trophy, Timer, GlobeHemisphereWest, ArrowCounterClockwise, XCircle, CheckCircle, ChatCircleText, Star } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -159,7 +162,7 @@ export default function GameHUD({
                 // Check if we have real data or should use mock
                 if ((!scoreRows || scoreRows.length === 0) && (!timeRows || timeRows.length === 0)) {
                     setRecords({
-                        bestScore: 1000,
+                        bestScore: 850,
                         bestScoreName: language === 'es' ? 'Mateo El Sabio' : 'Wise Matt',
                         bestTime: 42,
                         bestTimeName: language === 'es' ? 'Lucía Explorer' : 'Lucia Explorer',
@@ -271,7 +274,7 @@ export default function GameHUD({
 
                         {/* 🏆 Mejor puntuación global */}
                         <div className="flex flex-col items-center text-center min-w-[110px]">
-                            <Trophy className="w-5 h-5 text-yellow-400 mb-1" weight="fill" />
+                            <TrophyIconGame className="w-5 h-5 text-yellow-400 mb-1" />
                             <span className="text-yellow-400/50 text-[11px] font-black uppercase tracking-wider">RÉCORD PTS</span>
                             <span className="text-yellow-300 font-black text-[18px] tabular-nums">
                                 {records.bestScore !== null ? `${records.bestScore}pts` : '—'}
@@ -287,7 +290,7 @@ export default function GameHUD({
 
                         {/* ⏱ Mejor tiempo global */}
                         <div className="flex flex-col items-center text-center min-w-[110px]">
-                            <Timer className="w-5 h-5 text-sky-400 mb-1" weight="fill" />
+                            <TimerIconGame className="w-5 h-5 text-sky-400 mb-1" />
                             <span className="text-sky-400/50 text-[11px] font-black uppercase tracking-wider">RÉCORD TMP</span>
                             <span className="text-sky-300 font-black text-[18px] tabular-nums">
                                 {records.bestTime !== null
@@ -316,7 +319,7 @@ export default function GameHUD({
 
                         {/* ⏱ Mi mejor tiempo personal */}
                         <div className="flex flex-col items-center text-center min-w-[110px]">
-                            <Timer className="w-5 h-5 text-emerald-400 mb-1" weight="fill" />
+                            <TimerIconGame className="w-5 h-5 text-emerald-400 mb-1" />
                             <span className="text-emerald-400/50 text-[11px] font-black uppercase tracking-wider">MI MEJOR TMP</span>
                             <span className="text-emerald-300 font-black text-[18px] tabular-nums">
                                 {records.myBestTime !== null
@@ -394,7 +397,7 @@ export default function GameHUD({
                             "flex items-center gap-2 px-3 py-2 rounded-xl font-mono font-bold text-xl border transition-all shadow-lg min-w-[100px] justify-center bg-slate-800/80 border-white/10 ",
                             theme.text
                         )}>
-                            <Timer className="w-5 h-5" weight="bold" />
+                            <TimerIconGame className="w-5 h-5" />
                             <span>
                                 {Math.floor(displayTime / 60)}:{(displayTime % 60).toString().padStart(2, '0')}
                             </span>
@@ -462,7 +465,7 @@ export default function GameHUD({
                             onClick={e => e.stopPropagation()}
                         >
                             <RatingSystem
-                                activityId={activityId}
+                                activityId={activityId || 'game'}
                                 onClose={() => setIsRatingModalOpen(false)}
                             />
                         </motion.div>

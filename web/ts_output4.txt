@@ -1,0 +1,21 @@
+src/components/games/GameHUD.tsx(36,6): error TS1003: Identifier expected.
+src/components/games/GameHUD.tsx(36,18): error TS1005: ';' expected.
+src/components/games/GameHUD.tsx(36,19): error TS1131: Property or signature expected.
+src/components/games/GameHUD.tsx(36,21): error TS1131: Property or signature expected.
+src/components/games/GameHUD.tsx(37,17): error TS1109: Expression expected.
+src/components/games/GameHUD.tsx(38,15): error TS1109: Expression expected.
+src/components/games/GameHUD.tsx(39,16): error TS1109: Expression expected.
+src/components/games/GameHUD.tsx(40,1): error TS1128: Declaration or statement expected.
+src/components/games/GameHUD.tsx(66,5): error TS1180: Property destructuring pattern expected.
+src/components/games/GameHUD.tsx(71,1): error TS1128: Declaration or statement expected.
+src/components/games/GameHUD.tsx(71,2): error TS1128: Declaration or statement expected.
+src/components/games/GameHUD.tsx(71,4): error TS1434: Unexpected keyword or identifier.
+src/components/games/GameHUD.tsx(71,16): error TS1128: Declaration or statement expected.
+src/components/games/QuizGame.tsx(59,56): error TS1136: Property assignment expected.
+src/components/games/QuizGame.tsx(59,69): error TS1005: ',' expected.
+src/components/games/QuizGame.tsx(59,101): error TS1005: ',' expected.
+src/components/games/QuizGame.tsx(59,123): error TS1005: ',' expected.
+src/components/games/QuizGame.tsx(59,124): error TS1128: Declaration or statement expected.
+src/components/games/QuizGame.tsx(116,17): error TS1003: Identifier expected.
+src/components/games/QuizGame.tsx(125,14): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/games/QuizGame.tsx(314,1): error TS1128: Declaration or statement expected.

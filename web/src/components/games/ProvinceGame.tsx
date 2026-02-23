@@ -30,8 +30,8 @@ export default function ProvinceGame({ taskId = null, activityId }: { taskId?: s
 
     return (
         <MapGameTemplate
-            title={language === 'es' ? "Provincias de España" : "Provinces of Spain"}
-            description={language === 'es'
+            title={true ? "Provincias de España" : "Provinces of Spain"}
+            description={true
                 ? "¿Eres capaz de ubicar las 50 provincias y las 2 ciudades autónomas?"
                 : "Can you locate the 50 provinces and the 2 autonomous cities?"}
             regionName={t.gamesPage.regions.spain}

@@ -33,7 +33,7 @@ export default function AmericaMapGame({ taskId = null, activityId }: { taskId?:
             initialZoom={1.8} // Reduced 10% from x2
             initialPan={{ x: 0, y: -60 }} // Shifted upwards as requested
             taskId={taskId}
-            activityId={activityId}
+            activityId={activityId || 'game'}
         />
     );
 }

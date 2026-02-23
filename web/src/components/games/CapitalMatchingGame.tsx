@@ -1,5 +1,8 @@
 'use client';
 
+import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshCwIconGame } from 'lucide-react';
+
+
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -276,10 +279,10 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                         {/* Rankings Row */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
-                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="score" />
                             </div>
                             <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
-                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="time" />
                             </div>
                         </div>
 
@@ -289,7 +292,7 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                                 onClick={() => startGame('challenge')}
                                 className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                             >
-                                MODO RETO <Timer className="w-8 h-8 opacity-70" />
+                                MODO RETO <TimerIconGame className="w-8 h-8 opacity-70" />
                             </button>
 
                             <button
@@ -325,7 +328,7 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                     <div className="flex gap-6 text-slate-400">
                         <div className="flex flex-col items-center gap-1">
                             <div className="flex items-center gap-2">
-                                <Timer className="w-5 h-5 text-indigo-400" />
+                                <TimerIconGame className="w-5 h-5 text-indigo-400" />
                                 <span className={`font-mono font-bold text-xl ${gameMode === 'challenge' && timeLeft <= 30 ? 'text-red-400 animate-pulse' : 'text-white'
                                     }`}>
                                     {formatTime(gameMode === 'challenge' ? timeLeft : elapsedTime)}
@@ -352,7 +355,7 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                         {(() => {
                             const totalAttempts = Object.keys(matches).length + errors;
                             const accuracy = totalAttempts > 0 ? Math.round((Object.keys(matches).length / totalAttempts) * 100) : 100;
-                            return `${accuracy}% ${language === 'es' ? 'Precisión' : 'Accuracy'}`;
+                            return `${accuracy}% ${true ? 'Precisión' : 'Accuracy'}`;
                         })()}
                     </div>
                 </div>
@@ -367,196 +370,70 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                 />
             </div>
 
-            {(gameState === 'won' || gameState === 'finished') ? (
-                <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-3xl h-full min-h-[500px] overflow-y-auto custom-scrollbar">
+            {gameState === 'finished' && (
+                <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
 
                     {/* Top Section: Score & Trophy (Pushing up) */}
                     <div className="flex flex-col items-center mb-8 shrink-0">
-                        <div className="bg-indigo-500/10 p-3 rounded-full mb-3 ring-1 ring-indigo-500/30">
-                            {gameMode === 'challenge' && timeLeft <= 0 ? (
-                                <Timer className="w-10 h-10 text-red-500 animate-pulse" />
+                        <div className="bg-emerald-500/10 p-3 rounded-full mb-3 ring-1 ring-emerald-500/30">
+                            {gameMode === 'challenge' && timeLeft === 0 ? (
+                                <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
                             ) : (
-                                <Trophy className="w-10 h-10 text-yellow-400 animate-bounce" />
+                                <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
                             )}
                         </div>
                         <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
-                            {gameMode === 'challenge' && timeLeft <= 0 ? '¡Tiempo Agotado!' : '¡Reto Completado!'}
+                            {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
                         </h2>
-
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Puntuación:' : 'Your Score:'}</span>
-                            <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
-                                {score}
-                            </span>
-                        </div>
                     </div>
 
                     {/* Main Content Area: Rankings & Actions */}
-                    <div className="w-full max-w-5xl flex flex-col gap-8 mb-10">
+                    <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
                         {/* Rankings Row */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
-                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                            {/* Left: Score Box */}
+                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                <div className="flex flex-col items-center gap-1 mb-4">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                    <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                        {score}
+                                    </span>
+                                </div>
+                                <div className="w-full text-left">
+                                    <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="score" />
+                                </div>
                             </div>
-                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-left shadow-2xl">
-                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+
+                            {/* Right: Time Box */}
+                            <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                <div className="flex flex-col items-center gap-1 mb-4">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Tiempo:' : 'Your Time:'}</span>
+                                    <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                                        {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                                    </span>
+                                </div>
+                                <div className="w-full text-left">
+                                    <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="time" />
+                                </div>
                             </div>
                         </div>
 
-                        {/* Actions Row */}
-                        <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-5xl mx-auto w-full">
-                            <div className="flex-1 bg-slate-900/40 backdrop-blur-md rounded-3xl border border-white/10 p-1 shadow-xl">
-                                <RatingSystem activityId={effectiveActivityId} />
+                        {/* Actions Row - Reduced Height */}
+                        <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
+                            <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
+                                    <RatingSystem activityId={effectiveActivityId || 'game'} />
+                                </div>
                             </div>
 
                             <button
-                                onClick={() => setupGame(false)}
-                                className="flex-1 flex items-center justify-center gap-4 px-10 py-6 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-black text-2xl rounded-3xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-indigo-500/20 uppercase tracking-wider"
+                                onClick={hookResetGame}
+                                className="w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
                             >
-                                <RefreshCw className="w-8 h-8" /> {content.playAgain}
+                                <RefreshCwIconGame className="w-8 h-8" /> {t?.common?.playAgain || 'Jugar de nuevo'}
                             </button>
                         </div>
                     </div>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-                    {/* Left Column: Countries (Drop Targets) */}
-                    {/* Left Column: Map or Countries List */}
-                    <div className="lg:col-span-2 relative">
-                        {/* MAP VIEW */}
-                        <div className="relative w-full aspect-[4/3] bg-slate-900/50 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-                            <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} className="w-full h-full">
-                                {/* Defs for glow effects */}
-                                <defs>
-                                    <filter id="glow-country" x="-20%" y="-20%" width="140%" height="140%">
-                                        <feGaussianBlur stdDeviation="3" result="blur" />
-                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                                    </filter>
-                                </defs>
-
-                                {/* Render all EU countries first as background/context */}
-                                {Object.entries(EU_PATHS).map(([key, path]) => {
-                                    // Check if this country is part of the current game set
-                                    const matchItem = countries.find(c => c.pathKey === key);
-
-                                    // Determine styling
-                                    let fill = '#1e293b'; // Slate-800 for non-active
-                                    let stroke = '#334155'; // Slate-700
-                                    let opacity = 0.5;
-
-                                    if (matchItem) {
-                                        opacity = 1;
-                                        const isMatched = !!matches[matchItem.id];
-                                        if (isMatched) {
-                                            fill = '#4f46e5'; // Indigo-600
-                                            stroke = '#818cf8'; // Indigo-400
-                                        } else {
-                                            fill = '#334155'; // Slate-700
-                                            stroke = '#475569'; // Slate-600
-                                        }
-                                    }
-
-                                    return (
-                                        <path
-                                            key={key}
-                                            d={path}
-                                            fill={fill}
-                                            stroke={stroke}
-                                            strokeWidth="1"
-                                            opacity={opacity}
-                                            style={{ transition: 'all 0.3s ease' }}
-                                        />
-                                    );
-                                })}
-
-                                {/* Render Drop Zones (Capitals) */}
-                                {countries.map((item) => {
-                                    if (!item.pathKey || !EU_CAPITALS_COORDS[item.pathKey]) return null;
-
-                                    const coords = EU_CAPITALS_COORDS[item.pathKey];
-                                    const isMatched = !!matches[item.id];
-                                    const isTargeted = draggedItem ? true : false; // Could refine to highlight only valid targets nearby
-
-                                    return (
-                                        <g
-                                            key={`zone-${item.id}`}
-                                            transform={`translate(${coords.x}, ${coords.y})`}
-                                            onDragOver={!isMatched ? handleDragOver : undefined}
-                                            onDrop={!isMatched ? (e) => handleDrop(e, item.id) : undefined}
-                                            className="cursor-pointer"
-                                        >
-                                            {/* Hit Area (Invisible but larger) */}
-                                            <circle r="15" fill="transparent" />
-
-                                            {/* Visible Indicator */}
-                                            <circle
-                                                r={isMatched ? "5" : "4"}
-                                                fill={isMatched ? "#4ade80" : "#fbbf24"}
-                                                className={`transition-all duration-300 ${!isMatched ? 'animate-pulse' : ''}`}
-                                            />
-
-                                            {/* Label when matched */}
-                                            {isMatched && (
-                                                <g transform="translate(0, -10)">
-                                                    <rect x="-40" y="-20" width="80" height="20" rx="4" fill="rgba(0,0,0,0.7)" />
-                                                    <text
-                                                        x="0"
-                                                        y="-6"
-                                                        textAnchor="middle"
-                                                        fill="white"
-                                                        fontSize="10"
-                                                        fontWeight="bold"
-                                                    >
-                                                        {item.capital}
-                                                    </text>
-                                                </g>
-                                            )}
-                                        </g>
-                                    );
-                                })}
-                            </svg>
-
-                            {/* Overlay instructions if needed */}
-                            <div className="absolute bottom-4 left-4 pointer-events-none">
-                                <div className="bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white/60">
-                                    {content.instruction}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Column: Capitals (Draggables) */}
-                    <div className="lg:col-span-2 sticky top-32 h-[calc(100vh-160px)] overflow-y-auto pr-2">
-                        <div className="grid grid-cols-2 gap-3 pb-8">
-                            <AnimatePresence>
-                                {capitals.filter(c => !Object.values(matches).includes(c.id)).map((item) => (
-                                    <motion.div
-                                        key={item.id}
-                                        layout
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.5 }}
-                                        draggable="true"
-                                        onDragStart={(e) => handleDragStart(e as any, item)}
-                                        onDragEnd={handleDragEnd}
-                                        className={`
-                                            cursor-move p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-semibold text-center border-b-4 border-indigo-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all select-none
-                                            ${isDragging && draggedItem?.id === item.id ? 'opacity-0' : 'opacity-100'}
-                                        `}
-                                    >
-                                        {item.capital}
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
-                            {capitals.filter(c => !Object.values(matches).includes(c.id)).length === 0 && (
-                                <div className="col-span-2 text-center text-slate-500 py-12">
-                                    {content.allAssigned}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
                 </div>
             )}
         </div>

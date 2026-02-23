@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const springConfig = { type: 'spring', stiffness: 400, damping: 25 };
+const springConfig = { type: 'spring', stiffness: 400, damping: 25 } as const;
 
 export const PremiumTeacherIcon = ({ className }: { className?: string }) => (
     <motion.svg

@@ -6,7 +6,7 @@ import { USA_STATES_MAPPING } from './data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function UsaMapGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     return (
         <CountryGameBase
             title={t.gamesPage.gameTitles.usaStatesMap}
@@ -18,7 +18,7 @@ export default function UsaMapGame({ taskId = null, activityId }: { taskId?: str
             initialZoom={2}
             taskId={taskId}
             initialPan={{ x: 0, y: 0 }}
-            activityId={activityId}
+            activityId={activityId || 'game'}
         />
     );
 }
