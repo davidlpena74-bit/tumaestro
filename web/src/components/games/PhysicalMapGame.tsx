@@ -19,6 +19,27 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+const MountainPeak = ({ x, y, size = 1, status }: { x: number, y: number, size?: number, status: 'normal' | 'hovered' | 'completed' | 'failed' }) => {
+    const baseColor = status === 'completed' ? "#22c55e" : status === 'failed' ? "#ef4444" : (status === 'hovered' ? "#38bdf8" : "#94a3b8");
+    const shadowColor = status === 'completed' ? "#166534" : status === 'failed' ? "#991b1b" : (status === 'hovered' ? "#0284c7" : "#475569");
+    const snowColor = status === 'completed' ? "#bbf7d0" : status === 'failed' ? "#fecaca" : "#f1f5f9";
+
+    return (
+        <g transform={`translate(${x}, ${y}) scale(${size})`} className="pointer-events-none">
+            {/* Right side (shadow) */}
+            <path d="M 0,-16 L 14,12 L 0,12 Z" fill={shadowColor} className="transition-colors duration-300" />
+            {/* Left side (light) */}
+            <path d="M 0,-16 L -14,12 L 0,12 Z" fill={baseColor} className="transition-colors duration-300" />
+            {/* Snowcap on light side */}
+            <path d="M 0,-16 L -7,-2 L -3,-5 L 0,-3 Z" fill={snowColor} className="transition-colors duration-300" />
+            {/* Snowcap on shadow side */}
+            <path d="M 0,-16 L 7,-2 L 4,-4 L 0,-3 Z" fill="white" opacity="0.8" className="transition-colors duration-300" />
+            {/* Subtle contour */}
+            <path d="M -14,12 L 0,-16 L 14,12" fill="none" stroke="#0f172a" strokeWidth="0.5" strokeOpacity="0.3" strokeLinejoin="round" />
+        </g>
+    );
+};
+
 interface PhysicalItem {
     id: string;
     d: string;
@@ -28,8 +49,8 @@ interface PhysicalItem {
 interface PhysicalMapGameProps {
     title: string;
     description: string;
-    items: Record<string, string>;
-    itemType?: 'line' | 'polygon';
+    items: Record<string, any>;
+    itemType?: 'line' | 'polygon' | 'peaks';
     backgroundPaths?: Record<string, string | string[]>;
     backgroundLabels?: { id: string; name: string; x: number; y: number }[];
     viewBox?: string;
@@ -535,7 +556,7 @@ export default function PhysicalMapGame({
                                         onClick={(e) => handleItemClick(name, e)}
                                     >
                                         <path
-                                            d={d}
+                                            d={itemType === 'peaks' ? d.path : d}
                                             fill={itemType === 'polygon' ? "white" : "none"}
                                             stroke="white"
                                             strokeWidth="30"
@@ -543,7 +564,16 @@ export default function PhysicalMapGame({
                                             className="pointer-events-auto"
                                         />
 
-                                        {itemType === 'line' ? (
+                                        {itemType === 'peaks' ? (
+                                            <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
+                                                {d.peaks.map((p: any, idx: number) => {
+                                                    const status = isCompleted ? 'completed' : isFailed ? 'failed' : (isHovered ? 'hovered' : 'normal');
+                                                    return (
+                                                        <MountainPeak key={idx} x={p.x} y={p.y} size={p.scale || 1} status={status} />
+                                                    )
+                                                })}
+                                            </g>
+                                        ) : itemType === 'line' ? (
                                             <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
                                                 {/* LAYER 1: Deep Shadow (Wide Stipple) */}
                                                 <motion.path

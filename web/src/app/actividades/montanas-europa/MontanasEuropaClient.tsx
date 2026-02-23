@@ -24,7 +24,7 @@ export default function MontanasEuropaClient() {
                 title={t.gamesPage.gameTitles.mountainsEurope}
                 description={t.gamesPage.gameTitles.mountainsEuropeDesc}
                 items={EUROPE_MOUNTAINS_PATHS}
-                itemType="line"
+                itemType="peaks"
                 backgroundPaths={EUROPE_PATHS}
                 viewBox="0 0 800 600"
                 initialZoom={1.5}

@@ -24,7 +24,7 @@ export default function MontanasAsiaClient() {
                 title={t.gamesPage.gameTitles.mountainsAsia}
                 description={t.gamesPage.gameTitles.mountainsAsiaDesc}
                 items={ASIA_MOUNTAINS_PATHS}
-                itemType="line"
+                itemType="peaks"
                 backgroundPaths={ASIA_PATHS}
                 viewBox="0 0 800 600"
                 initialZoom={1.2}

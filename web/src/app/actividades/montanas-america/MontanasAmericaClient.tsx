@@ -29,7 +29,7 @@ export default function MontanasAmericaClient() {
                 title={t.gamesPage.gameTitles.mountainsAmerica}
                 description={t.gamesPage.gameTitles.mountainsAmericaDesc}
                 items={AMERICA_MOUNTAINS_PATHS}
-                itemType="line"
+                itemType="peaks"
                 backgroundPaths={background}
                 viewBox="0 0 800 600"
                 initialZoom={0.8}

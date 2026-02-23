@@ -24,7 +24,7 @@ export default function MontanasOceaniaClient() {
                 title={t.gamesPage.gameTitles.mountainsOceania}
                 description={t.gamesPage.gameTitles.mountainsOceaniaDesc}
                 items={OCEANIA_MOUNTAINS_PATHS}
-                itemType="line"
+                itemType="peaks"
                 backgroundPaths={OCEANIA_PATHS}
                 viewBox="0 0 800 600"
                 colorTheme="emerald"
