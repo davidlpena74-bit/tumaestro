@@ -424,6 +424,20 @@ export default function PhysicalMapGame({
 
                     <svg viewBox={viewBox} className="w-full h-full drop-shadow-2xl">
                         <defs>
+                            {/* NEW: Sea Gradient */}
+                            <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor={theme === 'dark' ? '#0c1a2e' : '#a8d5e8'} />
+                                <stop offset="100%" stopColor={theme === 'dark' ? '#0f2744' : '#c5e8f5'} />
+                            </linearGradient>
+
+                            {/* NEW: Topographic Pattern for Land */}
+                            <pattern id="land-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                                <rect width="100" height="100" fill="currentColor" />
+                                <path d="M0,50 Q25,45 50,50 T100,50" fill="none" stroke="white" strokeWidth="0.1" opacity="0.1" />
+                                <path d="M0,25 Q25,20 50,25 T100,25" fill="none" stroke="white" strokeWidth="0.1" opacity="0.1" />
+                                <path d="M0,75 Q25,70 50,75 T100,75" fill="none" stroke="white" strokeWidth="0.1" opacity="0.1" />
+                            </pattern>
+
                             <filter id="physical-glow" x="-50%" y="-50%" width="200%" height="200%">
                                 <feGaussianBlur stdDeviation="1.5" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -470,6 +484,8 @@ export default function PhysicalMapGame({
                         </defs>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                            {/* SEA BACKGROUND */}
+                            <rect x="-1000" y="-1000" width="3000" height="3000" fill="url(#sea-gradient)" />
                             {/* INSET FRAME */}
                             {insetFrame && (
                                 <rect
@@ -498,8 +514,8 @@ export default function PhysicalMapGame({
                                                     key={`${id}-${j}`}
                                                     d={path}
                                                     className={cn(
-                                                        "stroke-[0.5]",
-                                                        theme === 'dark' ? "fill-slate-700 stroke-slate-600 opacity-40" : "fill-white/90 stroke-slate-900/10"
+                                                        "stroke-[0.5] transition-colors duration-300",
+                                                        theme === 'dark' ? "fill-[#1e2d40] stroke-[#2d3f55]" : "fill-[#f5edda] stroke-[#c8b89a]"
                                                     )}
                                                 />
                                             )) : (
@@ -507,8 +523,8 @@ export default function PhysicalMapGame({
                                                     key={id}
                                                     d={d}
                                                     className={cn(
-                                                        "stroke-[0.5]",
-                                                        theme === 'dark' ? "fill-slate-700 stroke-slate-600 opacity-40" : "fill-white/90 stroke-slate-900/10"
+                                                        "stroke-[0.5] transition-colors duration-300",
+                                                        theme === 'dark' ? "fill-[#1e2d40] stroke-[#2d3f55]" : "fill-[#f5edda] stroke-[#c8b89a]"
                                                     )}
                                                 />
                                             )}
@@ -587,84 +603,92 @@ export default function PhysicalMapGame({
                                                 })}
                                             </g>
                                         ) : itemType === 'line' ? (
-                                            <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
-                                                {/* LAYER 1: Deep Shadow (Wide Stipple) */}
+                                            /* RIVERS - Premium blue water style */
+                                            <g>
+                                                {/* Glow halo */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#166534" : isFailed ? "#7f1d1d" : (isHovered ? "#22d3ee" : "#1a130e")}
-                                                    strokeWidth={isHovered ? 8 : 5}
+                                                    stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#7dd3fc' : '#93c5fd')}
+                                                    strokeWidth={isTarget || isHovered ? 10 : 6}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
-                                                    style={{ filter: 'url(#stipple-heavy)' }}
-                                                    className="transition-all duration-500 opacity-60"
+                                                    opacity={0.2}
+                                                    className="transition-all duration-300"
                                                 />
-
-                                                {/* LAYER 2: Base Rock (Textured) */}
+                                                {/* Main river body */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#22c55e" : isFailed ? "#dc2626" : (isHovered ? "#0891b2" : "#4a3728")}
-                                                    strokeWidth={isHovered ? 6 : 4}
+                                                    stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isTarget ? '#3b82f6' : (isHovered ? '#60a5fa' : '#2563eb'))}
+                                                    strokeWidth={isTarget || isHovered ? 4 : 2.5}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
-                                                    style={{ filter: 'url(#stipple-mid)' }}
-                                                    className="transition-all duration-500"
+                                                    className="transition-all duration-300"
                                                 />
-
-                                                {/* LAYER 3: Mid Elevation */}
+                                                {/* Specular shimmer */}
                                                 <motion.path
                                                     d={d}
-                                                    stroke={isCompleted ? "#4ade80" : isFailed ? "#f87171" : (isHovered ? "#22d3ee" : "#7d5c4d")}
-                                                    strokeWidth={isHovered ? 4 : 2.5}
+                                                    stroke="rgba(255,255,255,0.5)"
+                                                    strokeWidth={isTarget || isHovered ? 1.5 : 0.8}
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     fill="none"
-                                                    style={{ filter: 'url(#stipple-mid)' }}
-                                                    className="transition-all duration-500"
-                                                />
-
-                                                {/* LAYER 4: High Ridge (Slightly rough solid) */}
-                                                <motion.path
-                                                    d={d}
-                                                    stroke={isCompleted ? "#86efac" : isFailed ? "#fca5a5" : (isHovered ? "#ecfeff" : "#737373")}
-                                                    strokeWidth={0.6}
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    fill="none"
-                                                    style={{ filter: 'url(#mountain-roughness)' }}
-                                                    className="transition-all duration-500"
-                                                />
-
-                                                {/* LAYER 5: Peak Particles (Snow/Fine) */}
-                                                <motion.path
-                                                    d={d}
-                                                    stroke={isCompleted ? "#d1fae5" : isFailed ? "#fee2e2" : "#ffffff"}
-                                                    strokeWidth={1.2}
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    fill="none"
-                                                    style={{ filter: 'url(#stipple-fine)' }}
-                                                    opacity={isHovered ? 1 : 0.8}
-                                                    className="transition-all duration-500"
+                                                    className="pointer-events-none transition-all duration-300"
                                                 />
                                             </g>
                                         ) : (
-                                            /* Polygon Main Path */
-                                            <motion.path
-                                                d={d}
-                                                stroke={color}
-                                                strokeWidth={1}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                fill={color}
-                                                fillOpacity={0.3}
-                                                className="transition-all duration-300"
-                                                style={{
-                                                    filter: isHovered || isCompleted ? 'url(#physical-glow)' : 'none',
-                                                }}
-                                                animate={isHovered ? { scale: 1.02 } : { scale: 1 }}
-                                            />
+                                            /* POLYGON — Sea if blue theme, Mountain if teal/emerald */
+                                            colorTheme === 'blue' ? (
+                                                /* SEAS - Premium water style */
+                                                <g>
+                                                    <motion.path
+                                                        d={d}
+                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isTarget || isHovered ? '#60a5fa' : '#3b82f6')}
+                                                        strokeWidth={isTarget || isHovered ? 2 : 1}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        fill={isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : (isTarget || isHovered ? 'rgba(96,165,250,0.35)' : 'rgba(59,130,246,0.20)')}
+                                                        className="transition-all duration-300"
+                                                        style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
+                                                    />
+                                                    {/* Water shimmer lines */}
+                                                    <motion.path
+                                                        d={d}
+                                                        stroke="rgba(255,255,255,0.4)"
+                                                        strokeWidth={0.5}
+                                                        fill="none"
+                                                        strokeDasharray="4 6"
+                                                        strokeLinecap="round"
+                                                        opacity={isHovered ? 0.9 : 0.4}
+                                                        className="pointer-events-none transition-all duration-300"
+                                                    />
+                                                </g>
+                                            ) : (
+                                                /* MOUNTAINS - Terrain fill style */
+                                                <g>
+                                                    <motion.path
+                                                        d={d}
+                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isTarget ? '#f59e0b' : (isHovered ? '#fbbf24' : '#92400e'))}
+                                                        strokeWidth={isTarget || isHovered ? 2 : 1}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        fill={isCompleted ? 'rgba(34,197,94,0.3)' : isFailed ? 'rgba(239,68,68,0.25)' : (isTarget || isHovered ? 'rgba(245,158,11,0.25)' : 'rgba(146,64,14,0.12)')}
+                                                        className="transition-all duration-300"
+                                                        style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
+                                                    />
+                                                    <motion.path
+                                                        d={d}
+                                                        stroke={isCompleted ? '#4ade80' : isFailed ? '#f87171' : (isHovered ? '#fde68a' : '#a16207')}
+                                                        strokeWidth={0.4}
+                                                        fill="none"
+                                                        strokeDasharray={isHovered ? "2 2" : "1 3"}
+                                                        strokeLinecap="round"
+                                                        opacity={0.7}
+                                                        className="pointer-events-none transition-all duration-300"
+                                                    />
+                                                </g>
+                                            )
                                         )}
                                     </g>
                                 );

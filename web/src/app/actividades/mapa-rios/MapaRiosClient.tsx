@@ -1,8 +1,11 @@
-
 'use client';
 
-import RiversGame from '@/components/games/RiversGame';
+import { useMemo } from 'react';
+import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
+import { RIVERS_PATHS } from '@/components/games/data/rivers-paths';
+import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from '@/components/games/spanish-communities-paths';
+import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
 
@@ -11,6 +14,27 @@ export default function MapaRiosClient() {
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
 
+    // Memoize region labels
+    const regionLabels = useMemo(() => {
+        return Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
+            if (id === 'ceuta') return { id, name: 'Ceuta', x: 232, y: 535 };
+            if (id === 'melilla') return { id, name: 'Melilla', x: 281, y: 576 };
+
+            const primaryPath = Array.isArray(paths) ? paths[0] : paths;
+            const centroid = calculatePathCentroid(primaryPath);
+            return {
+                id,
+                name: REGION_DISPLAY_NAMES[id] || id,
+                ...(centroid || { x: 0, y: 0 })
+            };
+        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number }[];
+    }, []);
+
+    // Canary Islands transformations
+    const backgroundTransforms = {
+        canarias: "translate(-220, 40)"
+    };
+
     return (
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.riversSpain}
@@ -18,7 +42,23 @@ export default function MapaRiosClient() {
             colorTheme="blue"
             activityId="mapa-rios"
         >
-            <RiversGame activityId="mapa-rios" taskId={taskId} />
+            <PhysicalMapGame
+                title={t.gamesPage.gameTitles.riversSpain}
+                description={t.gamesPage.gameTitles.riversSpainDesc}
+                items={RIVERS_PATHS}
+                itemType="line"
+                backgroundPaths={SPANISH_COMMUNITIES_PATHS}
+                backgroundLabels={regionLabels}
+                backgroundTransforms={backgroundTransforms}
+                theme="light"
+                insetFrame={{ x: -190, y: 510, width: 280, height: 180 }}
+                viewBox="-140 0 840 700"
+                colorTheme="blue"
+                taskId={taskId}
+                activityId="mapa-rios"
+                region={t.gamesPage.regions.spain}
+                gameType={t.gamesPage.gameTypes.map}
+            />
         </PhysicalGameLayout>
     );
 }
