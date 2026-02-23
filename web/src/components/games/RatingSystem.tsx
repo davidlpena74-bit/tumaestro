@@ -138,7 +138,7 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                 </button>
             )}
 
-            <h3 className="text-4xl font-bold text-white mb-4 text-center mt-6 whitespace-nowrap tracking-tight">
+            <h3 className="text-4xl font-bold text-white mb-4 text-center mt-[calc(1.5rem+1.5cm)] whitespace-nowrap tracking-tight">
                 {isEdit ? 'Modifica tu experiencia' : '¿Cómo va tu experiencia?'}
             </h3>
             <p className="text-xl text-slate-400 text-center mb-6">
