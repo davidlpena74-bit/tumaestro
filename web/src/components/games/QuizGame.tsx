@@ -146,7 +146,7 @@ export default function QuizGame({
                             <div className="bg-violet-500/10 p-4 rounded-full mb-6 ring-1 ring-violet-500/30">
                                 <TrophyIconGame className="w-12 h-12 text-violet-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
+                            <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                                 Pon a prueba tu mente con {gameQuestions.length || QUESTIONS_PER_GAME} retos diseñados para entrenar tu cerebro.
                             </p>

@@ -243,7 +243,7 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
                     <div className="bg-purple-500/10 p-4 rounded-full mb-6 ring-1 ring-purple-500/30">
                         <MapPin className="w-12 h-12 text-purple-400" />
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">{content.title}</h2>
+                    <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight">{content.title}</h2>
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                         {content.desc}
                     </p>

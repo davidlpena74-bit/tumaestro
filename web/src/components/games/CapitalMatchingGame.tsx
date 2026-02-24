@@ -268,7 +268,7 @@ export default function CapitalMatchingGame({ activityId }: { activityId?: strin
                         <div className="bg-indigo-500/10 p-4 rounded-full mb-4 ring-1 ring-indigo-500/30">
                             <MapPin className="w-12 h-12 text-indigo-400" />
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">{content.title}</h2>
+                        <h2 className="text-2xl md:text-4xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">{content.title}</h2>
                         <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
                             {content.desc}
                         </p>

@@ -242,7 +242,7 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
                             <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                 <MapPin className="w-12 h-12 text-emerald-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase leading-tight max-w-2xl">Ríos de España</h2>
+                            <h2 className="text-2xl md:text-4xl font-black text-white mb-3 tracking-tight uppercase max-w-2xl">{t.gamesPage.gameTitles.riversSpain}</h2>
                             <p className="text-gray-300 mb-10 max-w-xl text-lg leading-relaxed font-medium">
                                 ¿Sabes dónde nace y por dónde pasa cada río? Pon a prueba tu conocimiento de la hidrografía española.
                             </p>

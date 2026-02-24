@@ -227,7 +227,7 @@ export default function FemaleReproductiveGame({ taskId = null, activityId }: { 
                             <div className="bg-blue-500/10 p-6 rounded-full mb-6 ring-1 ring-blue-500/30">
                                 <HandGrabbing className="w-16 h-16 text-blue-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase tracking-tight">{t.gamesPage.gameTitles.femaleReproductive}</h2>
+                            <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight uppercase tracking-tight">{t.gamesPage.gameTitles.femaleReproductive}</h2>
                             <p className="text-gray-300 mb-8 max-w-xl text-lg leading-relaxed font-medium">
                                 {t.gamesPage.gameTitles.femaleReproductiveDesc}. Arrastra cada etiqueta para conectarla con su ubicación correspondiente. Si te equivocas, la línea no se fijará.
                             </p>

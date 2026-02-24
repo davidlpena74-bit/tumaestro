@@ -271,7 +271,7 @@ export default function EuropeRiversGame({ taskId = null, activityId }: { taskId
                                 <div className="bg-emerald-500/10 p-4 rounded-full mb-4 ring-1 ring-emerald-500/30">
                                     <Globe className="w-10 h-10 text-emerald-400" />
                                 </div>
-                                <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">Ríos de Europa</h2>
+                                <h2 className="text-2xl md:text-4xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">Ríos de Europa</h2>
                                 <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
                                     Demuestra tu dominio de la hidrografía continental y escala en el ranking.
                                 </p>

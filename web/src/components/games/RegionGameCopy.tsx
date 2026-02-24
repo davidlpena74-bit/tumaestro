@@ -234,7 +234,7 @@ export default function RegionGame({ activityId }: { activityId?: string }) {
                             <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
                                 <MapPin className="w-12 h-12 text-teal-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Comunidades Autónomas</h2>
+                            <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight">Comunidades Autónomas</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                                 ¿Te sabes las 17 Comunidades y 2 Ciudades Autónomas de España?
                             </p>

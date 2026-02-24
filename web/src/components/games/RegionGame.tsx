@@ -111,12 +111,15 @@ export default function RegionGame({ gameMode = 'quiz', activityId, taskId, them
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
+        // Panning blocked by user request
+        /*
         if (!isDragging.current) return;
         isClick.current = false;
         const dx = e.clientX - lastMousePos.current.x;
         const dy = e.clientY - lastMousePos.current.y;
         setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
         lastMousePos.current = { x: e.clientX, y: e.clientY };
+        */
     };
 
     const handleMouseUp = () => {
@@ -181,7 +184,7 @@ export default function RegionGame({ gameMode = 'quiz', activityId, taskId, them
                                 <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-lg shadow-emerald-500/20 rotate-12">
                                     <MapIcon className="w-12 h-12 text-white" />
                                 </div>
-                                <h2 className="text-4xl font-black text-white mb-4 tracking-tight leading-tight">
+                                <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight leading-tight">
                                     {t.gamesPage.gameTitles.region}
                                 </h2>
                                 <p className="text-emerald-100/70 mb-10 text-lg leading-relaxed font-medium">

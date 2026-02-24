@@ -194,7 +194,7 @@ export default function DivisionGame({ taskId = null, activityId }: { taskId?: s
                     <div className="bg-orange-500/10 p-6 rounded-full mb-6 ring-1 ring-orange-500/30">
                         <Pizza className="w-16 h-16 text-orange-500" />
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.divisionGame.title}</h2>
+                    <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.divisionGame.title}</h2>
                     <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed">
                         {t.gamesPage.divisionGame.description}
                     </p>

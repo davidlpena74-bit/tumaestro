@@ -265,7 +265,7 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                             <div className="bg-emerald-500/10 p-4 rounded-full mb-6 ring-1 ring-emerald-500/30">
                                 <MapPin className="w-12 h-12 text-emerald-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.gameTitles.provinces}</h2>
+                            <h2 className="text-2xl md:text-4xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">{t.gamesPage.gameTitles.provinces}</h2>
                             <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
                                 {true
                                     ? 'Demuestra que conoces cada rincón del país. Tienes 90 segundos para ubicar todas las provincias posibles.'

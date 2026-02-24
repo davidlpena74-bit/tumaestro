@@ -252,7 +252,7 @@ export default function AnimalCellGame({ taskId = null, activityId }: { taskId?:
                                 <div className="bg-blue-500/10 p-4 rounded-full mb-4 ring-1 ring-blue-500/30">
                                     <Dna className="w-12 h-12 text-blue-400" />
                                 </div>
-                                <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">La Célula Animal</h2>
+                                <h2 className="text-2xl md:text-4xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">{t.gamesPage.gameTitles.animalCell}</h2>
                                 <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
                                     Aprende las partes fundamentales de la célula animal. Arrastra cada etiqueta para conectarla con su ubicación correspondiente. Si te equivocas, la línea no se fijará.
                                 </p>

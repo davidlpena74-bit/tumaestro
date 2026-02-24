@@ -253,6 +253,8 @@ export default function PhysicalMapGame({
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
+        // Panning blocked by user request
+        /*
         if (!isDragging) return;
         if (Math.abs(e.clientX - clickStart.current.x) > 5 || Math.abs(e.clientY - clickStart.current.y) > 5) {
             isClick.current = false;
@@ -261,6 +263,7 @@ export default function PhysicalMapGame({
             x: e.clientX - dragStart.current.x,
             y: e.clientY - dragStart.current.y,
         });
+        */
     };
 
     const handleMouseUp = () => setIsDragging(false);
@@ -337,7 +340,7 @@ export default function PhysicalMapGame({
                                     <div className="bg-emerald-500/10 p-4 rounded-full mb-4 ring-1 ring-emerald-500/30">
                                         <Globe className="w-10 h-10 text-emerald-400" />
                                     </div>
-                                    <h2 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">{title}</h2>
+                                    <h2 className="text-2xl md:text-4xl font-black text-white mb-3 tracking-tight uppercase leading-tight max-w-2xl">{title}</h2>
                                     <p className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium">
                                         {true
                                             ? '¿Podrás entrar en el Salón de la Fama personal del maestro David?'
