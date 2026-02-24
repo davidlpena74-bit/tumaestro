@@ -87,13 +87,15 @@ export default function GameHUD({
     useEffect(() => {
         if (!activityId) return;
         let isMounted = true;
+        const abortController = new AbortController();
 
         const fetchActivityRatings = async () => {
             try {
                 const { data, error } = await supabase
                     .from('activity_ratings')
                     .select('rating')
-                    .eq('activity_id', activityId);
+                    .eq('activity_id', activityId)
+                    .abortSignal(abortController.signal);
 
                 if (!isMounted) return;
                 if (error) throw error;
@@ -105,7 +107,10 @@ export default function GameHUD({
                     if (isMounted) setRatingData({ avg: 0, count: 0 });
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError') return;
+                // Ignore abortion errors
+                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted')) {
+                    return;
+                }
                 if (isMounted) {
                     const errorMessage = err?.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
                     console.error('Error fetching game ratings:', errorMessage);
@@ -114,13 +119,17 @@ export default function GameHUD({
         };
 
         fetchActivityRatings();
-        return () => { isMounted = false; };
+        return () => {
+            isMounted = false;
+            abortController.abort();
+        };
     }, [activityId, isRatingModalOpen]);
 
     // Fetch global best + personal best — mismo patrón que ActivityRanking.tsx
     useEffect(() => {
         if (!activityId) return;
         let isMounted = true;
+        const abortController = new AbortController();
 
         const run = async () => {
             try {
@@ -135,7 +144,8 @@ export default function GameHUD({
                     .eq('activity_id', activityId)
                     .order('score', { ascending: false })
                     .order('time_spent', { ascending: true })
-                    .limit(1);
+                    .limit(1)
+                    .abortSignal(abortController.signal);
 
                 if (!isMounted) return;
 
@@ -149,7 +159,8 @@ export default function GameHUD({
                     `)
                     .eq('activity_id', activityId)
                     .order('time_spent', { ascending: true })
-                    .limit(1);
+                    .limit(1)
+                    .abortSignal(abortController.signal);
 
                 if (!isMounted) return;
 
@@ -188,7 +199,8 @@ export default function GameHUD({
                             .select('score, time_spent')
                             .eq('activity_id', activityId)
                             .eq('user_id', session.user.id)
-                            .order('score', { ascending: false });
+                            .order('score', { ascending: false })
+                            .abortSignal(abortController.signal);
 
                         if (mine && mine.length > 0) {
                             myBestScore = mine[0].score;
@@ -199,11 +211,15 @@ export default function GameHUD({
                     if (isMounted) setRecords({ bestScore, bestScoreName, bestTime, bestTimeName, myBestScore, myBestTime });
                 }
             } catch (err: any) {
+                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted')) return;
                 console.error('Records fetch error:', err);
             }
         };
         run();
-        return () => { isMounted = false; };
+        return () => {
+            isMounted = false;
+            abortController.abort();
+        };
     }, [activityId, gameState, language]);
 
     const handleOpenRating = async () => {

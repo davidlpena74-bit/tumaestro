@@ -26,8 +26,7 @@ function cn(...inputs: ClassValue[]) {
 // Basic paths data
 const GAME_PROVINCE_PATHS = { ...SPANISH_PROVINCES_PATHS };
 GAME_PROVINCE_PATHS['canarias'] = [
-    ...(SPANISH_PROVINCES_PATHS['santacruz'] || []),
-    ...(SPANISH_PROVINCES_PATHS['laspalmas'] || [])
+    [...(SPANISH_PROVINCES_PATHS['santacruz'] || []), ...(SPANISH_PROVINCES_PATHS['laspalmas'] || [])].join(' ')
 ];
 delete (GAME_PROVINCE_PATHS as any)['santacruz'];
 delete (GAME_PROVINCE_PATHS as any)['laspalmas'];

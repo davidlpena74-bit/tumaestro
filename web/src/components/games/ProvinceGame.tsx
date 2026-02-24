@@ -13,20 +13,10 @@ export default function ProvinceGame({ taskId = null, activityId }: { taskId?: s
         const p = { ...SPANISH_PROVINCES_PATHS };
         const n = { ...PROVINCE_NAMES };
 
-        // Merge Canarias
-        p['canarias'] = [
-            ...(SPANISH_PROVINCES_PATHS['santacruz'] || []),
-            ...(SPANISH_PROVINCES_PATHS['laspalmas'] || [])
-        ];
-        delete (p as any)['santacruz'];
-        delete (p as any)['laspalmas'];
-
-        n['canarias'] = language === 'es' ? "Canarias" : "Canary Islands";
-        delete (n as any)['santacruz'];
-        delete (n as any)['laspalmas'];
-
         return { paths: p, names: n };
     }, [language]);
+
+    const canariaTransform = "translate(10, 586) scale(1.5) translate(-565, -471)";
 
     return (
         <MapGameTemplate
@@ -48,10 +38,11 @@ export default function ProvinceGame({ taskId = null, activityId }: { taskId?: s
                 y: 522,
                 width: 224,
                 height: 128,
-                regionId: 'canarias',
-                transform: "translate(10, 586) scale(1.5) translate(-565, -471)"
+                regionId: 'santacruz',
+                transform: canariaTransform
             }}
             specialTransforms={{
+                laspalmas: canariaTransform,
                 ceuta: "translate(188, 541) scale(3) translate(-188, -541)",
                 melilla: "translate(322, 582) scale(3) translate(-322, -582)"
             }}

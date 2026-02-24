@@ -97,12 +97,19 @@ export default function ActivityRanking({
                 if (!isMounted) return;
 
                 if (error) {
-                    console.group('❌ Error en Ranking');
-                    console.error('Mensaje:', error.message);
-                    console.error('Código:', error.code);
-                    console.error('Detalles:', error.details);
-                    console.error('Status:', status);
-                    console.groupEnd();
+                    // Ignore abortion errors
+                    const isAbortError = error.message?.includes('AbortError') ||
+                        error.message?.includes('aborted') ||
+                        error.code === 'ABORT';
+
+                    if (!isAbortError) {
+                        console.group('❌ Error en Ranking');
+                        console.error('Mensaje:', error.message);
+                        console.error('Código:', error.code);
+                        console.error('Detalles:', error.details);
+                        console.error('Status:', status);
+                        console.groupEnd();
+                    }
                     throw error;
                 }
 
