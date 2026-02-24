@@ -67,6 +67,7 @@ interface PhysicalMapGameProps {
     backgroundTransforms?: Record<string, string>;
     region?: string;
     gameType?: string;
+    nameMapping?: Record<string, string>;
 }
 
 export default function PhysicalMapGame({
@@ -87,7 +88,8 @@ export default function PhysicalMapGame({
     insetFrame,
     backgroundTransforms = {},
     region,
-    gameType
+    gameType,
+    nameMapping = {}
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -152,6 +154,7 @@ export default function PhysicalMapGame({
     };
 
     const getTranslatedName = (name: string) => {
+        if (nameMapping[name]) return nameMapping[name];
         // @ts-ignore - dynamic access to translations
         return t.physical?.regions?.[name] || t.physical?.mountains?.[name] || t.physical?.seas?.[name] || name;
     };
@@ -658,6 +661,7 @@ export default function PhysicalMapGame({
                                             onMouseEnter={() => gameState === 'playing' && setHoveredItem(name)}
                                             onMouseLeave={() => setHoveredItem(null)}
                                             onClick={(e) => handleItemClick(name, e)}
+                                            transform={backgroundTransforms[name]}
                                         >
                                             <path
                                                 d={itemType === 'peaks' ? d.path : d}
