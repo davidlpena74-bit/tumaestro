@@ -27,27 +27,57 @@ export default function MapaProvinciasClient() {
         ...SPAIN_PROVINCES_PATHS_UNIFIED,
     }), []);
 
-    // Etiquetas para todas las provincias
-    const provinceLabels = useMemo(() => {
-        return Object.entries(SPAIN_PROVINCES_PATHS_UNIFIED).map(([id, path]) => {
-            // Casos especiales para Ceuta y Melilla (calibrados para el motor D3)
-            if (id === 'ceuta') return { id, name: 'Ceuta', x: 194, y: 539 };
-            if (id === 'melilla') return { id, name: 'Melilla', x: 313, y: 578 };
+    // Colores por Comunidad Autónoma
+    const provinceColors = useMemo(() => ({
+        // Andalucía (Verde)
+        almeria: '#dcfce7', cadiz: '#dcfce7', cordoba: '#dcfce7', granada: '#dcfce7', huelva: '#dcfce7', jaen: '#dcfce7', malaga: '#dcfce7', sevilla: '#dcfce7',
+        // Aragón (Rojo)
+        huesca: '#fee2e2', teruel: '#fee2e2', zaragoza: '#fee2e2',
+        // Asturias (Azul)
+        asturias: '#dbeafe',
+        // Baleares (Amarillo)
+        baleares: '#fef3c7',
+        // Canarias (Naranja)
+        santacruz: '#ffedd5', laspalmas: '#ffedd5',
+        // Cantabria (Rosa)
+        cantabria: '#fce7f3',
+        // Castilla-La Mancha (Morado)
+        albacete: '#f3e8ff', ciudadreal: '#f3e8ff', cuenca: '#f3e8ff', guadalajara: '#f3e8ff', toledo: '#f3e8ff',
+        // Castilla y León (Índigo)
+        avila: '#e0e7ff', burgos: '#e0e7ff', leon: '#e0e7ff', palencia: '#e0e7ff', salamanca: '#e0e7ff', segovia: '#e0e7ff', soria: '#e0e7ff', valladolid: '#e0e7ff', zamora: '#e0e7ff',
+        // Cataluña (Rosa fuerte/Rose)
+        barcelona: '#ffe4e6', girona: '#ffe4e6', lleida: '#ffe4e6', tarragona: '#ffe4e6',
+        // Comunidad Valenciana (Cian/Teal)
+        alicante: '#ccfbf1', castellon: '#ccfbf1', valencia: '#ccfbf1',
+        // Extremadura (Esmeralda)
+        badajoz: '#ecfdf5', caceres: '#ecfdf5',
+        // Galicia (Cielo)
+        coruna: '#e0f2fe', lugo: '#e0f2fe', ourense: '#e0f2fe', pontevedra: '#e0f2fe',
+        // Madrid (Gris suave/Metropolitano)
+        madrid: '#e2e8f0',
+        // Murcia (Naranja suave)
+        murcia: '#fff7ed',
+        // Navarra (Azul claro)
+        navarra: '#eff6ff',
+        // País Vasco (Verde suave para test)
+        alava: '#dcfce7', gipuzkoa: '#dcfce7', bizkaia: '#dcfce7',
+        // La Rioja (Violeta)
+        larioja: '#f5f3ff',
+        // Ceuta y Melilla
+        ceuta: '#f8fafc', melilla: '#f8fafc'
+    }), []);
 
-            const centroid = calculatePathCentroid(path);
-            return {
-                id,
-                name: PROVINCE_NAMES[id] || id,
-                ...(centroid || { x: 0, y: 0 })
-            };
-        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number }[];
-    }, []);
+    // Etiquetas de Mares y Océanos (Sin etiquetas de provincias por petición del usuario)
+    const environmentalLabels = useMemo(() => [
+        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: -12, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 580, y: 418, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -128, y: 240, className: 'fill-sky-900/40 italic font-medium', fontSize: '13px' },
+    ], []);
 
     const backgroundTransforms = {
         // Canarias → inset box inferior izquierdo
-        // Ajuste manual: +80 X (derecha) desde el estado anterior
-        santacruz: "translate(260, -400)",
-        laspalmas: "translate(260, -400)",
+        santacruz: "translate(211.5, -400)",
+        laspalmas: "translate(211.5, -400)",
     };
 
     return (
@@ -63,12 +93,13 @@ export default function MapaProvinciasClient() {
                 items={provinceItems}
                 itemType="region"
                 backgroundPaths={backgroundPaths}
-                backgroundLabels={provinceLabels}
+                backgroundLabels={environmentalLabels}
                 backgroundTransforms={backgroundTransforms}
+                customColors={provinceColors}
                 nameMapping={PROVINCE_NAMES}
                 theme="light"
-                insetFrame={{ x: -260, y: 490, width: 350, height: 180 }}
-                viewBox="-270 0 970 700"
+                insetFrame={{ x: -260, y: 491, width: 280, height: 144 }}
+                viewBox="-270 -35 970 700"
                 colorTheme="teal"
                 taskId={taskId}
                 activityId="mapa-provincias"

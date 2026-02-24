@@ -68,6 +68,7 @@ interface PhysicalMapGameProps {
     region?: string;
     gameType?: string;
     nameMapping?: Record<string, string>;
+    customColors?: Record<string, string>;
 }
 
 export default function PhysicalMapGame({
@@ -89,7 +90,8 @@ export default function PhysicalMapGame({
     backgroundTransforms = {},
     region,
     gameType,
-    nameMapping = {}
+    nameMapping = {},
+    customColors = {}
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -643,10 +645,10 @@ export default function PhysicalMapGame({
                                         y={labelY}
                                         className={cn(
                                             "font-bold uppercase pointer-events-none select-none tracking-tight",
-                                            theme === 'dark' ? "fill-slate-500 opacity-100" : "fill-slate-400 opacity-50"
+                                            (label as any).className || (theme === 'dark' ? "fill-slate-500 opacity-80" : "fill-slate-400 opacity-50")
                                         )}
                                         textAnchor="middle"
-                                        style={{ fontSize: theme === 'dark' ? '3px' : '8px' }}
+                                        style={{ fontSize: (label as any).fontSize || (theme === 'dark' ? '8px' : '10px') }}
                                     >
                                         {label.name}
                                     </text>
@@ -677,9 +679,9 @@ export default function PhysicalMapGame({
                                         >
                                             <path
                                                 d={itemType === 'peaks' ? d.path : d}
-                                                fill={itemType === 'polygon' ? "white" : "none"}
+                                                fill={(itemType === 'polygon' || itemType === 'region') ? "white" : "none"}
                                                 stroke="white"
-                                                strokeWidth="30"
+                                                strokeWidth={(itemType === 'polygon' || itemType === 'region') ? "4" : "30"}
                                                 opacity="0"
                                                 className="pointer-events-auto"
                                             />
@@ -759,9 +761,9 @@ export default function PhysicalMapGame({
                                                     <g>
                                                         <motion.path
                                                             d={d}
-                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : 'rgba(255, 255, 255, 0.01)')}
-                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : 'transparent')}
-                                                            strokeWidth={1.5}
+                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : (customColors[name] || 'rgba(255, 255, 255, 0.01)'))}
+                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : 'rgba(0,0,0,0.1)')}
+                                                            strokeWidth={0.5}
                                                             className="transition-all duration-300"
                                                         />
                                                     </g>
