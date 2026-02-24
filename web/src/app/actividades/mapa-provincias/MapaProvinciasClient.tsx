@@ -3,29 +3,40 @@
 import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
-import { SPANISH_PROVINCES_PATHS, PROVINCE_NAMES } from '@/components/games/spanish-provinces';
+import { PROVINCE_NAMES } from '@/components/games/spanish-provinces';
 import { SPAIN_PROVINCES_NEIGHBORS_PATHS } from '@/components/games/data/spain-neighbors-provinces-paths';
-import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
 
 import { SPAIN_PROVINCES_PATHS_UNIFIED } from '@/components/games/data/spain-provinces-paths-unified';
 
 export default function MapaProvinciasClient() {
-    const { t, language } = useLanguage();
+    const { t } = useLanguage();
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
 
-    // Capa interactiva: Todas las provincias unificadas
+    // Capa interactiva: Usamos la fuente unificada para evitar desdoblamientos
+    // Y añadimos áreas circulares invisibles más grandes para Ceuta y Melilla
     const provinceItems = useMemo(() => {
-        return SPAIN_PROVINCES_PATHS_UNIFIED;
+        const items = { ...SPAIN_PROVINCES_PATHS_UNIFIED };
+
+        // Ceuta: Círculo ampliado sobre su posición en la proyección unificada
+        items.ceuta = "M 176, 541 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
+
+        // Melilla: Círculo ampliado sobre su posición en la proyección unificada
+        items.melilla = "M 310, 582 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
+
+        return items;
     }, []);
 
-    // Fondo: Bloque unificado (Contorno + Vecinos + Provincias)
-    const backgroundPaths = useMemo(() => ({
-        ...SPAIN_PROVINCES_NEIGHBORS_PATHS,
-        ...SPAIN_PROVINCES_PATHS_UNIFIED,
-    }), []);
+    // Fondo: Solo vecinos y provincias individuales (SIN Spain_Outline para evitar capas dobles)
+    const backgroundPaths = useMemo(() => {
+        const { Spain_Outline, ...neighbors } = SPAIN_PROVINCES_NEIGHBORS_PATHS;
+        return {
+            ...neighbors,
+            ...SPAIN_PROVINCES_PATHS_UNIFIED,
+        };
+    }, []);
 
     // Colores por Comunidad Autónoma
     const provinceColors = useMemo(() => ({
@@ -52,14 +63,14 @@ export default function MapaProvinciasClient() {
         // Extremadura (Esmeralda)
         badajoz: '#ecfdf5', caceres: '#ecfdf5',
         // Galicia (Cielo)
-        coruna: '#e0f2fe', lugo: '#e0f2fe', ourense: '#e0f2fe', pontevedra: '#e0f2fe',
-        // Madrid (Gris suave/Metropolitano)
+        coruna: '#e0f2fe', lugo: '#e0f2fe', ourense: '#e0f2fe', pontevedra: '#e0f2fe', acoruna: '#e0f2fe',
+        // Madrid (Gris pizarra)
         madrid: '#e2e8f0',
         // Murcia (Naranja suave)
         murcia: '#fff7ed',
         // Navarra (Azul claro)
         navarra: '#eff6ff',
-        // País Vasco (Verde suave para test)
+        // País Vasco (Verde suave)
         alava: '#dcfce7', gipuzkoa: '#dcfce7', bizkaia: '#dcfce7',
         // La Rioja (Violeta)
         larioja: '#f5f3ff',
@@ -67,7 +78,7 @@ export default function MapaProvinciasClient() {
         ceuta: '#f8fafc', melilla: '#f8fafc'
     }), []);
 
-    // Etiquetas de Mares y Océanos (Sin etiquetas de provincias por petición del usuario)
+    // Etiquetas de Mares y Océanos
     const environmentalLabels = useMemo(() => [
         { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: -12, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
         { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 580, y: 418, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
@@ -75,9 +86,8 @@ export default function MapaProvinciasClient() {
     ], []);
 
     const backgroundTransforms = {
-        // Canarias → inset box inferior izquierdo
-        santacruz: "translate(211.5, -400)",
-        laspalmas: "translate(211.5, -400)",
+        santacruz: "translate(243.5, -416)",
+        laspalmas: "translate(243.5, -416)",
     };
 
     return (
@@ -98,7 +108,7 @@ export default function MapaProvinciasClient() {
                 customColors={provinceColors}
                 nameMapping={PROVINCE_NAMES}
                 theme="light"
-                insetFrame={{ x: -260, y: 491, width: 280, height: 144 }}
+                insetFrame={{ x: -228, y: 475, width: 280, height: 144 }}
                 viewBox="-270 -35 970 700"
                 colorTheme="teal"
                 taskId={taskId}
