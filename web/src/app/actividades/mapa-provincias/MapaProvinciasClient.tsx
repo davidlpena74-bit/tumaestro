@@ -80,7 +80,7 @@ export default function MapaProvinciasClient() {
 
     // Etiquetas de Mares y Océanos
     const environmentalLabels = useMemo(() => [
-        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: -12, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: 20, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
         { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 580, y: 418, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
         { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -128, y: 240, className: 'fill-sky-900/40 italic font-medium', fontSize: '13px' },
     ], []);
