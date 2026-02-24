@@ -52,7 +52,7 @@ interface PhysicalMapGameProps {
     title: string;
     description: string;
     items: Record<string, any>;
-    itemType?: 'line' | 'polygon' | 'peaks';
+    itemType?: 'line' | 'polygon' | 'peaks' | 'region';
     backgroundPaths?: Record<string, string | string[]>;
     backgroundLabels?: { id: string; name: string; x: number; y: number }[];
     viewBox?: string;
@@ -153,7 +153,7 @@ export default function PhysicalMapGame({
 
     const getTranslatedName = (name: string) => {
         // @ts-ignore - dynamic access to translations
-        return t.physical?.mountains?.[name] || t.physical?.seas?.[name] || name;
+        return t.physical?.regions?.[name] || t.physical?.mountains?.[name] || t.physical?.seas?.[name] || name;
     };
 
     const nextTurn = (currentRemaining: string[]) => {
@@ -256,6 +256,27 @@ export default function PhysicalMapGame({
             return 0;
         });
     }, [items, hoveredItem]);
+
+    const landPathString = useMemo(() => {
+        return Object.entries(backgroundPaths).map(([id, d]) => {
+            const transform = backgroundTransforms[id];
+            const paths = Array.isArray(d) ? d : [d];
+            return paths.map(p => {
+                if (transform && transform.includes('translate')) {
+                    const matches = transform.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/);
+                    if (matches) {
+                        const tx = parseFloat(matches[1]);
+                        const ty = parseFloat(matches[2]);
+                        // Simple offset for translate(x, y) - works for the current use cases like Canary Islands
+                        return p.replace(/([ML])\s*([-\d.]+),([-\d.]+)/g, (_, m, x, y) =>
+                            `${m}${parseFloat(x) + tx},${parseFloat(y) + ty}`
+                        );
+                    }
+                }
+                return p;
+            }).join(' ');
+        }).join(' ');
+    }, [backgroundPaths, backgroundTransforms]);
 
     return (
         <div ref={gameContainerRef} className={cn("w-full flex flex-col items-center select-none transition-all duration-300", isFullscreen ? (theme === 'dark' ? "bg-[#0f172a]" : "bg-slate-50") : "")}>
@@ -424,10 +445,29 @@ export default function PhysicalMapGame({
 
                     <svg viewBox={viewBox} className="w-full h-full drop-shadow-2xl">
                         <defs>
-                            {/* NEW: Sea Gradient */}
+                            {/* SEA GRADIENTS */}
                             <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor={theme === 'dark' ? '#0c1a2e' : '#a8d5e8'} />
-                                <stop offset="100%" stopColor={theme === 'dark' ? '#0f2744' : '#c5e8f5'} />
+                                <stop offset="0%" stopColor={theme === 'dark' ? '#060d17' : '#9bbdc9'} />
+                                <stop offset="100%" stopColor={theme === 'dark' ? '#081424' : '#adc8d4'} />
+                            </linearGradient>
+
+                            <linearGradient id="sea-glass-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor={theme === 'dark' ? 'rgba(12, 26, 46, 0.1)' : 'rgba(168, 213, 232, 0.1)'} />
+                                <stop offset="100%" stopColor={theme === 'dark' ? 'rgba(15, 39, 68, 0.15)' : 'rgba(197, 232, 245, 0.15)'} />
+                            </linearGradient>
+
+                            {/* SEA FLOOR PATTERN */}
+                            <pattern id="sea-floor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <circle cx="20" cy="20" r="1.5" fill={theme === 'dark' ? '#1e293b' : '#cbd5e1'} opacity="0.3" />
+                                <path d="M0,20 Q10,15 20,20 T40,20" fill="none" stroke={theme === 'dark' ? '#1e293b' : '#cbd5e1'} strokeWidth="0.5" opacity="0.1" />
+                            </pattern>
+
+                            {/* GLASS REFLECTION */}
+                            <linearGradient id="glass-shine" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="white" stopOpacity="0.12" />
+                                <stop offset="45%" stopColor="white" stopOpacity="0" />
+                                <stop offset="55%" stopColor="white" stopOpacity="0" />
+                                <stop offset="100%" stopColor="white" stopOpacity="0.08" />
                             </linearGradient>
 
                             {/* NEW: Topographic Pattern for Land */}
@@ -481,11 +521,43 @@ export default function PhysicalMapGame({
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
+
+                            <filter id="mountain-body-soft" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="2.5" />
+                            </filter>
+
+                            <filter id="ridge-glow" x="-100%" y="-100%" width="300%" height="300%">
+                                <feGaussianBlur stdDeviation="4" result="blur" />
+                                <feFlood floodColor="white" floodOpacity="0.8" result="light" />
+                                <feComposite in="light" in2="blur" operator="in" result="glow" />
+                                <feMerge>
+                                    <feMergeNode in="glow" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+
+                            <clipPath id="land-mask">
+                                {Object.entries(backgroundPaths).map(([id, d]) => {
+                                    const transform = backgroundTransforms[id];
+                                    return (
+                                        <g key={`clip-${id}`} transform={transform}>
+                                            {Array.isArray(d) ? d.map((p, i) => (
+                                                <path key={i} d={p} />
+                                            )) : (
+                                                <path d={d as string} />
+                                            )}
+                                        </g>
+                                    );
+                                })}
+                            </clipPath>
                         </defs>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                            {/* SEA BACKGROUND */}
+                            {/* 1. LOWER SEA LAYER (The "Ocean Floor") */}
                             <rect x="-1000" y="-1000" width="3000" height="3000" fill="url(#sea-gradient)" />
+                            <rect x="-1000" y="-1000" width="3000" height="3000" fill="url(#sea-floor)" />
+
+
                             {/* INSET FRAME */}
                             {insetFrame && (
                                 <rect
@@ -507,25 +579,27 @@ export default function PhysicalMapGame({
                                 {Object.entries(backgroundPaths).map(([id, d], i) => {
                                     const regionTransform = backgroundTransforms[id];
 
+                                    // Neighbor country tints (only applies when those countries are in the bg)
+                                    const getColorClass = () => {
+                                        if (theme === 'dark') return 'fill-[#1e2d40] stroke-[#2d3f55]';
+                                        if (id === 'Andorra' || id === 'Gibraltar') return 'fill-[#dde8d0] stroke-[#a0b890]';
+                                        if (id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal') return 'fill-[#e8e4d8] stroke-[#c0b8a8]';
+                                        return 'fill-[#f5edda] stroke-[#c8b89a]'; // Spain regions
+                                    };
+
                                     return (
                                         <g key={id} transform={regionTransform}>
                                             {Array.isArray(d) ? d.map((path, j) => (
                                                 <path
                                                     key={`${id}-${j}`}
                                                     d={path}
-                                                    className={cn(
-                                                        "stroke-[0.5] transition-colors duration-300",
-                                                        theme === 'dark' ? "fill-[#1e2d40] stroke-[#2d3f55]" : "fill-[#f5edda] stroke-[#c8b89a]"
-                                                    )}
+                                                    className={cn("stroke-[0.5] transition-colors duration-300", getColorClass())}
                                                 />
                                             )) : (
                                                 <path
                                                     key={id}
-                                                    d={d}
-                                                    className={cn(
-                                                        "stroke-[0.5] transition-colors duration-300",
-                                                        theme === 'dark' ? "fill-[#1e2d40] stroke-[#2d3f55]" : "fill-[#f5edda] stroke-[#c8b89a]"
-                                                    )}
+                                                    d={d as string}
+                                                    className={cn("stroke-[0.5] transition-colors duration-300", getColorClass())}
                                                 />
                                             )}
                                         </g>
@@ -565,134 +639,176 @@ export default function PhysicalMapGame({
                             })}
 
                             {/* INTERACTIVE ITEMS */}
-                            {sortedItems.map(([name, d]) => {
-                                const isTarget = name === targetItem;
-                                const isCompleted = completedItems.includes(name);
-                                const isFailed = failedItems.includes(name);
-                                const isHovered = name === hoveredItem;
+                            <g>
+                                {sortedItems.map(([name, d]) => {
+                                    const isTarget = name === targetItem;
+                                    const isCompleted = completedItems.includes(name);
+                                    const isFailed = failedItems.includes(name);
+                                    const isHovered = name === hoveredItem;
 
-                                let color = "rgba(255,255,255,0.6)";
-                                if (isCompleted) color = "rgba(34, 197, 94, 0.8)"; // green-500 with 0.8 opacity (RegionGame style)
-                                if (isFailed) color = "rgba(239, 68, 68, 0.8)";
-                                if (isHovered && gameState === 'playing' && !isCompleted) color = "#22d3ee";
+                                    let color = "rgba(255,255,255,0.6)";
+                                    if (isCompleted) color = "rgba(34, 197, 94, 0.8)"; // green-500 with 0.8 opacity (RegionGame style)
+                                    if (isFailed) color = "rgba(239, 68, 68, 0.8)";
+                                    if (isHovered && gameState === 'playing' && !isCompleted) color = "#22d3ee";
 
-                                return (
-                                    <g
-                                        key={name}
-                                        className="cursor-pointer group"
-                                        onMouseEnter={() => gameState === 'playing' && setHoveredItem(name)}
-                                        onMouseLeave={() => setHoveredItem(null)}
-                                        onClick={(e) => handleItemClick(name, e)}
-                                    >
-                                        <path
-                                            d={itemType === 'peaks' ? d.path : d}
-                                            fill={itemType === 'polygon' ? "white" : "none"}
-                                            stroke="white"
-                                            strokeWidth="30"
-                                            opacity="0"
-                                            className="pointer-events-auto"
-                                        />
+                                    return (
+                                        <g
+                                            key={name}
+                                            className="cursor-pointer group"
+                                            onMouseEnter={() => gameState === 'playing' && setHoveredItem(name)}
+                                            onMouseLeave={() => setHoveredItem(null)}
+                                            onClick={(e) => handleItemClick(name, e)}
+                                        >
+                                            <path
+                                                d={itemType === 'peaks' ? d.path : d}
+                                                fill={itemType === 'polygon' ? "white" : "none"}
+                                                stroke="white"
+                                                strokeWidth="30"
+                                                opacity="0"
+                                                className="pointer-events-auto"
+                                            />
 
-                                        {itemType === 'peaks' ? (
-                                            <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
-                                                {d.peaks.map((p: any, idx: number) => {
-                                                    const status = isCompleted ? 'completed' : isFailed ? 'failed' : (isHovered ? 'hovered' : 'normal');
-                                                    return (
-                                                        <MountainPeak key={idx} x={p.x} y={p.y} size={p.scale || 1} status={status} />
-                                                    )
-                                                })}
-                                            </g>
-                                        ) : itemType === 'line' ? (
-                                            /* RIVERS - Premium blue water style */
-                                            <g>
-                                                {/* Glow halo */}
-                                                <motion.path
-                                                    d={d}
-                                                    stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#7dd3fc' : '#93c5fd')}
-                                                    strokeWidth={isTarget || isHovered ? 10 : 6}
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    fill="none"
-                                                    opacity={0.2}
-                                                    className="transition-all duration-300"
-                                                />
-                                                {/* Main river body */}
-                                                <motion.path
-                                                    d={d}
-                                                    stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isTarget ? '#3b82f6' : (isHovered ? '#60a5fa' : '#2563eb'))}
-                                                    strokeWidth={isTarget || isHovered ? 4 : 2.5}
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    fill="none"
-                                                    className="transition-all duration-300"
-                                                />
-                                                {/* Specular shimmer */}
-                                                <motion.path
-                                                    d={d}
-                                                    stroke="rgba(255,255,255,0.5)"
-                                                    strokeWidth={isTarget || isHovered ? 1.5 : 0.8}
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    fill="none"
-                                                    className="pointer-events-none transition-all duration-300"
-                                                />
-                                            </g>
-                                        ) : (
-                                            /* POLYGON — Sea if blue theme, Mountain if teal/emerald */
-                                            colorTheme === 'blue' ? (
-                                                /* SEAS - Premium water style */
+                                            {itemType === 'peaks' ? (
+                                                <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
+                                                    {d.peaks.map((p: any, idx: number) => {
+                                                        const status = isCompleted ? 'completed' : isFailed ? 'failed' : (isHovered ? 'hovered' : 'normal');
+                                                        return (
+                                                            <MountainPeak key={idx} x={p.x} y={p.y} size={p.scale || 1} status={status} />
+                                                        )
+                                                    })}
+                                                </g>
+                                            ) : itemType === 'line' ? (
+                                                /* RIVERS - Premium blue water style */
                                                 <g>
+                                                    {/* Glow halo */}
                                                     <motion.path
                                                         d={d}
-                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isTarget || isHovered ? '#60a5fa' : '#3b82f6')}
-                                                        strokeWidth={isTarget || isHovered ? 2 : 1}
+                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#7dd3fc' : '#93c5fd')}
+                                                        strokeWidth={isHovered ? 10 : 6}
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
-                                                        fill={isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : (isTarget || isHovered ? 'rgba(96,165,250,0.35)' : 'rgba(59,130,246,0.20)')}
+                                                        fill="none"
+                                                        opacity={0.2}
                                                         className="transition-all duration-300"
-                                                        style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
                                                     />
-                                                    {/* Water shimmer lines */}
+                                                    {/* Main river body */}
                                                     <motion.path
                                                         d={d}
-                                                        stroke="rgba(255,255,255,0.4)"
-                                                        strokeWidth={0.5}
-                                                        fill="none"
-                                                        strokeDasharray="4 6"
+                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#60a5fa' : '#2563eb')}
+                                                        strokeWidth={isHovered ? 4 : 2.5}
                                                         strokeLinecap="round"
-                                                        opacity={isHovered ? 0.9 : 0.4}
+                                                        strokeLinejoin="round"
+                                                        fill="none"
+                                                        className="transition-all duration-300"
+                                                    />
+                                                    {/* Specular shimmer */}
+                                                    <motion.path
+                                                        d={d}
+                                                        stroke="rgba(255,255,255,0.5)"
+                                                        strokeWidth={isHovered ? 1.5 : 0.8}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        fill="none"
                                                         className="pointer-events-none transition-all duration-300"
                                                     />
                                                 </g>
                                             ) : (
-                                                /* MOUNTAINS - Terrain fill style */
-                                                <g>
-                                                    <motion.path
-                                                        d={d}
-                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isTarget ? '#f59e0b' : (isHovered ? '#fbbf24' : '#92400e'))}
-                                                        strokeWidth={isTarget || isHovered ? 2 : 1}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        fill={isCompleted ? 'rgba(34,197,94,0.3)' : isFailed ? 'rgba(239,68,68,0.25)' : (isTarget || isHovered ? 'rgba(245,158,11,0.25)' : 'rgba(146,64,14,0.12)')}
-                                                        className="transition-all duration-300"
-                                                        style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
-                                                    />
-                                                    <motion.path
-                                                        d={d}
-                                                        stroke={isCompleted ? '#4ade80' : isFailed ? '#f87171' : (isHovered ? '#fde68a' : '#a16207')}
-                                                        strokeWidth={0.4}
-                                                        fill="none"
-                                                        strokeDasharray={isHovered ? "2 2" : "1 3"}
-                                                        strokeLinecap="round"
-                                                        opacity={0.7}
-                                                        className="pointer-events-none transition-all duration-300"
-                                                    />
-                                                </g>
-                                            )
-                                        )}
-                                    </g>
-                                );
-                            })}
+                                                /* POLYGON — Sea if blue theme, Mountain if teal/emerald */
+                                                colorTheme === 'blue' ? (
+                                                    /* SEAS - Premium water style */
+                                                    <g>
+                                                        <motion.path
+                                                            d={d}
+                                                            stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#60a5fa' : '#3b82f6')}
+                                                            strokeWidth={isHovered ? 2 : 1}
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            fill={isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : (isHovered ? 'rgba(96,165,250,0.35)' : 'rgba(59,130,246,0.20)')}
+                                                            className="transition-all duration-300"
+                                                            style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
+                                                        />
+                                                        {/* Water shimmer lines */}
+                                                        <motion.path
+                                                            d={d}
+                                                            stroke="rgba(255,255,255,0.4)"
+                                                            strokeWidth={0.5}
+                                                            fill="none"
+                                                            strokeDasharray="4 6"
+                                                            strokeLinecap="round"
+                                                            opacity={isHovered ? 0.9 : 0.4}
+                                                            className="pointer-events-none transition-all duration-300"
+                                                        />
+                                                    </g>
+                                                ) : itemType === 'region' ? (
+                                                    <g>
+                                                        <motion.path
+                                                            d={d}
+                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : 'rgba(255, 255, 255, 0.01)')}
+                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : 'transparent')}
+                                                            strokeWidth={1.5}
+                                                            className="transition-all duration-300"
+                                                        />
+                                                    </g>
+                                                ) : (
+                                                    /* MOUNTAINS - Terrain fill style */
+                                                    <g>
+                                                        {/* 1) Soft blurred base mass (hazy effect) */}
+                                                        <motion.path
+                                                            d={typeof d === 'string' ? d : d.path}
+                                                            fill={isCompleted ? 'rgba(34,197,94,0.4)' : isFailed ? 'rgba(239,68,68,0.35)' : (isHovered ? 'rgba(245,158,11,0.45)' : 'rgba(146,64,14,0.18)')}
+                                                            filter="url(#mountain-body-soft)"
+                                                            className="transition-all duration-300"
+                                                        />
+
+                                                        {/* Ridge removed per request */}
+
+                                                        {/* 3) Main Outline removed for testing seamless look */}
+                                                    </g>
+                                                )
+                                            )}
+                                        </g>
+                                    );
+                                })}
+                            </g>
+
+                            {/* 4. SEA OVERLAY (Holes for Land) - Glassmorphism effect */}
+                            <g className="pointer-events-none">
+                                <path
+                                    d={`M -2000,-2000 H 4000 V 4000 H -2000 Z ${landPathString}`}
+                                    fillRule="evenodd"
+                                    fill="url(#sea-glass-gradient)"
+                                    style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+                                />
+                                {/* Surface Specular Reflection */}
+                                <path
+                                    d={`M -2000,-2000 H 4000 V 4000 H -2000 Z ${landPathString}`}
+                                    fillRule="evenodd"
+                                    fill="url(#glass-shine)"
+                                />
+                            </g>
+
+                            {/* 5. LAND STROKES (On top of sea overlay to keep borders clean) */}
+                            <g className="pointer-events-none">
+                                {Object.entries(backgroundPaths).map(([id, d]) => {
+                                    const regionTransform = backgroundTransforms[id];
+                                    const getStrokeColor = () => {
+                                        if (theme === 'dark') return '#2d3f55';
+                                        if (id === 'Andorra' || id === 'Gibraltar') return '#a0b890';
+                                        if (id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal') return '#c0b8a8';
+                                        return '#c8b89a';
+                                    };
+
+                                    return (
+                                        <g key={`stroke-${id}`} transform={regionTransform}>
+                                            {Array.isArray(d) ? d.map((path, j) => (
+                                                <path key={j} d={path} fill="none" stroke={getStrokeColor()} strokeWidth="0.5" />
+                                            )) : (
+                                                <path d={d as string} fill="none" stroke={getStrokeColor()} strokeWidth="0.5" />
+                                            )}
+                                        </g>
+                                    );
+                                })}
+                            </g>
                         </g>
                     </svg>
                 </div>

@@ -449,6 +449,13 @@ export const TRANSLATIONS = {
                 "Mar Caribe": "Mar Caribe", "Golfo de México": "Golfo de México", "Bahía de Hudson": "Bahía de Hudson",
                 "Mar de Bering": "Mar de Bering", "Golfo de California": "Golfo de California", "Mar del Coral": "Mar del Coral",
                 "Mar de Tasmania": "Mar de Tasmania", "Mar de Arafura": "Mar de Arafura", "Gran Bahía Australiana": "Gran Bahía Australiana"
+            },
+            regions: {
+                "madrid": "Comunidad de Madrid", "cataluna": "Cataluña", "galicia": "Galicia", "andalucia": "Andalucía",
+                "aragon": "Aragón", "asturias": "Asturias", "baleares": "Islas Baleares", "canarias": "Islas Canarias",
+                "cantabria": "Cantabria", "castillaleon": "Castilla y León", "castillalamancha": "Castilla-La Mancha",
+                "extremadura": "Extremadura", "murcia": "Región de Murcia", "navarra": "Navarra", "rioja": "La Rioja",
+                "valencia": "Comunidad Valenciana", "vasco": "País Vasco", "ceuta": "Ceuta", "melilla": "Melilla"
             }
         }
     },
@@ -900,6 +907,13 @@ export const TRANSLATIONS = {
                 "Mar Caribe": "Caribbean Sea", "Golfo de México": "Gulf of Mexico", "Bahía de Hudson": "Hudson Bay",
                 "Mar de Bering": "Bering Sea", "Golfo de California": "Gulf of California", "Mar del Coral": "Coral Sea",
                 "Mar de Tasmania": "Tasman Sea", "Mar de Arafura": "Arafura Sea", "Gran Bahía Australiana": "Great Australian Bight"
+            },
+            regions: {
+                "madrid": "Madrid Region", "cataluna": "Catalonia", "galicia": "Galicia", "andalucia": "Andalusia",
+                "aragon": "Aragon", "asturias": "Asturias", "baleares": "Balearic Islands", "canarias": "Canary Islands",
+                "cantabria": "Cantabria", "castillaleon": "Castile and León", "castillalamancha": "Castile-La Mancha",
+                "extremadura": "Extremadura", "murcia": "Murcia Region", "navarra": "Navarre", "rioja": "La Rioja",
+                "valencia": "Valencian Community", "vasco": "Basque Country", "ceuta": "Ceuta", "melilla": "Melilla"
             }
         }
     },
@@ -1350,6 +1364,13 @@ export const TRANSLATIONS = {
                 "Mar Caribe": "Mer des Caraïbes", "Golfo de México": "Golfe du Mexique", "Bahía de Hudson": "Baie d'Hudson",
                 "Mar de Bering": "Mer de Béring", "Golfo de California": "Golfe de Californie", "Mar del Coral": "Mer de Corail",
                 "Mar de Tasmania": "Mer de Tasman", "Mar de Arafura": "Mer d'Arafura", "Gran Bahía Australiana": "Grande Baie australienne"
+            },
+            regions: {
+                "madrid": "Communauté de Madrid", "cataluna": "Catalogne", "galicia": "Galice", "andalucia": "Andalousie",
+                "aragon": "Aragon", "asturias": "Asturies", "baleares": "Îles Baléares", "canarias": "Îles Canaries",
+                "cantabria": "Cantabrie", "castillaleon": "Castille-et-León", "castillalamancha": "Castille-La Manche",
+                "extremadura": "Extrémadure", "murcia": "Région de Murcie", "navarra": "Navarre", "rioja": "La Rioja",
+                "valencia": "Communauté Valencienne", "vasco": "Pays Basque", "ceuta": "Ceuta", "melilla": "Melilla"
             }
         }
     },
@@ -1800,6 +1821,13 @@ export const TRANSLATIONS = {
                 "Mar Caribe": "Karibisches Meer", "Golfo de México": "Golf von Mexiko", "Bahía de Hudson": "Hudson-Bucht",
                 "Mar de Bering": "Beringmeer", "Golfo de California": "Golf von Kalifornien", "Mar del Coral": "Korallenmeer",
                 "Mar de Tasmania": "Tasmansee", "Mar de Arafura": "Arafurasee", "Gran Bahía Australiana": "Große Australische Bucht"
+            },
+            regions: {
+                "madrid": "Region Madrid", "cataluna": "Katalonien", "galicia": "Galizien", "andalucia": "Andalusien",
+                "aragon": "Aragonien", "asturias": "Asturien", "baleares": "Balearen", "canarias": "Kanarische Inseln",
+                "cantabria": "Kantabrien", "castillaleon": "Kastilien und León", "castillalamancha": "Kastilien-La Mancha",
+                "extremadura": "Extremadura", "murcia": "Region Murcia", "navarra": "Navarra", "rioja": "La Rioja",
+                "valencia": "Valencianische Gemeinschaft", "vasco": "Baskenland", "ceuta": "Ceuta", "melilla": "Melilla"
             }
         }
     }
