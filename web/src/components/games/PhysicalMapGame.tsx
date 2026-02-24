@@ -140,6 +140,18 @@ export default function PhysicalMapGame({
         }
     };
 
+    // Utility to get transform with support for multiple ids (e.g. santacruz + laspalmas = canarias)
+    const getActiveTransform = (id: string) => {
+        if (backgroundTransforms[id]) return backgroundTransforms[id];
+        // If this is a part of a larger region (like provinces belong to a community in some maps)
+        // or if we have composite keys, we check if the ID is a substring of any transform key or vice-versa
+        // For Spain, specific hack for Canary Islands provinces if only 'canarias' transform is provided
+        if ((id === 'santacruz' || id === 'laspalmas') && backgroundTransforms['canarias']) {
+            return backgroundTransforms['canarias'];
+        }
+        return undefined;
+    };
+
 
 
     const startGame = (mode: 'challenge' | 'practice' = 'challenge') => {
@@ -262,7 +274,7 @@ export default function PhysicalMapGame({
 
     const landPathString = useMemo(() => {
         return Object.entries(backgroundPaths).map(([id, d]) => {
-            const transform = backgroundTransforms[id];
+            const transform = getActiveTransform(id);
             const paths = Array.isArray(d) ? d : [d];
             return paths.map(p => {
                 if (transform && transform.includes('translate')) {
@@ -541,7 +553,7 @@ export default function PhysicalMapGame({
 
                             <clipPath id="land-mask">
                                 {Object.entries(backgroundPaths).map(([id, d]) => {
-                                    const transform = backgroundTransforms[id];
+                                    const transform = getActiveTransform(id);
                                     return (
                                         <g key={`clip-${id}`} transform={transform}>
                                             {Array.isArray(d) ? d.map((p, i) => (
@@ -580,7 +592,7 @@ export default function PhysicalMapGame({
                             {/* BACKGROUND PATHS */}
                             <g className="pointer-events-none">
                                 {Object.entries(backgroundPaths).map(([id, d], i) => {
-                                    const regionTransform = backgroundTransforms[id];
+                                    const regionTransform = getActiveTransform(id);
 
                                     // Neighbor country tints (only applies when those countries are in the bg)
                                     const getColorClass = () => {
@@ -612,7 +624,7 @@ export default function PhysicalMapGame({
 
                             {/* LABELS */}
                             {backgroundLabels.map((label, i) => {
-                                const transformStr = backgroundTransforms[label.id];
+                                const transformStr = getActiveTransform(label.id);
                                 let labelX = label.x;
                                 let labelY = label.y;
 
@@ -661,7 +673,7 @@ export default function PhysicalMapGame({
                                             onMouseEnter={() => gameState === 'playing' && setHoveredItem(name)}
                                             onMouseLeave={() => setHoveredItem(null)}
                                             onClick={(e) => handleItemClick(name, e)}
-                                            transform={backgroundTransforms[name]}
+                                            transform={getActiveTransform(name)}
                                         >
                                             <path
                                                 d={itemType === 'peaks' ? d.path : d}
