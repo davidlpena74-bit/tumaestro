@@ -134,7 +134,7 @@ export default function ActivityRanking({
                             time_spent: item.time_spent,
                             created_at: item.created_at,
                             profiles: profiles || {
-                                full_name: language === 'es' ? 'Usuario Anónimo' : 'Anonymous User',
+                                full_name: language === 'es' ? 'Geógrafo Estelar' : 'Star Geographer',
                                 avatar_url: null
                             }
                         };
@@ -166,21 +166,30 @@ export default function ActivityRanking({
                     score: 850,
                     time_spent: 42,
                     created_at: new Date().toISOString(),
-                    profiles: { full_name: 'Mateo El Sabio', avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mateo' }
+                    profiles: {
+                        full_name: language === 'es' ? 'Mateo El Sabio' : 'Wise Matthew',
+                        avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mateo'
+                    }
                 },
                 {
                     id: 'm2',
                     score: 720,
                     time_spent: 58,
                     created_at: new Date().toISOString(),
-                    profiles: { full_name: 'Lucía Explorer', avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lucia' }
+                    profiles: {
+                        full_name: language === 'es' ? 'Lucía Explorer' : 'Explorer Lucy',
+                        avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lucia'
+                    }
                 },
                 {
                     id: 'm3',
                     score: 560,
                     time_spent: 75,
                     created_at: new Date().toISOString(),
-                    profiles: { full_name: 'Santi Geógrafo', avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Santi' }
+                    profiles: {
+                        full_name: language === 'es' ? 'Santi Geógrafo' : 'Geographer Santi',
+                        avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Santi'
+                    }
                 }
             ];
             setScores(mockScores);
@@ -203,15 +212,15 @@ export default function ActivityRanking({
     if (!isVisible || loading) return (
         <div ref={containerRef} className="flex flex-col items-center justify-center p-8 space-y-4">
             <div className="w-10 h-10 border-t-2 border-emerald-500 border-solid rounded-full animate-spin"></div>
-            <p className="text-gray-400 text-sm animate-pulse">{true ? 'Cargando ranking...' : 'Loading rankings...'}</p>
+            <p className="text-gray-400 text-sm animate-pulse">{language === 'es' ? 'Cargando ranking...' : 'Loading rankings...'}</p>
         </div>
     );
 
     if (scores.length === 0) return (
         <div ref={containerRef} className="p-8 text-center text-gray-500 bg-slate-900/40 rounded-3xl border border-white/5">
             <TrophyIconGame className="w-12 h-12 mx-auto mb-4 opacity-20" />
-            <p className="font-medium">{true ? 'Aún no hay puntuaciones' : 'No scores yet'}</p>
-            <p className="text-sm opacity-60 mt-1 uppercase">{true ? '¡Sé el primero en el top!' : 'Be the first on top!'}</p>
+            <p className="font-medium">{language === 'es' ? 'Aún no hay puntuaciones' : 'No scores yet'}</p>
+            <p className="text-sm opacity-60 mt-1 uppercase">{language === 'es' ? '¡Sé el primero en el top!' : 'Be the first on top!'}</p>
         </div>
     );
 

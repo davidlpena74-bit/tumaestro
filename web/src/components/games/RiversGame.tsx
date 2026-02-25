@@ -352,6 +352,18 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
                     {/* SVG MAP */}
                     <svg viewBox="-140 0 840 700" className="w-full h-full drop-shadow-2xl">
                         <defs>
+                            {/* SEA GRADIENTS */}
+                            <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#9bbdc9" />
+                                <stop offset="100%" stopColor="#adc8d4" />
+                            </linearGradient>
+
+                            {/* SEA FLOOR PATTERN */}
+                            <pattern id="sea-floor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <circle cx="20" cy="20" r="1.5" fill="#cbd5e1" opacity="0.3" />
+                                <path d="M0,20 Q10,15 20,20 T40,20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" opacity="0.1" />
+                            </pattern>
+
                             <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
                                 <feDropShadow dx="0" dy="8" stdDeviation="5" floodOpacity="0.4" />
                             </filter>
@@ -373,6 +385,9 @@ export default function RiversGame({ taskId = null, activityId }: { taskId?: str
                             transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
                             style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
                         >
+                            {/* 1. LOWER SEA LAYER */}
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
                             {/* BACKGROUND: Static Regions (Graphics only) */}
                             {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
                                 const isInset = id === 'canarias';

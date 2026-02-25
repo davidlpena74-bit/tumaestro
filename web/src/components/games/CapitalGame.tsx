@@ -494,7 +494,23 @@ export default function CapitalGame({
                     {/* MAP */}
                     {(gameState === 'playing' || gameState === 'start') && (
                         <svg viewBox="0 0 800 600" className="w-full h-full pointer-events-none" style={{ background: 'transparent' }}>
+                            <defs>
+                                {/* SEA GRADIENTS */}
+                                <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="#9bbdc9" />
+                                    <stop offset="100%" stopColor="#adc8d4" />
+                                </linearGradient>
+
+                                {/* SEA FLOOR PATTERN */}
+                                <pattern id="sea-floor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                    <circle cx="20" cy="20" r="1.5" fill="#cbd5e1" opacity="0.3" />
+                                    <path d="M0,20 Q10,15 20,20 T40,20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" opacity="0.1" />
+                                </pattern>
+                            </defs>
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
+                                {/* 1. LOWER SEA LAYER */}
+                                <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
+                                <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
                                 {/* Layer 1: Country Paths */}
                                 {Object.entries(paths).map(([engName, pathD]) => {
                                     const spanishName = nameMapping[engName];

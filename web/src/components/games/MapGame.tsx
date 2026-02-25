@@ -271,22 +271,19 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                                     ? 'Demuestra que conoces cada rincón del país. Tienes 90 segundos para ubicar todas las provincias posibles.'
                                     : 'Show that you know every corner of the country. You have 90 seconds to locate as many provinces as possible.'}
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                            <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl mx-auto w-full">
                                 <button
                                     onClick={() => startGame('challenge')}
-                                    className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
+                                    className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                                 >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        MODO RETO <TimerIconGame className="w-5 h-5 opacity-50" />
-                                    </span>
+                                    MODO RETO <TimerIconGame className="w-8 h-8 opacity-70" />
                                 </button>
+
                                 <button
                                     onClick={() => startGame('practice')}
-                                    className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
+                                    className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-widest"
                                 >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        PRÁCTICA <RefreshCwIconGame className="w-5 h-5 opacity-50" />
-                                    </span>
+                                    PRÁCTICA <RefreshCwIconGame className="w-6 h-6 opacity-50" />
                                 </button>
                             </div>
                         </div>
@@ -366,6 +363,16 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                         className="w-full h-full drop-shadow-2xl"
                     >
                         <defs>
+                            <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#9bbdc9" />
+                                <stop offset="100%" stopColor="#adc8d4" />
+                            </linearGradient>
+
+                            <pattern id="sea-floor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <circle cx="20" cy="20" r="1.5" fill="#cbd5e1" opacity="0.3" />
+                                <path d="M0,20 Q10,15 20,20 T40,20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" opacity="0.1" />
+                            </pattern>
+
                             <filter id="glow-hover" x="-50%" y="-50%" width="200%" height="200%">
                                 <feGaussianBlur stdDeviation="2" result="coloredBlur" />
                                 <feMerge>
@@ -383,6 +390,9 @@ export default function MapGame({ activityId }: { activityId?: string }) {
                             transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
                             style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}
                         >
+                            {/* LOWER SEA LAYER */}
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
 
 
                             {/* CANARY ISLANDS INSET FRAME (Custom Projection) */}

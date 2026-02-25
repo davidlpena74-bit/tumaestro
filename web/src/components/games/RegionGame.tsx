@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Timer, Map as MapIcon, RefreshCw, HelpCircle, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
+import { Trophy as TrophyIconGame, Timer as TimerIconGame, Map as MapIcon, RefreshCw as RefreshCwIconGame, HelpCircle, ZoomIn, ZoomOut, Maximize, Minimize } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from './spanish-communities-paths';
@@ -158,7 +158,7 @@ export default function RegionGame({ gameMode = 'quiz', activityId, taskId, them
 
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-slate-900 rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl group",
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl group",
                         isFullscreen && "flex-1 min-h-[500px]"
                     )}
                     onMouseDown={(e) => {
@@ -190,12 +190,21 @@ export default function RegionGame({ gameMode = 'quiz', activityId, taskId, them
                                 <p className="text-emerald-100/70 mb-10 text-lg leading-relaxed font-medium">
                                     {t.gamesPage.gameTitles.regionDesc || 'Identifica las comunidades autónomas en el mapa.'}
                                 </p>
-                                <button
-                                    onClick={startGame}
-                                    className="w-full py-5 px-8 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-widest"
-                                >
-                                    {t.common.start}
-                                </button>
+                                <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl mx-auto w-full">
+                                    <button
+                                        onClick={startGame}
+                                        className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
+                                    >
+                                        MODO RETO <TimerIconGame className="w-8 h-8 opacity-70" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => startGame()} // Currently RegionGame doesn't distinguish but we add the UI
+                                        className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-widest"
+                                    >
+                                        PRÁCTICA <RefreshCwIconGame className="w-6 h-6 opacity-50" />
+                                    </button>
+                                </div>
                             </motion.div>
                         </div>
                     )}
@@ -209,7 +218,7 @@ export default function RegionGame({ gameMode = 'quiz', activityId, taskId, them
                                 className="text-center p-12 bg-white/10 rounded-[3rem] border border-white/20 shadow-2xl max-w-md w-full mx-4"
                             >
                                 <div className="w-24 h-24 bg-emerald-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                                    <Trophy className="w-12 h-12 text-white" />
+                                    <TrophyIconGame className="w-12 h-12 text-white" />
                                 </div>
                                 <h2 className="text-4xl font-black text-white mb-2">{t.common.congrats || t.common.completed}!</h2>
                                 <p className="text-emerald-100/70 mb-8 text-xl font-medium">
@@ -220,7 +229,7 @@ export default function RegionGame({ gameMode = 'quiz', activityId, taskId, them
                                         onClick={startGame}
                                         className="py-4 px-8 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-lg rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/20 uppercase tracking-wider flex items-center justify-center gap-3"
                                     >
-                                        <RefreshCw className="w-6 h-6" /> {t.common.playAgain}
+                                        <RefreshCwIconGame className="w-6 h-6" /> {t.common.playAgain}
                                     </button>
                                 </div>
                             </motion.div>
@@ -242,10 +251,24 @@ export default function RegionGame({ gameMode = 'quiz', activityId, taskId, them
                         viewBox="-140 0 840 700"
                         className="w-full h-full cursor-grab active:cursor-grabbing"
                     >
+                        <defs>
+                            <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#9bbdc9" />
+                                <stop offset="100%" stopColor="#adc8d4" />
+                            </linearGradient>
+
+                            <pattern id="sea-floor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <circle cx="20" cy="20" r="1.5" fill="#cbd5e1" opacity="0.3" />
+                                <path d="M0,20 Q10,15 20,20 T40,20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" opacity="0.1" />
+                            </pattern>
+                        </defs>
                         <g
                             transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
                             style={{ transformOrigin: 'center', transition: isDragging.current ? 'none' : 'transform 0.1s ease-out' }}
                         >
+                            {/* LOWER SEA LAYER */}
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
                             {Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
                                 const isTarget = targetId === id;
                                 const isClicked = clickedId === id;
