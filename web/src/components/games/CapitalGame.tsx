@@ -27,9 +27,12 @@ interface CapitalGameProps {
     paths: Record<string, string>; // Map paths (English Key -> SVG Path)
     targetList?: string[]; // Optional list of Spanish country names to include in the game (e.g. only EU members)
     title: string;
+    description?: string;
     initialZoom?: number;
     initialPan?: { x: number; y: number };
     centroids?: Record<string, { x: number; y: number }>;
+    icon?: React.ReactNode;
+    colorTheme?: "emerald" | "blue" | "purple" | "orange" | "teal" | "yellow";
     taskId?: string | null;
     activityId?: string;
 }
@@ -38,9 +41,12 @@ export default function CapitalGame({
     paths,
     targetList,
     title,
+    description,
     initialZoom = 1.5,
     initialPan = { x: 0, y: 0 },
     centroids,
+    icon,
+    colorTheme = "emerald",
     taskId = null,
     activityId
 }: CapitalGameProps) {
@@ -292,120 +298,188 @@ export default function CapitalGame({
                     gameType={t.gamesPage.gameTypes.map}
                     message={message}
                     onReset={resetGame}
-                    colorTheme="teal"
-                    icon={<Globe className="w-8 h-8 text-teal-400" />}
+                    colorTheme={colorTheme}
+                    icon={icon || <Globe className={cn("w-8 h-8", colorTheme === 'emerald' ? "text-emerald-400" : "text-blue-400")} />}
                     activityId={effectiveActivityId || 'game'}
                 />
 
                 <div
                     className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center group",
-                        isFullscreen && "flex-1 min-h-[500px]"
+                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center group z-10 -mt-1",
+                        isFullscreen && "flex-1 min-h-[500px] mt-0"
                     )}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseUp}
                 >
-                    {/* START OVERLAY - Unified with Map style */}
-                    {gameState === 'start' && (
-                        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center rounded-3xl" onMouseDown={e => e.stopPropagation()}>
-                            <div className="bg-teal-500/10 p-4 rounded-full mb-6 ring-1 ring-teal-500/30">
-                                <Globe className="w-12 h-12 text-teal-400" />
-                            </div>
-                            <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight uppercase">{title}</h2>
-                            <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
-                                {true ? 'Busca la capital mostrada en el mapa.' : 'Find the capital shown on the map.'}
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                                <button
-                                    onClick={() => startGame('challenge')}
-                                    className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        MODO RETO <TrophyIconGame className="w-5 h-5 opacity-50" />
-                                    </span>
-                                </button>
-
-                                <button
-                                    onClick={() => startGame('practice')}
-                                    className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        PRÁCTICA <Globe className="w-5 h-5 opacity-50" />
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* WON OVERLAY - Unified with Map style */}
-                    {gameState === 'finished' && (
-                        <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
-
-                            {/* Top Section: Score & Trophy (Pushing up) */}
-                            <div className="flex flex-col items-center mb-8 shrink-0">
-                                <div className="bg-emerald-500/10 p-3 rounded-full mb-3 ring-1 ring-emerald-500/30">
-                                    {gameMode === 'challenge' && timeLeft === 0 ? (
-                                        <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
-                                    ) : (
-                                        <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
-                                    )}
-                                </div>
-                                <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
-                                    {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
-                                </h2>
-                            </div>
-
-                            {/* Main Content Area: Rankings & Actions */}
-                            <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
-                                {/* Rankings Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Left: Score Box */}
-                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
-                                        <div className="flex flex-col items-center gap-1 mb-4">
-                                            <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Puntuación:' : 'Your Score:'}</span>
-                                            <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
-                                                {score}
-                                            </span>
-                                        </div>
-                                        <div className="w-full text-left">
-                                            <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="score" />
+                    <AnimatePresence>
+                        {/* START OVERLAY - Unified with Map style */}
+                        {gameState === 'start' && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-0 z-30 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center rounded-[2rem] overflow-y-auto custom-scrollbar"
+                                onMouseDown={e => e.stopPropagation()}
+                            >
+                                {/* Top Header */}
+                                <div className="flex flex-col items-center mb-8 shrink-0 mt-4">
+                                    <div className={cn(
+                                        "p-4 rounded-full mb-4 ring-1",
+                                        colorTheme === 'emerald' ? "bg-emerald-500/10 ring-emerald-500/30 text-emerald-400" : "bg-blue-500/10 ring-blue-500/30 text-blue-400"
+                                    )}>
+                                        <div className="w-12 h-12 flex items-center justify-center">
+                                            {icon || <Globe className="w-12 h-12" />}
                                         </div>
                                     </div>
-
-                                    {/* Right: Time Box */}
-                                    <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
-                                        <div className="flex flex-col items-center gap-1 mb-4">
-                                            <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{true ? 'Tu Tiempo:' : 'Your Time:'}</span>
-                                            <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
-                                                {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
-                                            </span>
-                                        </div>
-                                        <div className="w-full text-left">
-                                            <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="time" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Actions Row - Reduced Height */}
-                                <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
-                                    <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
-                                        <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
-                                            <RatingSystem activityId={effectiveActivityId || 'game'} />
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        onClick={resetGame}
-                                        className="w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-emerald-500/20 uppercase tracking-wider"
+                                    <motion.h2
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        className="text-2xl md:text-3xl font-black text-white mb-1 tracking-tight uppercase leading-tight max-w-2xl"
                                     >
-                                        <RefreshCwIconGame className="w-8 h-8" /> {t?.common?.playAgain || 'Jugar de nuevo'}
-                                    </button>
+                                        {title}
+                                    </motion.h2>
+                                    <motion.p
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ delay: 0.1 }}
+                                        className="text-gray-400 max-w-xl text-lg leading-relaxed font-medium"
+                                    >
+                                        {description || (language === 'es' ? 'Busca la capital mostrada en el mapa.' : 'Find the capital shown on the map.')}
+                                    </motion.p>
                                 </div>
-                            </div>
-                        </div>
-                    )}
+
+                                {/* Rankings Section */}
+                                <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
+                                    {/* Rankings Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                            <div className="w-full text-left">
+                                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                            </div>
+                                        </div>
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                            <div className="w-full text-left">
+                                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Start Buttons Row */}
+                                    <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl mx-auto w-full">
+                                        <button
+                                            onClick={() => startGame('challenge')}
+                                            className={cn(
+                                                "group relative flex-1 px-8 py-6 font-black text-2xl rounded-3xl transition-all hover:scale-[1.02] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter shadow-xl",
+                                                colorTheme === 'emerald'
+                                                    ? "bg-emerald-500 hover:bg-emerald-400 text-slate-900 shadow-emerald-500/20"
+                                                    : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/20"
+                                            )}
+                                        >
+                                            MODO RETO <TrophyIconGame className="w-8 h-8 opacity-70" />
+                                        </button>
+
+                                        <button
+                                            onClick={() => startGame('practice')}
+                                            className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-widest"
+                                        >
+                                            PRÁCTICA <RefreshCwIconGame className="w-6 h-6 opacity-50" />
+                                        </button>
+                                    </div>
+
+                                    <div className="text-center opacity-50 shrink-0">
+                                        <p className="text-white text-xs font-black uppercase tracking-[0.3em]">
+                                            {language === 'es' ? '¡Prepárate para el éxito!' : 'Get ready for success!'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {/* WON OVERLAY - Unified with Map style */}
+                        {(gameState === 'finished' || gameState === 'won') && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center rounded-[2rem] overflow-y-auto custom-scrollbar"
+                            >
+                                {/* Top Section: Score & Trophy (Pushing up) */}
+                                <div className="flex flex-col items-center mb-8 shrink-0">
+                                    <div className={cn(
+                                        "p-3 rounded-full mb-3 ring-1",
+                                        colorTheme === 'emerald' ? "bg-emerald-500/10 ring-emerald-500/30" : "bg-blue-500/10 ring-blue-500/30"
+                                    )}>
+                                        {gameMode === 'challenge' && timeLeft === 0 ? (
+                                            <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
+                                        ) : (
+                                            <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
+                                        )}
+                                    </div>
+                                    <h2 className="text-2xl md:text-4xl font-black text-white mb-1 uppercase tracking-tight">
+                                        {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
+                                    </h2>
+                                    <p className="text-gray-400 font-medium uppercase tracking-[0.2em] text-xs">
+                                        {title}
+                                    </p>
+                                </div>
+
+                                {/* Main Content Area: Rankings & Actions */}
+                                <div className="w-full max-w-5xl flex flex-col gap-6 mb-10">
+                                    {/* Rankings Row */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Left: Score Box */}
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                            <div className="flex flex-col items-center gap-1 mb-4">
+                                                <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Puntuación:' : 'Your Score:'}</span>
+                                                <span className="text-4xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                                    {score}
+                                                </span>
+                                            </div>
+                                            <div className="w-full text-left">
+                                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="score" />
+                                            </div>
+                                        </div>
+
+                                        {/* Right: Time Box */}
+                                        <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-6 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                            <div className="flex flex-col items-center gap-1 mb-4">
+                                                <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black">{language === 'es' ? 'Tu Tiempo:' : 'Your Time:'}</span>
+                                                <span className="text-4xl font-black text-sky-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                                                    {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                                                </span>
+                                            </div>
+                                            <div className="w-full text-left">
+                                                <ActivityRanking activityId={effectiveActivityId} limit={3} sortBy="time" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Actions Row - Reduced Height */}
+                                    <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-5xl mx-auto w-full mt-2">
+                                        <div className="w-full md:w-[calc(50%-8px+8px)] flex-none bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 p-0 shadow-xl overflow-hidden h-[120px] flex items-center justify-center">
+                                            <div className="scale-[0.6] origin-center w-[166%] h-[166%] flex items-center justify-center -mt-8">
+                                                <RatingSystem activityId={effectiveActivityId} />
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={resetGame}
+                                            className={cn(
+                                                "w-full md:w-[calc(50%-8px-8px)] flex-none h-[120px] flex items-center justify-center gap-4 px-6 py-2 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl uppercase tracking-wider",
+                                                colorTheme === 'emerald'
+                                                    ? "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-500/20"
+                                                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/20"
+                                            )}
+                                        >
+                                            <RefreshCwIconGame className="w-8 h-8" /> {t?.common?.playAgain || 'Jugar de nuevo'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     {/* Controls */}
                     <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>

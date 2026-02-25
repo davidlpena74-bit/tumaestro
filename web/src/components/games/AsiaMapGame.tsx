@@ -25,6 +25,7 @@ export default function AsiaMapGame({ taskId = null, activityId }: { taskId?: st
         <CountryGameBase
             key={language}
             title={t.gamesPage.gameTitles.asiaMap}
+            description={t.gamesPage.gameTitles.asiaMapDesc}
             regionName={t.gamesPage.regions.asia}
             pathData={ASIA_PATHS}
             nameMapping={mapping}

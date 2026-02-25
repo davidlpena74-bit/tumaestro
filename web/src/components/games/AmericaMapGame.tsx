@@ -25,6 +25,7 @@ export default function AmericaMapGame({ taskId = null, activityId }: { taskId?:
         <CountryGameBase
             key={language}
             title={t.gamesPage.gameTitles.americaMap}
+            description={t.gamesPage.gameTitles.americaMapDesc}
             regionName={t.gamesPage.regions.america}
             pathData={AMERICA_PATHS}
             nameMapping={mapping}
