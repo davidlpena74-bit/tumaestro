@@ -118,6 +118,42 @@ export const TRANSLATIONS = {
                 southAmericaMapDesc: 'Ubica las naciones del continente sudamericano.',
                 africaMap: 'Mapa de África',
                 africaMapDesc: 'Ubica las 54 naciones del continente africano.',
+                africaCapitals: 'Capitales de África',
+                africaCapitalsDesc: 'Aprende las capitales de las 54 naciones africanas.',
+                africaRivers: 'Ríos de África',
+                africaRiversDesc: 'Encuentra los ríos más importantes del continente africano.',
+                africaMountains: 'Montañas de África',
+                africaMountainsDesc: 'Identifica los principales sistemas montañosos de África.',
+                africaSeas: 'Mares de África',
+                africaSeasDesc: 'Ubica los mares y océanos que rodean el continente africano.',
+                northAmericaCapitals: 'Capitales de Norteamérica',
+                northAmericaCapitalsDesc: '¿Puedes situar las capitales de los países norteamericanos?',
+                northAmericaMountains: 'Montañas de Norteamérica',
+                northAmericaMountainsDesc: 'Identifica los principales sistemas montañosos de América del Norte.',
+                northAmericaRivers: 'Ríos de Norteamérica',
+                northAmericaRiversDesc: 'Localiza los ríos más importantes de la región norte.',
+                usaCapitals: 'Capitales de EE.UU.',
+                usaCapitalsDesc: 'Pon a prueba tus conocimientos sobre las 50 capitales estatales.',
+                usaRiversLakes: 'Ríos y Lagos de EE.UU.',
+                usaRiversLakesDesc: 'Encuentra los principales cuerpos de agua dulce en EE.UU.',
+                usaOceans: 'Mares y Océanos de EE.UU.',
+                usaOceansDesc: 'Identifica los mares y océanos que bañan las costas estadounidenses.',
+                usaMountains: 'Montañas de EE.UU.',
+                usaMountainsDesc: 'Ubica las grandes cordilleras dentro de los Estados Unidos.',
+                centralAmericaMap: 'Países de Centroamérica',
+                centralAmericaMapDesc: 'Localiza las naciones del istmo centroamericano.',
+                centralAmericaCapitals: 'Capitales de Centroamérica',
+                centralAmericaCapitalsDesc: 'Aprende las ciudades capitales de América Central.',
+                centralAmericaMountains: 'Montañas de Centroamérica',
+                centralAmericaMountainsDesc: 'Identifica el relieve y montañas de Centroamérica.',
+                centralAmericaWater: 'Aguas de Centroamérica',
+                centralAmericaWaterDesc: 'Ríos, lagos y mares del istmo centroamericano.',
+                southAmericaCapitals: 'Capitales de Sudamérica',
+                southAmericaCapitalsDesc: 'Ubica las capitales de todas las naciones sudamericanas.',
+                southAmericaMountains: 'Montañas de Sudamérica',
+                southAmericaMountainsDesc: 'Explora la cordillera de los Andes y otros sistemas.',
+                southAmericaWater: 'Aguas de Sudamérica',
+                southAmericaWaterDesc: 'Identifica los grandes ríos, lagos y mares de Sudamérica.',
                 asiaOceaniaMap: 'Asia y Oceanía',
 
                 asiaOceaniaMapDesc: 'Explora desde las estepas asiáticas hasta las islas del Pacífico.',
@@ -219,6 +255,7 @@ export const TRANSLATIONS = {
                 europe: 'Europa',
                 america: 'América',
                 northAmerica: 'Norteamérica',
+                centralAmerica: 'Centroamérica',
                 southAmerica: 'Sudamérica',
                 africa: 'África',
                 asiaOceania: 'Asia y Oceanía',
@@ -439,7 +476,9 @@ export const TRANSLATIONS = {
                 "Rocosas": "Rocosas", "Andes": "Andes", "Apalaches": "Apalaches",
                 "Sierra Madre Occidental": "Sierra Madre Occidental", "Sierra Madre Oriental": "Sierra Madre Oriental",
                 "Gran Cordillera Divisoria": "Gran Cordillera Divisoria", "Alpes del Sur": "Alpes del Sur",
-                "Cordillera Owen Stanley": "Cordillera Owen Stanley"
+                "Cordillera Owen Stanley": "Cordillera Owen Stanley", "Montes Atlas": "Montes Atlas",
+                "Drakensberg": "Drakensberg", "Tierras Altas de Etiopía": "Tierras Altas de Etiopía",
+                "Kilimanjaro": "Kilimanjaro", "Monte Kenia": "Monte Kenia", "Montes Ruwenzori": "Montes Ruwenzori"
             },
             seas: {
                 "Mar Mediterráneo": "Mar Mediterráneo", "Mar del Norte": "Mar del Norte", "Mar Báltico": "Mar Báltico",
@@ -448,7 +487,13 @@ export const TRANSLATIONS = {
                 "Mar de Japón": "Mar de Japón", "Mar Rojo": "Mar Rojo", "Golfo Pérsico": "Golfo Pérsico",
                 "Mar Caribe": "Mar Caribe", "Golfo de México": "Golfo de México", "Bahía de Hudson": "Bahía de Hudson",
                 "Mar de Bering": "Mar de Bering", "Golfo de California": "Golfo de California", "Mar del Coral": "Mar del Coral",
-                "Mar de Tasmania": "Mar de Tasmania", "Mar de Arafura": "Mar de Arafura", "Gran Bahía Australiana": "Gran Bahía Australiana"
+                "Mar de Tasmania": "Mar de Tasmania", "Mar de Arafura": "Mar de Arafura", "Gran Bahía Australiana": "Gran Bahía Australiana",
+                "Lago Victoria": "Lago Victoria", "Lago Tanganica": "Lago Tanganica", "Lago Malaui": "Lago Malaui",
+                "Golfo de Guinea": "Golfo de Guinea", "Canal de Mozambique": "Canal de Mozambique"
+            },
+            rivers: {
+                "Nilo": "Nilo", "Congo": "Congo", "Níger": "Níger", "Zambeze": "Zambeze",
+                "Orange": "Orange", "Limpopo": "Limpopo"
             },
             regions: {
                 "madrid": "Comunidad de Madrid", "cataluna": "Cataluña", "galicia": "Galicia", "andalucia": "Andalucía",
@@ -576,7 +621,42 @@ export const TRANSLATIONS = {
                 southAmericaMapDesc: 'Locate the nations of the South American continent.',
                 africaMap: 'Map of Africa',
                 africaMapDesc: 'Locate the 54 nations of the African continent.',
-
+                africaCapitals: 'Africa Capitals',
+                africaCapitalsDesc: 'Learn the capitals of the 54 African nations.',
+                africaRivers: 'Africa Rivers',
+                africaRiversDesc: 'Find the most important rivers of the African continent.',
+                africaMountains: 'Africa Mountains',
+                africaMountainsDesc: 'Identify the main mountain systems of Africa.',
+                africaSeas: 'Africa Seas',
+                africaSeasDesc: 'Locate the seas and oceans surrounding the African continent.',
+                northAmericaCapitals: 'North America Capitals',
+                northAmericaCapitalsDesc: 'Can you locate the capitals of North American countries?',
+                northAmericaMountains: 'North America Mountains',
+                northAmericaMountainsDesc: 'Identify the main mountain systems in North America.',
+                northAmericaRivers: 'North America Rivers',
+                northAmericaRiversDesc: 'Locate the most important rivers in the northern region.',
+                usaCapitals: 'US Capitals',
+                usaCapitalsDesc: 'Test your knowledge of the 50 state capitals.',
+                usaRiversLakes: 'US Rivers & Lakes',
+                usaRiversLakesDesc: 'Find the main freshwater bodies in the USA.',
+                usaOceans: 'US Seas & Oceans',
+                usaOceansDesc: 'Identify the seas and oceans surrounding the US coasts.',
+                usaMountains: 'US Mountains',
+                usaMountainsDesc: 'Locate the great mountain ranges within the United States.',
+                centralAmericaMap: 'Central America Countries',
+                centralAmericaMapDesc: 'Locate the nations of the Central American isthmus.',
+                centralAmericaCapitals: 'Central America Capitals',
+                centralAmericaCapitalsDesc: 'Learn the capital cities of Central America.',
+                centralAmericaMountains: 'Central America Mountains',
+                centralAmericaMountainsDesc: 'Identify the relief and mountains of Central America.',
+                centralAmericaWater: 'Central America Waters',
+                centralAmericaWaterDesc: 'Rivers, lakes, and seas of the Central American isthmus.',
+                southAmericaCapitals: 'South America Capitals',
+                southAmericaCapitalsDesc: 'Locate the capitals of all South American nations.',
+                southAmericaMountains: 'South America Mountains',
+                southAmericaMountainsDesc: 'Explore the Andes and other mountain systems.',
+                southAmericaWater: 'South America Waters',
+                southAmericaWaterDesc: 'Identify the great rivers, lakes, and seas of South America.',
                 asiaOceaniaMap: 'Asia & Oceania',
                 asiaOceaniaMapDesc: 'Explore from the Asian steppes to the Pacific islands.',
                 asiaMap: 'Map of Asia',
@@ -677,6 +757,7 @@ export const TRANSLATIONS = {
                 europe: 'Europe',
                 america: 'America',
                 northAmerica: 'North America',
+                centralAmerica: 'Central America',
                 southAmerica: 'South America',
                 africa: 'Africa',
                 asiaOceania: 'Asia and Oceania',
@@ -897,7 +978,9 @@ export const TRANSLATIONS = {
                 "Rocosas": "Rockies", "Andes": "Andes", "Apalaches": "Appalachians",
                 "Sierra Madre Occidental": "Sierra Madre Occidental", "Sierra Madre Oriental": "Sierra Madre Oriental",
                 "Gran Cordillera Divisoria": "Great Dividing Range", "Alpes del Sur": "Southern Alps",
-                "Cordillera Owen Stanley": "Owen Stanley Range"
+                "Cordillera Owen Stanley": "Owen Stanley Range", "Montes Atlas": "Atlas Mountains",
+                "Drakensberg": "Drakensberg", "Tierras Altas de Etiopía": "Ethiopian Highlands",
+                "Kilimanjaro": "Kilimanjaro", "Monte Kenia": "Mount Kenya", "Montes Ruwenzori": "Rwenzori Mountains"
             },
             seas: {
                 "Mar Mediterráneo": "Mediterranean Sea", "Mar del Norte": "North Sea", "Mar Báltico": "Baltic Sea",
@@ -906,7 +989,13 @@ export const TRANSLATIONS = {
                 "Mar de Japón": "Sea of Japan", "Mar Rojo": "Red Sea", "Golfo Pérsico": "Persian Gulf",
                 "Mar Caribe": "Caribbean Sea", "Golfo de México": "Gulf of Mexico", "Bahía de Hudson": "Hudson Bay",
                 "Mar de Bering": "Bering Sea", "Golfo de California": "Gulf of California", "Mar del Coral": "Coral Sea",
-                "Mar de Tasmania": "Tasman Sea", "Mar de Arafura": "Arafura Sea", "Gran Bahía Australiana": "Great Australian Bight"
+                "Mar de Tasmania": "Tasman Sea", "Mar de Arafura": "Arafura Sea", "Gran Bahía Australiana": "Great Australian Bight",
+                "Lago Victoria": "Lake Victoria", "Lago Tanganica": "Lake Tanganyika", "Lago Malaui": "Lake Malawi",
+                "Golfo de Guinea": "Gulf of Guinea", "Canal de Mozambique": "Mozambique Channel"
+            },
+            rivers: {
+                "Nilo": "Nile", "Congo": "Congo", "Níger": "Niger", "Zambeze": "Zambezi",
+                "Orange": "Orange River", "Limpopo": "Limpopo"
             },
             regions: {
                 "madrid": "Madrid Region", "cataluna": "Catalonia", "galicia": "Galicia", "andalucia": "Andalusia",
@@ -1033,7 +1122,15 @@ export const TRANSLATIONS = {
                 southAmericaMap: 'Amérique du Sud',
                 southAmericaMapDesc: 'Localisez les nations du continent sud-américain.',
                 africaMap: 'Carte de l\'Afrique',
-                africaMapDesc: 'Localisez les 54 nations du continent africain.',
+                africaMapDesc: 'Situez les 54 nations du continent africain.',
+                africaCapitals: 'Capitales d\'Afrique',
+                africaCapitalsDesc: 'Apprenez les capitales des 54 nations africaines.',
+                africaRivers: 'Fleuves d\'Afrique',
+                africaRiversDesc: 'Trouvez les fleuves les plus importants du continent africain.',
+                africaMountains: 'Montagnes d\'Afrique',
+                africaMountainsDesc: 'Identifiez les principaux systèmes montagneux d\'Afrique.',
+                africaSeas: 'Mers d\'Afrique',
+                africaSeasDesc: 'Situez les mers et océans entourant le continent africain.',
                 asiaOceaniaMap: 'Asie et Océanie',
                 asiaOceaniaMapDesc: 'Explorez des steppes asiatiques aux îles du Pacifique.',
                 asiaMap: 'Carte de l\'Asie',
@@ -1354,7 +1451,9 @@ export const TRANSLATIONS = {
                 "Rocosas": "Rocheuses", "Andes": "Andes", "Apalaches": "Appalaches",
                 "Sierra Madre Occidental": "Sierra Madre occidentale", "Sierra Madre Oriental": "Sierra Madre orientale",
                 "Gran Cordillera Divisoria": "Cordillère australienne", "Alpes del Sur": "Alpes du Sud",
-                "Cordillera Owen Stanley": "Chaîne Owen Stanley"
+                "Cordillera Owen Stanley": "Chaîne Owen Stanley", "Montes Atlas": "Monts Atlas",
+                "Drakensberg": "Drakensberg", "Tierras Altas de Etiopía": "Hauts plateaux d'Éthiopie",
+                "Kilimanjaro": "Kilimanjaro", "Monte Kenia": "Mont Kenya", "Montes Ruwenzori": "Monts Ruwenzori"
             },
             seas: {
                 "Mar Mediterráneo": "Mer Méditerranée", "Mar del Norte": "Mer du Nord", "Mar Báltico": "Mer Baltique",
@@ -1363,7 +1462,13 @@ export const TRANSLATIONS = {
                 "Mar de Japón": "Mer du Japon", "Mar Rojo": "Mer Rouge", "Golfo Pérsico": "Golfe Persique",
                 "Mar Caribe": "Mer des Caraïbes", "Golfo de México": "Golfe du Mexique", "Bahía de Hudson": "Baie d'Hudson",
                 "Mar de Bering": "Mer de Béring", "Golfo de California": "Golfe de Californie", "Mar del Coral": "Mer de Corail",
-                "Mar de Tasmania": "Mer de Tasman", "Mar de Arafura": "Mer d'Arafura", "Gran Bahía Australiana": "Grande Baie australienne"
+                "Mar de Tasmania": "Mer de Tasman", "Mar de Arafura": "Mer d'Arafura", "Gran Bahía Australiana": "Grande Baie australienne",
+                "Lago Victoria": "Lac Victoria", "Lago Tanganica": "Lac Tanganyika", "Lago Malaui": "Lac Malawi",
+                "Golfo de Guinea": "Golfe de Guinée", "Canal de Mozambique": "Canal du Mozambique"
+            },
+            rivers: {
+                "Nilo": "Nil", "Congo": "Congo", "Níger": "Niger", "Zambeze": "Zambèze",
+                "Orange": "Orange", "Limpopo": "Limpopo"
             },
             regions: {
                 "madrid": "Communauté de Madrid", "cataluna": "Catalogne", "galicia": "Galice", "andalucia": "Andalousie",
@@ -1491,6 +1596,14 @@ export const TRANSLATIONS = {
                 southAmericaMapDesc: 'Finde die Nationen des südamerikanischen Kontinents.',
                 africaMap: 'Karte von Afrika',
                 africaMapDesc: 'Finde die 54 Nationen des afrikanischen Kontinents.',
+                africaCapitals: 'Hauptstädte Afrikas',
+                africaCapitalsDesc: 'Lerne die Hauptstädte der 54 afrikanischen Nationen.',
+                africaRivers: 'Flüsse Afrikas',
+                africaRiversDesc: 'Finde die wichtigsten Flüsse des afrikanischen Kontinents.',
+                africaMountains: 'Berge Afrikas',
+                africaMountainsDesc: 'Identifiziere die wichtigsten Gebirgssysteme Afrikas.',
+                africaSeas: 'Meere Afrikas',
+                africaSeasDesc: 'Finde die Meere und Ozeane, die den afrikanischen Kontinent umgeben.',
                 asiaOceaniaMap: 'Asien & Ozeanien',
                 asiaOceaniaMapDesc: 'Erkunde von den asiatischen Steppen bis zu den pazifischen Inseln.',
                 asiaMap: 'Karte von Asien',
@@ -1811,7 +1924,9 @@ export const TRANSLATIONS = {
                 "Rocosas": "Rocky Mountains", "Andes": "Anden", "Apalaches": "Appalachen",
                 "Sierra Madre Occidental": "Sierra Madre Occidental", "Sierra Madre Oriental": "Sierra Madre Oriental",
                 "Gran Cordillera Divisoria": "Australisches Scheidegebirge", "Alpes del Sur": "Südalpen",
-                "Cordillera Owen Stanley": "Owen-Stanley-Gebirge"
+                "Cordillera Owen Stanley": "Owen-Stanley-Gebirge", "Montes Atlas": "Atlasgebirge",
+                "Drakensberg": "Drakensberge", "Tierras Altas de Etiopía": "Äthiopisches Hochland",
+                "Kilimanjaro": "Kilimandscharo", "Monte Kenia": "Mount Kenya", "Montes Ruwenzori": "Ruwenzori-Gebirge"
             },
             seas: {
                 "Mar Mediterráneo": "Mittelmeer", "Mar del Norte": "Nordsee", "Mar Báltico": "Ostsee",
@@ -1820,7 +1935,13 @@ export const TRANSLATIONS = {
                 "Mar de Japón": "Japanisches Meer", "Mar Rojo": "Rotes Meer", "Golfo Pérsico": "Persischer Golf",
                 "Mar Caribe": "Karibisches Meer", "Golfo de México": "Golf von Mexiko", "Bahía de Hudson": "Hudson-Bucht",
                 "Mar de Bering": "Beringmeer", "Golfo de California": "Golf von Kalifornien", "Mar del Coral": "Korallenmeer",
-                "Mar de Tasmania": "Tasmansee", "Mar de Arafura": "Arafurasee", "Gran Bahía Australiana": "Große Australische Bucht"
+                "Mar de Tasmania": "Tasmansee", "Mar de Arafura": "Arafurasee", "Gran Bahía Australiana": "Große Australische Bucht",
+                "Lago Victoria": "Victoriasee", "Lago Tanganica": "Tanganjikasee", "Lago Malaui": "Malawisee",
+                "Golfo de Guinea": "Golf von Guinea", "Canal de Mozambique": "Straße von Mosambik"
+            },
+            rivers: {
+                "Nilo": "Nil", "Congo": "Kongo", "Níger": "Niger", "Zambeze": "Sambesi",
+                "Orange": "Oranje", "Limpopo": "Limpopo"
             },
             regions: {
                 "madrid": "Region Madrid", "cataluna": "Katalonien", "galicia": "Galizien", "andalucia": "Andalusien",

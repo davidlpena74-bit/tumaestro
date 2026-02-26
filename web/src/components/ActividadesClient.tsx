@@ -377,7 +377,7 @@ export default function ActividadesClient() {
                     ]
                 },
                 {
-                    title: t.gamesPage.regions.america,
+                    title: t.gamesPage.regions.northAmerica,
                     games: [
                         {
                             id: 'mapa-norteamerica',
@@ -391,16 +391,43 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'mapa-sudamerica',
-                            title: t.gamesPage.gameTitles.southAmericaMap,
-                            description: t.gamesPage.gameTitles.southAmericaMapDesc,
-                            href: '/actividades/mapa-sudamerica',
+                            id: 'capitales-norteamerica',
+                            title: t.gamesPage.gameTitles.northAmericaCapitals,
+                            description: t.gamesPage.gameTitles.northAmericaCapitalsDesc,
+                            href: '/actividades/capitales-norteamerica',
                             icon: MapTrifold,
                             color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.america,
                             gameType: t.gamesPage.gameTypes.map
                         },
+                        {
+                            id: 'montanas-norteamerica',
+                            title: t.gamesPage.gameTitles.northAmericaMountains,
+                            description: t.gamesPage.gameTitles.northAmericaMountainsDesc,
+                            href: '/actividades/montanas-norteamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'rios-norteamerica',
+                            title: t.gamesPage.gameTitles.northAmericaRivers,
+                            description: t.gamesPage.gameTitles.northAmericaRiversDesc,
+                            href: '/actividades/rios-norteamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                },
+                {
+                    title: t.gamesPage.regions.usa,
+                    games: [
                         {
                             id: 'mapa-usa',
                             title: t.gamesPage.gameTitles.usaStatesMap,
@@ -412,6 +439,153 @@ export default function ActividadesClient() {
                             region: t.gamesPage.regions.america,
                             gameType: t.gamesPage.gameTypes.map
                         },
+                        {
+                            id: 'capitales-usa',
+                            title: t.gamesPage.gameTitles.usaCapitals,
+                            description: t.gamesPage.gameTitles.usaCapitalsDesc,
+                            href: '/actividades/capitales-usa',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'rios-usa',
+                            title: t.gamesPage.gameTitles.usaRiversLakes,
+                            description: t.gamesPage.gameTitles.usaRiversLakesDesc,
+                            href: '/actividades/rios-usa',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'mares-usa',
+                            title: t.gamesPage.gameTitles.usaOceans,
+                            description: t.gamesPage.gameTitles.usaOceansDesc,
+                            href: '/actividades/mares-usa',
+                            icon: GlobeHemisphereWest,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-usa',
+                            title: t.gamesPage.gameTitles.usaMountains,
+                            description: t.gamesPage.gameTitles.usaMountainsDesc,
+                            href: '/actividades/montanas-usa',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                },
+                {
+                    title: t.gamesPage.regions.centralAmerica,
+                    games: [
+                        {
+                            id: 'mapa-centroamerica',
+                            title: t.gamesPage.gameTitles.centralAmericaMap,
+                            description: t.gamesPage.gameTitles.centralAmericaMapDesc,
+                            href: '/actividades/mapa-centroamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'capitales-centroamerica',
+                            title: t.gamesPage.gameTitles.centralAmericaCapitals,
+                            description: t.gamesPage.gameTitles.centralAmericaCapitalsDesc,
+                            href: '/actividades/capitales-centroamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-centroamerica',
+                            title: t.gamesPage.gameTitles.centralAmericaMountains,
+                            description: t.gamesPage.gameTitles.centralAmericaMountainsDesc,
+                            href: '/actividades/montanas-centroamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'aguas-centroamerica',
+                            title: t.gamesPage.gameTitles.centralAmericaWater,
+                            description: t.gamesPage.gameTitles.centralAmericaWaterDesc,
+                            href: '/actividades/aguas-centroamerica',
+                            icon: GlobeHemisphereWest,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                },
+                {
+                    title: t.gamesPage.regions.southAmerica,
+                    games: [
+                        {
+                            id: 'mapa-sudamerica',
+                            title: t.gamesPage.gameTitles.southAmericaMap,
+                            description: t.gamesPage.gameTitles.southAmericaMapDesc,
+                            href: '/actividades/mapa-sudamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'capitales-sudamerica',
+                            title: t.gamesPage.gameTitles.southAmericaCapitals,
+                            description: t.gamesPage.gameTitles.southAmericaCapitalsDesc,
+                            href: '/actividades/capitales-sudamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-sudamerica',
+                            title: t.gamesPage.gameTitles.southAmericaMountains,
+                            description: t.gamesPage.gameTitles.southAmericaMountainsDesc,
+                            href: '/actividades/montanas-sudamerica',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'aguas-sudamerica',
+                            title: t.gamesPage.gameTitles.southAmericaWater,
+                            description: t.gamesPage.gameTitles.southAmericaWaterDesc,
+                            href: '/actividades/aguas-sudamerica',
+                            icon: GlobeHemisphereWest,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.america,
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                },
+                {
+                    title: t.gamesPage.regions.america,
+                    games: [
                         {
                             id: 'mapa-america',
                             title: t.gamesPage.gameTitles.americaMap,
@@ -456,6 +630,50 @@ export default function ActividadesClient() {
                             description: t.gamesPage.gameTitles.africaMapDesc,
                             href: '/actividades/mapa-africa',
                             icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.africa,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'capitales-africa',
+                            title: t.gamesPage.gameTitles.africaCapitals,
+                            description: t.gamesPage.gameTitles.africaCapitalsDesc,
+                            href: '/actividades/capitales-africa',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.africa,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'rios-africa',
+                            title: t.gamesPage.gameTitles.africaRivers,
+                            description: t.gamesPage.gameTitles.africaRiversDesc,
+                            href: '/actividades/rios-africa',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.africa,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'montanas-africa',
+                            title: t.gamesPage.gameTitles.africaMountains,
+                            description: t.gamesPage.gameTitles.africaMountainsDesc,
+                            href: '/actividades/montanas-africa',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.africa,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'mares-africa',
+                            title: t.gamesPage.gameTitles.africaSeas,
+                            description: t.gamesPage.gameTitles.africaSeasDesc,
+                            href: '/actividades/mares-africa',
+                            icon: GlobeHemisphereWest,
                             color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.africa,

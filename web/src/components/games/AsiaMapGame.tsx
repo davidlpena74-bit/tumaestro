@@ -31,7 +31,8 @@ export default function AsiaMapGame({ taskId = null, activityId }: { taskId?: st
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialPan={{ x: 0, y: 0 }}
+            initialZoom={1.2}
+            initialPan={{ x: -150, y: 100 }}
             taskId={taskId}
             activityId={activityId || 'game'}
         />

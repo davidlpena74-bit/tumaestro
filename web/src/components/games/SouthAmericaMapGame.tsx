@@ -30,8 +30,8 @@ export default function SouthAmericaMapGame({ taskId = null, activityId }: { tas
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.5}
-            initialPan={{ x: 0, y: 0 }}
+            initialZoom={1.76}
+            initialPan={{ x: 50, y: 0 }}
             taskId={taskId}
             activityId={activityId || 'game'}
         />

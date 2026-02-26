@@ -221,3 +221,127 @@ export const NORTH_AMERICA_MAPPING: Record<string, string> = {
 export const SOUTH_AMERICA_MAPPING: Record<string, string> = {
     ...AMERICA_MAPPING
 };
+
+export const NORTH_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
+    'Canada': 'Ottawa',
+    'United States of America': 'Washington D.C.',
+    'Mexico': 'Ciudad de México',
+    'Greenland': 'Nuuk',
+    'Cuba': 'La Habana',
+    'Jamaica': 'Kingston',
+    'Haiti': 'Puerto Príncipe',
+    'Dominican Rep.': 'Santo Domingo',
+    'Puerto Rico': 'San Juan',
+    'Bahamas': 'Nasáu'
+};
+
+export const CENTRAL_AMERICA_MAPPING: Record<string, string> = {
+    'Belize': 'Belice',
+    'Costa Rica': 'Costa Rica',
+    'El Salvador': 'El Salvador',
+    'Guatemala': 'Guatemala',
+    'Honduras': 'Honduras',
+    'Nicaragua': 'Nicaragua',
+    'Panama': 'Panamá'
+};
+
+export const CENTRAL_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
+    'Belize': 'Belmopán',
+    'Costa Rica': 'San José',
+    'El Salvador': 'San Salvador',
+    'Guatemala': 'Ciudad de Guatemala',
+    'Honduras': 'Tegucigalpa',
+    'Nicaragua': 'Managua',
+    'Panama': 'Ciudad de Panamá'
+};
+
+export const SOUTH_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
+    'Argentina': 'Buenos Aires',
+    'Bolivia': 'Sucre / La Paz',
+    'Brazil': 'Brasilia',
+    'Chile': 'Santiago',
+    'Colombia': 'Bogotá',
+    'Ecuador': 'Quito',
+    'Guyana': 'Georgetown',
+    'Paraguay': 'Asunción',
+    'Peru': 'Lima',
+    'Suriname': 'Paramaribo',
+    'Uruguay': 'Montevideo',
+    'Venezuela': 'Caracas'
+};
+
+export const USA_CAPITALS_MAPPING: Record<string, string> = {
+    'Alabama': 'Montgomery', 'Alaska': 'Juneau', 'Arizona': 'Phoenix', 'Arkansas': 'Little Rock',
+    'California': 'Sacramento', 'Colorado': 'Denver', 'Connecticut': 'Hartford',
+    'Delaware': 'Dover', 'Florida': 'Tallahassee', 'Georgia': 'Atlanta', 'Hawaii': 'Honolulu',
+    'Idaho': 'Boise', 'Illinois': 'Springfield', 'Indiana': 'Indianapolis', 'Iowa': 'Des Moines',
+    'Kansas': 'Topeka', 'Kentucky': 'Frankfort', 'Louisiana': 'Baton Rouge', 'Maine': 'Augusta',
+    'Maryland': 'Annapolis', 'Massachusetts': 'Boston', 'Michigan': 'Lansing',
+    'Minnesota': 'Saint Paul', 'Mississippi': 'Jackson', 'Missouri': 'Jefferson City',
+    'Montana': 'Helena', 'Nebraska': 'Lincoln', 'Nevada': 'Carson City',
+    'New Hampshire': 'Concord', 'New Jersey': 'Trenton',
+    'New Mexico': 'Santa Fe', 'New York': 'Albany', 'North Carolina': 'Raleigh',
+    'North Dakota': 'Bismarck', 'Ohio': 'Columbus', 'Oklahoma': 'Oklahoma City',
+    'Oregon': 'Salem', 'Pennsylvania': 'Harrisburg', 'Rhode Island': 'Providence',
+    'South Carolina': 'Columbia', 'South Dakota': 'Pierre',
+    'Tennessee': 'Nashville', 'Texas': 'Austin', 'Utah': 'Salt Lake City', 'Vermont': 'Montpelier',
+    'Virginia': 'Richmond', 'Washington': 'Olympia', 'West Virginia': 'Charleston',
+    'Wisconsin': 'Madison', 'Wyoming': 'Cheyenne'
+};
+
+export const AFRICA_CAPITALS_MAPPING: Record<string, string> = {
+    'Algeria': 'Argel',
+    'Angola': 'Luanda',
+    'Benin': 'Porto-Novo',
+    'Botswana': 'Gaborone',
+    'Burkina Faso': 'Uagadugú',
+    'Burundi': 'Gitega',
+    'Cabo Verde': 'Praia',
+    'Cameroon': 'Yaoundé',
+    'Central African Rep.': 'Bangui',
+    'Chad': 'Yamena',
+    'Comoros': 'Moroni',
+    'Congo': 'Brazzaville',
+    "Côte d'Ivoire": 'Yamusukro',
+    'Dem. Rep. Congo': 'Kinsasa',
+    'Djibouti': 'Yibuti',
+    'Egypt': 'El Cairo',
+    'Eq. Guinea': 'Malabo',
+    'Eritrea': 'Asmara',
+    'Ethiopia': 'Adís Abeba',
+    'Gabon': 'Libreville',
+    'Gambia': 'Banjul',
+    'Ghana': 'Acra',
+    'Guinea': 'Conakri',
+    'Guinea-Bissau': 'Bisáu',
+    'Kenya': 'Nairobi',
+    'Lesotho': 'Maseru',
+    'Liberia': 'Monrovia',
+    'Libya': 'Trípoli',
+    'Madagascar': 'Antananarivo',
+    'Malawi': 'Lilongüe',
+    'Mali': 'Bamako',
+    'Mauritania': 'Nuakchot',
+    'Mauritius': 'Port Louis',
+    'Morocco': 'Rabat',
+    'Mozambique': 'Maputo',
+    'Namibia': 'Windhoek',
+    'Niger': 'Niamey',
+    'Nigeria': 'Abuya',
+    'Rwanda': 'Kigali',
+    'São Tomé and Principe': 'Santo Tomé',
+    'Senegal': 'Dakar',
+    'Seychelles': 'Victoria',
+    'Sierra Leone': 'Freetown',
+    'Somalia': 'Mogadiscio',
+    'South Africa': 'Pretoria',
+    'S. Sudan': 'Yuba',
+    'Sudan': 'Jartum',
+    'Tanzania': 'Dodoma',
+    'Togo': 'Lomé',
+    'Tunisia': 'Túnez',
+    'Uganda': 'Kampala',
+    'Zambia': 'Lusaka',
+    'Zimbabwe': 'Harare',
+    'eSwatini': 'Mbabane'
+};

@@ -34,6 +34,7 @@ interface CountryGameProps {
     elevationHeight?: number;
     taskId?: string | null;
     activityId?: string;
+    identifyMode?: 'countries' | 'capitals';
 }
 
 export default function CountryGameBase({
@@ -48,10 +49,11 @@ export default function CountryGameBase({
     initialPan = { x: 0, y: 0 },
     elevationHeight = 8,
     taskId = null,
-    activityId
+    activityId,
+    identifyMode = 'countries'
 }: CountryGameProps) {
     const { language, t } = useLanguage();
-    const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
+    const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
 
     const effectiveActivityId = activityId || "country-map-game";
 
@@ -65,7 +67,7 @@ export default function CountryGameBase({
         startGame: hookStartGame,
         resetGame: hookResetGame,
         handleFinish
-    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode, taskId, activityId: effectiveActivityId });
+    } = useGameLogic({ initialTime, penaltyTime: 5, gameMode: playMode, taskId, activityId: effectiveActivityId });
 
     const [targetCountry, setTargetCountry] = useState('');
     const [remainingCountries, setRemainingCountries] = useState<string[]>([]);
@@ -95,7 +97,7 @@ export default function CountryGameBase({
     }, [pathData, nameMapping]);
 
     const startGame = (mode?: 'challenge' | 'practice') => {
-        if (mode) setGameMode(mode);
+        if (mode) setPlayMode(mode);
         // Small timeout to allow state update if needed, though hook uses current render value
         // but hookStartGame resets things.
         hookStartGame();
@@ -139,7 +141,7 @@ export default function CountryGameBase({
             nextTurn(newRemaining);
         } else {
             addError();
-            addScore(gameMode === 'challenge' ? -20 : -5); // Less penalty in practice
+            addScore(playMode === 'challenge' ? -20 : -5); // Less penalty in practice
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
@@ -152,7 +154,7 @@ export default function CountryGameBase({
                 setRemainingCountries(newRemaining);
                 setTimeout(() => nextTurn(newRemaining), 1500);
             } else {
-                if (gameMode === 'practice') {
+                if (playMode === 'practice') {
                     setMessage(language === 'es'
                         ? `¡No! Eso es ${localizedName} (${newAttempts}/3) ❌`
                         : `No! That is ${localizedName} (${newAttempts}/3) ❌`);
@@ -201,7 +203,7 @@ export default function CountryGameBase({
                     errors={errors}
                     timeLeft={timeLeft}
                     elapsedTime={elapsedTime}
-                    gameMode={gameMode}
+                    gameMode={playMode}
                     totalTargets={Object.keys(nameMapping).length}
                     remainingTargets={remainingCountries.length}
                     targetName={targetCountry || '...'}
@@ -322,14 +324,14 @@ export default function CountryGameBase({
                                         "p-3 rounded-full mb-3 ring-1",
                                         colorTheme === 'emerald' ? "bg-emerald-500/10 ring-emerald-500/30" : "bg-blue-500/10 ring-blue-500/30"
                                     )}>
-                                        {gameMode === 'challenge' && timeLeft === 0 ? (
+                                        {playMode === 'challenge' && timeLeft === 0 ? (
                                             <TimerIconGame className="w-10 h-10 text-red-500 animate-pulse" />
                                         ) : (
                                             <TrophyIconGame className="w-10 h-10 text-yellow-400 animate-bounce" />
                                         )}
                                     </div>
                                     <h2 className="text-2xl md:text-4xl font-black text-white mb-1 uppercase tracking-tight">
-                                        {gameMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
+                                        {playMode === 'challenge' && timeLeft === 0 ? '¡Tiempo Agotado!' : (t?.common?.completed || 'Completado')}
                                     </h2>
                                     <p className="text-gray-400 font-medium uppercase tracking-[0.2em] text-xs">
                                         {title}
@@ -446,8 +448,30 @@ export default function CountryGameBase({
                                 const isHovered = hoveredId === localizedName;
                                 const isPlayable = !!localizedName;
 
-                                // Non-playable countries should be clearly grey and not have hover classes
-                                let fillClass = isPlayable ? "fill-white/90 hover:fill-slate-200" : "fill-slate-300/60";
+                                {/* HUD / Target Info */ }
+                                <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-sm px-4">
+                                    <AnimatePresence mode="wait">
+                                        {targetCountry && gameState === 'playing' && (
+                                            <motion.div
+                                                key={targetCountry}
+                                                initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                                                className="bg-slate-900/80 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl text-center"
+                                            >
+                                                <div className="text-gray-400 text-xs uppercase tracking-widest font-black mb-1">
+                                                    {identifyMode === 'capitals'
+                                                        ? (language === 'es' ? 'Localiza la Capital:' : 'Locate the Capital:')
+                                                        : (language === 'es' ? 'Localiza el País:' : 'Locate the Country:')}
+                                                </div>
+                                                <div className="text-3xl font-black text-white drop-shadow-lg leading-tight uppercase">
+                                                    {targetCountry}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                                let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-[#e8e4d8]";
                                 let strokeClass = "stroke-slate-900/30 stroke-[0.5px]";
 
                                 if (isCompleted) {

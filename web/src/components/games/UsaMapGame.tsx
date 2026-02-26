@@ -15,9 +15,9 @@ export default function UsaMapGame({ taskId = null, activityId }: { taskId?: str
             nameMapping={USA_STATES_MAPPING}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={2}
+            initialZoom={2.4}
             taskId={taskId}
-            initialPan={{ x: 0, y: 0 }}
+            initialPan={{ x: 100, y: 80 }}
             activityId={activityId || 'game'}
         />
     );

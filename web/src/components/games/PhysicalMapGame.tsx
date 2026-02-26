@@ -176,7 +176,7 @@ export default function PhysicalMapGame({
     const getTranslatedName = (name: string) => {
         if (nameMapping[name]) return nameMapping[name];
         // @ts-ignore - dynamic access to translations
-        return t.physical?.regions?.[name] || t.physical?.mountains?.[name] || t.physical?.seas?.[name] || name;
+        return t.physical?.regions?.[name] || t.physical?.mountains?.[name] || t.physical?.seas?.[name] || t.physical?.rivers?.[name] || name;
     };
 
     const nextTurn = (currentRemaining: string[]) => {

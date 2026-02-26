@@ -31,8 +31,8 @@ export default function AfricaMapGame({ taskId = null, activityId }: { taskId?: 
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.15}
-            initialPan={{ x: -40, y: 30 }}
+            initialZoom={1.36}
+            initialPan={{ x: -100, y: 50 }}
             taskId={taskId}
             activityId={activityId || 'game'}
         />

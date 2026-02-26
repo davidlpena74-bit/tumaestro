@@ -30,7 +30,8 @@ export default function OceaniaMapGame({ taskId = null, activityId }: { taskId?:
             nameMapping={mapping}
             colorTheme="blue"
             initialTime={120} // Fewer countries
-            initialPan={{ x: 0, y: 0 }}
+            initialZoom={1.28}
+            initialPan={{ x: -100, y: 50 }}
             taskId={taskId}
             activityId={activityId || 'game'}
         />
