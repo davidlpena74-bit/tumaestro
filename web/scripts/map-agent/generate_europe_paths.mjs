@@ -36,8 +36,14 @@ try {
             };
 
             // Increased padding to 40px
-            return d3.geoMercator()
+            const proj = d3.geoMercator()
                 .fitExtent([[40, 40], [760, 560]], boundingBox);
+
+            console.log("Internal Projection Check:");
+            console.log("Madrid [-3.7, 40.4]:", proj([-3.7, 40.4]));
+            console.log("Rome [12.5, 41.8]:", proj([12.5, 41.8]));
+
+            return proj;
         });
 
     const paths = factory.generateSVGPaths(f => {

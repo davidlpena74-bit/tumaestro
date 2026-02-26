@@ -97,7 +97,7 @@ export default function PhysicalMapGame({
     customColors = {},
     backgroundColors = {},
     baseLabelSize = 5,
-    mountainBlur = 1.2
+    mountainBlur = 0.6
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -778,22 +778,24 @@ export default function PhysicalMapGame({
                                                         />
                                                     </g>
                                                 ) : (
-                                                    /* MOUNTAINS - Terrain fill style */
                                                     <g>
-                                                        {/* 1) Soft blurred base mass (hazy effect) */}
-                                                        <motion.path
-                                                            d={typeof d === 'string' ? d : d.path}
-                                                            fill={isCompleted ? 'rgba(34,197,94,0.4)' : isFailed ? 'rgba(239,68,68,0.35)' : (isHovered ? 'rgba(245,158,11,0.45)' : 'rgba(146,64,14,0.18)')}
-                                                            stroke={isCompleted ? 'rgba(34,197,94,0.5)' : isFailed ? 'rgba(239,68,68,0.45)' : (isHovered ? 'rgba(245,158,11,0.55)' : 'rgba(146,64,14,0.25)')}
-                                                            strokeWidth={5}
-                                                            strokeLinecap="round"
-                                                            filter="url(#mountain-body-soft)"
-                                                            className="transition-all duration-300"
-                                                        />
+                                                        {(() => {
+                                                            const pathD = typeof d === 'string' ? d : d.path;
+                                                            const isClosed = pathD.trimEnd().endsWith('Z') || pathD.trimEnd().endsWith('z');
 
-                                                        {/* Ridge removed per request */}
-
-                                                        {/* 3) Main Outline removed for testing seamless look */}
+                                                            return (
+                                                                <motion.path
+                                                                    d={pathD}
+                                                                    fill={isClosed ? (isCompleted ? 'rgba(34,197,94,0.45)' : isFailed ? 'rgba(239,68,68,0.4)' : (isHovered ? 'rgba(34,211,238,0.4)' : 'rgba(146,64,14,0.3)')) : "none"}
+                                                                    stroke={isCompleted ? 'rgba(34,197,94,0.7)' : isFailed ? 'rgba(239,68,68,0.7)' : (isHovered ? 'rgba(245,158,11,0.8)' : 'rgba(146,64,14,0.5)')}
+                                                                    strokeWidth={isClosed ? 1.5 : 3.5}
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    filter="url(#mountain-body-soft)"
+                                                                    className="transition-all duration-300"
+                                                                />
+                                                            );
+                                                        })()}
                                                     </g>
                                                 )
                                             )}

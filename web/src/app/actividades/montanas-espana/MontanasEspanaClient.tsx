@@ -64,7 +64,6 @@ export default function MontanasEspanaClient() {
                 taskId={taskId}
                 activityId="montanas-espana"
                 elevationHeight={12}
-                mountainBlur={2.5}
                 baseLabelSize={8}
                 region={t.gamesPage.regions.spain}
                 gameType={t.gamesPage.gameTypes.map}
