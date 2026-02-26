@@ -531,11 +531,10 @@ export default function CapitalGame({
                                                 handleCountryClick(engName);
                                             }}
                                             animate={{
-                                                fill: isCompleted
-                                                    ? (isFailed ? '#ef4444' : '#10b981')
-                                                    : (isInTargetList ? (hoveredCapital === engName ? '#334155' : '#ffffff') : '#1e293b'), // Slight darken on hover
+                                                fill: isInTargetList ? (hoveredCapital === engName ? '#e2e8f0' : '#ffffff') : '#1e293b',
                                                 opacity: isInTargetList ? 1 : 0.4
                                             }}
+                                            transition={{ duration: 0.2 }}
                                             style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
                                         />
                                     );

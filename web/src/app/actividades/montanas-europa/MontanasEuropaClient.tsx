@@ -6,6 +6,7 @@ import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
 import { EUROPE_MOUNTAINS_PATHS } from '@/components/games/data/europe-physical-paths';
 import { EUROPE_PATHS } from '@/components/games/data/europe-paths';
+import { EUROPE_MAPPING } from '@/components/games/data/country-translations';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
@@ -22,7 +23,7 @@ export default function MontanasEuropaClient() {
             const centroid = calculatePathCentroid(primaryPath);
             return {
                 id,
-                name: id, // We can use direct ID or a map if names are too long
+                name: (EUROPE_MAPPING as Record<string, string>)[id] || id,
                 ...(centroid || { x: 0, y: 0 })
             };
         }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number }[];
@@ -42,9 +43,9 @@ export default function MontanasEuropaClient() {
                 itemType="polygon"
                 backgroundPaths={EUROPE_PATHS}
                 backgroundLabels={countryLabels}
-                viewBox="0 0 840 700"
-                initialZoom={2.0}
-                initialPan={{ x: -82, y: -80 }}
+                viewBox="0 0 800 600"
+                initialZoom={1.8}
+                initialPan={{ x: 40, y: -130 }}
                 theme="light"
                 elevationHeight={15}
                 baseLabelSize={3}
