@@ -69,6 +69,9 @@ interface PhysicalMapGameProps {
     gameType?: string;
     nameMapping?: Record<string, string>;
     customColors?: Record<string, string>;
+    backgroundColors?: Record<string, string>;
+    baseLabelSize?: number;
+    mountainBlur?: number;
 }
 
 export default function PhysicalMapGame({
@@ -91,7 +94,10 @@ export default function PhysicalMapGame({
     region,
     gameType,
     nameMapping = {},
-    customColors = {}
+    customColors = {},
+    backgroundColors = {},
+    baseLabelSize = 5,
+    mountainBlur = 1.2
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -543,7 +549,7 @@ export default function PhysicalMapGame({
                             </filter>
 
                             <filter id="mountain-body-soft" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur stdDeviation="2.5" />
+                                <feGaussianBlur stdDeviation={mountainBlur} />
                             </filter>
 
                             <filter id="ridge-glow" x="-100%" y="-100%" width="300%" height="300%">
@@ -602,6 +608,7 @@ export default function PhysicalMapGame({
                                     // Neighbor country tints (only applies when those countries are in the bg)
                                     const getColorClass = () => {
                                         if (theme === 'dark') return 'fill-[#1e2d40] stroke-[#2d3f55]';
+                                        if (backgroundColors && backgroundColors[id]) return backgroundColors[id];
                                         if (id === 'Andorra' || id === 'Gibraltar') return 'fill-[#dde8d0] stroke-[#a0b890]';
                                         if (id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal') return 'fill-[#e8e4d8] stroke-[#c0b8a8]';
                                         return 'fill-[#f5edda] stroke-[#c8b89a]'; // Spain regions
@@ -651,7 +658,7 @@ export default function PhysicalMapGame({
                                             (label as any).className || (theme === 'dark' ? "fill-slate-500 opacity-80" : "fill-slate-400 opacity-50")
                                         )}
                                         textAnchor="middle"
-                                        style={{ fontSize: (label as any).fontSize || (theme === 'dark' ? '8px' : '10px') }}
+                                        style={{ fontSize: (label as any).fontSize || `${baseLabelSize}px` }}
                                     >
                                         {label.name}
                                     </text>
@@ -777,6 +784,9 @@ export default function PhysicalMapGame({
                                                         <motion.path
                                                             d={typeof d === 'string' ? d : d.path}
                                                             fill={isCompleted ? 'rgba(34,197,94,0.4)' : isFailed ? 'rgba(239,68,68,0.35)' : (isHovered ? 'rgba(245,158,11,0.45)' : 'rgba(146,64,14,0.18)')}
+                                                            stroke={isCompleted ? 'rgba(34,197,94,0.5)' : isFailed ? 'rgba(239,68,68,0.45)' : (isHovered ? 'rgba(245,158,11,0.55)' : 'rgba(146,64,14,0.25)')}
+                                                            strokeWidth={5}
+                                                            strokeLinecap="round"
                                                             filter="url(#mountain-body-soft)"
                                                             className="transition-all duration-300"
                                                         />
