@@ -183,7 +183,7 @@ export const EUROPE_MAPPING: Record<string, string> = {
     'Cyprus': 'Chipre', 'Czechia': 'República Checa', 'Denmark': 'Dinamarca',
     'Estonia': 'Estonia', 'Finland': 'Finlandia', 'France': 'Francia',
     'Georgia': 'Georgia', 'Germany': 'Alemania', 'Greece': 'Grecia', 'Hungary': 'Hungría',
-    'Iceland': 'Islandia', 'Ireland': 'Irlanda', 'Italy': 'Italia', 'Kazakhstan': 'Kazajistán',
+    'Iceland': 'Islandia', 'Ireland': 'Irlanda', 'Italy': 'Italia',
     'Kosovo': 'Kosovo', 'Latvia': 'Letonia', 'Liechtenstein': 'Liechtenstein',
     'Lithuania': 'Lituania', 'Luxembourg': 'Luxemburgo', 'Malta': 'Malta',
     'Moldova': 'Moldavia', 'Monaco': 'Mónaco', 'Montenegro': 'Montenegro',

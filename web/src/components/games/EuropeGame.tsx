@@ -2,12 +2,17 @@
 
 import CountryGameBase from './CountryGameBase';
 import { EUROPE_PATHS } from './data/europe-paths';
-import { EUROPE_MAPPING } from './data/country-translations'; // I'll add Europe to translations too
+import { EUROPE_MAPPING } from './data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
 import { useMemo } from 'react';
 
+
 export default function EuropeGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t, language } = useLanguage();
+
+    const mergedPaths = useMemo(() => {
+        return EUROPE_PATHS;
+    }, []);
 
     const mapping = useMemo(() => {
         if (language === 'en') {
@@ -26,12 +31,12 @@ export default function EuropeGame({ taskId = null, activityId }: { taskId?: str
             title={t.gamesPage.gameTitles.europeMap}
             description={t.gamesPage.gameTitles.europeMapDesc}
             regionName={t.gamesPage.regions.europe}
-            pathData={EUROPE_PATHS}
+            pathData={mergedPaths}
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.8}
-            initialPan={{ x: 40, y: -130 }}
+            initialZoom={1.98}
+            initialPan={{ x: 50, y: -170 }}
             elevationHeight={6}
             taskId={taskId}
             activityId={activityId || 'game'}

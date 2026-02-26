@@ -420,9 +420,7 @@ export default function CountryGameBase({
                                 <path d="M0,20 Q10,15 20,20 T40,20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" opacity="0.1" />
                             </pattern>
 
-                            <filter id="elevation-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                                <feDropShadow dx="0" dy={elevationHeight} stdDeviation="5" floodOpacity="0.4" />
-                            </filter>
+
                         </defs>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
@@ -448,7 +446,8 @@ export default function CountryGameBase({
                                 const isHovered = hoveredId === localizedName;
                                 const isPlayable = !!localizedName;
 
-                                let fillClass = isPlayable ? "fill-white/90 hover:fill-slate-200" : "fill-slate-800/20";
+                                // Non-playable countries should be clearly grey and not have hover classes
+                                let fillClass = isPlayable ? "fill-white/90 hover:fill-slate-200" : "fill-slate-300/60";
                                 let strokeClass = "stroke-slate-900/30 stroke-[0.5px]";
 
                                 if (isCompleted) {
@@ -461,11 +460,11 @@ export default function CountryGameBase({
                                         onMouseEnter={() => isPlayable && gameState === 'playing' && setHoveredId(localizedName)}
                                         onMouseLeave={() => setHoveredId(null)}
                                         onClick={(e) => {
-                                            if (isClick.current) handleCountryClick(engName);
+                                            if (isClick.current && isPlayable) handleCountryClick(engName);
                                             e.stopPropagation();
                                         }}
                                         className="group"
-                                        style={{ pointerEvents: gameState === 'playing' ? 'all' : 'none' }}
+                                        style={{ pointerEvents: (gameState === 'playing' && isPlayable) ? 'all' : 'none' }}
                                     >
                                         {/* Hit Area */}
                                         <path
@@ -473,7 +472,7 @@ export default function CountryGameBase({
                                             fill="transparent"
                                             stroke="transparent"
                                             strokeWidth="5"
-                                            className={isPlayable ? "cursor-pointer" : ""}
+                                            className={isPlayable ? "cursor-pointer" : "pointer-events-none"}
                                         />
 
                                         {/* Visual Area */}
@@ -486,16 +485,12 @@ export default function CountryGameBase({
                                                 isPlayable && "cursor-pointer"
                                             )}
                                             initial={false}
-                                            animate={
-                                                (isHovered && gameState === 'playing')
-                                                    ? { y: -elevationHeight, scale: 1.05 }
-                                                    : { scale: 1, y: 0 }
-                                            }
-                                            transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                                            animate={{ scale: 1, y: 0 }}
+                                            transition={{ duration: 0.2 }}
                                             style={{
                                                 transformOrigin: 'center',
                                                 transformBox: 'fill-box',
-                                                filter: (isHovered && gameState === 'playing' && !isCompleted) ? 'url(#elevation-shadow)' : 'none',
+                                                filter: 'none',
                                                 zIndex: isHovered ? 50 : 1,
                                                 pointerEvents: 'none'
                                             }}
@@ -508,12 +503,12 @@ export default function CountryGameBase({
                                             if (centroid && centroid.area < 50) {
                                                 return (
                                                     <g
-                                                        className="cursor-pointer"
+                                                        className={isPlayable ? "cursor-pointer" : ""}
                                                         onMouseEnter={() => isPlayable && gameState === 'playing' && setHoveredId(localizedName)}
                                                         onMouseLeave={() => setHoveredId(null)}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            if (isClick.current) handleCountryClick(engName);
+                                                            if (isClick.current && isPlayable) handleCountryClick(engName);
                                                         }}
                                                     >
                                                         {/* Invisible larger hit area for the dot */}
@@ -533,7 +528,7 @@ export default function CountryGameBase({
                                                             initial={false}
                                                             animate={
                                                                 (isHovered && gameState === 'playing')
-                                                                    ? { scale: 1.6, opacity: 1, filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.8))' }
+                                                                    ? { scale: 1, opacity: 1, filter: 'drop-shadow(0 0 8px rgba(255,255,255,1))' }
                                                                     : { scale: 1, opacity: 0.9, filter: 'none' }
                                                             }
                                                             className="pointer-events-none"

@@ -516,7 +516,8 @@ export default function CapitalGame({
                                     const spanishName = nameMapping[engName];
                                     const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                     const isFailed = failedCountries.includes(spanishName || '');
-                                    const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
+                                    const isPlayable = !!spanishName && (targetList ? targetList.includes(spanishName) : true);
+                                    const isInTargetList = isPlayable;
 
                                     return (
                                         <motion.path
@@ -546,7 +547,8 @@ export default function CapitalGame({
                                     const isTarget = spanishName === currentCountryName;
                                     const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                     const isFailed = failedCountries.includes(spanishName || '');
-                                    const isInTargetList = targetList ? (spanishName && targetList.includes(spanishName)) : true;
+                                    const isPlayable = !!spanishName && (targetList ? targetList.includes(spanishName) : true);
+                                    const isInTargetList = isPlayable;
                                     const centroid = (centroids && centroids[engName])
                                         ? centroids[engName]
                                         : calculatePathCentroid(pathD);

@@ -26,8 +26,8 @@ export default function CapitalesEuropaClient() {
                 centroids={EUROPE_CAPITALS_COORDS}
                 title={t.gamesPage.gameTitles.europeCapitalsMap}
                 description={t.gamesPage.gameTitles.europeCapitalsMapDesc}
-                initialPan={{ x: 40, y: -130 }}
-                initialZoom={1.8}
+                initialPan={{ x: 50, y: -170 }}
+                initialZoom={1.98}
                 activityId="capitales-europa"
             />
         </PhysicalGameLayout>
