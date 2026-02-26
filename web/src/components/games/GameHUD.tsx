@@ -108,7 +108,7 @@ export default function GameHUD({
                 }
             } catch (err: any) {
                 // Ignore abortion errors
-                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted')) {
+                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) {
                     return;
                 }
                 if (isMounted) {
@@ -211,7 +211,7 @@ export default function GameHUD({
                     if (isMounted) setRecords({ bestScore, bestScoreName, bestTime, bestTimeName, myBestScore, myBestTime });
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted')) return;
+                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return;
                 console.error('Records fetch error:', err);
             }
         };

@@ -45,7 +45,7 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                     setIsEdit(true);
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError') return; // Expected in React StrictMode
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return; // Expected in React StrictMode
                 if (isMounted) console.error('Error fetching existing rating:', err);
             } finally {
                 if (isMounted) setStatus('idle');
@@ -68,7 +68,7 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                     if (isMounted) setGlobalStats({ avg: Number(avg), count });
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError') return;
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return;
                 if (isMounted) console.error('Error fetching global stats:', err);
             }
         };

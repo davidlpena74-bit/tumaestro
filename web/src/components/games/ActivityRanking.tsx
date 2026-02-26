@@ -100,6 +100,7 @@ export default function ActivityRanking({
                     // Ignore abortion errors
                     const isAbortError = error.message?.includes('AbortError') ||
                         error.message?.includes('aborted') ||
+                        error.message?.includes('signal is aborted') ||
                         error.code === 'ABORT';
 
                     if (!isAbortError) {
@@ -109,8 +110,9 @@ export default function ActivityRanking({
                         console.error('Detalles:', error.details);
                         console.error('Status:', status);
                         console.groupEnd();
+                        throw error;
                     }
-                    throw error;
+                    return; // Silent exit if aborted
                 }
 
                 if (data && data.length > 0) {
@@ -147,7 +149,11 @@ export default function ActivityRanking({
                 clearTimeout(timeoutId);
                 if (!isMounted) return;
 
-                if (err.name !== 'AbortError') {
+                const isAbortError = err.name === 'AbortError' ||
+                    err.message?.includes('aborted') ||
+                    err.message?.includes('signal is aborted');
+
+                if (!isAbortError) {
                     console.error('Error crítico en fetchScores:', err);
                 }
                 showMockData();
