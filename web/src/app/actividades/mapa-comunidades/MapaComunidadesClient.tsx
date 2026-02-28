@@ -3,9 +3,9 @@
 import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
-import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from '@/components/games/spanish-communities-paths';
+import { SPANISH_COMMUNITIES_PATHS } from '@/components/games/spanish-communities-paths';
 import { SPAIN_NEIGHBORS_PATHS } from '@/components/games/data/spain-neighbors-paths';
-import { calculatePathCentroid } from '@/lib/svg-utils';
+
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
 
@@ -31,21 +31,13 @@ export default function MapaComunidadesClient() {
         ...SPANISH_COMMUNITIES_PATHS,      // Spain regions on top
     }), []);
 
-    // Memoize region labels (only for Spain communities, not neighbors)
-    const regionLabels = useMemo(() => {
-        return Object.entries(SPANISH_COMMUNITIES_PATHS).map(([id, paths]) => {
-            if (id === 'ceuta') return { id, name: 'Ceuta', x: 234, y: 528 };
-            if (id === 'melilla') return { id, name: 'Melilla', x: 344, y: 562 };
+    // Sea and Ocean labels
+    const seaLabels = useMemo(() => [
+        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: 20, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 580, y: 418, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -128, y: 240, className: 'fill-sky-900/40 italic font-medium', fontSize: '13px' },
+    ], []);
 
-            const primaryPath = Array.isArray(paths) ? paths[0] : paths;
-            const centroid = calculatePathCentroid(primaryPath);
-            return {
-                id,
-                name: REGION_DISPLAY_NAMES[id] || id,
-                ...(centroid || { x: 0, y: 0 })
-            };
-        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number }[];
-    }, []);
 
     // Canary Islands transformation
     const backgroundTransforms = {
@@ -65,7 +57,7 @@ export default function MapaComunidadesClient() {
                 items={communityItems}
                 itemType="region"
                 backgroundPaths={backgroundPaths}
-                backgroundLabels={regionLabels}
+                backgroundLabels={seaLabels}
                 backgroundTransforms={backgroundTransforms}
                 theme="light"
                 insetFrame={{ x: -190, y: 510, width: 280, height: 180 }}

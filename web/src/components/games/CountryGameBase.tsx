@@ -35,6 +35,7 @@ interface CountryGameProps {
     taskId?: string | null;
     activityId?: string;
     identifyMode?: 'countries' | 'capitals';
+    backgroundLabels?: { id: string; name: string; x: number; y: number; className?: string; fontSize?: string }[];
 }
 
 export default function CountryGameBase({
@@ -50,7 +51,8 @@ export default function CountryGameBase({
     elevationHeight = 8,
     taskId = null,
     activityId,
-    identifyMode = 'countries'
+    identifyMode = 'countries',
+    backgroundLabels = []
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
@@ -429,6 +431,26 @@ export default function CountryGameBase({
                             {/* 1. LOWER SEA LAYER */}
                             <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
                             <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
+
+                            {/* Background Labels (Seas/Oceans) */}
+                            <g className="pointer-events-none">
+                                {backgroundLabels.map((label) => (
+                                    <text
+                                        key={label.id}
+                                        x={label.x}
+                                        y={label.y}
+                                        className={cn(
+                                            "text-[6px] font-black fill-slate-500/40 italic uppercase tracking-[0.2em]",
+                                            label.className
+                                        )}
+                                        style={{ fontSize: label.fontSize || '8px', pointerEvents: 'none' }}
+                                        textAnchor="middle"
+                                    >
+                                        {label.name}
+                                    </text>
+                                ))}
+                            </g>
+
                             {/* Sorting: Larger first, Smaller last. Hovered always on very top. */}
                             {[...Object.entries(pathData)].sort(([idA, pA], [idB, pB]) => {
                                 const nameA = nameMapping[idA];

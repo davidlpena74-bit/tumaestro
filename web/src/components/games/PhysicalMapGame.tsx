@@ -634,36 +634,6 @@ export default function PhysicalMapGame({
                                 })}
                             </g>
 
-                            {/* LABELS */}
-                            {backgroundLabels.map((label, i) => {
-                                const transformStr = getActiveTransform(label.id);
-                                let labelX = label.x;
-                                let labelY = label.y;
-
-                                if (transformStr && transformStr.includes('translate')) {
-                                    const matches = transformStr.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/);
-                                    if (matches) {
-                                        labelX += parseFloat(matches[1]);
-                                        labelY += parseFloat(matches[2]);
-                                    }
-                                }
-
-                                return (
-                                    <text
-                                        key={i}
-                                        x={labelX}
-                                        y={labelY}
-                                        className={cn(
-                                            "font-bold uppercase pointer-events-none select-none tracking-tight",
-                                            (label as any).className || (theme === 'dark' ? "fill-slate-500 opacity-80" : "fill-slate-400 opacity-50")
-                                        )}
-                                        textAnchor="middle"
-                                        style={{ fontSize: (label as any).fontSize || `${baseLabelSize}px` }}
-                                    >
-                                        {label.name}
-                                    </text>
-                                );
-                            })}
 
                             {/* INTERACTIVE ITEMS */}
                             <g>
@@ -839,6 +809,39 @@ export default function PhysicalMapGame({
                                                 <path d={d as string} fill="none" stroke={getStrokeColor()} strokeWidth="0.5" />
                                             )}
                                         </g>
+                                    );
+                                })}
+                            </g>
+
+                            {/* 6. BACKGROUND LABELS (Seas/Oceans) - Always on top of background features */}
+                            <g className="pointer-events-none">
+                                {backgroundLabels.map((label, i) => {
+                                    const transformStr = (label.id && getActiveTransform(label.id)) || "";
+                                    let labelX = label.x;
+                                    let labelY = label.y;
+
+                                    if (transformStr && transformStr.includes('translate')) {
+                                        const matches = transformStr.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/);
+                                        if (matches) {
+                                            labelX += parseFloat(matches[1]);
+                                            labelY += parseFloat(matches[2]);
+                                        }
+                                    }
+
+                                    return (
+                                        <text
+                                            key={i}
+                                            x={labelX}
+                                            y={labelY}
+                                            className={cn(
+                                                "font-black uppercase pointer-events-none select-none tracking-[0.2em] italic",
+                                                (label as any).className || (theme === 'dark' ? "fill-slate-400/30" : "fill-slate-500/40")
+                                            )}
+                                            textAnchor="middle"
+                                            style={{ fontSize: (label as any).fontSize || `${baseLabelSize * 1.5}px` }}
+                                        >
+                                            {label.name}
+                                        </text>
                                     );
                                 })}
                             </g>

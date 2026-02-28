@@ -4,7 +4,6 @@ import CountryGameBase from './CountryGameBase';
 import { SOUTH_AMERICA_PATHS } from './data/south-america-paths';
 import { SOUTH_AMERICA_MAPPING } from './data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
-
 import { useMemo } from 'react';
 
 export default function SouthAmericaMapGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
@@ -21,6 +20,11 @@ export default function SouthAmericaMapGame({ taskId = null, activityId }: { tas
         return SOUTH_AMERICA_MAPPING;
     }, [language]);
 
+    const seaLabels = useMemo(() => [
+        { id: 'atlantico', name: 'Océano Atlántico', x: 650, y: 350, fontSize: '8px' },
+        { id: 'pacifico', name: 'Océano Pacífico', x: 200, y: 400, fontSize: '8px' }
+    ], []);
+
     return (
         <CountryGameBase
             key={language}
@@ -32,6 +36,7 @@ export default function SouthAmericaMapGame({ taskId = null, activityId }: { tas
             initialTime={180}
             initialZoom={1.76}
             initialPan={{ x: 50, y: 0 }}
+            backgroundLabels={seaLabels}
             taskId={taskId}
             activityId={activityId || 'game'}
         />

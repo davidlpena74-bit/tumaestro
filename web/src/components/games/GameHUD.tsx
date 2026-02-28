@@ -83,6 +83,15 @@ export default function GameHUD({
         myBestTime: number | null;
     }>({ bestScore: null, bestScoreName: null, bestTime: null, bestTimeName: null, myBestScore: null, myBestTime: null });
 
+    const [isFs, setIsFs] = useState(false);
+
+    useEffect(() => {
+        const checkFs = () => setIsFs(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', checkFs);
+        checkFs();
+        return () => document.removeEventListener('fullscreenchange', checkFs);
+    }, []);
+
     // Fetch activity ratings
     useEffect(() => {
         if (!activityId) return;
@@ -245,10 +254,13 @@ export default function GameHUD({
     const displayTime = elapsedTime;
 
     return (
-        <div className="w-full relative z-20">
+        <div className={cn("w-full relative z-20 transition-all duration-300", isFs && "pt-16 md:pt-20")}>
             {/* Global Rating Button (Above HUD) */}
             {activityId && (
-                <div className="absolute -top-[20px] right-6 flex flex-col items-end gap-1 z-50">
+                <div className={cn(
+                    "absolute right-6 flex flex-col items-end gap-1 z-50 transition-all duration-300",
+                    isFs ? "top-10 md:top-12" : "-top-[20px]"
+                )}>
                     <span className="text-slate-500 text-[14px] font-black uppercase tracking-wider pr-1">Comenta:</span>
                     <button
                         onClick={handleOpenRating}
@@ -285,7 +297,10 @@ export default function GameHUD({
 
             {/* Records strip — centered, same row as Comenta button */}
             {activityId && (
-                <div className="absolute -top-[68px] left-1/2 -translate-x-1/2 flex items-center gap-2 z-50 pointer-events-none">
+                <div className={cn(
+                    "absolute left-1/2 -translate-x-1/2 flex items-center gap-2 z-50 pointer-events-none transition-all duration-300",
+                    isFs ? "top-0" : "-top-[68px]"
+                )}>
                     <div className="flex items-start gap-4 bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-2xl px-7 py-2.5 shadow-2xl">
 
                         {/* 🏆 Mejor puntuación global */}
@@ -369,9 +384,9 @@ export default function GameHUD({
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     <div className={cn("p-3 rounded-xl", theme.bg)}>
                         {icon ? (
-                            <div className="text-blue-400">{icon}</div>
+                            <div className="text-white">{icon}</div>
                         ) : (
-                            <GlobeHemisphereWest className={cn("w-8 h-8", theme.text)} weight="duotone" />
+                            <GlobeHemisphereWest className="w-8 h-8 text-white" weight="duotone" />
                         )}
                     </div>
                     <div>
@@ -396,7 +411,7 @@ export default function GameHUD({
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.9, opacity: 0 }}
-                                className={cn("text-xl md:text-2xl font-black drop-shadow-sm px-2 text-balance leading-tight", theme.text)}
+                                className="text-xl md:text-2xl font-black drop-shadow-sm px-2 text-balance leading-tight text-white"
                             >
                                 {targetName || '...'}
                             </motion.div>

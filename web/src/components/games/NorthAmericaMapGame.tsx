@@ -3,6 +3,8 @@
 import CountryGameBase from './CountryGameBase';
 import { NORTH_AMERICA_PATHS } from './data/north-america-paths';
 import { NORTH_AMERICA_MAPPING } from './data/country-translations';
+import { AMERICA_SEAS_PATHS } from './data/america-physical-paths';
+import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
 
 import { useMemo } from 'react';
@@ -21,6 +23,28 @@ export default function NorthAmericaMapGame({ taskId = null, activityId }: { tas
         return NORTH_AMERICA_MAPPING;
     }, [language]);
 
+    const seaLabels = useMemo(() => {
+        const labels = Object.entries(AMERICA_SEAS_PATHS)
+            .map(([name, path]) => {
+                const centroid = calculatePathCentroid(path);
+                return {
+                    id: name,
+                    name: name,
+                    x: centroid?.x || 0,
+                    y: centroid?.y || 0,
+                    fontSize: '6px'
+                };
+            }).filter(l => l.x !== 0);
+
+        // Add Oceans manually
+        labels.push(
+            { id: 'atlantico', name: 'Océano Atlántico', x: 650, y: 300, fontSize: '8px' },
+            { id: 'pacifico', name: 'Océano Pacífico', x: 150, y: 350, fontSize: '8px' }
+        );
+
+        return labels;
+    }, []);
+
     return (
         <CountryGameBase
             key={language}
@@ -32,6 +56,7 @@ export default function NorthAmericaMapGame({ taskId = null, activityId }: { tas
             initialTime={180}
             initialZoom={1.73}
             initialPan={{ x: 50, y: -180 }}
+            backgroundLabels={seaLabels}
             taskId={taskId}
             activityId={activityId || 'game'}
         />

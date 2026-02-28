@@ -31,6 +31,15 @@ export default function MapaRiosClient() {
         }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number }[];
     }, []);
 
+    // Sea and Ocean labels
+    const environmentalLabels = useMemo(() => [
+        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: 20 },
+        { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 580, y: 418 },
+        { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -128, y: 240 },
+    ], []);
+
+    const combinedLabels = useMemo(() => [...regionLabels, ...environmentalLabels], [regionLabels, environmentalLabels]);
+
     // Combine Communities + Neighbors for the background land hole
     const backgroundPaths = useMemo(() => ({
         ...SPAIN_NEIGHBORS_PATHS,
@@ -55,7 +64,7 @@ export default function MapaRiosClient() {
                 items={RIVERS_PATHS}
                 itemType="line"
                 backgroundPaths={backgroundPaths}
-                backgroundLabels={regionLabels}
+                backgroundLabels={combinedLabels}
                 backgroundTransforms={backgroundTransforms}
                 theme="light"
                 insetFrame={{ x: -190, y: 510, width: 280, height: 180 }}

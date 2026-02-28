@@ -3,6 +3,8 @@
 import CountryGameBase from './CountryGameBase';
 import { OCEANIA_PATHS } from './data/oceania-paths';
 import { OCEANIA_MAPPING } from './data/country-translations';
+import { OCEANIA_SEAS_PATHS } from './data/oceania-physical-paths';
+import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
 
 import { useMemo } from 'react';
@@ -21,6 +23,28 @@ export default function OceaniaMapGame({ taskId = null, activityId }: { taskId?:
         return OCEANIA_MAPPING;
     }, [language]);
 
+    const seaLabels = useMemo(() => {
+        const labels = Object.entries(OCEANIA_SEAS_PATHS)
+            .map(([name, path]) => {
+                const centroid = calculatePathCentroid(path);
+                return {
+                    id: name,
+                    name: name,
+                    x: centroid?.x || 0,
+                    y: centroid?.y || 0,
+                    fontSize: '6px'
+                };
+            }).filter(l => l.x !== 0);
+
+        // Add Oceans manually
+        labels.push(
+            { id: 'indico', name: 'Océano Índico', x: 100, y: 400, fontSize: '8px' },
+            { id: 'pacifico', name: 'Océano Pacífico', x: 700, y: 400, fontSize: '8px' }
+        );
+
+        return labels;
+    }, []);
+
     return (
         <CountryGameBase
             key={language}
@@ -32,6 +56,7 @@ export default function OceaniaMapGame({ taskId = null, activityId }: { taskId?:
             initialTime={120} // Fewer countries
             initialZoom={1.28}
             initialPan={{ x: -100, y: 50 }}
+            backgroundLabels={seaLabels}
             taskId={taskId}
             activityId={activityId || 'game'}
         />
