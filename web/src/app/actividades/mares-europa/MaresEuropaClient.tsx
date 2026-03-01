@@ -44,8 +44,8 @@ export default function MaresEuropaClient() {
                 backgroundPaths={EUROPE_PATHS}
                 backgroundLabels={countryLabels}
                 viewBox="0 0 800 600"
-                initialZoom={1.8}
-                initialPan={{ x: 40, y: -130 }}
+                initialZoom={1.98}
+                initialPan={{ x: 50, y: -170 }}
                 theme="light"
                 elevationHeight={2}
                 taskId={taskId}

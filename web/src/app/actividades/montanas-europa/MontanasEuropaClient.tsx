@@ -61,8 +61,8 @@ export default function MontanasEuropaClient() {
                 backgroundPaths={EUROPE_PATHS}
                 backgroundLabels={combinedLabels}
                 viewBox="0 0 800 600"
-                initialZoom={1.8}
-                initialPan={{ x: 40, y: -130 }}
+                initialZoom={1.98}
+                initialPan={{ x: 50, y: -170 }}
                 theme="light"
                 elevationHeight={15}
                 baseLabelSize={3}

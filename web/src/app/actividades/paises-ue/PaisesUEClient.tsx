@@ -49,8 +49,8 @@ export default function PaisesUEClient() {
                 nameMapping={nameMapping}
                 colorTheme="emerald"
                 initialTime={120}
-                initialZoom={1.46}
-                initialPan={{ x: 80, y: -80 }}
+                initialZoom={1.98}
+                initialPan={{ x: 50, y: -170 }}
                 taskId={taskId}
                 activityId="paises-ue"
                 backgroundPaths={EUROPE_PATHS}
