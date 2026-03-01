@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
 import { PROVINCE_NAMES } from '@/components/games/data/spain-provinces-names';
-import { SPAIN_PROVINCES_NEIGHBORS_PATHS } from '@/components/games/data/spain-neighbors-provinces-paths';
+import { CONTEXT_PATHS } from '@/components/games/data/map-context-unified';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
 
@@ -21,19 +21,18 @@ export default function MapaProvinciasClient() {
         const items = { ...SPAIN_PROVINCES_PATHS_UNIFIED };
 
         // Ceuta: Círculo ampliado sobre su posición en la proyección unificada
-        items.ceuta = "M 176, 541 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
+        items.ceuta = "M 183, 532 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
 
         // Melilla: Círculo ampliado sobre su posición en la proyección unificada
-        items.melilla = "M 310, 582 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
+        items.melilla = "M 319, 582 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
 
         return items;
     }, []);
 
-    // Fondo: Solo vecinos y provincias individuales (SIN Spain_Outline para evitar capas dobles)
+    // Fondo: Contexto unificado y provincias
     const backgroundPaths = useMemo(() => {
-        const { Spain_Outline, ...neighbors } = SPAIN_PROVINCES_NEIGHBORS_PATHS;
         return {
-            ...neighbors,
+            ...CONTEXT_PATHS,
             ...SPAIN_PROVINCES_PATHS_UNIFIED,
         };
     }, []);
@@ -80,15 +79,22 @@ export default function MapaProvinciasClient() {
 
     // Etiquetas de Mares y Océanos
     const environmentalLabels = useMemo(() => [
-        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: 20, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
-        { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 580, y: 418, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
-        { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -128, y: 240, className: 'fill-sky-900/40 italic font-medium', fontSize: '13px' },
+        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 265, y: 0, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 530, y: 466, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -92, y: 264, className: 'fill-sky-900/40 italic font-medium', fontSize: '13px' },
     ], []);
 
-    const backgroundTransforms = {
-        santacruz: "translate(243.5, -416)",
-        laspalmas: "translate(243.5, -416)",
-    };
+    const backgroundTransforms = useMemo(() => ({
+        santacruz: 'translate(217.5, -88) scale(0.65)',
+        laspalmas: 'translate(217.5, -88) scale(0.65)'
+    }), []);
+
+    const insetFrame = useMemo(() => ({
+        x: -85,
+        y: 500,
+        width: 165,
+        height: 120
+    }), []);
 
     return (
         <PhysicalGameLayout
@@ -108,12 +114,12 @@ export default function MapaProvinciasClient() {
                 customColors={provinceColors}
                 nameMapping={PROVINCE_NAMES}
                 theme="light"
-                insetFrame={{ x: -228, y: 475, width: 280, height: 144 }}
-                viewBox="-270 -35 970 700"
+                insetFrame={insetFrame}
+                viewBox="-92 -41 675 675"
                 colorTheme="teal"
                 taskId={taskId}
                 activityId="mapa-provincias"
-                elevationHeight={10}
+                elevationHeight={12}
                 region={t.gamesPage.regions.spain}
                 gameType={t.gamesPage.gameTypes.map}
             />
