@@ -50,7 +50,8 @@ async function processLayer(configPath) {
         if (!name) return;
 
         const normName = normalize(name);
-        // 1. Try exact matches first (targets then mappings)
+
+        // 1. Try exact matches first (targets then mappings aliases)
         let matchedKey = config.targets.find(target => normalize(target) === normName);
 
         if (!matchedKey && config.mappings) {
@@ -60,23 +61,9 @@ async function processLayer(configPath) {
             });
         }
 
-        // 2. If no exact match, try include matches
-        if (!matchedKey) {
-            matchedKey = config.targets.find(target => {
-                const normTarget = normalize(target);
-                return normName.includes(normTarget);
-            });
-        }
-
-        if (!matchedKey && config.mappings) {
-            matchedKey = Object.keys(config.mappings).find(key => {
-                const aliases = config.mappings[key];
-                return aliases.some(alias => {
-                    const normAlias = normalize(alias);
-                    return normName.includes(normAlias);
-                });
-            });
-        }
+        // 2. Fallback to 'includes' ONLY for targets (optional, but keep it for flexibility)
+        // For mountains/rivers, we usually want precision.
+        // We'll only do it if the name is an EXACT match of the alias.
 
         if (matchedKey) {
             const geom = f.geometry;
