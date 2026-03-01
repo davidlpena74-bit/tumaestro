@@ -417,6 +417,60 @@ export default function CountryGameBase({
                         </button>
                     </div>
 
+                    {/* HUD / Target Info / Drilldown Selector - MOVED OUTSIDE LOOP FOR SPEED & LOGIC */}
+                    <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-sm px-4">
+                        <AnimatePresence mode="wait">
+                            {targetCountry && gameState === 'playing' && (
+                                <motion.div
+                                    key={targetCountry}
+                                    initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                                    className="bg-slate-900/80 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl text-center"
+                                >
+                                    <div className="text-gray-400 text-[10px] uppercase tracking-widest font-black mb-1">
+                                        {identifyMode === 'capitals'
+                                            ? (language === 'es' ? 'Localiza la Capital de:' : 'Locate the Capital of:')
+                                            : (language === 'es' ? 'Localiza el País:' : 'Locate the Country:')}
+                                    </div>
+                                    <div className="text-3xl font-black text-white drop-shadow-lg leading-tight uppercase">
+                                        {targetCountry}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* EXPLORE BUTTON - Appears when a completed country is selected */}
+                            {selectedId && !remainingCountries.includes(nameMapping[selectedId]) && (
+                                <motion.div
+                                    key={`explore-${selectedId}`}
+                                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    className="bg-slate-900/90 backdrop-blur-2xl border border-emerald-500/50 rounded-3xl p-5 shadow-2xl text-center pointer-events-auto mt-4"
+                                >
+                                    <div className="text-emerald-400 text-xs font-black uppercase tracking-widest mb-2">✓ {nameMapping[selectedId]}</div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            // Navigation logic here:
+                                            const countryParam = selectedId.toLowerCase().replace(/\s+/g, '-');
+                                            window.location.href = `/actividades/mapa-continente/${regionName.toLowerCase().replace(/\s+/g, '-')}/${countryParam}`;
+                                        }}
+                                        className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black rounded-xl transition-all flex items-center justify-center gap-2 uppercase text-sm tracking-tighter"
+                                    >
+                                        Explorar en detalle <Maximize className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedId(null)}
+                                        className="mt-3 text-white/40 hover:text-white/60 text-[10px] uppercase font-bold tracking-widest"
+                                    >
+                                        Cerrar
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
                     {/* SVG MAP */}
                     <svg viewBox="0 0 800 600" className="w-full h-full drop-shadow-2xl" style={{ background: 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}>
                         <defs>
@@ -438,60 +492,6 @@ export default function CountryGameBase({
                         {/* 1. LOWER SEA LAYER — outside zoom group so always fills SVG viewport */}
                         <rect x="-5000" y="-5000" width="15000" height="15000" fill="url(#sea-gradient)" />
                         <rect x="-5000" y="-5000" width="15000" height="15000" fill="url(#sea-floor)" />
-
-                        {/* HUD / Target Info / Drilldown Selector - MOVED OUTSIDE LOOP FOR SPEED & LOGIC */}
-                        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-sm px-4">
-                            <AnimatePresence mode="wait">
-                                {targetCountry && gameState === 'playing' && (
-                                    <motion.div
-                                        key={targetCountry}
-                                        initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                                        className="bg-slate-900/80 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl text-center"
-                                    >
-                                        <div className="text-gray-400 text-[10px] uppercase tracking-widest font-black mb-1">
-                                            {identifyMode === 'capitals'
-                                                ? (language === 'es' ? 'Localiza la Capital de:' : 'Locate the Capital of:')
-                                                : (language === 'es' ? 'Localiza el País:' : 'Locate the Country:')}
-                                        </div>
-                                        <div className="text-3xl font-black text-white drop-shadow-lg leading-tight uppercase">
-                                            {targetCountry}
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                {/* EXPLORE BUTTON - Appears when a completed country is selected */}
-                                {selectedId && !remainingCountries.includes(nameMapping[selectedId]) && (
-                                    <motion.div
-                                        key={`explore-${selectedId}`}
-                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        className="bg-slate-900/90 backdrop-blur-2xl border border-emerald-500/50 rounded-3xl p-5 shadow-2xl text-center pointer-events-auto mt-4"
-                                    >
-                                        <div className="text-emerald-400 text-xs font-black uppercase tracking-widest mb-2">✓ {nameMapping[selectedId]}</div>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                // Navigation logic here:
-                                                const countryParam = selectedId.toLowerCase().replace(/\s+/g, '-');
-                                                window.location.href = `/actividades/mapa-continente/${regionName.toLowerCase().replace(/\s+/g, '-')}/${countryParam}`;
-                                            }}
-                                            className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black rounded-xl transition-all flex items-center justify-center gap-2 uppercase text-sm tracking-tighter"
-                                        >
-                                            Explorar en detalle <Maximize className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() => setSelectedId(null)}
-                                            className="mt-3 text-white/40 hover:text-white/60 text-[10px] uppercase font-bold tracking-widest"
-                                        >
-                                            Cerrar
-                                        </button>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
 
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
 
