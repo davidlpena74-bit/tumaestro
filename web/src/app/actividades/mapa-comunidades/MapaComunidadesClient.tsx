@@ -3,8 +3,8 @@
 import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
-import { SPANISH_COMMUNITIES_PATHS } from '@/components/games/spanish-communities-paths-unified';
-import { CONTEXT_PATHS } from '@/components/games/map-context-unified';
+import { SPANISH_COMMUNITIES_PATHS } from '@/components/games/data/spain-communities-paths-unified';
+import { CONTEXT_PATHS } from '@/components/games/data/map-context-unified';
 
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';

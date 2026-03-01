@@ -29,5 +29,5 @@ const tsContent = `// Context countries in Unified Projection
 export const CONTEXT_PATHS: Record<string, string> = ${JSON.stringify(contextPaths, null, 4)};
 `;
 
-writeFileSync(join(root, 'src/components/games/map-context-unified.ts'), tsContent);
+writeFileSync(join(root, 'src/components/games/data/map-context-unified.ts'), tsContent);
 console.log('✅ Generated context paths (Portugal, Andorra, etc) in Unified Projection');

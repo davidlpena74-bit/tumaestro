@@ -156,6 +156,6 @@ export const CONTEXT_PATHS: Record<string, string> = {
 };
 `;
 
-writeFileSync(join(root, 'src/components/games/map-context-unified.ts'), tsContent);
+writeFileSync(join(root, 'src/components/games/data/map-context-unified.ts'), tsContent);
 console.log('\n✅ Generated optimized context paths (with Algeria)');
-console.log(`   File: src/components/games/map-context-unified.ts`);
+console.log(`   File: src/components/games/data/map-context-unified.ts`);

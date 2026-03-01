@@ -7,7 +7,7 @@ import { SPANISH_MOUNTAINS_DATA } from '@/components/games/data/spanish-mountain
 import * as d3 from 'd3-geo';
 import { geoConicConformalSpain } from 'd3-composite-projections';
 import * as topojson from 'topojson-client';
-import { REGION_DISPLAY_NAMES } from '@/components/games/spanish-communities-paths-unified';
+import { REGION_DISPLAY_NAMES } from '@/components/games/data/spain-communities-paths-unified';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
 

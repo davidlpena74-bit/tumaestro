@@ -45,5 +45,5 @@ communitiesData.features.forEach(f => {
 
 output += `};\n`;
 
-fs.writeFileSync('src/components/games/spanish-communities-paths-unified.ts', output);
+fs.writeFileSync('src/components/games/data/spain-communities-paths-unified.ts', output);
 console.log('✅ Generated unified communities paths');
