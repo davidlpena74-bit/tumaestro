@@ -97,6 +97,31 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${handwriting.variable} antialiased`}
       >
+        <Script id="suppress-abort-error" strategy="beforeInteractive">
+          {`
+            if (typeof window !== 'undefined') {
+              window.addEventListener('unhandledrejection', function(event) {
+                var reason = event.reason || {};
+                var msg = reason.message || (typeof reason === 'string' ? reason : '');
+                if (reason.name === 'AbortError' || msg.includes('aborted without reason') || msg.includes('signal is aborted')) {
+                  event.preventDefault();
+                }
+              });
+
+              var originalConsoleError = console.error;
+              console.error = function() {
+                var argsStr = Array.from(arguments).map(function(a) { 
+                  return typeof a === 'string' ? a : (a && a.message ? a.message : ''); 
+                }).join(' ');
+                
+                if (argsStr.includes('aborted without reason') || argsStr.includes('signal is aborted') || argsStr.includes('AbortError')) {
+                  return;
+                }
+                originalConsoleError.apply(console, arguments);
+              };
+            }
+          `}
+        </Script>
         <LanguageProvider>
           <BackgroundProvider>
             <ToastProvider>
