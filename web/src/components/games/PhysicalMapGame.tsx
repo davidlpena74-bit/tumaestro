@@ -796,8 +796,8 @@ export default function PhysicalMapGame({
                                                     <g>
                                                         <motion.path
                                                             d={d}
-                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : 'transparent')}
-                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : 'transparent')}
+                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : (customColors && customColors[name] ? customColors[name] : 'transparent'))}
+                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : (customColors && customColors[name] ? '#cbd5e1' : 'transparent'))}
                                                             strokeWidth={0.5}
                                                             animate={{
                                                                 y: isHovered ? -2 : 0,
@@ -834,6 +834,8 @@ export default function PhysicalMapGame({
                                                                 })()}
                                                             </g>
                                                         )}
+
+
 
                                                     </g>
                                                 ) : (

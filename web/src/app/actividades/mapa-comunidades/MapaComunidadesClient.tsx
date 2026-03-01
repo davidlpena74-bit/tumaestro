@@ -49,9 +49,9 @@ export default function MapaComunidadesClient() {
     }), []);
 
     const insetFrame = useMemo(() => ({
-        x: -85,
+        x: -100,
         y: 500,
-        width: 165,
+        width: 192,
         height: 120
     }), []);
 

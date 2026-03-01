@@ -81,7 +81,7 @@ export default function Header() {
                     if (isMounted && p) setProfile(p);
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return; // Expected in React StrictMode
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return; // Expected in React StrictMode
                 console.warn("Supabase auth session error (expected if token expired):", err.message);
                 if (err.message?.includes('Refresh Token Not Found')) {
                     // Force sign out to clear local storage if token is corrupted
@@ -98,22 +98,39 @@ export default function Header() {
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
             if (!isMounted) return;
-            const currentUser = session?.user ?? null;
-            setUser(currentUser);
-            if (currentUser) {
-                fetchNotifications(currentUser.id);
-                // Fetch profile for role
-                const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
-                if (isMounted && p) setProfile(p);
-            } else {
-                setNotifications([]);
-                setProfile(null);
+            try {
+                const currentUser = session?.user ?? null;
+                setUser(currentUser);
+                if (currentUser) {
+                    fetchNotifications(currentUser.id);
+                    // Fetch profile for role
+                    const { data: p } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
+                    if (isMounted && p) setProfile(p);
+                } else {
+                    setNotifications([]);
+                    setProfile(null);
+                }
+            } catch (err: any) {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return;
+                console.warn("Auth change callback error:", err.message);
             }
         });
+
+        // Global safety for Supabase AbortErrors during HMR
+        const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+            if (event.reason?.name === 'AbortError' ||
+                event.reason?.message?.includes('aborted without reason') ||
+                event.reason?.message?.includes('signal is aborted')) {
+                event.preventDefault();
+                console.debug('Swallowed Supabase AbortError in Header:', event.reason.message);
+            }
+        };
+        window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
         return () => {
             isMounted = false;
             window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('unhandledrejection', handleUnhandledRejection);
             subscription.unsubscribe();
         };
     }, []);

@@ -16,16 +16,8 @@ export default function MapaProvinciasClient() {
     const taskId = searchParams.get('taskId');
 
     // Capa interactiva: Usamos la fuente unificada para evitar desdoblamientos
-    // Y añadimos áreas circulares invisibles más grandes para Ceuta y Melilla
     const provinceItems = useMemo(() => {
         const items = { ...SPAIN_PROVINCES_PATHS_UNIFIED };
-
-        // Ceuta: Círculo ampliado sobre su posición en la proyección unificada
-        items.ceuta = "M 183, 532 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
-
-        // Melilla: Círculo ampliado sobre su posición en la proyección unificada
-        items.melilla = "M 319, 582 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0";
-
         return items;
     }, []);
 
@@ -90,9 +82,9 @@ export default function MapaProvinciasClient() {
     }), []);
 
     const insetFrame = useMemo(() => ({
-        x: -85,
+        x: -100,
         y: 500,
-        width: 165,
+        width: 192,
         height: 120
     }), []);
 
