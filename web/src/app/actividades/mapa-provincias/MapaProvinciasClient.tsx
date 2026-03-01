@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
-import { PROVINCE_NAMES } from '@/components/games/spanish-provinces';
+import { PROVINCE_NAMES } from '@/components/games/data/spain-provinces-names';
 import { SPAIN_PROVINCES_NEIGHBORS_PATHS } from '@/components/games/data/spain-neighbors-provinces-paths';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
