@@ -1,0 +1,64 @@
+{
+    "id": "spain-mountains-osm",
+    "source": "scripts/geodata/raw/custom-mountains.json",
+    "nameProperty": "name",
+    "itemType": "mountain",
+    "tolerance": 0.5,
+    "mountainWidth": 15,
+    "targets": [
+        "Pirineos",
+        "Sierra Morena"
+    ],
+    "mappings": {
+        "Sistema Central": [
+            "Guadarrama",
+            "Gredos",
+            "Ayllon",
+            "Sistema Central"
+        ],
+        "Sistema Ibérico": [
+            "Moncayo",
+            "Demanda",
+            "Albarracin",
+            "Sistema Iberico",
+            "Serrania de Cuenca"
+        ],
+        "Cordillera Cantábrica": [
+            "Picos de Europa",
+            "Ancares",
+            "Cordillera Cantabrica"
+        ],
+        "Montes de León": [
+            "Montes de Leon",
+            "Sierra del Leon",
+            "Teleno"
+        ],
+        "Macizo Galaico": [
+            "Xistral",
+            "Courel",
+            "Queixa",
+            "Macizo Galaico"
+        ],
+        "Montes de Toledo": [
+            "Guadalupe",
+            "Villuercas",
+            "Montes de Toledo"
+        ],
+        "Cordillera Costero-Catalana": [
+            "Serralada Litoral",
+            "Serralada Prelitoral",
+            "Cordillera Costera Catalana"
+        ],
+        "Sistemas Béticos": [
+            "Sierra Nevada",
+            "Cazorla",
+            "Segura",
+            "Grazalema",
+            "Sistema Betico",
+            "Penibetica",
+            "Subbetica"
+        ]
+    },
+    "exportName": "SPANISH_MOUNTAINS_DATA",
+    "output": "src/components/games/data/spanish-mountains-detailed.ts"
+}

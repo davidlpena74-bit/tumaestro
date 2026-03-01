@@ -1,0 +1,18 @@
+{
+    "id": "spain-rivers-osm",
+    "source": "public/maps/spain-rivers-osm.json",
+    "nameProperty": "name",
+    "tolerance": 0.5,
+    "targets": [
+        "Duero",
+        "Ebro",
+        "Tajo",
+        "Guadalquivir",
+        "Guadiana",
+        "Júcar",
+        "Segura",
+        "Miño"
+    ],
+    "exportName": "RIVERS_PATHS",
+    "output": "src/components/games/data/rivers-paths.ts"
+}

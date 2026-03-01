@@ -52,7 +52,7 @@ interface PhysicalMapGameProps {
     title: string;
     description: string;
     items: Record<string, any>;
-    itemType?: 'line' | 'polygon' | 'peaks' | 'region';
+    itemType?: 'line' | 'polygon' | 'peaks' | 'region' | 'mountain';
     backgroundPaths?: Record<string, string | string[]>;
     backgroundLabels?: { id: string; name: string; x: number; y: number }[];
     viewBox?: string;
@@ -713,7 +713,7 @@ export default function PhysicalMapGame({
                                             transform={getActiveTransform(name)}
                                         >
                                             <path
-                                                d={itemType === 'peaks' ? d.path : d}
+                                                d={itemType === 'peaks' ? d.path : (itemType === 'mountain' ? (typeof d === 'string' ? d : d.ridge) : (typeof d === 'string' ? d : d.path))}
                                                 fill={(itemType === 'polygon' || itemType === 'region') ? "white" : "none"}
                                                 stroke="white"
                                                 strokeWidth={(itemType === 'polygon' || itemType === 'region') ? "4" : "30"}
@@ -721,7 +721,52 @@ export default function PhysicalMapGame({
                                                 className="pointer-events-auto"
                                             />
 
-                                            {itemType === 'peaks' ? (
+                                            {itemType === 'mountain' ? (
+                                                /* MOUNTAINS - Premium relief style */
+                                                <g style={{ filter: isHovered ? 'drop-shadow(0 0 8px rgba(217, 119, 6, 0.8))' : 'drop-shadow(0px 8px 6px rgba(0,0,0,0.4))' }}>
+                                                    {/* Outer base (Lightest brown / soft edge) */}
+                                                    <motion.path
+                                                        d={typeof d === 'string' ? d : d.ridge}
+                                                        fill="none"
+                                                        stroke={isCompleted ? 'rgba(34, 197, 94, 0.4)' : isFailed ? 'rgba(239, 68, 68, 0.4)' : (isHovered ? 'rgba(245, 158, 11, 0.5)' : 'rgba(180, 83, 9, 0.4)')}
+                                                        strokeWidth={isHovered ? 16 : 12}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        className="transition-all duration-300 pointer-events-none"
+                                                    />
+                                                    {/* Middle layer (Medium brown) */}
+                                                    <motion.path
+                                                        d={typeof d === 'string' ? d : d.ridge}
+                                                        fill="none"
+                                                        stroke={isCompleted ? '#16a34a' : isFailed ? '#dc2626' : (isHovered ? '#d97706' : '#92400e')}
+                                                        strokeWidth={isHovered ? 10 : 7}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        className="transition-all duration-300 pointer-events-none"
+                                                    />
+                                                    {/* Inner Core (Dark brown divisor line) */}
+                                                    <motion.path
+                                                        d={typeof d === 'string' ? d : d.ridge}
+                                                        fill="none"
+                                                        stroke={isCompleted ? '#14532d' : isFailed ? '#7f1d1d' : (isHovered ? '#78350f' : '#451a03')}
+                                                        strokeWidth={isHovered ? 4 : 2.5}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        className="transition-all duration-300 pointer-events-none"
+                                                    />
+                                                    {/* Very thin Specular highlight for volume */}
+                                                    <motion.path
+                                                        d={typeof d === 'string' ? d : d.ridge}
+                                                        fill="none"
+                                                        stroke="rgba(255,255,255,0.15)"
+                                                        strokeWidth={1}
+                                                        strokeDasharray="2 4"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        className="pointer-events-none transition-all duration-300"
+                                                    />
+                                                </g>
+                                            ) : itemType === 'peaks' ? (
                                                 <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
                                                     {d.peaks.map((p: any, idx: number) => {
                                                         const status = isCompleted ? 'completed' : isFailed ? 'failed' : (isHovered ? 'hovered' : 'normal');

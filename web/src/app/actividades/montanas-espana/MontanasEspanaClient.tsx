@@ -116,7 +116,7 @@ export default function MontanasEspanaClient() {
                 title={t.gamesPage.gameTitles.mountainsSpain}
                 description={t.gamesPage.gameTitles.mountainsSpainDesc}
                 items={SPANISH_MOUNTAINS_DATA}
-                itemType="polygon"
+                itemType="mountain"
                 backgroundPaths={backgroundPaths}
                 backgroundLabels={combinedLabels}
                 backgroundTransforms={backgroundTransforms}
