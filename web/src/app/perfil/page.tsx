@@ -32,33 +32,42 @@ export default function ProfilePage() {
     const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
         const getUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                router.push('/');
-                return;
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!isMounted) return;
+                if (!session) {
+                    router.push('/');
+                    return;
+                }
+                setUser(session.user);
+
+                // Fetch profile for reliable role
+                const { data: profileData } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (!isMounted) return;
+                if (profileData) {
+                    setProfile(profileData);
+                    setFullName(profileData.full_name || session.user.user_metadata?.full_name || '');
+                } else {
+                    setFullName(session.user.user_metadata?.full_name || '');
+                }
+
+                setEmail(session.user.email || '');
+            } catch (err: any) {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
+                console.error("Profile page auth error:", err);
+            } finally {
+                if (isMounted) setLoading(false);
             }
-            setUser(session.user);
-
-            // Fetch profile for reliable role
-            const { data: profileData } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', session.user.id)
-                .single();
-
-            if (profileData) {
-                setProfile(profileData);
-                setFullName(profileData.full_name || session.user.user_metadata?.full_name || '');
-            } else {
-                setFullName(session.user.user_metadata?.full_name || '');
-            }
-
-
-            setEmail(session.user.email || '');
-            setLoading(false);
         };
         getUser();
+        return () => { isMounted = false; };
     }, [router]);
 
     const handleUpdateProfile = async (e: React.FormEvent) => {

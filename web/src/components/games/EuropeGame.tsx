@@ -2,6 +2,7 @@
 
 import CountryGameBase from './CountryGameBase';
 import { EUROPE_PATHS } from './data/europe-paths';
+import { EUROPE_NEIGHBORS_PATHS } from './data/europe-neighbors-paths';
 import { EUROPE_MAPPING } from './data/country-translations';
 import { EUROPE_SEAS_PATHS } from './data/europe-physical-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';

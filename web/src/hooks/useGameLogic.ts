@@ -48,7 +48,13 @@ export function useGameLogic({
 
         // Always try to save score if user is logged in
         try {
-            const { data: { session } } = await supabase.auth.getSession();
+            // Check session with a catch specifically for AbortError which can happen during HMR or fast navigation
+            const sessionResult = await supabase.auth.getSession().catch(err => {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                throw err;
+            });
+
+            const session = sessionResult?.data?.session;
             if (session?.user) {
                 // 1. Save to general activity_scores for rankings
                 if (activityId) {
@@ -73,7 +79,11 @@ export function useGameLogic({
                     });
                 }
             }
-        } catch (err) {
+        } catch (err: any) {
+            // Ignore abort errors globally for this operation
+            if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) {
+                return;
+            }
             console.error("Error saving game results:", err);
         } finally {
             setGameState('finished');

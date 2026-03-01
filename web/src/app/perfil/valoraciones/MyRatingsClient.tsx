@@ -28,9 +28,11 @@ export default function MyRatingsClient() {
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchUserRatings = async () => {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
+                if (!isMounted) return;
                 if (!session) {
                     window.location.href = '/';
                     return;
@@ -43,16 +45,19 @@ export default function MyRatingsClient() {
                     .eq('user_id', session.user.id)
                     .order('created_at', { ascending: false });
 
+                if (!isMounted) return;
                 if (error) throw error;
                 if (data) setRatings(data);
             } catch (err: any) {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
                 console.error('Error fetching user ratings:', err.message);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchUserRatings();
+        return () => { isMounted = false; };
     }, []);
 
     const handleDeleteRating = async (id: string) => {

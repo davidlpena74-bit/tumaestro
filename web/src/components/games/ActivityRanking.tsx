@@ -101,6 +101,7 @@ export default function ActivityRanking({
                     const isAbortError = error.message?.includes('AbortError') ||
                         error.message?.includes('aborted') ||
                         error.message?.includes('signal is aborted') ||
+                        error.message?.includes('aborted without reason') ||
                         error.code === 'ABORT';
 
                     if (!isAbortError) {
@@ -151,7 +152,8 @@ export default function ActivityRanking({
 
                 const isAbortError = err.name === 'AbortError' ||
                     err.message?.includes('aborted') ||
-                    err.message?.includes('signal is aborted');
+                    err.message?.includes('signal is aborted') ||
+                    err.message?.includes('aborted without reason');
 
                 if (!isAbortError) {
                     console.error('Error crítico en fetchScores:', err);
@@ -205,7 +207,7 @@ export default function ActivityRanking({
 
         return () => {
             isMounted = false;
-            abortController.abort();
+            abortController.abort('component_unmounted');
         };
     }, [activityId, sortBy, limit, language, isVisible]);
 

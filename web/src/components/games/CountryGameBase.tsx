@@ -36,6 +36,7 @@ interface CountryGameProps {
     activityId?: string;
     identifyMode?: 'countries' | 'capitals';
     backgroundLabels?: { id: string; name: string; x: number; y: number; className?: string; fontSize?: string }[];
+    backgroundPaths?: Record<string, string>;
 }
 
 export default function CountryGameBase({
@@ -52,7 +53,8 @@ export default function CountryGameBase({
     taskId = null,
     activityId,
     identifyMode = 'countries',
-    backgroundLabels = []
+    backgroundLabels = [],
+    backgroundPaths = {}
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
@@ -76,6 +78,7 @@ export default function CountryGameBase({
     const [attempts, setAttempts] = useState(0);
     const [failedCountries, setFailedCountries] = useState<string[]>([]);
     const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
 
     // Zoom state initialized with props
     const [zoom, setZoom] = useState(initialZoom);
@@ -133,9 +136,14 @@ export default function CountryGameBase({
         if (!localizedName) return;
 
         const isCompleted = localizedName && !remainingCountries.includes(localizedName);
-        if (isCompleted) return;
+
+        if (isCompleted) {
+            setSelectedId(engName);
+            return;
+        }
 
         if (localizedName === targetCountry) {
+            setSelectedId(engName);
             addScore(100);
             setMessage(`${t.common.correct} 🎉`);
             const newRemaining = remainingCountries.filter(c => c !== targetCountry);
@@ -410,7 +418,7 @@ export default function CountryGameBase({
                     </div>
 
                     {/* SVG MAP */}
-                    <svg viewBox="0 0 800 600" className="w-full h-full drop-shadow-2xl">
+                    <svg viewBox="0 0 800 600" className="w-full h-full drop-shadow-2xl" style={{ background: 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}>
                         <defs>
                             {/* SEA GRADIENTS */}
                             <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -427,10 +435,77 @@ export default function CountryGameBase({
 
                         </defs>
 
+                        {/* 1. LOWER SEA LAYER — outside zoom group so always fills SVG viewport */}
+                        <rect x="-5000" y="-5000" width="15000" height="15000" fill="url(#sea-gradient)" />
+                        <rect x="-5000" y="-5000" width="15000" height="15000" fill="url(#sea-floor)" />
+
+                        {/* HUD / Target Info / Drilldown Selector - MOVED OUTSIDE LOOP FOR SPEED & LOGIC */}
+                        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-sm px-4">
+                            <AnimatePresence mode="wait">
+                                {targetCountry && gameState === 'playing' && (
+                                    <motion.div
+                                        key={targetCountry}
+                                        initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                                        className="bg-slate-900/80 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl text-center"
+                                    >
+                                        <div className="text-gray-400 text-[10px] uppercase tracking-widest font-black mb-1">
+                                            {identifyMode === 'capitals'
+                                                ? (language === 'es' ? 'Localiza la Capital de:' : 'Locate the Capital of:')
+                                                : (language === 'es' ? 'Localiza el País:' : 'Locate the Country:')}
+                                        </div>
+                                        <div className="text-3xl font-black text-white drop-shadow-lg leading-tight uppercase">
+                                            {targetCountry}
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {/* EXPLORE BUTTON - Appears when a completed country is selected */}
+                                {selectedId && !remainingCountries.includes(nameMapping[selectedId]) && (
+                                    <motion.div
+                                        key={`explore-${selectedId}`}
+                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        className="bg-slate-900/90 backdrop-blur-2xl border border-emerald-500/50 rounded-3xl p-5 shadow-2xl text-center pointer-events-auto mt-4"
+                                    >
+                                        <div className="text-emerald-400 text-xs font-black uppercase tracking-widest mb-2">✓ {nameMapping[selectedId]}</div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                // Navigation logic here:
+                                                const countryParam = selectedId.toLowerCase().replace(/\s+/g, '-');
+                                                window.location.href = `/actividades/mapa-continente/${regionName.toLowerCase().replace(/\s+/g, '-')}/${countryParam}`;
+                                            }}
+                                            className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black rounded-xl transition-all flex items-center justify-center gap-2 uppercase text-sm tracking-tighter"
+                                        >
+                                            Explorar en detalle <Maximize className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedId(null)}
+                                            className="mt-3 text-white/40 hover:text-white/60 text-[10px] uppercase font-bold tracking-widest"
+                                        >
+                                            Cerrar
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                            {/* 1. LOWER SEA LAYER */}
-                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
-                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
+
+                            {/* 0. Background Paths (Neighbors) */}
+                            {Object.entries(backgroundPaths).map(([name, pathD]) => (
+                                <path
+                                    key={`bg-${name}`}
+                                    d={pathD}
+                                    fill="#dcd8cc"
+                                    stroke="#afa99a"
+                                    strokeWidth="0.3"
+                                    className="pointer-events-none"
+                                />
+                            ))}
 
                             {/* Background Labels (Seas/Oceans) */}
                             <g className="pointer-events-none">
@@ -440,7 +515,10 @@ export default function CountryGameBase({
                                         x={label.x}
                                         y={label.y}
                                         className={cn(
-                                            "text-[6px] font-black fill-slate-500/40 italic uppercase tracking-[0.2em]",
+                                            "text-[6px] fill-slate-500/40",
+                                            (label.id?.includes('mar') || label.id?.includes('ocean') || label.name?.toLowerCase().includes('mar') || label.name?.toLowerCase().includes('océan'))
+                                                ? "uppercase tracking-[0.15em]"
+                                                : "tracking-[0.05em] opacity-60",
                                             label.className
                                         )}
                                         style={{ fontSize: label.fontSize || '8px', pointerEvents: 'none' }}
@@ -470,29 +548,6 @@ export default function CountryGameBase({
                                 const isHovered = hoveredId === localizedName;
                                 const isPlayable = !!localizedName;
 
-                                {/* HUD / Target Info */ }
-                                <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-sm px-4">
-                                    <AnimatePresence mode="wait">
-                                        {targetCountry && gameState === 'playing' && (
-                                            <motion.div
-                                                key={targetCountry}
-                                                initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                                                className="bg-slate-900/80 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl text-center"
-                                            >
-                                                <div className="text-gray-400 text-xs uppercase tracking-widest font-black mb-1">
-                                                    {identifyMode === 'capitals'
-                                                        ? (language === 'es' ? 'Localiza la Capital:' : 'Locate the Capital:')
-                                                        : (language === 'es' ? 'Localiza el País:' : 'Locate the Country:')}
-                                                </div>
-                                                <div className="text-3xl font-black text-white drop-shadow-lg leading-tight uppercase">
-                                                    {targetCountry}
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
                                 let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-[#e8e4d8]";
                                 let strokeClass = "stroke-slate-900/30 stroke-[0.5px]";
 

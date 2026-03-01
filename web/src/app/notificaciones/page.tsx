@@ -28,37 +28,45 @@ export default function NotificationsPage() {
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
         let subscription: any;
         const checkUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                router.push('/');
-                return;
-            }
-            setUser(session.user);
-            fetchNotifications(session.user.id, true);
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!isMounted) return;
+                if (!session) {
+                    router.push('/');
+                    return;
+                }
+                setUser(session.user);
+                fetchNotifications(session.user.id, true);
 
-            // Subscribe to realtime changes
-            subscription = supabase
-                .channel(`notifs-page-${session.user.id}`)
-                .on(
-                    'postgres_changes',
-                    {
-                        event: '*',
-                        schema: 'public',
-                        table: 'notifications',
-                        filter: `user_id=eq.${session.user.id}`
-                    },
-                    () => {
-                        // Re-fetch when anything changes
-                        fetchNotifications(session.user.id);
-                    }
-                )
-                .subscribe();
+                // Subscribe to realtime changes
+                subscription = supabase
+                    .channel(`notifs-page-${session.user.id}`)
+                    .on(
+                        'postgres_changes',
+                        {
+                            event: '*',
+                            schema: 'public',
+                            table: 'notifications',
+                            filter: `user_id=eq.${session.user.id}`
+                        },
+                        () => {
+                            // Re-fetch when anything changes
+                            if (isMounted) fetchNotifications(session.user.id);
+                        }
+                    )
+                    .subscribe();
+            } catch (err: any) {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
+                console.error("Notifications page auth error:", err);
+            }
         };
         checkUser();
 
         return () => {
+            isMounted = false;
             if (subscription) subscription.unsubscribe();
         };
     }, [router]);

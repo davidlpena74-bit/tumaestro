@@ -24,7 +24,12 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
 
         const fetchExistingRating = async () => {
             try {
-                const { data: { session } } = await supabase.auth.getSession();
+                const sessionResult = await supabase.auth.getSession().catch(err => {
+                    if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                    throw err;
+                });
+
+                const session = sessionResult?.data?.session;
                 if (!session || !isMounted) return;
 
                 if (isMounted) setStatus('loading');
@@ -84,7 +89,12 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
         setStatus('submitting');
 
         try {
-            const { data: { session } } = await supabase.auth.getSession();
+            const sessionResult = await supabase.auth.getSession().catch(err => {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                throw err;
+            });
+
+            const session = sessionResult?.data?.session;
             if (!session) throw new Error('Not authenticated');
 
             const { error: submitError } = await supabase.from('activity_ratings').upsert({

@@ -135,9 +135,25 @@ export default function PhysicalMapGame({
         const itemKeys = Object.keys(items);
         setRemainingItems(itemKeys);
 
+        // Safety: Ignore Supabase Auth AbortErrors that sometimes bubble up during fast unmounting/HMR
+        const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+            if (event.reason?.name === 'AbortError' ||
+                event.reason?.message?.includes('aborted without reason') ||
+                event.reason?.message?.includes('signal is aborted')) {
+                event.preventDefault();
+                console.debug('Swallowed Supabase AbortError:', event.reason.message);
+            }
+        };
+
+        window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
         const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
         document.addEventListener('fullscreenchange', handleFsChange);
-        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+
+        return () => {
+            window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+            document.removeEventListener('fullscreenchange', handleFsChange);
+        };
     }, [items]);
 
     const toggleFullscreen = () => {
@@ -285,19 +301,25 @@ export default function PhysicalMapGame({
 
     const landPathString = useMemo(() => {
         return Object.entries(backgroundPaths).map(([id, d]) => {
-            const transform = getActiveTransform(id);
             const paths = Array.isArray(d) ? d : [d];
             return paths.map(p => {
-                if (transform && transform.includes('translate')) {
-                    const matches = transform.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/);
-                    if (matches) {
-                        const tx = parseFloat(matches[1]);
-                        const ty = parseFloat(matches[2]);
-                        // Simple offset for translate(x, y) - works for the current use cases like Canary Islands
-                        return p.replace(/([ML])\s*([-\d.]+),([-\d.]+)/g, (_, m, x, y) =>
-                            `${m}${parseFloat(x) + tx},${parseFloat(y) + ty}`
-                        );
-                    }
+                const transform = getActiveTransform(id);
+                if (!transform) return p;
+
+                let tx = 0, ty = 0, s = 1;
+                const scaleMatch = transform.match(/scale\(([-\d.]+)\)/);
+                if (scaleMatch) s = parseFloat(scaleMatch[1]);
+
+                const transMatch = transform.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/);
+                if (transMatch) {
+                    tx = parseFloat(transMatch[1]);
+                    ty = parseFloat(transMatch[2]);
+                }
+
+                if (s !== 1 || tx !== 0 || ty !== 0) {
+                    return p.replace(/([MLml])\s*([-\d.]+),([-\d.]+)/g, (_, m, x, y) =>
+                        `${m}${parseFloat(x) * s + tx},${parseFloat(y) * s + ty}`
+                    );
                 }
                 return p;
             }).join(' ');
@@ -462,14 +484,10 @@ export default function PhysicalMapGame({
                     </AnimatePresence>
 
                     <div className={cn("absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300", isFullscreen ? 'top-32 md:top-28' : 'top-4')} onMouseDown={e => e.stopPropagation()}>
-                        <button onClick={() => setZoom(z => Math.min(z * 1.2, 8))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm border border-white/10 cursor-pointer"><ZoomIn className="w-5 h-5" /></button>
-                        <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm border border-white/10 cursor-pointer"><ZoomOut className="w-5 h-5" /></button>
-                        <button onClick={() => { setZoom(initialZoom); setPan(initialPan); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm border border-white/10 cursor-pointer" title="Reset View"><RefreshCwIconGame className="w-5 h-5" /></button>
-                        <div className="h-2" />
                         <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm border border-white/10 cursor-pointer">{isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}</button>
                     </div>
 
-                    <svg viewBox={viewBox} className="w-full h-full drop-shadow-2xl">
+                    <svg viewBox={viewBox} className="w-full h-full drop-shadow-2xl" style={{ background: theme === 'dark' ? 'linear-gradient(135deg, #060d17 0%, #081424 100%)' : 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}>
                         <defs>
                             {/* SEA GRADIENTS */}
                             <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -562,6 +580,33 @@ export default function PhysicalMapGame({
                                 </feMerge>
                             </filter>
 
+                            <filter id="elevation-hover" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
+                                <feOffset in="blur" dx="0" dy="2" result="offsetBlur" />
+                                <feComponentTransfer in="offsetBlur">
+                                    <feFuncA type="linear" slope="0.3" />
+                                </feComponentTransfer>
+                                <feMerge>
+                                    <feMergeNode />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+
+                            <filter id="magnifier-glass" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur" />
+                                <feOffset in="blur" dx="0" dy="1" result="offsetBlur" />
+                                <feComponentTransfer in="offsetBlur">
+                                    <feFuncA type="linear" slope="0.4" />
+                                </feComponentTransfer>
+                                <feFlood floodColor="white" floodOpacity="0.3" result="flood" />
+                                <feComposite in="flood" in2="SourceAlpha" operator="in" result="shine" />
+                                <feMerge>
+                                    <feMergeNode in="offsetBlur" />
+                                    <feMergeNode in="shine" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+
                             <clipPath id="land-mask">
                                 {Object.entries(backgroundPaths).map(([id, d]) => {
                                     const transform = getActiveTransform(id);
@@ -578,10 +623,11 @@ export default function PhysicalMapGame({
                             </clipPath>
                         </defs>
 
+                        {/* 1. LOWER SEA LAYER — outside zoom group so it always fills the SVG viewport */}
+                        <rect x="-5000" y="-5000" width="15000" height="15000" fill="url(#sea-gradient)" />
+                        <rect x="-5000" y="-5000" width="15000" height="15000" fill="url(#sea-floor)" />
+
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                            {/* 1. LOWER SEA LAYER (The "Ocean Floor") */}
-                            <rect x="-1000" y="-1000" width="3000" height="3000" fill="url(#sea-gradient)" />
-                            <rect x="-1000" y="-1000" width="3000" height="3000" fill="url(#sea-floor)" />
 
 
                             {/* INSET FRAME */}
@@ -603,19 +649,28 @@ export default function PhysicalMapGame({
                             {/* BACKGROUND PATHS */}
                             <g className="pointer-events-none">
                                 {Object.entries(backgroundPaths).map(([id, d], i) => {
+                                    const isHovered = id === hoveredItem;
                                     const regionTransform = getActiveTransform(id);
 
                                     // Neighbor country tints (only applies when those countries are in the bg)
                                     const getColorClass = () => {
                                         if (theme === 'dark') return 'fill-[#1e2d40] stroke-[#2d3f55]';
                                         if (backgroundColors && backgroundColors[id]) return backgroundColors[id];
-                                        if (id === 'Andorra' || id === 'Gibraltar') return 'fill-[#dde8d0] stroke-[#a0b890]';
-                                        if (id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal') return 'fill-[#e8e4d8] stroke-[#c0b8a8]';
-                                        return 'fill-[#f5edda] stroke-[#c8b89a]'; // Spain regions
+                                        if (id === 'Andorra' || id === 'Gibraltar' || id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal' || id === 'portugal' || id === 'andorra' || id === 'france' || id === 'morocco' || id === 'algeria') {
+                                            return 'fill-[#e5e7eb] stroke-[#d1d5db]'; // Gray-200 fill and Gray-300 stroke for context
+                                        }
+                                        return 'fill-[#f5edda] stroke-[#c8b89a]'; // Spain regions (default)
                                     };
 
                                     return (
-                                        <g key={id} transform={regionTransform}>
+                                        <g
+                                            key={id}
+                                            transform={regionTransform}
+                                            style={{
+                                                opacity: isHovered ? 0 : 1,
+                                                transition: 'opacity 0.2s ease-in-out'
+                                            }}
+                                        >
                                             {Array.isArray(d) ? d.map((path, j) => (
                                                 <path
                                                     key={`${id}-${j}`}
@@ -741,11 +796,45 @@ export default function PhysicalMapGame({
                                                     <g>
                                                         <motion.path
                                                             d={d}
-                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : (customColors[name] || 'rgba(255, 255, 255, 0.01)'))}
-                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : 'rgba(0,0,0,0.1)')}
+                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : 'transparent')}
+                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : 'transparent')}
                                                             strokeWidth={0.5}
-                                                            className="transition-all duration-300"
+                                                            animate={{
+                                                                y: isHovered ? -2 : 0,
+                                                                filter: isHovered ? 'url(#elevation-hover)' : 'none'
+                                                            }}
+                                                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                                            className="transition-colors duration-300 cursor-pointer"
                                                         />
+
+                                                        {/* Indicator "bola" for small regions (Ceuta & Melilla) */}
+                                                        {(name === 'ceuta' || name === 'melilla') && gameState !== 'start' && (
+                                                            <g>
+                                                                {(() => {
+                                                                    const centroid = calculatePathCentroid(d);
+                                                                    if (!centroid) return null;
+                                                                    return (
+                                                                        <motion.circle
+                                                                            cx={centroid.x}
+                                                                            cy={centroid.y}
+                                                                            r={isHovered ? 8 : 6}
+                                                                            fill="white"
+                                                                            stroke={isCompleted ? (isFailed ? "#ef4444" : "#22c55e") : "#334155"}
+                                                                            strokeWidth="2"
+                                                                            initial={{ scale: 0, opacity: 0 }}
+                                                                            animate={{
+                                                                                scale: 1,
+                                                                                opacity: 1,
+                                                                                filter: isHovered ? 'drop-shadow(0 0 6px rgba(255,255,255,0.9))' : 'none'
+                                                                            }}
+                                                                            className="pointer-events-none"
+                                                                            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
+                                                                        />
+                                                                    );
+                                                                })()}
+                                                            </g>
+                                                        )}
+
                                                     </g>
                                                 ) : (
                                                     <g>
@@ -796,8 +885,9 @@ export default function PhysicalMapGame({
                                     const regionTransform = backgroundTransforms[id];
                                     const getStrokeColor = () => {
                                         if (theme === 'dark') return '#2d3f55';
-                                        if (id === 'Andorra' || id === 'Gibraltar') return '#a0b890';
-                                        if (id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal') return '#c0b8a8';
+                                        if (id === 'Andorra' || id === 'Gibraltar' || id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal' || id === 'portugal' || id === 'andorra' || id === 'france' || id === 'morocco' || id === 'algeria') {
+                                            return '#d1d5db'; // Gray-300 stroke for context
+                                        }
                                         return '#c8b89a';
                                     };
 

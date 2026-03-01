@@ -3,8 +3,8 @@
 import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
-import { SPANISH_COMMUNITIES_PATHS } from '@/components/games/spanish-communities-paths';
-import { SPAIN_NEIGHBORS_PATHS } from '@/components/games/data/spain-neighbors-paths';
+import { SPANISH_COMMUNITIES_PATHS } from '@/components/games/spanish-communities-paths-unified';
+import { CONTEXT_PATHS } from '@/components/games/map-context-unified';
 
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
@@ -25,24 +25,35 @@ export default function MapaComunidadesClient() {
         return items;
     }, []);
 
-    // Combine Spain communities + neighboring countries as one background object (for the sea hole)
+    // Spain communities and context countries as background
     const backgroundPaths = useMemo(() => ({
-        ...SPAIN_NEIGHBORS_PATHS,          // Portugal, France, Morocco, Andorra (rendered first = below)
-        ...SPANISH_COMMUNITIES_PATHS,      // Spain regions on top
+        ...SPANISH_COMMUNITIES_PATHS,      // Spain regions
+        portugal: CONTEXT_PATHS.portugal,  // Portugal context
+        france: CONTEXT_PATHS.france,      // France context
+        andorra: CONTEXT_PATHS.andorra,    // Andorra context
+        morocco: CONTEXT_PATHS.morocco,    // Morocco context
+        algeria: CONTEXT_PATHS.algeria,    // Algeria context (Morocco neighbor)
     }), []);
 
     // Sea and Ocean labels
     const seaLabels = useMemo(() => [
-        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 243, y: 20, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
-        { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 580, y: 418, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
-        { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -128, y: 240, className: 'fill-sky-900/40 italic font-medium', fontSize: '13px' },
+        { id: 'mar-cantabrico', name: 'Mar Cantábrico', x: 265, y: 0, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'mar-mediterraneo', name: 'Mar Mediterráneo', x: 530, y: 466, className: 'fill-sky-800/40 italic font-medium', fontSize: '13px' },
+        { id: 'oceano-atlantico-1', name: 'Océano Atlántico', x: -92, y: 264, className: 'fill-sky-900/40 italic font-medium', fontSize: '13px' },
     ], []);
 
 
     // Canary Islands transformation
-    const backgroundTransforms = {
-        canarias: "translate(-220, 40)"
-    };
+    const backgroundTransforms = useMemo(() => ({
+        canarias: 'translate(217.5, -88) scale(0.65)'
+    }), []);
+
+    const insetFrame = useMemo(() => ({
+        x: -85,
+        y: 500,
+        width: 165,
+        height: 120
+    }), []);
 
     return (
         <PhysicalGameLayout
@@ -59,9 +70,9 @@ export default function MapaComunidadesClient() {
                 backgroundPaths={backgroundPaths}
                 backgroundLabels={seaLabels}
                 backgroundTransforms={backgroundTransforms}
+                insetFrame={insetFrame}
                 theme="light"
-                insetFrame={{ x: -190, y: 510, width: 280, height: 180 }}
-                viewBox="-140 0 840 700"
+                viewBox="-92 -41 675 675"
                 colorTheme="emerald"
                 taskId={taskId}
                 activityId="mapa-comunidades"

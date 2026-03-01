@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
 import { RIVERS_PATHS } from '@/components/games/data/rivers-paths';
-import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from '@/components/games/spanish-communities-paths';
+import { SPANISH_COMMUNITIES_PATHS, REGION_DISPLAY_NAMES } from '@/components/games/spanish-communities-paths-unified';
 import { SPAIN_NEIGHBORS_PATHS } from '@/components/games/data/spain-neighbors-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';

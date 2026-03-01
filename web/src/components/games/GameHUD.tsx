@@ -201,7 +201,13 @@ export default function GameHUD({
                     // 3. Mis mejores marcas personales (siempre reales)
                     let myBestScore: number | null = null;
                     let myBestTime: number | null = null;
-                    const { data: { session } } = await supabase.auth.getSession();
+
+                    const sessionResult = await supabase.auth.getSession().catch(err => {
+                        if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                        throw err;
+                    });
+
+                    const session = sessionResult?.data?.session;
                     if (session?.user && isMounted) {
                         const { data: mine } = await supabase
                             .from('activity_scores')
@@ -233,7 +239,12 @@ export default function GameHUD({
 
     const handleOpenRating = async () => {
         try {
-            const { data: { session } } = await supabase.auth.getSession();
+            const sessionResult = await supabase.auth.getSession().catch(err => {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                throw err;
+            });
+
+            const session = sessionResult?.data?.session;
             if (!session) {
                 setHudMessage(language === 'es' ? 'Inicia sesión para valorar la actividad' : 'Log in to rate the activity');
                 setTimeout(() => setHudMessage(null), 3000);
@@ -241,7 +252,7 @@ export default function GameHUD({
             }
             setIsRatingModalOpen(true);
         } catch (err: any) {
-            if (err?.name === 'AbortError') return;
+            if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
             console.error('Error checking session for rating:', err);
         }
     };
