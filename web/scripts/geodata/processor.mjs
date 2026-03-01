@@ -156,7 +156,7 @@ async function processLayer(configPath) {
     // If file exists, try to merge
     if (fs.existsSync(outputPath)) {
         let existingContent = fs.readFileSync(outputPath, 'utf8');
-        const exportRegex = new RegExp(`export const ${config.exportName}: [^=]+ = {[\\s\\S]*?};?\\n?`, 'g');
+        const exportRegex = new RegExp(`export const ${config.exportName}: [^=]+ = {[\\s\\S]*?};\\n?`, 'g');
 
         if (existingContent.match(exportRegex)) {
             // Replace existing export

@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import WorldDrillDownGame from '@/components/games/WorldDrillDownGame';
-import PageContainer from '@/components/layout/PageContainer';
+
+import ContentWrapper from '@/components/ContentWrapper';
 
 export default function CountryDrillDownPage() {
     const params = useParams();
@@ -61,7 +62,7 @@ export default function CountryDrillDownPage() {
 
     if (error) {
         return (
-            <PageContainer>
+            <ContentWrapper>
                 <div className="flex flex-col items-center justify-center min-h-[400px] text-white">
                     <h2 className="text-2xl font-bold mb-4">{error}</h2>
                     <button
@@ -71,7 +72,7 @@ export default function CountryDrillDownPage() {
                         Volver
                     </button>
                 </div>
-            </PageContainer>
+            </ContentWrapper>
         );
     }
 
@@ -82,7 +83,7 @@ export default function CountryDrillDownPage() {
     const countryDisplayName = country.charAt(0).toUpperCase() + country.slice(1);
 
     return (
-        <PageContainer>
+        <ContentWrapper>
             <WorldDrillDownGame
                 countryName={countryDisplayName}
                 continentName={continentDisplayName}
@@ -90,6 +91,6 @@ export default function CountryDrillDownPage() {
                 riversPaths={data.rivers}
                 mountainsPaths={data.mountains}
             />
-        </PageContainer>
+        </ContentWrapper>
     );
 }
