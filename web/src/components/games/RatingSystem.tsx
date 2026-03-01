@@ -25,7 +25,8 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
         const fetchExistingRating = async () => {
             try {
                 const sessionResult = await supabase.auth.getSession().catch(err => {
-                    if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                    const errStr = err?.message || (typeof err === 'string' ? err : '');
+                    if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
                     throw err;
                 });
 
@@ -90,7 +91,8 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
 
         try {
             const sessionResult = await supabase.auth.getSession().catch(err => {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
                 throw err;
             });
 

@@ -60,8 +60,9 @@ export default function ProfilePage() {
 
                 setEmail(session.user.email || '');
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
-                console.error("Profile page auth error:", err);
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                if (err?.name === 'AbortError' || errStr.includes('aborted')) return;
+                console.error("Profile page auth error:", errStr);
             } finally {
                 if (isMounted) setLoading(false);
             }

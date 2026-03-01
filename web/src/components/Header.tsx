@@ -81,7 +81,8 @@ export default function Header() {
                     if (isMounted && p) setProfile(p);
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return; // Expected in React StrictMode
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                if (err?.name === 'AbortError' || errStr.includes('aborted') || errStr.includes('signal is aborted')) return; // Expected in React StrictMode
                 console.warn("Supabase auth session error (expected if token expired):", err.message);
                 if (err.message?.includes('Refresh Token Not Found')) {
                     // Force sign out to clear local storage if token is corrupted

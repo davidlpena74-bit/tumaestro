@@ -203,7 +203,8 @@ export default function GameHUD({
                     let myBestTime: number | null = null;
 
                     const sessionResult = await supabase.auth.getSession().catch(err => {
-                        if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                        const errStr = err?.message || (typeof err === 'string' ? err : '');
+                        if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
                         throw err;
                     });
 
@@ -240,7 +241,8 @@ export default function GameHUD({
     const handleOpenRating = async () => {
         try {
             const sessionResult = await supabase.auth.getSession().catch(err => {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return { data: { session: null } };
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
                 throw err;
             });
 

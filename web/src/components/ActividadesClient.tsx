@@ -116,7 +116,9 @@ export default function ActividadesClient() {
                     }
                 }
             } catch (err: any) {
-                console.warn("Actividades auth session error:", err.message);
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                if (err?.name === 'AbortError' || errStr.includes('aborted') || errStr.includes('signal is aborted')) return;
+                console.warn("Actividades auth session error:", errStr);
             }
         };
         checkUser();

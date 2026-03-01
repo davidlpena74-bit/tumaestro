@@ -50,7 +50,8 @@ export function useGameLogic({
         try {
             // Check session with a catch specifically for AbortError which can happen during HMR or fast navigation
             const sessionResult = await supabase.auth.getSession().catch(err => {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return { data: { session: null } };
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                if (err?.name === 'AbortError' || errStr.includes('aborted') || errStr.includes('signal is aborted')) return { data: { session: null } };
                 throw err;
             });
 

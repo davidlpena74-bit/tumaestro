@@ -137,11 +137,12 @@ export default function PhysicalMapGame({
 
         // Safety: Ignore Supabase Auth AbortErrors that sometimes bubble up during fast unmounting/HMR
         const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+            const errStr = event.reason?.message || (typeof event.reason === 'string' ? event.reason : '');
             if (event.reason?.name === 'AbortError' ||
-                event.reason?.message?.includes('aborted without reason') ||
-                event.reason?.message?.includes('signal is aborted')) {
+                errStr.includes('aborted without reason') ||
+                errStr.includes('signal is aborted')) {
                 event.preventDefault();
-                console.debug('Swallowed Supabase AbortError:', event.reason.message);
+                console.debug('Swallowed Supabase AbortError:', errStr);
             }
         };
 
