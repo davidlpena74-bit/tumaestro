@@ -236,7 +236,7 @@ export default function GameHUD({
             isMounted = false;
             abortController.abort();
         };
-    }, [activityId, gameState, language]);
+    }, [activityId, language]);
 
     const handleOpenRating = async () => {
         try {

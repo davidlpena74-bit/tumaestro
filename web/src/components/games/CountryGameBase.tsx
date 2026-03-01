@@ -39,6 +39,8 @@ interface CountryGameProps {
     backgroundPaths?: Record<string, string>;
 }
 
+const DEFAULT_PAN = { x: 0, y: 0 };
+
 export default function CountryGameBase({
     title,
     description,
@@ -48,7 +50,7 @@ export default function CountryGameBase({
     initialTime = 180,
     colorTheme = "emerald",
     initialZoom = 1,
-    initialPan = { x: 0, y: 0 },
+    initialPan = DEFAULT_PAN,
     elevationHeight = 8,
     taskId = null,
     activityId,
@@ -91,7 +93,7 @@ export default function CountryGameBase({
     useEffect(() => {
         setZoom(initialZoom);
         setPan(initialPan);
-    }, [initialZoom, initialPan]);
+    }, [initialZoom, initialPan.x, initialPan.y]);
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);

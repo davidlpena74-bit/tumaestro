@@ -74,6 +74,8 @@ interface PhysicalMapGameProps {
     mountainBlur?: number;
 }
 
+const DEFAULT_PAN = { x: 0, y: 0 };
+
 export default function PhysicalMapGame({
     title,
     description,
@@ -83,7 +85,7 @@ export default function PhysicalMapGame({
     backgroundLabels = [],
     viewBox = "0 0 800 600",
     initialZoom = 1,
-    initialPan = { x: 0, y: 0 },
+    initialPan = DEFAULT_PAN,
     elevationHeight = 8,
     colorTheme = "teal",
     taskId = null,
@@ -131,7 +133,7 @@ export default function PhysicalMapGame({
     useEffect(() => {
         setZoom(initialZoom);
         setPan(initialPan);
-    }, [initialZoom, initialPan]);
+    }, [initialZoom, initialPan.x, initialPan.y]);
 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);

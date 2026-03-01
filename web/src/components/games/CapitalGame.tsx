@@ -37,13 +37,15 @@ interface CapitalGameProps {
     activityId?: string;
 }
 
+const DEFAULT_PAN = { x: 0, y: 0 };
+
 export default function CapitalGame({
     paths,
     targetList,
     title,
     description,
     initialZoom = 1.5,
-    initialPan = { x: 0, y: 0 },
+    initialPan = DEFAULT_PAN,
     centroids,
     icon,
     colorTheme = "emerald",
@@ -91,7 +93,7 @@ export default function CapitalGame({
     useEffect(() => {
         setZoom(initialZoom);
         setPan(initialPan);
-    }, [initialZoom, initialPan]);
+    }, [initialZoom, initialPan.x, initialPan.y]);
 
     // Hover state for points
     const [hoveredCapital, setHoveredCapital] = useState<string | null>(null);
