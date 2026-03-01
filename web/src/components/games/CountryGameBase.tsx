@@ -96,9 +96,25 @@ export default function CountryGameBase({
             .filter(Boolean);
         setRemainingCountries(available);
 
+        // Safety: Ignore Supabase Auth AbortErrors that sometimes bubble up during fast unmounting/HMR
+        const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+            const errStr = event.reason?.message || (typeof event.reason === 'string' ? event.reason : '');
+            if (event.reason?.name === 'AbortError' ||
+                errStr.includes('aborted without reason') ||
+                errStr.includes('signal is aborted')) {
+                event.preventDefault();
+                console.debug('Swallowed Supabase AbortError:', errStr);
+            }
+        };
+
+        window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
         const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
         document.addEventListener('fullscreenchange', handleFsChange);
-        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+        return () => {
+            window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+            document.removeEventListener('fullscreenchange', handleFsChange);
+        };
     }, [pathData, nameMapping]);
 
     const startGame = (mode?: 'challenge' | 'practice') => {
