@@ -35,8 +35,8 @@ export default function CapitalesUeClient() {
                 targetList={targetList}
                 title={t.gamesPage.gameTitles.euCapitalsMap}
                 description={t.gamesPage.gameTitles.euCapitalsMapDesc}
-                initialPan={{ x: 80, y: -80 }}
-                initialZoom={1.46}
+                initialPan={{ x: 50, y: -170 }}
+                initialZoom={1.98}
                 colorTheme="emerald"
                 icon={<MapPin className="w-8 h-8 text-white" />}
             />

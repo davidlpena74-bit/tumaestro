@@ -87,6 +87,12 @@ export default function CapitalGame({
     const [isDragging, setIsDragging] = useState(false);
     const dragStart = useRef({ x: 0, y: 0 });
 
+    // Sync if props change or on remount
+    useEffect(() => {
+        setZoom(initialZoom);
+        setPan(initialPan);
+    }, [initialZoom, initialPan]);
+
     // Hover state for points
     const [hoveredCapital, setHoveredCapital] = useState<string | null>(null);
 
@@ -523,10 +529,10 @@ export default function CapitalGame({
                                     <path d="M0,20 Q10,15 20,20 T40,20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" opacity="0.1" />
                                 </pattern>
                             </defs>
+                            {/* 1. LOWER SEA LAYER */}
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
+                            <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
-                                {/* 1. LOWER SEA LAYER */}
-                                <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-gradient)" />
-                                <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
                                 {/* Layer 1: Country Paths */}
                                 {Object.entries(paths).map(([engName, pathD]) => {
                                     const spanishName = nameMapping[engName];

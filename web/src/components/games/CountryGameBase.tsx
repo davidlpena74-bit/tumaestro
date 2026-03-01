@@ -87,6 +87,12 @@ export default function CountryGameBase({
     const dragStart = useRef({ x: 0, y: 0 });
     const isClick = useRef(true);
 
+    // Sync if props change or on remount
+    useEffect(() => {
+        setZoom(initialZoom);
+        setPan(initialPan);
+    }, [initialZoom, initialPan]);
+
     const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
