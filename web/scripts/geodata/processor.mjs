@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { projectToSpain } from './modules/Projection.mjs';
+import { projectCoordinates, getD3Projection } from './modules/Projection.mjs';
 import { simplifyPath } from './modules/Simplifier.mjs';
+import topojson from 'topojson-client';
+import { geoPath } from 'd3-geo';
 
 /**
  * Tu Maestro Geo-Processor
@@ -21,8 +23,15 @@ async function processLayer(configPath) {
         return;
     }
 
-    const rawData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
-    const features = rawData.features || [];
+    const fileData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+    let features;
+    if (fileData.type === 'Topology') {
+        const layer = config.topojsonLayer || Object.keys(fileData.objects)[0];
+        const rawData = topojson.feature(fileData, fileData.objects[layer]);
+        features = rawData.features || [];
+    } else {
+        features = fileData.features || [];
+    }
     const results = {};
 
     config.targets.forEach(target => {
@@ -41,18 +50,30 @@ async function processLayer(configPath) {
         if (!name) return;
 
         const normName = normalize(name);
-        let matchedKey = config.targets.find(target => {
-            const normTarget = normalize(target);
-            return normName === normTarget || normName.includes(normTarget);
-        });
+        // 1. Try exact matches first (targets then mappings)
+        let matchedKey = config.targets.find(target => normalize(target) === normName);
 
-        // If not found in simple targets, check mappings
+        if (!matchedKey && config.mappings) {
+            matchedKey = Object.keys(config.mappings).find(key => {
+                const aliases = config.mappings[key];
+                return aliases.some(alias => normalize(alias) === normName);
+            });
+        }
+
+        // 2. If no exact match, try include matches
+        if (!matchedKey) {
+            matchedKey = config.targets.find(target => {
+                const normTarget = normalize(target);
+                return normName.includes(normTarget);
+            });
+        }
+
         if (!matchedKey && config.mappings) {
             matchedKey = Object.keys(config.mappings).find(key => {
                 const aliases = config.mappings[key];
                 return aliases.some(alias => {
                     const normAlias = normalize(alias);
-                    return normName === normAlias || normName.includes(normAlias);
+                    return normName.includes(normAlias);
                 });
             });
         }
@@ -61,8 +82,27 @@ async function processLayer(configPath) {
             const geom = f.geometry;
             if (!geom) return;
 
+            if (config.useD3Path) {
+                const proj = getD3Projection(config.projection);
+                if (proj) {
+                    const pathGenerator = geoPath(proj);
+                    const pathStr = pathGenerator(geom);
+                    if (pathStr) {
+                        if (config.itemType === 'mountain') {
+                            results[matchedKey].push({ path: pathStr, ridge: pathStr });
+                        } else {
+                            results[matchedKey].push(pathStr);
+                        }
+                    }
+                }
+                return; // skip manual geometry processing below
+            }
+
             const processGeometry = (coords) => {
-                const projected = coords.map(p => projectToSpain(p[0], p[1]));
+                const projected = coords.map(p => {
+                    const pr = projectCoordinates(p[0], p[1], config.projection || 'spain');
+                    return pr || p;
+                });
                 return simplifyPath(projected, config.tolerance || 0.5);
             };
 
@@ -73,6 +113,16 @@ async function processLayer(configPath) {
                 geom.coordinates.forEach(coords => {
                     lines.push(processGeometry(coords));
                 });
+            } else if (geom.type === 'Polygon') {
+                geom.coordinates.forEach(ring => {
+                    lines.push(processGeometry(ring));
+                });
+            } else if (geom.type === 'MultiPolygon') {
+                geom.coordinates.forEach(polygon => {
+                    polygon.forEach(ring => {
+                        lines.push(processGeometry(ring));
+                    });
+                });
             } else if (geom.type === 'Point' && config.itemType === 'mountain') {
                 // Convert single peaks to a small simulated ridge/area if needed? 
                 // For now, let's ignore single points for major systems unless they are vital.
@@ -81,7 +131,8 @@ async function processLayer(configPath) {
             if (lines.length > 0) {
                 const ridgeStr = lines.map(line => {
                     if (line.length < 2) return "";
-                    return 'M' + line.map(p => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('L');
+                    const isPolygon = geom.type.includes('Polygon');
+                    return 'M' + line.map(p => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('L') + (isPolygon ? 'Z' : '');
                 }).join('');
 
                 if (config.itemType === 'mountain') {
@@ -111,10 +162,23 @@ async function processLayer(configPath) {
     });
 
     const typeStr = config.itemType === 'mountain' ? 'Record<string, { path: string, ridge: string }>' : 'Record<string, string>';
-    const outputContent = `// Generated with Tu Maestro Geo-Processor
-// Source: ${config.source}
-export const ${config.exportName}: ${typeStr} = ${JSON.stringify(finalPaths, null, 2)};
-`;
+    const exportStatement = `export const ${config.exportName}: ${typeStr} = ${JSON.stringify(finalPaths, null, 2)};`;
+
+    let outputContent = `// Generated with Tu Maestro Geo-Processor\n// Source: ${config.source}\n${exportStatement}\n`;
+
+    // If file exists, try to merge
+    if (fs.existsSync(outputPath)) {
+        let existingContent = fs.readFileSync(outputPath, 'utf8');
+        const exportRegex = new RegExp(`export const ${config.exportName}: [^=]+ = {[\\s\\S]*?};?\\n?`, 'g');
+
+        if (existingContent.match(exportRegex)) {
+            // Replace existing export
+            outputContent = existingContent.replace(exportRegex, exportStatement + '\n');
+        } else {
+            // Append to existing file
+            outputContent = existingContent.trim() + '\n\n' + exportStatement + '\n';
+        }
+    }
 
     // Ensure directory exists
     const dirname = path.dirname(outputPath);
@@ -129,9 +193,15 @@ export const ${config.exportName}: ${typeStr} = ${JSON.stringify(finalPaths, nul
 
 // CLI Entry point
 const configDir = 'web/scripts/geodata/config';
+const arg = process.argv[2];
+
 if (fs.existsSync(configDir)) {
-    const configs = fs.readdirSync(configDir).filter(f => f.endsWith('.json'));
+    const configs = fs.readdirSync(configDir)
+        .filter(f => f.endsWith('.json'))
+        .filter(f => !arg || f.includes(arg));
+
     for (const file of configs) {
         await processLayer(path.join(configDir, file));
     }
 }
+

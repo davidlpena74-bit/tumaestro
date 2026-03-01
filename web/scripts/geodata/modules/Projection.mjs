@@ -18,6 +18,8 @@ function mercatorRaw(lon, lat) {
     return [λ, Math.log(Math.tan(Math.PI / 4 + φ / 2))];
 }
 
+import { geoMercator } from 'd3-geo';
+
 /**
  * Proyecta coordenadas [lon, lat] al sistema unificado de la aplicación.
  */
@@ -25,4 +27,37 @@ export function projectToSpain(lon, lat) {
     const [u, v] = mercatorRaw(lon, lat);
     const { ax, bx, cx, ay, by, cy } = SPAIN_COEFFICIENTS;
     return [ax * u + bx * v + cx, ay * u + by * v + cy];
+}
+
+let europeProj;
+function getEuropeProj() {
+    if (!europeProj) {
+        const boundingBox = {
+            type: "Feature",
+            geometry: {
+                type: "LineString",
+                coordinates: [
+                    [-25, 30], // SW
+                    [60, 30],  // SE
+                    [60, 72],  // NE
+                    [-25, 72]  // NW
+                ]
+            }
+        };
+        europeProj = geoMercator().fitExtent([[40, 40], [760, 560]], boundingBox);
+    }
+    return europeProj;
+}
+
+export function projectCoordinates(lon, lat, type = 'spain') {
+    if (type === 'europe') {
+        const coords = getEuropeProj()([lon, lat]);
+        return coords ? [coords[0], coords[1]] : [0, 0];
+    }
+    return projectToSpain(lon, lat);
+}
+
+export function getD3Projection(type) {
+    if (type === 'europe') return getEuropeProj();
+    return null;
 }

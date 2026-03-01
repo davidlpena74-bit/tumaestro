@@ -310,17 +310,6 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
-                            id: 'capitales-ue',
-                            title: t.gamesPage.gameTitles.euCapitalsMap,
-                            description: t.gamesPage.gameTitles.euCapitalsMapDesc,
-                            href: '/actividades/capitales-ue',
-                            icon: MapTrifold,
-                            color: 'from-emerald-500 to-teal-600',
-                            grade: '5º Prim.',
-                            region: t.gamesPage.regions.europe,
-                            gameType: t.gamesPage.gameTypes.map
-                        },
-                        {
                             id: 'capitales-europa',
                             title: t.gamesPage.gameTitles.europeCapitalsMap,
                             description: t.gamesPage.gameTitles.europeCapitalsMapDesc,
@@ -342,7 +331,6 @@ export default function ActividadesClient() {
                             region: t.gamesPage.regions.europe,
                             gameType: t.gamesPage.gameTypes.map
                         },
-
                         {
                             id: 'capitales-europa-match',
                             title: t.gamesPage.gameTitles.europeCapitalsPuzzle,
@@ -374,6 +362,33 @@ export default function ActividadesClient() {
                             color: 'from-emerald-500 to-teal-600',
                             grade: '5º Prim.',
                             region: t.gamesPage.regions.europe,
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                },
+                {
+                    title: t.gamesPage.regions.eu,
+                    games: [
+                        {
+                            id: 'paises-ue',
+                            title: t.gamesPage.gameTitles.euMap,
+                            description: t.gamesPage.gameTitles.euMapDesc,
+                            href: '/actividades/paises-ue',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.eu,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
+                            id: 'capitales-ue',
+                            title: t.gamesPage.gameTitles.euCapitalsMap,
+                            description: t.gamesPage.gameTitles.euCapitalsMapDesc,
+                            href: '/actividades/capitales-ue',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.eu,
                             gameType: t.gamesPage.gameTypes.map
                         }
                     ]

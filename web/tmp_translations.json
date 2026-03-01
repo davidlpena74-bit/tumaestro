@@ -1,0 +1,24 @@
+{
+    "physical": {
+        "mountains": {
+            "Alpes": "Alpes",
+            "Pirineos": "Pirineos",
+            "Apeninos": "Apeninos",
+            "Cárpatos": "Cárpatos",
+            "Cáucaso": "Cáucaso",
+            "Urales": "Montes Urales",
+            "Montes Escandinavos": "Montes Escandinavos",
+            "Alpes Dináricos": "Alpes Dináricos",
+            "Montes Balcanes": "Montes Balcanes",
+            "Macizo Central": "Macizo Central de Francia",
+            "Sudetes": "Montes Sudetes",
+            "Ardenas": "Bosque de las Ardenas",
+            "Vosgos": "Montes Vosgos",
+            "Montes Tatras": "Montes Tatras",
+            "Montes Pindo": "Montes Pindo",
+            "Harz": "Montes de Harz",
+            "Grampianos": "Montes Grampianos",
+            "Cámbricos": "Montes Cámbricos"
+        }
+    }
+}

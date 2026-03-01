@@ -1,0 +1,70 @@
+{
+    "id": "europe-seas",
+    "source": "public/maps/world-marine.json",
+    "output": "src/components/games/data/europe-physical-paths.ts",
+    "exportName": "EUROPE_SEAS_PATHS",
+    "itemType": "polygon",
+    "projection": "europe",
+    "useD3Path": true,
+    "nameProperty": "name",
+    "targets": [],
+    "mappings": {
+        "Mar Mediterráneo": [
+            "Mediterranean Sea",
+            "Mediterranean"
+        ],
+        "Mar Cantábrico": [
+            "Bay of Biscay",
+            "Golfo de Vizcaya",
+            "Cantábrico"
+        ],
+        "Mar Negro": [
+            "Black Sea"
+        ],
+        "Mar Báltico": [
+            "Baltic Sea"
+        ],
+        "Mar Caspio": [
+            "Caspian Sea"
+        ],
+        "Mar Adriático": [
+            "Adriatic Sea"
+        ],
+        "Mar Tirreno": [
+            "Tyrrhenian Sea"
+        ],
+        "Mar Jónico": [
+            "Ionian Sea"
+        ],
+        "Mar Egeo": [
+            "Aegean Sea"
+        ],
+        "Mar de Alborán": [
+            "Alboran Sea"
+        ],
+        "Mar de Liguria": [
+            "Ligurian Sea"
+        ],
+        "Mar del Norte": [
+            "North Sea"
+        ],
+        "Mar de Noruega": [
+            "Norwegian Sea"
+        ],
+        "Canal de la Mancha": [
+            "English Channel"
+        ],
+        "Mar de Azov": [
+            "Sea of Azov"
+        ],
+        "Mar de Irlanda": [
+            "Irish Sea"
+        ],
+        "Mar Blanco": [
+            "White Sea"
+        ],
+        "Mar de Barents": [
+            "Barents Sea"
+        ]
+    }
+}

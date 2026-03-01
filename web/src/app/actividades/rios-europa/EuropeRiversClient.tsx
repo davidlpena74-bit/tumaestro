@@ -43,8 +43,8 @@ export default function EuropeRiversClient() {
                 backgroundPaths={EUROPE_PATHS}
                 backgroundLabels={countryLabels}
                 viewBox="0 0 800 600"
-                initialZoom={1.8}
-                initialPan={{ x: 40, y: -130 }}
+                initialZoom={1.1}
+                initialPan={{ x: 0, y: 0 }}
                 theme="light"
                 elevationHeight={5}
                 colorTheme="blue"

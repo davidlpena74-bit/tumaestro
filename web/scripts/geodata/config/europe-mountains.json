@@ -1,0 +1,67 @@
+{
+    "id": "europe-mountains",
+    "source": "public/maps/world-physical-regions.json",
+    "output": "src/components/games/data/europe-physical-paths.ts",
+    "exportName": "EUROPE_MOUNTAINS_PATHS",
+    "itemType": "mountain",
+    "projection": "europe",
+    "useD3Path": true,
+    "nameProperty": "NAME",
+    "targets": [],
+    "mappings": {
+        "Alpes": [
+            "ALPS"
+        ],
+        "Pirineos": [
+            "PYRENEES"
+        ],
+        "Apeninos": [
+            "APPENNINI"
+        ],
+        "Cárpatos": [
+            "CARPATHIAN MOUNTAINS"
+        ],
+        "Cáucaso": [
+            "CAUCASUS MTS."
+        ],
+        "Urales": [
+            "URAL MOUNTAINS"
+        ],
+        "Montes Escandinavos": [
+            "KJØLEN MOUNTAINS"
+        ],
+        "Alpes Dináricos": [
+            "Dinaric Alps"
+        ],
+        "Montes Balcanes": [
+            "Balkan Mts."
+        ],
+        "Macizo Central": [
+            "Massif Central"
+        ],
+        "Sudetes": [
+            "Sudetes Mts."
+        ],
+        "Ardenas": [
+            "Ardennes"
+        ],
+        "Vosgos": [
+            "Vosges"
+        ],
+        "Montes Tatras": [
+            "Tatra Mts."
+        ],
+        "Montes Pindo": [
+            "Pindus Mts."
+        ],
+        "Harz": [
+            "Harz"
+        ],
+        "Grampianos": [
+            "Grampian Mts."
+        ],
+        "Cámbricos": [
+            "Cambrian Mts."
+        ]
+    }
+}

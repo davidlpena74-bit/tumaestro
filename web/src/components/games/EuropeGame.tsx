@@ -2,7 +2,6 @@
 
 import CountryGameBase from './CountryGameBase';
 import { EUROPE_PATHS } from './data/europe-paths';
-import { EUROPE_NEIGHBORS_PATHS } from './data/europe-neighbors-paths';
 import { EUROPE_MAPPING } from './data/country-translations';
 import { EUROPE_SEAS_PATHS } from './data/europe-physical-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';
@@ -51,8 +50,8 @@ export default function EuropeGame({ taskId = null, activityId }: { taskId?: str
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.98}
-            initialPan={{ x: 50, y: -170 }}
+            initialZoom={1.1}
+            initialPan={{ x: 0, y: 0 }}
             elevationHeight={6}
             backgroundLabels={seaLabels}
             taskId={taskId}

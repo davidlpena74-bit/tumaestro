@@ -1,0 +1,100 @@
+{
+    "id": "europe-rivers",
+    "source": "public/maps/world-rivers.json",
+    "topojsonLayer": "rivers",
+    "output": "src/components/games/data/europe-rivers-paths.ts",
+    "exportName": "EUROPE_RIVERS_PATHS",
+    "itemType": "river",
+    "projection": "europe",
+    "useD3Path": true,
+    "tolerance": 0.1,
+    "nameProperty": "name",
+    "targets": [],
+    "mappings": {
+        "Danubio": [
+            "Danube",
+            "Donau"
+        ],
+        "Rin": [
+            "Rhine",
+            "Rhein",
+            "Rhin"
+        ],
+        "Volga": [
+            "Volga"
+        ],
+        "Sena": [
+            "Seine"
+        ],
+        "Támesis": [
+            "Thames"
+        ],
+        "Tajo": [
+            "Tajo",
+            "Tagus",
+            "Tejo"
+        ],
+        "Ebro": [
+            "Ebro"
+        ],
+        "Loira": [
+            "Loire"
+        ],
+        "Ródano": [
+            "Rhone",
+            "Rhône"
+        ],
+        "Elba": [
+            "Elbe"
+        ],
+        "Vístula": [
+            "Vistula"
+        ],
+        "Oder": [
+            "Oder"
+        ],
+        "Duero": [
+            "Duero",
+            "Douro"
+        ],
+        "Dniéper": [
+            "Dnipro",
+            "Dnieper",
+            "Dnepre"
+        ],
+        "Don": [
+            "Don"
+        ],
+        "Ural": [
+            "Ural"
+        ],
+        "Po": [
+            "Po"
+        ],
+        "Dniéster": [
+            "Dniester"
+        ],
+        "Tisza": [
+            "Tisa",
+            "Tisza"
+        ],
+        "Drava": [
+            "Drava"
+        ],
+        "Garona": [
+            "Garonne"
+        ],
+        "Dvina Septentrional": [
+            "Severnaya Dvina"
+        ],
+        "Pechora": [
+            "Pechora"
+        ],
+        "Daugava": [
+            "Daugava"
+        ],
+        "Neva": [
+            "Neva"
+        ]
+    }
+}
