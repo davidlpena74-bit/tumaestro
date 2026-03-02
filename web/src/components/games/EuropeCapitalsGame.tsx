@@ -77,11 +77,16 @@ export default function EuropeCapitalsGame({ taskId = null, activityId }: { task
         const list = language === 'es' ? EUROPE_LIST : EUROPE_LIST_EN;
         const capitalsData = language === 'es' ? EUROPE_CAPITALS : EUROPE_CAPITALS_EN;
 
-        const pairs: MatchItem[] = list.map((country, idx) => ({
-            country,
-            capital: capitalsData[country] || 'Unknown',
-            id: `pair-${idx}`
-        }));
+        const pairs: MatchItem[] = list.map((country, idx) => {
+            const rawCap = capitalsData[country] || 'Unknown';
+            // @ts-ignore
+            const translatedCap = t.physical?.cities?.[rawCap] || rawCap;
+            return {
+                country,
+                capital: translatedCap,
+                id: `pair-${idx}`
+            };
+        });
 
         const sortedCountries = [...pairs].sort((a, b) => a.country.localeCompare(b.country));
         setCountries(sortedCountries);

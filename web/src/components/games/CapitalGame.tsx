@@ -5,7 +5,7 @@ import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshC
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, ZoomIn, ZoomOut, Maximize, Minimize, Trophy, RefreshCw } from 'lucide-react';
+import { Trophy, Globe, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PATH_TO_SPANISH_NAME, EUROPE_CAPITALS, PATH_TO_ENGLISH_NAME, EUROPE_CAPITALS_EN } from './data/capitals-data';
 import GameHUD from './GameHUD';
@@ -152,7 +152,9 @@ export default function CapitalGame({
         }
         const randomIndex = Math.floor(Math.random() * currentRemaining.length);
         const nextCountry = currentRemaining[randomIndex];
-        const nextCap = capitalsData[nextCountry];
+        const rawCap = capitalsData[nextCountry];
+        // @ts-ignore
+        const nextCap = t.physical?.cities?.[rawCap] || rawCap;
 
         setCurrentCountryName(nextCountry);
         setTargetCapital(nextCap);
@@ -251,9 +253,13 @@ export default function CapitalGame({
         // Safety: Ignore Supabase Auth AbortErrors that sometimes bubble up during fast unmounting/HMR
         const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
             const errStr = event.reason?.message || (typeof event.reason === 'string' ? event.reason : '');
-            if (event.reason?.name === 'AbortError' ||
-                errStr.includes('aborted without reason') ||
-                errStr.includes('signal is aborted')) {
+            const isAbort =
+                event.reason?.name === 'AbortError' ||
+                errStr.includes('aborted') ||
+                errStr.includes('signal is aborted') ||
+                errStr.includes('aborted without reason');
+
+            if (isAbort) {
                 event.preventDefault();
                 console.debug('Swallowed Supabase AbortError:', errStr);
             }
@@ -507,9 +513,6 @@ export default function CapitalGame({
 
                     {/* Controls */}
                     <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
-                        <button onClick={() => setZoom(z => Math.min(z * 1.2, 4))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomIn className="w-5 h-5" /></button>
-                        <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10"><ZoomOut className="w-5 h-5" /></button>
-                        <div className="h-2" />
                         <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
                             {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                         </button>
@@ -556,8 +559,8 @@ export default function CapitalGame({
                                                 handleCountryClick(engName);
                                             }}
                                             animate={{
-                                                fill: isInTargetList ? (hoveredCapital === engName ? '#e8e4d8' : '#f5edda') : '#e8e4d8',
-                                                opacity: 1
+                                                fill: isInTargetList ? (hoveredCapital === engName ? '#e8e4d8' : '#f5edda') : undefined,
+                                                opacity: isInTargetList ? 1 : 1
                                             }}
                                             transition={{ duration: 0.2 }}
                                             style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
@@ -568,7 +571,6 @@ export default function CapitalGame({
                                 {/* Layer 2: Capital Points (Always on top) */}
                                 {Object.entries(paths).map(([engName, pathD]) => {
                                     const spanishName = nameMapping[engName];
-                                    const isTarget = spanishName === currentCountryName;
                                     const isCompleted = spanishName && !remainingCountries.includes(spanishName);
                                     const isFailed = failedCountries.includes(spanishName || '');
                                     const isPlayable = !!spanishName && (targetList ? targetList.includes(spanishName) : true);
@@ -580,42 +582,62 @@ export default function CapitalGame({
 
                                     if (!isInTargetList || !centroid) return null;
 
+                                    // Special callouts for tiny countries
+                                    const callouts: Record<string, { x: number, y: number }> = {
+                                        "Vatican": { x: 371, y: 476 }
+                                    };
+                                    const connector = callouts[engName];
+
                                     return (
-                                        <g
-                                            key={`point-${engName}`}
-                                            className="cursor-pointer pointer-events-auto"
-                                            onMouseEnter={() => setHoveredCapital(engName)}
-                                            onMouseLeave={() => setHoveredCapital(null)}
-                                            onClick={(e: any) => {
-                                                e.stopPropagation();
-                                                handleCountryClick(engName);
-                                            }}
-                                        >
-                                            {/* Hit Area (Invisible but larger) */}
-                                            <circle
-                                                cx={centroid?.x || 0}
-                                                cy={centroid?.y || 0}
-                                                r={12} // Increased hit area
-                                                fill="transparent"
-                                            />
-                                            {/* Visual Dot */}
-                                            <motion.circle
-                                                cx={centroid?.x || 0}
-                                                cy={centroid?.y || 0}
-                                                r={hoveredCapital === engName ? 6 : 4} // React to hover
-                                                className="pointer-events-none"
-                                                initial={false}
-                                                animate={{
-                                                    fill: isCompleted
-                                                        ? (isFailed ? '#ef4444' : '#10b981') // Green if correct, Red if failed (after 3 tries)
-                                                        : (isClicked && !isCompleted ? '#ef4444' : (hoveredCapital === engName ? '#f59e0b' : '#0ea5e9')), // Red on instant error click, Amber on Hover, Blue default
-                                                    opacity: 1,
-                                                    stroke: "white",
-                                                    strokeWidth: hoveredCapital === engName ? 2 : 1, // Thicker stroke on hover
-                                                    scale: hoveredCapital === engName ? 1.2 : 1
+                                        <g key={`point-wrapper-${engName}`}>
+                                            {connector && (
+                                                <line
+                                                    x1={centroid.x}
+                                                    y1={centroid.y}
+                                                    y2={connector.y}
+                                                    x2={connector.x}
+                                                    stroke="#64748b"
+                                                    strokeWidth="0.5"
+                                                    strokeDasharray="2,2"
+                                                    className="opacity-60"
+                                                />
+                                            )}
+                                            <g
+                                                key={`point-${engName}`}
+                                                className="cursor-pointer pointer-events-auto"
+                                                onMouseEnter={() => setHoveredCapital(engName)}
+                                                onMouseLeave={() => setHoveredCapital(null)}
+                                                onClick={(e: any) => {
+                                                    e.stopPropagation();
+                                                    handleCountryClick(engName);
                                                 }}
-                                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                            />
+                                            >
+                                                {/* Hit Area (Invisible but larger) */}
+                                                <circle
+                                                    cx={centroid?.x || 0}
+                                                    cy={centroid?.y || 0}
+                                                    r={12} // Increased hit area
+                                                    fill="transparent"
+                                                />
+                                                {/* Visual Dot */}
+                                                <motion.circle
+                                                    cx={centroid?.x || 0}
+                                                    cy={centroid?.y || 0}
+                                                    r={hoveredCapital === engName ? 6 : 4}
+                                                    className="pointer-events-none"
+                                                    initial={false}
+                                                    animate={{
+                                                        fill: isCompleted
+                                                            ? (isFailed ? '#ef4444' : '#10b981')
+                                                            : (isClicked && !isCompleted ? '#ef4444' : (hoveredCapital === engName ? '#f59e0b' : '#0ea5e9')),
+                                                        opacity: 1,
+                                                        stroke: "white",
+                                                        strokeWidth: hoveredCapital === engName ? 2 : 1,
+                                                        scale: hoveredCapital === engName ? 1.2 : 1
+                                                    }}
+                                                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                                />
+                                            </g>
                                         </g>
                                     );
                                 })}
@@ -624,7 +646,7 @@ export default function CapitalGame({
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

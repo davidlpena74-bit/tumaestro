@@ -34,6 +34,39 @@ export default function PaisesUEClient() {
         return filtered;
     }, [nameMapping, euMembers]);
 
+    // Add manual labels for Oceans
+    const oceanLabels = useMemo(() => [
+        {
+            id: 'atlantic',
+            name: language === 'es' ? 'OCÉANO ATLÁNTICO' : 'ATLANTIC OCEAN',
+            x: 200,
+            y: 450,
+            className: "fill-slate-500/40",
+            fontSize: "5px"
+        },
+        {
+            id: 'arctic',
+            name: language === 'es' ? 'OCÉANO ÁRTICO' : 'ARCTIC OCEAN',
+            x: 400,
+            y: 50,
+            className: "fill-slate-500/40",
+            fontSize: "5px"
+        }
+    ], [language]);
+
+    const backgroundColors = useMemo(() => {
+        const colors: Record<string, string> = {};
+        const contextCountries = ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Israel", "Lebanon", "Syria", "Jordan", "Iraq", "Iran", "Turkmenistan", "Uzbekistan", "Kazakhstan"];
+        Object.keys(EUROPE_PATHS).forEach(id => {
+            if (contextCountries.includes(id)) {
+                colors[id] = "fill-slate-800/30 stroke-slate-800/50";
+            } else {
+                colors[id] = "fill-[#f5edda] stroke-[#c8b89a]";
+            }
+        });
+        return colors;
+    }, []);
+
     return (
         <PhysicalGameLayout
             title={t.gamesPage.gameTitles.euMap}
@@ -54,6 +87,8 @@ export default function PaisesUEClient() {
                 taskId={taskId}
                 activityId="paises-ue"
                 backgroundPaths={EUROPE_PATHS}
+                backgroundColors={backgroundColors}
+                backgroundLabels={oceanLabels}
             />
         </PhysicalGameLayout>
     );

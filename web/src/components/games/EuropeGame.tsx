@@ -28,16 +28,51 @@ export default function EuropeGame({ taskId = null, activityId }: { taskId?: str
     }, [language]);
 
     const seaLabels = useMemo(() => {
-        return Object.entries(EUROPE_SEAS_PATHS).map(([name, path]) => {
+        const seas = Object.entries(EUROPE_SEAS_PATHS).map(([name, path]) => {
             const centroid = calculatePathCentroid(path);
             return {
                 id: name,
-                name: name,
+                name: name.toUpperCase(),
                 x: centroid?.x || 0,
                 y: centroid?.y || 0,
-                fontSize: '6px'
+                fontSize: '4.5px',
+                className: "fill-slate-500/30"
             };
         }).filter(l => l.x !== 0);
+
+        const oceans = [
+            {
+                id: 'atlantic',
+                name: language === 'es' ? 'OCÉANO ATLÁNTICO' : 'ATLANTIC OCEAN',
+                x: 200,
+                y: 450,
+                fontSize: '5px',
+                className: "fill-slate-500/40"
+            },
+            {
+                id: 'arctic',
+                name: language === 'es' ? 'OCÉANO ÁRTICO' : 'ARCTIC OCEAN',
+                x: 400,
+                y: 50,
+                fontSize: '5px',
+                className: "fill-slate-500/40"
+            }
+        ];
+
+        return [...seas, ...oceans];
+    }, [language]);
+
+    const backgroundColors = useMemo(() => {
+        const colors: Record<string, string> = {};
+        const contextCountries = ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Israel", "Lebanon", "Syria", "Jordan", "Iraq", "Iran", "Turkmenistan", "Uzbekistan", "Kazakhstan"];
+        Object.keys(EUROPE_PATHS).forEach(id => {
+            if (contextCountries.includes(id)) {
+                colors[id] = "fill-slate-800/30 stroke-slate-800/50";
+            } else {
+                colors[id] = "fill-[#f5edda] stroke-[#c8b89a]";
+            }
+        });
+        return colors;
     }, []);
 
     return (
@@ -54,6 +89,8 @@ export default function EuropeGame({ taskId = null, activityId }: { taskId?: str
             initialPan={{ x: 50, y: -170 }}
             elevationHeight={6}
             backgroundLabels={seaLabels}
+            backgroundPaths={EUROPE_PATHS}
+            backgroundColors={backgroundColors}
             taskId={taskId}
             activityId={activityId || 'game'}
         />

@@ -4,7 +4,7 @@ import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshC
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
+import { Trophy, Globe, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
 import ActivityRanking from './ActivityRanking';
 import confetti from 'canvas-confetti';
 
@@ -146,9 +146,13 @@ export default function PhysicalMapGame({
         // Safety: Ignore Supabase Auth AbortErrors that sometimes bubble up during fast unmounting/HMR
         const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
             const errStr = event.reason?.message || (typeof event.reason === 'string' ? event.reason : '');
-            if (event.reason?.name === 'AbortError' ||
-                errStr.includes('aborted without reason') ||
-                errStr.includes('signal is aborted')) {
+            const isAbort =
+                event.reason?.name === 'AbortError' ||
+                errStr.includes('aborted') ||
+                errStr.includes('signal is aborted') ||
+                errStr.includes('aborted without reason');
+
+            if (isAbort) {
                 event.preventDefault();
                 console.debug('Swallowed Supabase AbortError:', errStr);
             }
@@ -201,7 +205,15 @@ export default function PhysicalMapGame({
     const getTranslatedName = (name: string) => {
         if (nameMapping[name]) return nameMapping[name];
         // @ts-ignore - dynamic access to translations
-        return t.physical?.regions?.[name] || t.physical?.mountains?.[name] || t.physical?.seas?.[name] || t.physical?.rivers?.[name] || name;
+        return (
+            t.physical?.autonomousCommunities?.[name] ||
+            t.physical?.cities?.[name] ||
+            t.physical?.regions?.[name] ||
+            t.physical?.mountains?.[name] ||
+            t.physical?.seas?.[name] ||
+            t.physical?.rivers?.[name] ||
+            name
+        );
     };
 
     const nextTurn = (currentRemaining: string[]) => {
@@ -666,7 +678,7 @@ export default function PhysicalMapGame({
                                         if (theme === 'dark') return 'fill-[#1e2d40] stroke-[#2d3f55]';
                                         if (backgroundColors && backgroundColors[id]) return backgroundColors[id];
                                         if (id === 'Andorra' || id === 'Gibraltar' || id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal' || id === 'portugal' || id === 'andorra' || id === 'france' || id === 'morocco' || id === 'algeria') {
-                                            return 'fill-[#e5e7eb] stroke-[#d1d5db]'; // Gray-200 fill and Gray-300 stroke for context
+                                            return 'fill-slate-800/30 stroke-slate-800/50';
                                         }
                                         return 'fill-[#f5edda] stroke-[#c8b89a]'; // Spain regions (default)
                                     };
@@ -980,8 +992,8 @@ export default function PhysicalMapGame({
                                             x={labelX}
                                             y={labelY}
                                             className={cn(
-                                                "font-black uppercase pointer-events-none select-none tracking-[0.2em] italic",
-                                                (label as any).className || (theme === 'dark' ? "fill-slate-400/30" : "fill-slate-500/40")
+                                                "pointer-events-none select-none",
+                                                (label as any).className || cn("font-black uppercase tracking-[0.2em] italic", theme === 'dark' ? "fill-slate-400/30" : "fill-slate-500/40")
                                             )}
                                             textAnchor="middle"
                                             style={{ fontSize: (label as any).fontSize || `${baseLabelSize * 1.5}px` }}

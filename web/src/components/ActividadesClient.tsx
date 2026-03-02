@@ -162,7 +162,7 @@ export default function ActividadesClient() {
                 if (isMounted) setRatings(processed);
             } catch (err: any) {
                 // Silently ignore AbortError - it's expected on component unmount
-                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('signal is aborted')) return;
+                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('signal is aborted') || err?.message?.includes('aborted')) return;
                 if (isMounted) console.error('Error fetching ratings:', err);
             }
         };

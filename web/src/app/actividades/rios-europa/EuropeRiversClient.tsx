@@ -14,6 +14,19 @@ export default function EuropeRiversClient() {
     const { t } = useLanguage();
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
+    // Memoize country colors
+    const backgroundColors = useMemo(() => {
+        const colors: Record<string, string> = {};
+        const contextCountries = ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Israel", "Lebanon", "Syria", "Jordan", "Iraq", "Iran", "Turkmenistan", "Uzbekistan", "Kazakhstan"];
+        Object.keys(EUROPE_PATHS).forEach(id => {
+            if (contextCountries.includes(id)) {
+                colors[id] = "fill-slate-800/30 stroke-slate-800/50";
+            } else {
+                colors[id] = "fill-[#f5edda] stroke-[#c8b89a]";
+            }
+        });
+        return colors;
+    }, []);
 
     // Memoize country labels for background context
     const countryLabels = useMemo(() => {
@@ -23,9 +36,11 @@ export default function EuropeRiversClient() {
             return {
                 id,
                 name: (EUROPE_MAPPING as Record<string, string>)[id] || id,
-                ...(centroid || { x: 0, y: 0 })
+                ...(centroid || { x: 0, y: 0 }),
+                className: "fill-slate-500/25 tracking-tight font-medium",
+                fontSize: "6px"
             };
-        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number }[];
+        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number; className?: string; fontSize?: string }[];
     }, []);
 
     return (
@@ -41,6 +56,7 @@ export default function EuropeRiversClient() {
                 items={EUROPE_RIVERS_PATHS}
                 itemType="line"
                 backgroundPaths={EUROPE_PATHS}
+                backgroundColors={backgroundColors}
                 backgroundLabels={countryLabels}
                 viewBox="0 0 800 600"
                 initialZoom={1.98}

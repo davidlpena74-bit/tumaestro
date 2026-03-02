@@ -117,12 +117,18 @@ export default function GameHUD({
                 }
             } catch (err: any) {
                 // Ignore abortion errors
-                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) {
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+
+                if (isAbort) {
                     return;
                 }
                 if (isMounted) {
-                    const errorMessage = err?.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
-                    console.error('Error fetching game ratings:', errorMessage);
+                    console.error('Error fetching game ratings:', errStr);
                 }
             }
         };
@@ -204,7 +210,12 @@ export default function GameHUD({
 
                     const sessionResult = await supabase.auth.getSession().catch(err => {
                         const errStr = err?.message || (typeof err === 'string' ? err : '');
-                        if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
+                        const isAbort =
+                            err?.name === 'AbortError' ||
+                            errStr.includes('aborted') ||
+                            errStr.includes('signal is aborted') ||
+                            errStr.includes('aborted without reason');
+                        if (isAbort) return { data: { session: null } };
                         throw err;
                     });
 
@@ -227,7 +238,13 @@ export default function GameHUD({
                     if (isMounted) setRecords({ bestScore, bestScoreName, bestTime, bestTimeName, myBestScore, myBestTime });
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('AbortError') || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return;
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+                if (isAbort) return;
                 console.error('Records fetch error:', err);
             }
         };
@@ -242,7 +259,12 @@ export default function GameHUD({
         try {
             const sessionResult = await supabase.auth.getSession().catch(err => {
                 const errStr = err?.message || (typeof err === 'string' ? err : '');
-                if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+                if (isAbort) return { data: { session: null } };
                 throw err;
             });
 
@@ -254,7 +276,13 @@ export default function GameHUD({
             }
             setIsRatingModalOpen(true);
         } catch (err: any) {
-            if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
+            const errStr = err?.message || (typeof err === 'string' ? err : '');
+            const isAbort =
+                err?.name === 'AbortError' ||
+                errStr.includes('aborted') ||
+                errStr.includes('signal is aborted') ||
+                errStr.includes('aborted without reason');
+            if (isAbort) return;
             console.error('Error checking session for rating:', err);
         }
     };

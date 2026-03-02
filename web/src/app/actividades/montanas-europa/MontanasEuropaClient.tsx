@@ -16,6 +16,22 @@ export default function MontanasEuropaClient() {
     const { t } = useLanguage();
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
+    // Memoize country colors
+    const backgroundColors = useMemo(() => {
+        const colors: Record<string, string> = {};
+        // List of countries in EUROPE_PATHS that are NOT in the European continent for visual focus
+        const contextCountries = ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Israel", "Lebanon", "Syria", "Jordan", "Iraq", "Iran", "Turkmenistan", "Uzbekistan", "Kazakhstan"];
+
+        Object.keys(EUROPE_PATHS).forEach(id => {
+            if (contextCountries.includes(id)) {
+                colors[id] = "fill-slate-800/30 stroke-slate-800/50";
+            } else {
+                // Ensure France, Portugal and other European countries have the land color
+                colors[id] = "fill-[#f5edda] stroke-[#c8b89a]";
+            }
+        });
+        return colors;
+    }, []);
 
     // Memoize country labels for background context
     const countryLabels = useMemo(() => {
@@ -25,9 +41,11 @@ export default function MontanasEuropaClient() {
             return {
                 id,
                 name: (EUROPE_MAPPING as Record<string, string>)[id] || id,
-                ...(centroid || { x: 0, y: 0 })
+                ...(centroid || { x: 0, y: 0 }),
+                className: "fill-slate-500/25 tracking-tight font-medium",
+                fontSize: "6px"
             };
-        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number }[];
+        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number; className?: string; fontSize?: string }[];
     }, []);
 
     // Combine country labels with sea labels
@@ -39,6 +57,7 @@ export default function MontanasEuropaClient() {
                 name: name,
                 x: centroid?.x || 0,
                 y: centroid?.y || 0,
+                className: "fill-slate-500/25 tracking-tight font-medium",
                 fontSize: '6px'
             };
         }).filter(l => l.x !== 0);
@@ -59,6 +78,7 @@ export default function MontanasEuropaClient() {
                 items={EUROPE_MOUNTAINS_PATHS}
                 itemType="polygon"
                 backgroundPaths={EUROPE_PATHS}
+                backgroundColors={backgroundColors}
                 backgroundLabels={combinedLabels}
                 viewBox="0 0 800 600"
                 initialZoom={1.98}

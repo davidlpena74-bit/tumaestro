@@ -5,7 +5,7 @@ import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshC
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, ZoomIn, ZoomOut, Maximize, Minimize, Timer, RefreshCw, HelpCircle, Trophy } from 'lucide-react';
+import { Globe, Maximize, Minimize, Timer, RefreshCw, HelpCircle, Trophy } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
@@ -37,6 +37,7 @@ interface CountryGameProps {
     identifyMode?: 'countries' | 'capitals';
     backgroundLabels?: { id: string; name: string; x: number; y: number; className?: string; fontSize?: string }[];
     backgroundPaths?: Record<string, string>;
+    backgroundColors?: Record<string, string>;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -56,7 +57,8 @@ export default function CountryGameBase({
     activityId,
     identifyMode = 'countries',
     backgroundLabels = [],
-    backgroundPaths = {}
+    backgroundPaths = {},
+    backgroundColors = {}
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
@@ -107,14 +109,17 @@ export default function CountryGameBase({
         // Safety: Ignore Supabase Auth AbortErrors that sometimes bubble up during fast unmounting/HMR
         const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
             const errStr = event.reason?.message || (typeof event.reason === 'string' ? event.reason : '');
-            if (event.reason?.name === 'AbortError' ||
-                errStr.includes('aborted without reason') ||
-                errStr.includes('signal is aborted')) {
+            const isAbort =
+                event.reason?.name === 'AbortError' ||
+                errStr.includes('aborted') ||
+                errStr.includes('signal is aborted') ||
+                errStr.includes('aborted without reason');
+
+            if (isAbort) {
                 event.preventDefault();
-                console.debug('Swallowed Supabase AbortError:', errStr);
+                console.debug('Swallowed Supabase AbortError in CountryGameBase:', errStr);
             }
         };
-
         window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
         const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
@@ -430,12 +435,6 @@ export default function CountryGameBase({
 
                     {/* Controls */}
                     <div className={cn("absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300", isFullscreen ? 'top-32 md:top-28' : 'top-4')} onMouseDown={e => e.stopPropagation()}>
-                        <button onClick={() => setZoom(z => Math.min(z * 1.2, 5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer"><ZoomIn className="w-5 h-5" /></button>
-                        <button onClick={() => setZoom(z => Math.max(z / 1.2, 0.5))} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer"><ZoomOut className="w-5 h-5" /></button>
-                        <button onClick={() => { setZoom(initialZoom); setPan(initialPan); }} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer" title="Reset View">
-                            <RefreshCwIconGame className="w-5 h-5" />
-                        </button>
-                        <div className="h-2" />
                         <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer">
                             {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                         </button>
@@ -444,25 +443,6 @@ export default function CountryGameBase({
                     {/* HUD / Target Info / Drilldown Selector - MOVED OUTSIDE LOOP FOR SPEED & LOGIC */}
                     <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-sm px-4">
                         <AnimatePresence mode="wait">
-                            {targetCountry && gameState === 'playing' && (
-                                <motion.div
-                                    key={targetCountry}
-                                    initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                                    className="bg-slate-900/80 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl text-center"
-                                >
-                                    <div className="text-gray-400 text-[10px] uppercase tracking-widest font-black mb-1">
-                                        {identifyMode === 'capitals'
-                                            ? (language === 'es' ? 'Localiza la Capital de:' : 'Locate the Capital of:')
-                                            : (language === 'es' ? 'Localiza el País:' : 'Locate the Country:')}
-                                    </div>
-                                    <div className="text-3xl font-black text-white drop-shadow-lg leading-tight uppercase">
-                                        {targetCountry}
-                                    </div>
-                                </motion.div>
-                            )}
-
                             {/* EXPLORE BUTTON - Appears when a completed country is selected */}
                             {selectedId && !remainingCountries.includes(nameMapping[selectedId]) && (
                                 <motion.div
@@ -520,16 +500,17 @@ export default function CountryGameBase({
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
 
                             {/* 0. Background Paths (Neighbors) */}
-                            {Object.entries(backgroundPaths).map(([name, pathD]) => (
-                                <path
-                                    key={`bg-${name}`}
-                                    d={pathD}
-                                    fill="#dcd8cc"
-                                    stroke="#afa99a"
-                                    strokeWidth="0.3"
-                                    className="pointer-events-none"
-                                />
-                            ))}
+                            {Object.entries(backgroundPaths).map(([name, pathD]) => {
+                                const colorClass = backgroundColors[name] || "fill-slate-800/30 stroke-slate-800/50";
+                                return (
+                                    <path
+                                        key={`bg-${name}`}
+                                        d={pathD}
+                                        className={cn("pointer-events-none", colorClass)}
+                                        strokeWidth="0.3"
+                                    />
+                                );
+                            })}
 
                             {/* Background Labels (Seas/Oceans) */}
                             <g className="pointer-events-none">
@@ -572,8 +553,8 @@ export default function CountryGameBase({
                                 const isHovered = hoveredId === localizedName;
                                 const isPlayable = !!localizedName;
 
-                                let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-[#e8e4d8]";
-                                let strokeClass = "stroke-slate-900/30 stroke-[0.5px]";
+                                let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-slate-800/30";
+                                let strokeClass = isPlayable ? "stroke-slate-900/30 stroke-[0.5px]" : "stroke-slate-800/50 stroke-[0.3px]";
 
                                 if (isCompleted) {
                                     fillClass = isFailed ? "fill-red-500" : "fill-green-500/80";

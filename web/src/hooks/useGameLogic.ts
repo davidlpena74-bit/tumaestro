@@ -51,7 +51,13 @@ export function useGameLogic({
             // Check session with a catch specifically for AbortError which can happen during HMR or fast navigation
             const sessionResult = await supabase.auth.getSession().catch(err => {
                 const errStr = err?.message || (typeof err === 'string' ? err : '');
-                if (err?.name === 'AbortError' || errStr.includes('aborted') || errStr.includes('signal is aborted')) return { data: { session: null } };
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+
+                if (isAbort) return { data: { session: null }, error: null };
                 throw err;
             });
 
@@ -82,7 +88,14 @@ export function useGameLogic({
             }
         } catch (err: any) {
             // Ignore abort errors globally for this operation
-            if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) {
+            const errStr = err?.message || (typeof err === 'string' ? err : '');
+            const isAbort =
+                err?.name === 'AbortError' ||
+                errStr.includes('aborted') ||
+                errStr.includes('signal is aborted') ||
+                errStr.includes('aborted without reason');
+
+            if (isAbort) {
                 return;
             }
             console.error("Error saving game results:", err);

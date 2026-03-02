@@ -100,21 +100,40 @@ export default function RootLayout({
         <Script id="suppress-abort-error" strategy="beforeInteractive">
           {`
             if (typeof window !== 'undefined') {
+              var isAbortError = function(err) {
+                if (!err) return false;
+                var msg = (err.message || (typeof err === 'string' ? err : '')).toLowerCase();
+                return (
+                  err.name === 'AbortError' || 
+                  msg.includes('aborted') || 
+                  msg.includes('signal is aborted') || 
+                  msg.includes('aborted without reason')
+                );
+              };
+
               window.addEventListener('unhandledrejection', function(event) {
-                var reason = event.reason || {};
-                var msg = reason.message || (typeof reason === 'string' ? reason : '');
-                if (reason.name === 'AbortError' || msg.includes('aborted without reason') || msg.includes('signal is aborted')) {
+                if (isAbortError(event.reason)) {
                   event.preventDefault();
+                  event.stopImmediatePropagation();
                 }
-              });
+              }, true);
+
+              window.addEventListener('error', function(event) {
+                if (isAbortError(event.error) || isAbortError(event.message)) {
+                  event.preventDefault();
+                  event.stopImmediatePropagation();
+                }
+              }, true);
 
               var originalConsoleError = console.error;
               console.error = function() {
                 var argsStr = Array.from(arguments).map(function(a) { 
-                  return typeof a === 'string' ? a : (a && a.message ? a.message : ''); 
-                }).join(' ');
+                  if (!a) return '';
+                  if (typeof a === 'string') return a;
+                  return a.message || (typeof a === 'object' ? JSON.stringify(a) : String(a));
+                }).join(' ').toLowerCase();
                 
-                if (argsStr.includes('aborted without reason') || argsStr.includes('signal is aborted') || argsStr.includes('AbortError')) {
+                if (argsStr.includes('aborted') || argsStr.includes('abort_error')) {
                   return;
                 }
                 originalConsoleError.apply(console, arguments);

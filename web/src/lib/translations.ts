@@ -513,12 +513,21 @@ export const TRANSLATIONS = {
                 "Nilo": "Nilo", "Congo": "Congo", "Níger": "Níger", "Zambeze": "Zambeze",
                 "Orange": "Orange", "Limpopo": "Limpopo"
             },
-            regions: {
+            autonomousCommunities: {
                 "madrid": "Comunidad de Madrid", "cataluna": "Cataluña", "galicia": "Galicia", "andalucia": "Andalucía",
                 "aragon": "Aragón", "asturias": "Asturias", "baleares": "Islas Baleares", "canarias": "Islas Canarias",
                 "cantabria": "Cantabria", "castillaleon": "Castilla y León", "castillalamancha": "Castilla-La Mancha",
                 "extremadura": "Extremadura", "murcia": "Región de Murcia", "navarra": "Navarra", "rioja": "La Rioja",
                 "valencia": "Comunidad Valenciana", "vasco": "País Vasco", "ceuta": "Ceuta", "melilla": "Melilla"
+            },
+            cities: {
+                "Madrid": "Madrid", "Barcelona": "Barcelona", "Valencia": "Valencia", "Sevilla": "Sevilla",
+                "Zaragoza": "Zaragoza", "Málaga": "Málaga", "Murcia": "Murcia", "Palma": "Palma",
+                "Bilbao": "Bilbao", "Alicante": "Alicante", "Córdoba": "Córdoba"
+            },
+            regions: {
+                "nordic": "Países Nórdicos", "baltic": "Países Bálticos", "balkans": "Los Balcanes",
+                "middle_east": "Próximo Oriente", "southeast_asia": "Sudeste Asiático"
             }
         }
     },
@@ -1033,12 +1042,21 @@ export const TRANSLATIONS = {
                 "Nilo": "Nile", "Congo": "Congo", "Níger": "Niger", "Zambeze": "Zambezi",
                 "Orange": "Orange River", "Limpopo": "Limpopo"
             },
-            regions: {
+            autonomousCommunities: {
                 "madrid": "Madrid Region", "cataluna": "Catalonia", "galicia": "Galicia", "andalucia": "Andalusia",
                 "aragon": "Aragon", "asturias": "Asturias", "baleares": "Balearic Islands", "canarias": "Canary Islands",
                 "cantabria": "Cantabria", "castillaleon": "Castile and León", "castillalamancha": "Castile-La Mancha",
                 "extremadura": "Extremadura", "murcia": "Murcia Region", "navarra": "Navarre", "rioja": "La Rioja",
                 "valencia": "Valencian Community", "vasco": "Basque Country", "ceuta": "Ceuta", "melilla": "Melilla"
+            },
+            cities: {
+                "Madrid": "Madrid", "Barcelona": "Barcelona", "Valencia": "Valencia", "Sevilla": "Seville",
+                "Zaragoza": "Zaragoza", "Málaga": "Malaga", "Murcia": "Murcia", "Palma": "Palma",
+                "Bilbao": "Bilbao", "Alicante": "Alicante", "Córdoba": "Cordoba"
+            },
+            regions: {
+                "nordic": "Nordic Countries", "baltic": "Baltic Countries", "balkans": "Balkans",
+                "middle_east": "Middle East", "southeast_asia": "Southeast Asia"
             }
         }
     },
@@ -1514,12 +1532,21 @@ export const TRANSLATIONS = {
                 "Nilo": "Nil", "Congo": "Congo", "Níger": "Niger", "Zambeze": "Zambèze",
                 "Orange": "Orange", "Limpopo": "Limpopo"
             },
-            regions: {
+            autonomousCommunities: {
                 "madrid": "Communauté de Madrid", "cataluna": "Catalogne", "galicia": "Galice", "andalucia": "Andalousie",
                 "aragon": "Aragon", "asturias": "Asturies", "baleares": "Îles Baléares", "canarias": "Îles Canaries",
                 "cantabria": "Cantabrie", "castillaleon": "Castille-et-León", "castillalamancha": "Castille-La Manche",
-                "extremadura": "Extrémadure", "murcia": "Région de Murcie", "navarra": "Navarre", "rioja": "La Rioja",
+                "extremadura": "Estrémadure", "murcia": "Région de Murcie", "navarra": "Navarre", "rioja": "La Rioja",
                 "valencia": "Communauté Valencienne", "vasco": "Pays Basque", "ceuta": "Ceuta", "melilla": "Melilla"
+            },
+            cities: {
+                "Madrid": "Madrid", "Barcelona": "Barcelone", "Valencia": "Valence", "Sevilla": "Séville",
+                "Zaragoza": "Saragosse", "Málaga": "Malaga", "Murcia": "Murcie", "Palma": "Palma",
+                "Bilbao": "Bilbao", "Alicante": "Alicante", "Córdoba": "Cordoue"
+            },
+            regions: {
+                "nordic": "Pays Nordiques", "baltic": "Pays Baltes", "balkans": "Les Balkans",
+                "middle_east": "Proche-Orient", "southeast_asia": "Asie du Sud-Est"
             }
         }
     },
@@ -1995,12 +2022,21 @@ export const TRANSLATIONS = {
                 "Nilo": "Nil", "Congo": "Kongo", "Níger": "Niger", "Zambeze": "Sambesi",
                 "Orange": "Oranje", "Limpopo": "Limpopo"
             },
-            regions: {
+            autonomousCommunities: {
                 "madrid": "Region Madrid", "cataluna": "Katalonien", "galicia": "Galizien", "andalucia": "Andalusien",
                 "aragon": "Aragonien", "asturias": "Asturien", "baleares": "Balearen", "canarias": "Kanarische Inseln",
                 "cantabria": "Kantabrien", "castillaleon": "Kastilien und León", "castillalamancha": "Kastilien-La Mancha",
                 "extremadura": "Extremadura", "murcia": "Region Murcia", "navarra": "Navarra", "rioja": "La Rioja",
                 "valencia": "Valencianische Gemeinschaft", "vasco": "Baskenland", "ceuta": "Ceuta", "melilla": "Melilla"
+            },
+            cities: {
+                "Madrid": "Madrid", "Barcelona": "Barcelona", "Valencia": "Valencia", "Sevilla": "Sevilla",
+                "Zaragoza": "Saragossa", "Málaga": "Málaga", "Murcia": "Murcia", "Palma": "Palma",
+                "Bilbao": "Bilbao", "Alicante": "Alicante", "Córdoba": "Córdoba"
+            },
+            regions: {
+                "nordic": "Nordische Länder", "baltic": "Baltische Staaten", "balkans": "Balkan",
+                "middle_east": "Naher Osten", "southeast_asia": "Südostasien"
             }
         }
     }

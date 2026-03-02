@@ -68,8 +68,22 @@ export default function Header() {
         // Check active session
         const checkUser = async () => {
             try {
-                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                const sessionResult = await supabase.auth.getSession().catch(err => {
+                    const errStr = err?.message || (typeof err === 'string' ? err : '');
+                    const isAbort =
+                        err?.name === 'AbortError' ||
+                        errStr.includes('aborted') ||
+                        errStr.includes('signal is aborted') ||
+                        errStr.includes('aborted without reason');
+
+                    if (isAbort) return { data: { session: null }, error: null };
+                    throw err;
+                });
+
                 if (!isMounted) return;
+                const session = sessionResult?.data?.session;
+                const sessionError = (sessionResult as any)?.error;
+
                 if (sessionError) throw sessionError;
 
                 const currentUser = session?.user ?? null;
@@ -112,18 +126,29 @@ export default function Header() {
                     setProfile(null);
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return;
-                console.warn("Auth change callback error:", err.message);
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+                if (isAbort) return;
+                console.warn("Auth change callback error:", errStr);
             }
         });
 
         // Global safety for Supabase AbortErrors during HMR
         const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-            if (event.reason?.name === 'AbortError' ||
-                event.reason?.message?.includes('aborted without reason') ||
-                event.reason?.message?.includes('signal is aborted')) {
+            const errStr = event.reason?.message || (typeof event.reason === 'string' ? event.reason : '');
+            const isAbort =
+                event.reason?.name === 'AbortError' ||
+                errStr.includes('aborted') ||
+                errStr.includes('signal is aborted') ||
+                errStr.includes('aborted without reason');
+
+            if (isAbort) {
                 event.preventDefault();
-                console.debug('Swallowed Supabase AbortError in Header:', event.reason.message);
+                console.debug('Swallowed Supabase AbortError in Header:', errStr);
             }
         };
         window.addEventListener('unhandledrejection', handleUnhandledRejection);

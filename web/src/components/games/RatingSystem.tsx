@@ -26,7 +26,12 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
             try {
                 const sessionResult = await supabase.auth.getSession().catch(err => {
                     const errStr = err?.message || (typeof err === 'string' ? err : '');
-                    if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
+                    const isAbort =
+                        err?.name === 'AbortError' ||
+                        errStr.includes('aborted') ||
+                        errStr.includes('signal is aborted') ||
+                        errStr.includes('aborted without reason');
+                    if (isAbort) return { data: { session: null } };
                     throw err;
                 });
 
@@ -51,7 +56,13 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                     setIsEdit(true);
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return; // Expected in React StrictMode
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+                if (isAbort) return; // Expected in React StrictMode
                 if (isMounted) console.error('Error fetching existing rating:', err);
             } finally {
                 if (isMounted) setStatus('idle');
@@ -74,7 +85,13 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
                     if (isMounted) setGlobalStats({ avg: Number(avg), count });
                 }
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted') || err?.message?.includes('signal is aborted')) return;
+                const errStr = err?.message || (typeof err === 'string' ? err : '');
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+                if (isAbort) return;
                 if (isMounted) console.error('Error fetching global stats:', err);
             }
         };
@@ -92,7 +109,12 @@ export default function RatingSystem({ activityId, onClose }: RatingSystemProps)
         try {
             const sessionResult = await supabase.auth.getSession().catch(err => {
                 const errStr = err?.message || (typeof err === 'string' ? err : '');
-                if (err?.name === 'AbortError' || errStr.includes('aborted')) return { data: { session: null } };
+                const isAbort =
+                    err?.name === 'AbortError' ||
+                    errStr.includes('aborted') ||
+                    errStr.includes('signal is aborted') ||
+                    errStr.includes('aborted without reason');
+                if (isAbort) return { data: { session: null } };
                 throw err;
             });
 
