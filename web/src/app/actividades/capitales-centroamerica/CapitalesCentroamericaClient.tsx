@@ -3,7 +3,8 @@
 
 import CountryGameBase from '@/components/games/CountryGameBase';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
-import { NORTH_AMERICA_PATHS } from '@/components/games/data/north-america-paths';
+import { CENTRAL_AMERICA_PATHS } from '@/components/games/data/central-america-paths';
+import { CENTRAL_AMERICA_BG_PATHS } from '@/components/games/data/central-america-bg-paths';
 import { CENTRAL_AMERICA_CAPITALS_MAPPING } from '@/components/games/data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
@@ -23,12 +24,13 @@ export default function CapitalesCentroamericaClient() {
             <CountryGameBase
                 title={t.gamesPage.gameTitles.centralAmericaCapitals}
                 regionName={t.gamesPage.regions.centralAmerica}
-                pathData={NORTH_AMERICA_PATHS}
+                pathData={CENTRAL_AMERICA_PATHS}
                 nameMapping={CENTRAL_AMERICA_CAPITALS_MAPPING}
+                backgroundPaths={CENTRAL_AMERICA_BG_PATHS}
                 colorTheme="emerald"
                 initialTime={120}
-                initialZoom={4.5}
-                initialPan={{ x: -900, y: -1900 }}
+                initialZoom={17.42}
+                initialPan={{ x: 2340, y: 363 }}
                 taskId={taskId}
                 activityId="capitales-centroamerica"
                 identifyMode="capitals"

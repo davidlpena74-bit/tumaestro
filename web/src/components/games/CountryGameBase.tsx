@@ -507,7 +507,7 @@ export default function CountryGameBase({
                                         key={`bg-${name}`}
                                         d={pathD}
                                         className={cn("pointer-events-none", colorClass)}
-                                        strokeWidth="0.3"
+                                        strokeWidth={0.1 / Math.sqrt(zoom)}
                                     />
                                 );
                             })}
@@ -554,7 +554,8 @@ export default function CountryGameBase({
                                 const isPlayable = !!localizedName;
 
                                 let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-slate-800/30";
-                                let strokeClass = isPlayable ? "stroke-slate-900/30 stroke-[0.5px]" : "stroke-slate-800/50 stroke-[0.3px]";
+                                let strokeClass = isPlayable ? "stroke-slate-900/30" : "stroke-slate-800/50";
+                                const strokeWidth = isPlayable ? (0.2 / Math.sqrt(zoom)) : (0.1 / Math.sqrt(zoom));
 
                                 if (isCompleted) {
                                     fillClass = isFailed ? "fill-red-500" : "fill-green-500/80";
@@ -584,6 +585,7 @@ export default function CountryGameBase({
                                         {/* Visual Area */}
                                         <motion.path
                                             d={pathD}
+                                            strokeWidth={strokeWidth}
                                             className={cn(
                                                 strokeClass,
                                                 fillClass,
@@ -602,48 +604,6 @@ export default function CountryGameBase({
                                             }}
                                         />
 
-                                        {/* Small Country Helper Circle */}
-                                        {(() => {
-                                            const centroid = calculatePathCentroid(pathD);
-                                            // 50 is a heuristic for "tiny" area in map coordinates
-                                            if (centroid && centroid.area < 50) {
-                                                return (
-                                                    <g
-                                                        className={isPlayable ? "cursor-pointer" : ""}
-                                                        onMouseEnter={() => isPlayable && gameState === 'playing' && setHoveredId(localizedName)}
-                                                        onMouseLeave={() => setHoveredId(null)}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            if (isClick.current && isPlayable) handleCountryClick(engName);
-                                                        }}
-                                                    >
-                                                        {/* Invisible larger hit area for the dot */}
-                                                        <circle
-                                                            cx={centroid.x}
-                                                            cy={centroid.y}
-                                                            r={12}
-                                                            fill="transparent"
-                                                        />
-                                                        <motion.circle
-                                                            cx={centroid.x}
-                                                            cy={centroid.y}
-                                                            r={isHovered ? 7 : 5}
-                                                            fill={isCompleted ? "white" : "white"}
-                                                            stroke={isCompleted ? (isFailed ? "#ef4444" : "#10b981") : "#1e293b"}
-                                                            strokeWidth={1.5}
-                                                            initial={false}
-                                                            animate={
-                                                                (isHovered && gameState === 'playing')
-                                                                    ? { scale: 1, opacity: 1, filter: 'drop-shadow(0 0 8px rgba(255,255,255,1))' }
-                                                                    : { scale: 1, opacity: 0.9, filter: 'none' }
-                                                            }
-                                                            className="pointer-events-none"
-                                                        />
-                                                    </g>
-                                                );
-                                            }
-                                            return null;
-                                        })()}
                                     </g>
                                 );
                             })}
