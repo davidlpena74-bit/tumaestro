@@ -915,7 +915,7 @@ export default function PhysicalMapGame({
                                                                     d={pathD}
                                                                     fill={isClosed ? (isCompleted ? 'rgba(34,197,94,0.45)' : isFailed ? 'rgba(239,68,68,0.4)' : (isHovered ? 'rgba(34,211,238,0.4)' : 'rgba(146,64,14,0.3)')) : "none"}
                                                                     stroke={isCompleted ? 'rgba(34,197,94,0.7)' : isFailed ? 'rgba(239,68,68,0.7)' : (isHovered ? 'rgba(245,158,11,0.8)' : 'rgba(146,64,14,0.5)')}
-                                                                    strokeWidth={isClosed ? 1 : 2.5}
+                                                                    strokeWidth={isClosed ? 1 : 12}
                                                                     strokeLinecap="round"
                                                                     strokeLinejoin="round"
                                                                     filter="url(#mountain-body-soft)"

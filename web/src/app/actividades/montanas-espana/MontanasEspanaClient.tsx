@@ -116,7 +116,7 @@ export default function MontanasEspanaClient() {
                 title={t.gamesPage.gameTitles.mountainsSpain}
                 description={t.gamesPage.gameTitles.mountainsSpainDesc}
                 items={SPANISH_MOUNTAINS_DATA}
-                itemType="mountain"
+                itemType="polygon"
                 backgroundPaths={backgroundPaths}
                 backgroundLabels={combinedLabels}
                 backgroundTransforms={backgroundTransforms}
@@ -127,8 +127,8 @@ export default function MontanasEspanaClient() {
                 colorTheme="teal"
                 taskId={taskId}
                 activityId="montanas-espana"
-                elevationHeight={12}
-                baseLabelSize={8}
+                elevationHeight={15}
+                baseLabelSize={4}
                 region={t.gamesPage.regions.spain}
                 gameType={t.gamesPage.gameTypes.map}
             />
