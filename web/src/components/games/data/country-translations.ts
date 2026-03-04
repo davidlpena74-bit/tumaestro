@@ -94,6 +94,7 @@ export const AFRICA_MAPPING: Record<string, string> = {
     'Uganda': 'Uganda',
     'Zambia': 'Zambia',
     'Zimbabwe': 'Zimbabue',
+    'W. Sahara': 'Sáhara Occidental',
     'eSwatini': 'Suazilandia'
 };
 
@@ -400,5 +401,6 @@ export const AFRICA_CAPITALS_MAPPING: Record<string, string> = {
     'Uganda': 'Kampala',
     'Zambia': 'Lusaka',
     'Zimbabwe': 'Harare',
+    'W. Sahara': 'El Aaiún',
     'eSwatini': 'Mbabane'
 };

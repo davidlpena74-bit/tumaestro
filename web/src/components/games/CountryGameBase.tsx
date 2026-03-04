@@ -491,6 +491,17 @@ export default function CountryGameBase({
                             </pattern>
 
 
+                            <filter id="elevation-hover" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur" />
+                                <feOffset in="blur" dx="0" dy="0.5" result="offsetBlur" />
+                                <feComponentTransfer in="offsetBlur">
+                                    <feFuncA type="linear" slope="0.2" />
+                                </feComponentTransfer>
+                                <feMerge>
+                                    <feMergeNode />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
                         </defs>
 
                         {/* 1. LOWER SEA LAYER — outside zoom group so always fills SVG viewport */}
@@ -555,7 +566,7 @@ export default function CountryGameBase({
 
                                 let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-slate-800/30";
                                 let strokeClass = isPlayable ? "stroke-slate-900/30" : "stroke-slate-800/50";
-                                const strokeWidth = isPlayable ? (0.2 / Math.sqrt(zoom)) : (0.1 / Math.sqrt(zoom));
+                                const strokeWidth = isPlayable ? (0.1 / Math.sqrt(zoom)) : (0.05 / Math.sqrt(zoom));
 
                                 if (isCompleted) {
                                     fillClass = isFailed ? "fill-red-500" : "fill-green-500/80";
@@ -589,16 +600,19 @@ export default function CountryGameBase({
                                             className={cn(
                                                 strokeClass,
                                                 fillClass,
-                                                isHovered && gameState === 'playing' && !isCompleted && "fill-slate-200",
-                                                isPlayable && "cursor-pointer"
+                                                isHovered && gameState === 'playing' && !isCompleted && (colorTheme === 'emerald' ? "fill-cyan-400/40" : "fill-blue-400/40"),
+                                                isPlayable && "cursor-pointer transition-colors"
                                             )}
                                             initial={false}
-                                            animate={{ scale: 1, y: 0 }}
-                                            transition={{ duration: 0.2 }}
+                                            animate={{
+                                                scale: isHovered && gameState === 'playing' ? 1.005 : 1,
+                                                y: isHovered && gameState === 'playing' ? -0.5 : 0,
+                                                filter: isHovered && gameState === 'playing' ? 'url(#elevation-hover)' : 'none'
+                                            }}
+                                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                                             style={{
                                                 transformOrigin: 'center',
                                                 transformBox: 'fill-box',
-                                                filter: 'none',
                                                 zIndex: isHovered ? 50 : 1,
                                                 pointerEvents: 'none'
                                             }}
