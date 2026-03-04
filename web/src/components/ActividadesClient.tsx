@@ -713,6 +713,17 @@ export default function ActividadesClient() {
                             gameType: t.gamesPage.gameTypes.map
                         },
                         {
+                            id: 'capitales-asia',
+                            title: t.gamesPage.gameTitles.asiaCapitals,
+                            description: t.gamesPage.gameTitles.asiaCapitalsDesc,
+                            href: '/actividades/capitales-asia',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '5º Prim.',
+                            region: t.gamesPage.regions.asia,
+                            gameType: t.gamesPage.gameTypes.map
+                        },
+                        {
                             id: 'montanas-asia',
                             title: t.gamesPage.gameTitles.mountainsAsia,
                             description: t.gamesPage.gameTitles.mountainsAsiaDesc,

@@ -171,6 +171,61 @@ export const ASIA_MAPPING: Record<string, string> = {
     'Yemen': 'Yemen'
 };
 
+export const ASIA_CAPITALS_MAPPING: Record<string, string> = {
+    'Afghanistan': 'Kabul',
+    'Armenia': 'Ereván',
+    'Azerbaijan': 'Bakú',
+    'Bahrain': 'Manama',
+    'Bangladesh': 'Daca',
+    'Bhutan': 'Timbu',
+    'Brunei': 'Bandar Seri Begawan',
+    'Cambodia': 'Nom Pen',
+    'China': 'Pekín',
+    'Cyprus': 'Nicosia',
+    'Georgia': 'Tiflis',
+    'Hong Kong': 'Hong Kong',
+    'India': 'Nueva Delhi',
+    'Indonesia': 'Yakarta',
+    'Iran': 'Teherán',
+    'Iraq': 'Bagdad',
+    'Israel': 'Jerusalén',
+    'Japan': 'Tokio',
+    'Jordan': 'Amán',
+    'Kazakhstan': 'Astaná',
+    'Kuwait': 'Kuwait',
+    'Kyrgyzstan': 'Biskek',
+    'Laos': 'Vientián',
+    'Lebanon': 'Beirut',
+    'Macao': 'Macao',
+    'Malaysia': 'Kuala Lumpur',
+    'Maldives': 'Malé',
+    'Mongolia': 'Ulán Bator',
+    'Myanmar': 'Naipyidó',
+    'Nepal': 'Katmandú',
+    'North Korea': 'Pionyang',
+    'Oman': 'Mascate',
+    'Pakistan': 'Islamabad',
+    'Palestine': 'Jerusalén Este',
+    'Philippines': 'Manila',
+    'Qatar': 'Doha',
+    'Russia': 'Moscú',
+    'Saudi Arabia': 'Riad',
+    'Singapore': 'Singapur',
+    'South Korea': 'Seúl',
+    'Sri Lanka': 'Sri Jayawardenepura Kotte',
+    'Syria': 'Damasco',
+    'Taiwan': 'Taipéi',
+    'Tajikistan': 'Dusambé',
+    'Thailand': 'Bangkok',
+    'Timor-Leste': 'Dili',
+    'Turkey': 'Ankara',
+    'Turkmenistan': 'Asjabad',
+    'United Arab Emirates': 'Abu Dabi',
+    'Uzbekistan': 'Taskent',
+    'Vietnam': 'Hanói',
+    'Yemen': 'Saná'
+};
+
 export const ASIA_OCEANIA_MAPPING: Record<string, string> = {
     ...ASIA_MAPPING,
     ...OCEANIA_MAPPING
@@ -219,7 +274,8 @@ export const NORTH_AMERICA_MAPPING: Record<string, string> = {
 };
 
 export const SOUTH_AMERICA_MAPPING: Record<string, string> = {
-    ...AMERICA_MAPPING
+    ...AMERICA_MAPPING,
+    'French Guiana': 'Guayana Francesa'
 };
 
 export const NORTH_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
@@ -267,7 +323,8 @@ export const SOUTH_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
     'Peru': 'Lima',
     'Suriname': 'Paramaribo',
     'Uruguay': 'Montevideo',
-    'Venezuela': 'Caracas'
+    'Venezuela': 'Caracas',
+    'French Guiana': 'Cayena'
 };
 
 export const USA_CAPITALS_MAPPING: Record<string, string> = {

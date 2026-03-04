@@ -3,6 +3,7 @@
 import CountryGameBase from './CountryGameBase';
 import { ASIA_PATHS } from './data/asia-paths';
 import { ASIA_MAPPING } from './data/country-translations';
+import { ASIA_BG_PATHS } from './data/asia-bg-paths';
 import { ASIA_SEAS_PATHS } from './data/asia-physical-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
@@ -53,10 +54,11 @@ export default function AsiaMapGame({ taskId = null, activityId }: { taskId?: st
             regionName={t.gamesPage.regions.asia}
             pathData={ASIA_PATHS}
             nameMapping={mapping}
+            backgroundPaths={ASIA_BG_PATHS}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.2}
-            initialPan={{ x: -150, y: 100 }}
+            initialZoom={0.7}
+            initialPan={{ x: 120, y: 120 }}
             backgroundLabels={seaLabels}
             taskId={taskId}
             activityId={activityId || 'game'}
