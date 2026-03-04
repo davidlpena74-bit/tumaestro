@@ -30,6 +30,10 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
         pastSimple: '',
         pastParticiple: ''
     });
+    const [fieldResults, setFieldResults] = useState({
+        pastSimple: false,
+        pastParticiple: false
+    });
     const [showResult, setShowResult] = useState<'correct' | 'incorrect' | null>(null);
     const [streak, setStreak] = useState(0);
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -39,6 +43,9 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
     const [currentStep, setCurrentStep] = useState(0); // 0: infinitive, 1: pastSimple, 2: pastParticiple
     const [stepResults, setStepResults] = useState<boolean[]>([false, false, false]);
     const [stepCountdown, setStepCountdown] = useState(3);
+    const pastParticipleRef = useRef<HTMLInputElement>(null);
+    const pastSimpleRef = useRef<HTMLInputElement>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const effectiveActivityId = activityId || "irregular-verbs";
 
@@ -68,6 +75,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
         hookStartGame();
         setInputs({ pastSimple: '', pastParticiple: '' });
         setShowResult(null);
+        setFieldResults({ pastSimple: false, pastParticiple: false });
         setMessage('');
         setCurrentStep(0);
         setStepResults([false, false, false]);
@@ -78,8 +86,16 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
 
     const playAudio = (text: string): Promise<void> => {
         return new Promise((resolve) => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+            }
             const audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${text}&type=2`);
-            audio.onended = () => resolve();
+            audioRef.current = audio;
+            audio.onended = () => {
+                audioRef.current = null;
+                resolve();
+            };
             audio.onerror = () => {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
@@ -100,10 +116,18 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
 
     const playSequence = async (texts: string[]) => {
         for (const text of texts) {
+            if (gameState !== 'playing') break;
             await playAudio(text);
             await new Promise(r => setTimeout(r, 300));
         }
     };
+
+    // Auto-play infinitive when current verb changes
+    useEffect(() => {
+        if (gameState === 'playing' && currentVerb && isMounted) {
+            playAudio(currentVerb.infinitive);
+        }
+    }, [currentIndex, gameState, isMounted]);
 
     const checkAnswer = () => {
         if (!currentVerb) return;
@@ -120,6 +144,11 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
 
         const correctSimple = checkPastSimple(inputs.pastSimple, currentVerb.pastSimple);
         const correctParticiple = inputs.pastParticiple.toLowerCase().trim() === currentVerb.pastParticiple.toLowerCase();
+
+        setFieldResults({
+            pastSimple: correctSimple,
+            pastParticiple: correctParticiple
+        });
 
         if (correctSimple && correctParticiple) {
             setShowResult('correct');
@@ -380,6 +409,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                 setCurrentIndex(prev => prev + 1);
             }
             setInputs({ pastSimple: '', pastParticiple: '' });
+            setFieldResults({ pastSimple: false, pastParticiple: false });
             setShowResult(null);
             setCurrentStep(0);
             setStepResults([false, false, false]);
@@ -387,6 +417,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
             if (currentIndex < verbs.length - 1) {
                 setCurrentIndex(prev => prev + 1);
                 setInputs({ pastSimple: '', pastParticiple: '' });
+                setFieldResults({ pastSimple: false, pastParticiple: false });
                 setShowResult(null);
                 setCurrentStep(0);
                 setStepResults([false, false, false]);
@@ -404,6 +435,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
         setMessage('');
         setCurrentStep(0);
         setStepResults([false, false, false]);
+        setFieldResults({ pastSimple: false, pastParticiple: false });
     };
 
     if (!isMounted) return null;
@@ -428,17 +460,38 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                 activityId={effectiveActivityId || 'game'}
             />
 
-            <div className="relative w-full min-h-[500px] bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4">
+            <div className={cn(
+                "relative w-full bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden mt-4 transition-all duration-500",
+                gameState === 'playing' ? "min-h-[400px]" : "min-h-[780px]"
+            )}>
                 {/* START OVERLAY */}
                 {gameState === 'start' && (
                     <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center">
-                        <div className="bg-violet-500/10 p-6 rounded-full mb-6 ring-1 ring-violet-500/30">
-                            <BookOpen className="w-16 h-16 text-violet-500" />
+                        <div className="bg-violet-500/10 p-6 rounded-full mb-4 ring-1 ring-violet-500/30">
+                            <BookOpen className="w-12 h-12 text-violet-500" />
                         </div>
-                        <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight uppercase">{t.gamesPage.verbsLevels.medium.title}</h2>
-                        <p className="text-gray-300 mb-8 max-w-md text-lg leading-relaxed font-medium">
+                        <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight uppercase">{t.gamesPage.verbsLevels.medium.title}</h2>
+                        <p className="text-gray-300 mb-6 max-w-md text-base leading-relaxed font-medium">
                             {type === 'pronunciation' ? t.gamesPage.verbsLevels.medium.descP : t.gamesPage.verbsLevels.medium.desc}
                         </p>
+
+                        <div className="w-full max-w-4xl mb-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/10 p-4 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black mb-2">{t?.common?.ranking || 'Ranking'} - Puntos</span>
+                                    <div className="w-full text-left">
+                                        <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="score" />
+                                    </div>
+                                </div>
+                                <div className="bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/10 p-4 overflow-hidden text-center shadow-2xl flex flex-col items-center">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-widest font-black mb-2">{t?.common?.ranking || 'Ranking'} - Tiempo</span>
+                                    <div className="w-full text-left">
+                                        <ActivityRanking activityId={effectiveActivityId || 'game'} limit={3} sortBy="time" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                             <button
                                 onClick={() => startNewGame('challenge')}
@@ -463,7 +516,7 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
 
                 {/* FINISHED OVERLAY */}
                 {gameState === 'finished' && (
-                    <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-start p-6 text-center animate-in fade-in duration-500 rounded-[2rem] overflow-y-auto custom-scrollbar">
+                    <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500 rounded-[2rem]">
 
                         {/* Top Section: Score & Trophy (Pushing up) */}
                         <div className="flex flex-col items-center mb-8 shrink-0">
@@ -551,8 +604,9 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                                         exit={{ opacity: 0, x: 20 }}
                                         className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-[2rem] p-10 flex flex-col justify-center items-center text-center shadow-2xl relative group"
                                     >
-                                        <div className="absolute top-4 right-4 text-white/20 font-black text-6xl select-none group-hover:text-white/30 transition-colors">
-                                            {currentIndex + 1}
+                                        <div className="absolute top-4 right-4 text-white/20 font-black select-none group-hover:text-white/30 transition-colors flex items-baseline leading-none">
+                                            <span className="text-6xl">{currentIndex + 1}</span>
+                                            <span className="text-2xl ml-1">/{verbs.length}</span>
                                         </div>
                                         <div className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
                                             <BookOpen className="w-10 h-10 text-white" />
@@ -582,19 +636,30 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                                         <label className="block text-[11px] font-black text-violet-100/90 uppercase tracking-[0.3em] ml-2">Past Simple</label>
                                         <input
                                             type="text"
+                                            ref={pastSimpleRef}
                                             value={inputs.pastSimple}
                                             onChange={(e) => setInputs(prev => ({ ...prev, pastSimple: e.target.value }))}
-                                            onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    if (inputs.pastSimple && !inputs.pastParticiple) {
+                                                        pastParticipleRef.current?.focus();
+                                                    } else if (inputs.pastSimple && inputs.pastParticiple) {
+                                                        checkAnswer();
+                                                    }
+                                                }
+                                            }}
                                             disabled={showResult !== null}
                                             placeholder={true ? "Escribe aquí..." : "Type here..."}
                                             className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
                                                     ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
-                                                    showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
+                                                    showResult === 'incorrect' ? (fieldResults.pastSimple ? 'border-green-500/50 bg-green-500/10' : 'border-red-500/50 bg-red-500/10') :
                                                         'border-white/10 focus:border-violet-600/50'}`}
                                         />
-                                        {showResult === 'incorrect' && currentVerb && (
-                                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
-                                                <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastSimple}
+                                        {showResult === 'incorrect' && currentVerb && !fieldResults.pastSimple && (
+                                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-bold mt-1 ml-1 flex items-center gap-1">
+                                                <XCircle className="w-4 h-4 text-red-500" />
+                                                <span className="text-red-500/90">{language === 'es' ? 'Correcto' : 'Correct'}:</span>
+                                                <span className="text-white">{currentVerb.pastSimple}</span>
                                             </motion.p>
                                         )}
                                     </div>
@@ -603,19 +668,22 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                                         <label className="block text-[11px] font-black text-violet-100/90 uppercase tracking-[0.3em] ml-2">Past Participle</label>
                                         <input
                                             type="text"
+                                            ref={pastParticipleRef}
                                             value={inputs.pastParticiple}
                                             onChange={(e) => setInputs(prev => ({ ...prev, pastParticiple: e.target.value }))}
-                                            onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                                            onKeyDown={(e) => e.key === 'Enter' && inputs.pastSimple && inputs.pastParticiple && checkAnswer()}
                                             disabled={showResult !== null}
                                             placeholder={true ? "Escribe aquí..." : "Type here..."}
                                             className={`w-full bg-slate-950/60 border-2 rounded-2xl px-6 py-5 text-white text-xl outline-none transition-all font-bold placeholder:opacity-20
                                                     ${showResult === 'correct' ? 'border-green-500/50 bg-green-500/10' :
-                                                    showResult === 'incorrect' ? 'border-red-500/50 bg-red-500/10' :
+                                                    showResult === 'incorrect' ? (fieldResults.pastParticiple ? 'border-green-500/50 bg-green-500/10' : 'border-red-500/50 bg-red-500/10') :
                                                         'border-white/10 focus:border-violet-600/50'}`}
                                         />
-                                        {showResult === 'incorrect' && currentVerb && (
-                                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-bold mt-1 ml-1 flex items-center gap-1">
-                                                <CheckCircle2 className="w-4 h-4" /> Correcto: {currentVerb.pastParticiple}
+                                        {showResult === 'incorrect' && currentVerb && !fieldResults.pastParticiple && (
+                                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-bold mt-1 ml-1 flex items-center gap-1">
+                                                <XCircle className="w-4 h-4 text-red-500" />
+                                                <span className="text-red-500/90">{language === 'es' ? 'Correcto' : 'Correct'}:</span>
+                                                <span className="text-white">{currentVerb.pastParticiple}</span>
                                             </motion.p>
                                         )}
                                     </div>
@@ -776,13 +844,31 @@ export default function IrregularVerbsGame({ taskId = null, type = 'writing', ac
                                     animate={{ opacity: 1, y: 0 }}
                                     className="w-full flex flex-col gap-4"
                                 >
-                                    {showResult === 'correct' && type === 'writing' && (
-                                        <button
-                                            onClick={nextVerb}
-                                            className="w-full py-5 bg-violet-600 text-white rounded-2xl font-black text-lg hover:bg-violet-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-violet-500/20 flex items-center justify-center gap-3"
-                                        >
-                                            {t.gamesPage.verbsGame.next} <ArrowRight className="w-6 h-6" />
-                                        </button>
+                                    {showResult !== null && type === 'writing' && (
+                                        <div className="flex flex-col sm:flex-row gap-4 w-full">
+                                            {showResult === 'incorrect' && (
+                                                <button
+                                                    onClick={() => {
+                                                        setShowResult(null);
+                                                        setInputs({ pastSimple: '', pastParticiple: '' });
+                                                        setMessage('');
+                                                        setTimeout(() => pastSimpleRef.current?.focus(), 10);
+                                                    }}
+                                                    className="flex-1 py-5 bg-slate-700 text-white rounded-2xl font-black text-lg hover:bg-slate-600 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-slate-500/10 flex items-center justify-center gap-3"
+                                                >
+                                                    <RefreshCw className="w-6 h-6" /> {t.gamesPage.verbsGame.repeat}
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={nextVerb}
+                                                className={cn(
+                                                    "py-5 text-white rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl flex items-center justify-center gap-3",
+                                                    showResult === 'correct' ? "w-full bg-violet-600 hover:bg-violet-700 shadow-violet-500/20" : "flex-1 bg-violet-600/80 hover:bg-violet-600 shadow-violet-500/20"
+                                                )}
+                                            >
+                                                {t.gamesPage.verbsGame.next} <ArrowRight className="w-6 h-6" />
+                                            </button>
+                                        </div>
                                     )}
                                 </motion.div>
                             )}
