@@ -247,6 +247,22 @@ export default function ActividadesClient() {
             colorTheme: 'from-emerald-600 to-teal-800',
             subsections: [
                 {
+                    title: 'Continentes',
+                    games: [
+                        {
+                            id: 'mapa-continentes',
+                            title: 'Continentes del Mundo',
+                            description: 'Identifica los siete continentes en el mapa mundial.',
+                            href: '/actividades/mapa-continentes',
+                            icon: MapTrifold,
+                            color: 'from-emerald-500 to-teal-600',
+                            grade: '3º Prim.',
+                            region: 'Global',
+                            gameType: t.gamesPage.gameTypes.map
+                        }
+                    ]
+                },
+                {
                     title: t.gamesPage.regions.spain,
                     games: [
                         {

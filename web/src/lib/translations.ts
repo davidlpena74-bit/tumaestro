@@ -100,6 +100,8 @@ export const TRANSLATIONS = {
                 logic: 'Lógica'
             },
             gameTitles: {
+                continentsMap: 'Continentes del Mundo',
+                continentsMapDesc: 'Identifica los siete continentes en el mapa mundial.',
                 region: 'Comunidades Autónomas',
                 regionDesc: 'Nivel básico. Ubica las 17 comunidades en el mapa.',
                 provinces: 'Provincias de España',
@@ -255,6 +257,7 @@ export const TRANSLATIONS = {
             playBtn: 'ACCEDER',
             comingSoon: 'Pronto añadiremos más asignaturas como Historia y Lengua',
             regions: {
+                continents: 'Continentes',
                 spain: 'España',
                 europe: 'Europa',
                 eu: 'Unión Europea',
@@ -632,6 +635,8 @@ export const TRANSLATIONS = {
                 logic: 'Intelligence Challenges'
             },
             gameTitles: {
+                continentsMap: 'World Continents',
+                continentsMapDesc: 'Identify the seven continents on the world map.',
                 region: 'Autonomous Communities',
                 regionDesc: 'Basic level. Locate the 17 communities on the map.',
                 provinces: 'Provinces of Spain',
@@ -786,6 +791,7 @@ export const TRANSLATIONS = {
             playBtn: 'ACCESS',
             comingSoon: 'Soon we will add more subjects like History and Language',
             regions: {
+                continents: 'Continents',
                 spain: 'Spain',
                 europe: 'Europe',
                 eu: 'European Union',

@@ -29,8 +29,8 @@ export default function CapitalesAsiaClient() {
                 backgroundPaths={ASIA_BG_PATHS}
                 colorTheme="emerald"
                 initialTime={180}
-                initialZoom={0.7}
-                initialPan={{ x: 120, y: 120 }}
+                initialZoom={1.0}
+                initialPan={{ x: 0, y: 0 }}
                 taskId={taskId}
                 activityId="capitales-asia"
                 identifyMode="capitals"
