@@ -32,19 +32,42 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // Actividades principales
     const activities = [
-        'capitales-europa',
-        'capitales-ue',
-        'celula-animal',
-        'divisiones',
-        'esqueleto',
-        'mapa-comunidades',
-        'mapa-europa',
-        'mapa-provincias',
-        'multiplicaciones',
-        'musculos',
-        'verbos-irregulares'
+        'capitales-africa', 'capitales-asia', 'capitales-centroamerica', 'capitales-europa',
+        'capitales-europa-match', 'capitales-norteamerica', 'capitales-sudamerica', 'capitales-ue',
+        'capitales-usa', 'celula-animal', 'celula-vegetal', 'divisiones', 'esqueleto',
+        'mapa-africa', 'mapa-america', 'mapa-asia', 'mapa-centroamerica', 'mapa-comunidades',
+        'mapa-continentes', 'mapa-europa', 'mapa-norteamerica', 'mapa-oceania', 'mapa-provincias',
+        'mapa-rios', 'mapa-sudamerica', 'mapa-usa', 'mares-africa', 'mares-america', 'mares-asia',
+        'mares-europa', 'mares-oceania', 'montanas-africa', 'montanas-america', 'montanas-asia',
+        'montanas-espana', 'montanas-europa', 'montanas-oceania', 'multiplicaciones', 'musculos',
+        'paises-ue', 'rankings', 'rios-africa', 'rios-europa', 'sistema-reproductor-femenino',
+        'sistema-reproductor-masculino', 'verbos-irregulares', 'verbos-irregulares-basico',
+        'verbos-irregulares-basico-pronunciacion', 'verbos-irregulares-master',
+        'verbos-irregulares-master-pronunciacion', 'verbos-irregulares-pro',
+        'verbos-irregulares-pro-pronunciacion', 'verbos-irregulares-pronunciacion'
     ].map(slug => ({
         url: `${baseUrl}/actividades/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.9,
+    }))
+
+    // Juegos
+    const juegos = [
+        'logic', 'quiz-cultura', 'riddles'
+    ].map(slug => ({
+        url: `${baseUrl}/juegos/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+    }))
+
+    // Materiales adicionales
+    const materialPaths = [
+        'cuentos-clasicos', 'dictados', 'geografia', 'idiomas', 'inteligencia',
+        'lectura-juvenil', 'matematicas', 'profesor-lectura'
+    ].map(slug => ({
+        url: `${baseUrl}/material/${slug}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.9,
@@ -89,6 +112,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
         ...classicBooks,
         ...juvenileBooks,
-        ...activities
+        ...activities,
+        ...juegos,
+        ...materialPaths
     ]
 }
