@@ -2,6 +2,7 @@
 
 import CountryGameBase from './CountryGameBase';
 import { SOUTH_AMERICA_PATHS } from './data/south-america-paths';
+import { SOUTH_AMERICA_BG_PATHS } from './data/south-america-bg-paths';
 import { SOUTH_AMERICA_MAPPING } from './data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
 import { useMemo } from 'react';
@@ -37,6 +38,7 @@ export default function SouthAmericaMapGame({ taskId = null, activityId }: { tas
             initialZoom={1.76}
             initialPan={{ x: 50, y: 0 }}
             backgroundLabels={seaLabels}
+            backgroundPaths={SOUTH_AMERICA_BG_PATHS}
             taskId={taskId}
             activityId={activityId || 'game'}
         />

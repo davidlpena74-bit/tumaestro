@@ -5,9 +5,9 @@ import os
 
 # Settings for South America Miller Cylindrical Projection
 lon0 = -60.0 # Center longitude for South America
-scale = 8.0  # Increased scale to fit South America better
+scale = 2.592  # Reduced scale further by 10% (from 2.88)
 offset_x = 420
-offset_y = 480
+offset_y = 183.71  # Moved map down by 5% as requested (from 174.96)
 
 def project(lon_deg, lat_deg):
     # Miller Cylindrical Projection
@@ -83,10 +83,7 @@ sa_countries_list = [
 ]
 
 # Secondary / Background neighboring regions
-bg_countries_list = [
-    'Panama', 'Costa Rica', 'Nicaragua', 'Caribbean Netherlands', 'Curaçao', 'Aruba', 
-    'Grenada', 'Barbados', 'Saint Vincent and the Grenadines', 'Saint Lucia'
-]
+bg_subregions = ['Central America', 'Caribbean']
 
 for feature in data['features']:
     props = feature['properties']
@@ -103,8 +100,8 @@ for feature in data['features']:
         if fg_geom:
             sa_paths['French Guiana'] = geojson_to_svg_path(fg_geom)
             
-    # Neighbors
-    if name in bg_countries_list or (subregion == 'Central America' and name not in sa_paths):
+    # Neighbors: Central America and Caribbean
+    if name not in sa_paths and (subregion in bg_subregions):
         bg_paths[name] = geojson_to_svg_path(feature['geometry'])
 
 # Sort for consistency
