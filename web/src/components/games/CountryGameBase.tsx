@@ -552,7 +552,7 @@ export default function CountryGameBase({
                                         key={`bg-${name}`}
                                         d={pathD}
                                         className={cn("pointer-events-none", colorClass)}
-                                        strokeWidth={0.1 / Math.sqrt(zoom)}
+                                        strokeWidth={0.2 / Math.sqrt(zoom)}
                                     />
                                 );
                             })}
@@ -600,7 +600,7 @@ export default function CountryGameBase({
 
                                 let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-slate-800/30";
                                 let strokeClass = isPlayable ? "stroke-slate-900/30" : "stroke-slate-800/50";
-                                const strokeWidth = isPlayable ? (0.1 / Math.sqrt(zoom)) : (0.05 / Math.sqrt(zoom));
+                                const strokeWidth = isPlayable ? (0.4 / Math.sqrt(zoom)) : (0.2 / Math.sqrt(zoom));
 
                                 if (isCompleted) {
                                     fillClass = isFailed ? "fill-red-500" : "fill-green-500/80";

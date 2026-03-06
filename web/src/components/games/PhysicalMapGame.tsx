@@ -698,13 +698,13 @@ export default function PhysicalMapGame({
                                                 <path
                                                     key={`${id}-${j}`}
                                                     d={path}
-                                                    className={cn("stroke-[0.5] transition-colors duration-300", getColorClass())}
+                                                    className={cn("stroke-[1.2] transition-colors duration-300", getColorClass())}
                                                 />
                                             )) : (
                                                 <path
                                                     key={id}
                                                     d={d as string}
-                                                    className={cn("stroke-[0.5] transition-colors duration-300", getColorClass())}
+                                                    className={cn("stroke-[1.2] transition-colors duration-300", getColorClass())}
                                                 />
                                             )}
                                         </g>
