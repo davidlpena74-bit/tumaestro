@@ -35,6 +35,7 @@ interface CapitalGameProps {
     colorTheme?: "emerald" | "blue" | "purple" | "orange" | "teal" | "yellow";
     taskId?: string | null;
     activityId?: string;
+    customSvgElements?: React.ReactNode;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -50,7 +51,8 @@ export default function CapitalGame({
     icon,
     colorTheme = "emerald",
     taskId = null,
-    activityId
+    activityId,
+    customSvgElements
 }: CapitalGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -642,6 +644,7 @@ export default function CapitalGame({
                                     );
                                 })}
                             </g>
+                            {customSvgElements}
                         </svg>
                     )}
                 </div>

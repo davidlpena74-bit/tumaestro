@@ -8,6 +8,7 @@ import { EUROPE_PATHS } from '@/components/games/data/europe-paths';
 import { PATH_TO_SPANISH_NAME, PATH_TO_ENGLISH_NAME, EU_MEMBERS_LIST, EU_MEMBERS_LIST_EN } from '@/components/games/data/capitals-data';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
+import EuropeIcelandInset from '@/components/games/EuropeIcelandInset';
 
 export default function PaisesUEClient() {
     const { t, language } = useLanguage();
@@ -35,23 +36,11 @@ export default function PaisesUEClient() {
     }, [nameMapping, euMembers]);
 
     // Add manual labels for Oceans
-    const oceanLabels = useMemo(() => [
-        {
-            id: 'atlantic',
-            name: language === 'es' ? 'OCÉANO ATLÁNTICO' : 'ATLANTIC OCEAN',
-            x: 200,
-            y: 450,
-            className: "fill-slate-500/40",
-            fontSize: "5px"
-        },
-        {
-            id: 'arctic',
-            name: language === 'es' ? 'OCÉANO ÁRTICO' : 'ARCTIC OCEAN',
-            x: 400,
-            y: 50,
-            className: "fill-slate-500/40",
-            fontSize: "5px"
-        }
+    const backgroundLabels = useMemo(() => [
+        { id: 'atlantic', name: language === 'es' ? 'OCÉANO ATLÁNTICO' : 'ATLANTIC OCEAN', x: 80, y: 400, className: "fill-slate-500/30", fontSize: "10px" },
+        { id: 'arctic', name: language === 'es' ? 'OCÉANO ÁRTICO' : 'ARCTIC OCEAN', x: 450, y: 70, className: "fill-slate-500/30", fontSize: "10px" },
+        { id: 'mediterranean', name: language === 'es' ? 'MAR MEDITERRÁNEO' : 'MEDITERRANEAN SEA', x: 450, y: 530, className: "fill-slate-500/20 italic", fontSize: "8px" },
+        { id: 'black-sea', name: language === 'es' ? 'MAR NEGRO' : 'BLACK SEA', x: 720, y: 425, className: "fill-slate-500/20 italic", fontSize: "7px" }
     ], [language]);
 
     const backgroundColors = useMemo(() => {
@@ -82,13 +71,14 @@ export default function PaisesUEClient() {
                 nameMapping={nameMapping}
                 colorTheme="emerald"
                 initialTime={120}
-                initialZoom={1.98}
-                initialPan={{ x: 50, y: -170 }}
+                initialZoom={1}
+                initialPan={{ x: 0, y: 0 }}
                 taskId={taskId}
                 activityId="paises-ue"
                 backgroundPaths={EUROPE_PATHS}
                 backgroundColors={backgroundColors}
-                backgroundLabels={oceanLabels}
+                backgroundLabels={backgroundLabels}
+                customSvgElements={<EuropeIcelandInset />}
             />
         </PhysicalGameLayout>
     );

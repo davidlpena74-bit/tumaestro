@@ -1,0 +1,83 @@
+{
+    "id": "asia-countries",
+    "source": "public/maps/world-countries-50m.json",
+    "output": "src/components/games/data/asia-paths.ts",
+    "exportName": "ASIA_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                30,
+                -15
+            ],
+            [
+                150,
+                50
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "nameProperty": "name",
+    "targets": [
+        "Afghanistan",
+        "Armenia",
+        "Azerbaijan",
+        "Bahrain",
+        "Bangladesh",
+        "Bhutan",
+        "Brunei",
+        "Cambodia",
+        "China",
+        "Cyprus",
+        "Georgia",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Israel",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Laos",
+        "Lebanon",
+        "Malaysia",
+        "Maldives",
+        "Mongolia",
+        "Myanmar",
+        "Nepal",
+        "North Korea",
+        "Oman",
+        "Pakistan",
+        "Palestine",
+        "Philippines",
+        "Qatar",
+        "Russia",
+        "Saudi Arabia",
+        "Singapore",
+        "South Korea",
+        "Sri Lanka",
+        "Syria",
+        "Taiwan",
+        "Tajikistan",
+        "Thailand",
+        "Timor-Leste",
+        "Turkey",
+        "Turkmenistan",
+        "United Arab Emirates",
+        "Uzbekistan",
+        "Vietnam",
+        "Yemen"
+    ],
+    "mappings": {
+        "North Korea": [
+            "Dem. People's Rep. of Korea"
+        ],
+        "South Korea": [
+            "Republic of Korea"
+        ]
+    }
+}

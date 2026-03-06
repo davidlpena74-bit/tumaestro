@@ -3,6 +3,21 @@
     "source": "public/maps/spain-rivers-osm.json",
     "nameProperty": "name",
     "tolerance": 0.5,
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -10,
+                35
+            ],
+            [
+                5,
+                44
+            ]
+        ]
+    },
+    "itemType": "river",
     "targets": [
         "Duero",
         "Ebro",

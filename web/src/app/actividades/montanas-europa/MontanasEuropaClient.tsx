@@ -11,31 +11,31 @@ import { EUROPE_SEAS_PATHS } from '@/components/games/data/europe-physical-paths
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
+import EuropeIcelandInset from '@/components/games/EuropeIcelandInset';
 
 export default function MontanasEuropaClient() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
+
     // Memoize country colors
     const backgroundColors = useMemo(() => {
         const colors: Record<string, string> = {};
-        // List of countries in EUROPE_PATHS that are NOT in the European continent for visual focus
         const contextCountries = ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Israel", "Lebanon", "Syria", "Jordan", "Iraq", "Iran", "Turkmenistan", "Uzbekistan", "Kazakhstan"];
 
         Object.keys(EUROPE_PATHS).forEach(id => {
             if (contextCountries.includes(id)) {
                 colors[id] = "fill-slate-800/30 stroke-slate-800/50";
             } else {
-                // Ensure France, Portugal and other European countries have the land color
                 colors[id] = "fill-[#f5edda] stroke-[#c8b89a]";
             }
         });
         return colors;
     }, []);
 
-    // Memoize country labels for background context
-    const countryLabels = useMemo(() => {
-        return Object.entries(EUROPE_PATHS).map(([id, paths]) => {
+    // Memoize background labels
+    const backgroundLabels = useMemo(() => {
+        const countries = Object.entries(EUROPE_PATHS).map(([id, paths]) => {
             const primaryPath = Array.isArray(paths) ? paths[0] : paths;
             const centroid = calculatePathCentroid(primaryPath);
             return {
@@ -45,12 +45,9 @@ export default function MontanasEuropaClient() {
                 className: "fill-slate-500/25 tracking-tight font-medium",
                 fontSize: "6px"
             };
-        }).filter(l => l.x !== 0) as { id: string; name: string; x: number; y: number; className?: string; fontSize?: string }[];
-    }, []);
+        }).filter(l => l.x !== 0);
 
-    // Combine country labels with sea labels
-    const combinedLabels = useMemo(() => {
-        const seaLabels = Object.entries(EUROPE_SEAS_PATHS).map(([name, path]) => {
+        const seas = Object.entries(EUROPE_SEAS_PATHS).map(([name, path]) => {
             const centroid = calculatePathCentroid(path);
             return {
                 id: name,
@@ -62,8 +59,13 @@ export default function MontanasEuropaClient() {
             };
         }).filter(l => l.x !== 0);
 
-        return [...countryLabels, ...seaLabels];
-    }, [countryLabels]);
+        const oceans = [
+            { id: 'atlantic', name: language === 'es' ? 'OCÉANO ATLÁNTICO' : 'ATLANTIC OCEAN', x: 80, y: 400, className: "fill-slate-500/30", fontSize: "10px" },
+            { id: 'arctic', name: language === 'es' ? 'OCÉANO ÁRTICO' : 'ARCTIC OCEAN', x: 450, y: 70, className: "fill-slate-500/30", fontSize: "10px" }
+        ];
+
+        return [...countries, ...seas, ...oceans];
+    }, [language]);
 
     return (
         <PhysicalGameLayout
@@ -79,10 +81,10 @@ export default function MontanasEuropaClient() {
                 itemType="polygon"
                 backgroundPaths={EUROPE_PATHS}
                 backgroundColors={backgroundColors}
-                backgroundLabels={combinedLabels}
+                backgroundLabels={backgroundLabels}
                 viewBox="0 0 800 600"
-                initialZoom={1.98}
-                initialPan={{ x: 50, y: -170 }}
+                initialZoom={1}
+                initialPan={{ x: 0, y: 0 }}
                 theme="light"
                 elevationHeight={15}
                 baseLabelSize={3}
@@ -91,6 +93,7 @@ export default function MontanasEuropaClient() {
                 activityId="montanas-europa"
                 region={t.gamesPage.regions.europe}
                 gameType={t.gamesPage.gameTypes.map}
+                customSvgElements={<EuropeIcelandInset />}
             />
         </PhysicalGameLayout>
     );

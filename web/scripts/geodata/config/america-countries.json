@@ -1,0 +1,64 @@
+{
+    "id": "america-countries",
+    "sources": [
+        {
+            "path": "public/maps/world-countries-50m.json",
+            "nameProperty": "name"
+        },
+        {
+            "path": "public/maps/world-admin-1.geojson",
+            "nameProperty": "name_en"
+        }
+    ],
+    "output": "src/components/games/data/america-paths.ts",
+    "exportName": "AMERICA_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -170,
+                -60
+            ],
+            [
+                -30,
+                85
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "targets": [
+        "Canada",
+        "United States of America",
+        "Mexico",
+        "Greenland",
+        "Belize",
+        "Costa Rica",
+        "El Salvador",
+        "Guatemala",
+        "Honduras",
+        "Nicaragua",
+        "Panama",
+        "Argentina",
+        "Bolivia",
+        "Brazil",
+        "Chile",
+        "Colombia",
+        "Ecuador",
+        "Guyana",
+        "Paraguay",
+        "Peru",
+        "Suriname",
+        "Uruguay",
+        "Venezuela",
+        "Cuba",
+        "Haiti",
+        "Dominican Rep.",
+        "Jamaica",
+        "Puerto Rico",
+        "Bahamas",
+        "Trinidad and Tobago",
+        "French Guiana"
+    ]
+}

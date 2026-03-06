@@ -1,0 +1,29 @@
+{
+    "id": "north-america-countries",
+    "source": "public/maps/world-countries-50m.json",
+    "output": "src/components/games/data/north-america-paths.ts",
+    "exportName": "NORTH_AMERICA_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -170,
+                10
+            ],
+            [
+                -50,
+                85
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "nameProperty": "name",
+    "targets": [
+        "Canada",
+        "United States of America",
+        "Mexico",
+        "Greenland"
+    ]
+}

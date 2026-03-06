@@ -72,6 +72,7 @@ interface PhysicalMapGameProps {
     backgroundColors?: Record<string, string>;
     baseLabelSize?: number;
     mountainBlur?: number;
+    customSvgElements?: React.ReactNode;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -99,7 +100,8 @@ export default function PhysicalMapGame({
     customColors = {},
     backgroundColors = {},
     baseLabelSize = 5,
-    mountainBlur = 1.2
+    mountainBlur = 1.2,
+    customSvgElements
 }: PhysicalMapGameProps) {
     const { language, t } = useLanguage();
     const [gameMode, setGameMode] = useState<'challenge' | 'practice'>('challenge');
@@ -1004,6 +1006,7 @@ export default function PhysicalMapGame({
                                 })}
                             </g>
                         </g>
+                        {customSvgElements}
                     </svg>
                 </div>
             </div>

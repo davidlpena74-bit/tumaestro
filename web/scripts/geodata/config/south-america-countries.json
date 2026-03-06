@@ -1,0 +1,48 @@
+{
+    "id": "south-america-countries",
+    "sources": [
+        {
+            "path": "public/maps/world-countries-50m.json",
+            "nameProperty": "name"
+        },
+        {
+            "path": "public/maps/world-admin-1.geojson",
+            "nameProperty": "name_en"
+        }
+    ],
+    "output": "src/components/games/data/south-america-paths.ts",
+    "exportName": "SOUTH_AMERICA_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -95,
+                -60
+            ],
+            [
+                -30,
+                15
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "targets": [
+        "Argentina",
+        "Bolivia",
+        "Brazil",
+        "Chile",
+        "Colombia",
+        "Ecuador",
+        "Guyana",
+        "Paraguay",
+        "Peru",
+        "Suriname",
+        "Uruguay",
+        "Venezuela",
+        "Falkland Is.",
+        "Trinidad and Tobago",
+        "French Guiana"
+    ]
+}

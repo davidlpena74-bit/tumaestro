@@ -1,0 +1,32 @@
+{
+    "id": "central-america-countries",
+    "source": "public/maps/world-countries-50m.json",
+    "output": "src/components/games/data/central-america-paths.ts",
+    "exportName": "CENTRAL_AMERICA_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -95,
+                5
+            ],
+            [
+                -75,
+                20
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "nameProperty": "name",
+    "targets": [
+        "Belize",
+        "Costa Rica",
+        "El Salvador",
+        "Guatemala",
+        "Honduras",
+        "Nicaragua",
+        "Panama"
+    ]
+}

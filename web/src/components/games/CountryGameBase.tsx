@@ -38,6 +38,7 @@ interface CountryGameProps {
     backgroundLabels?: { id: string; name: string; x: number; y: number; className?: string; fontSize?: string }[];
     backgroundPaths?: Record<string, string>;
     backgroundColors?: Record<string, string>;
+    customSvgElements?: React.ReactNode;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -58,10 +59,12 @@ export default function CountryGameBase({
     identifyMode = 'countries',
     backgroundLabels = [],
     backgroundPaths = {},
-    backgroundColors = {}
+    backgroundColors = {},
+    customSvgElements = null
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
+    const [clickedCoord, setClickedCoord] = useState<string | null>(null);
 
     const effectiveActivityId = activityId || "country-map-game";
 
@@ -234,8 +237,28 @@ export default function CountryGameBase({
     };
 
     return (
-        <div ref={gameContainerRef} className={cn("w-full flex flex-col items-center select-none transition-all duration-300", isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : "")}>
-            <div className={cn("w-full flex flex-col items-center relative", isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4")}>
+        <div ref={gameContainerRef} className="w-full flex flex-col items-center select-none transition-all duration-300">
+            {clickedCoord && (
+                <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-slate-800 p-6 rounded-2xl z-[100] shadow-2xl border-4 border-emerald-500 w-80 text-center">
+                    <h3 className="font-bold mb-4 text-xl">Coordenada Copiable</h3>
+                    <input
+                        type="text"
+                        readOnly
+                        value={clickedCoord}
+                        className="border-2 border-slate-200 p-2 w-full text-center mb-4 rounded-lg font-mono text-lg bg-slate-50"
+                        onClick={e => { (e.target as HTMLInputElement).select(); navigator.clipboard.writeText(clickedCoord); }}
+                        autoFocus
+                    />
+                    <button
+                        onClick={() => setClickedCoord(null)}
+                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-colors"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            )}
+
+            <div className="w-full flex flex-col items-center relative max-w-6xl mx-auto p-4">
                 <GameHUD
                     title={title}
                     score={score}
@@ -256,10 +279,7 @@ export default function CountryGameBase({
                 />
 
                 <div
-                    className={cn(
-                        "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group z-10 -mt-1",
-                        isFullscreen && "flex-1 min-h-[500px] mt-0"
-                    )}
+                    className="relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] p-0 overflow-hidden border border-white/5 shadow-2xl group z-10 -mt-1"
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
@@ -433,12 +453,7 @@ export default function CountryGameBase({
                         )}
                     </AnimatePresence>
 
-                    {/* Controls */}
-                    <div className={cn("absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300", isFullscreen ? 'top-32 md:top-28' : 'top-4')} onMouseDown={e => e.stopPropagation()}>
-                        <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10 cursor-pointer">
-                            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                        </button>
-                    </div>
+
 
                     {/* HUD / Target Info / Drilldown Selector - MOVED OUTSIDE LOOP FOR SPEED & LOGIC */}
                     <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-sm px-4">
@@ -476,7 +491,26 @@ export default function CountryGameBase({
                     </div>
 
                     {/* SVG MAP */}
-                    <svg viewBox="0 0 800 600" className="w-full h-full drop-shadow-2xl" style={{ background: 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}>
+                    <svg
+                        viewBox="0 0 800 600"
+                        className="w-full h-full touch-none drop-shadow-2xl"
+                        preserveAspectRatio="xMidYMid meet"
+                        onMouseDown={(e) => {
+                            const svg = e.currentTarget;
+                            const CTM = svg.getScreenCTM();
+                            if (CTM) {
+                                const rawX = (e.clientX - CTM.e) / CTM.a;
+                                const rawY = (e.clientY - CTM.f) / CTM.d;
+
+                                // Reverse the zoom/pan transform
+                                const svgX = (rawX - pan.x - 800 / 2) / zoom + 800 / 2;
+                                const svgY = (rawY - pan.y - 600 / 2) / zoom + 600 / 2;
+
+                                setClickedCoord(`[${svgX.toFixed(2)}, ${svgY.toFixed(2)}]`);
+                            }
+                        }}
+                        style={{ background: 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}
+                    >
                         <defs>
                             {/* SEA GRADIENTS */}
                             <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -622,6 +656,7 @@ export default function CountryGameBase({
                                 );
                             })}
                         </g>
+                        {customSvgElements}
                     </svg>
                 </div>
 

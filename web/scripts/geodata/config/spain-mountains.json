@@ -4,6 +4,20 @@
     "nameProperty": "name",
     "itemType": "mountain",
     "tolerance": 0.5,
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -10,
+                35
+            ],
+            [
+                5,
+                44
+            ]
+        ]
+    },
     "mountainWidth": 15,
     "targets": [
         "Pirineos",

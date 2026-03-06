@@ -1,0 +1,51 @@
+{
+    "id": "asia-bg",
+    "source": "public/maps/world-countries-50m.json",
+    "output": "src/components/games/data/asia-bg-paths.ts",
+    "exportName": "ASIA_BG_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                30,
+                -15
+            ],
+            [
+                150,
+                50
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "nameProperty": "name",
+    "targets": [
+        "Egypt",
+        "Greece",
+        "Bulgaria",
+        "Romania",
+        "Ukraine",
+        "Belarus",
+        "Estonia",
+        "Latvia",
+        "Lithuania",
+        "Finland",
+        "Norway",
+        "Sweden",
+        "Papua New Guinea",
+        "Australia",
+        "Germany",
+        "Poland",
+        "Czechia",
+        "Austria",
+        "Hungary",
+        "Slovakia",
+        "Italy",
+        "Libya",
+        "Sudan",
+        "Ethiopia",
+        "Somalia",
+        "Kenya"
+    ]
+}

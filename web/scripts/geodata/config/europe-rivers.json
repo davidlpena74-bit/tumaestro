@@ -5,7 +5,20 @@
     "output": "src/components/games/data/europe-rivers-paths.ts",
     "exportName": "EUROPE_RIVERS_PATHS",
     "itemType": "river",
-    "projection": "europe",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -9.625,
+                36.5
+            ],
+            [
+                37.875,
+                62.5
+            ]
+        ]
+    },
     "useD3Path": true,
     "tolerance": 0.1,
     "nameProperty": "name",
@@ -96,5 +109,32 @@
         "Neva": [
             "Neva"
         ]
+    },
+    "specialFeatures": {
+        "Iceland": {
+            "boundingBox": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        -25,
+                        63.3
+                    ],
+                    [
+                        -13.5,
+                        66.8
+                    ]
+                ]
+            },
+            "extent": [
+                [
+                    20,
+                    20
+                ],
+                [
+                    140,
+                    110
+                ]
+            ]
+        }
     }
 }

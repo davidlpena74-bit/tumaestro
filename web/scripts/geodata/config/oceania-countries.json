@@ -1,0 +1,39 @@
+{
+    "id": "oceania-countries",
+    "source": "public/maps/world-countries-50m.json",
+    "output": "src/components/games/data/oceania-paths.ts",
+    "exportName": "OCEANIA_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                110,
+                -50
+            ],
+            [
+                180,
+                5
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "nameProperty": "name",
+    "targets": [
+        "Australia",
+        "Fiji",
+        "Kiribati",
+        "Marshall Is.",
+        "Micronesia",
+        "Nauru",
+        "New Zealand",
+        "Palau",
+        "Papua New Guinea",
+        "Samoa",
+        "Solomon Is.",
+        "Tonga",
+        "Tuvalu",
+        "Vanuatu"
+    ]
+}
