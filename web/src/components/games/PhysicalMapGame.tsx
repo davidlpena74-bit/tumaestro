@@ -715,222 +715,236 @@ export default function PhysicalMapGame({
 
                             {/* INTERACTIVE ITEMS */}
                             <g>
-                                {sortedItems.map(([name, d]) => {
-                                    const isTarget = name === targetItem;
-                                    const isCompleted = completedItems.includes(name);
-                                    const isFailed = failedItems.includes(name);
-                                    const isHovered = name === hoveredItem;
+                                {(() => {
+                                    const isSomethingHovered = hoveredItem !== null && gameState === 'playing';
 
-                                    let color = "rgba(255,255,255,0.6)";
-                                    if (isCompleted) color = "rgba(34, 197, 94, 0.8)"; // green-500 with 0.8 opacity (RegionGame style)
-                                    if (isFailed) color = "rgba(239, 68, 68, 0.8)";
-                                    if (isHovered && gameState === 'playing' && !isCompleted) color = "#22d3ee";
+                                    return sortedItems.map(([name, d]) => {
+                                        const isTarget = name === targetItem;
+                                        const isCompleted = completedItems.includes(name);
+                                        const isFailed = failedItems.includes(name);
+                                        const isHovered = name === hoveredItem;
 
-                                    return (
-                                        <g
-                                            key={name}
-                                            className="cursor-pointer group"
-                                            onMouseEnter={() => gameState === 'playing' && setHoveredItem(name)}
-                                            onMouseLeave={() => setHoveredItem(null)}
-                                            onClick={(e) => handleItemClick(name, e)}
-                                            transform={getActiveTransform(name)}
-                                        >
-                                            <path
-                                                d={itemType === 'peaks' ? d.path : (itemType === 'mountain' ? (typeof d === 'string' ? d : d.ridge) : (typeof d === 'string' ? d : d.path))}
-                                                fill={(itemType === 'polygon' || itemType === 'region') ? "white" : "none"}
-                                                stroke="white"
-                                                strokeWidth={(itemType === 'polygon' || itemType === 'region') ? "4" : "30"}
-                                                opacity="0"
-                                                className="pointer-events-auto"
-                                            />
+                                        return (
+                                            <g
+                                                key={name}
+                                                className="cursor-pointer group"
+                                                onMouseEnter={() => gameState === 'playing' && setHoveredItem(name)}
+                                                onMouseLeave={() => setHoveredItem(null)}
+                                                onClick={(e) => handleItemClick(name, e)}
+                                                transform={getActiveTransform(name)}
+                                            >
+                                                <path
+                                                    d={itemType === 'peaks' ? d.path : (itemType === 'mountain' ? (typeof d === 'string' ? d : d.ridge) : (typeof d === 'string' ? d : d.path))}
+                                                    fill={(itemType === 'polygon' || itemType === 'region') ? "white" : "none"}
+                                                    stroke="white"
+                                                    strokeWidth={(itemType === 'polygon' || itemType === 'region') ? "4" : "30"}
+                                                    opacity="0"
+                                                    className="pointer-events-auto"
+                                                />
 
-                                            {itemType === 'mountain' ? (
-                                                /* MOUNTAINS - Premium relief style */
-                                                <g style={{ filter: isHovered ? 'drop-shadow(0 0 8px rgba(217, 119, 6, 0.8))' : 'drop-shadow(0px 8px 6px rgba(0,0,0,0.4))' }}>
-                                                    {/* Outer base (Lightest brown / soft edge) */}
-                                                    <motion.path
-                                                        d={typeof d === 'string' ? d : d.ridge}
-                                                        fill="none"
-                                                        stroke={isCompleted ? 'rgba(34, 197, 94, 0.4)' : isFailed ? 'rgba(239, 68, 68, 0.4)' : (isHovered ? 'rgba(245, 158, 11, 0.5)' : 'rgba(180, 83, 9, 0.4)')}
-                                                        strokeWidth={isHovered ? 16 : 12}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="transition-all duration-300 pointer-events-none"
-                                                    />
-                                                    {/* Middle layer (Medium brown) */}
-                                                    <motion.path
-                                                        d={typeof d === 'string' ? d : d.ridge}
-                                                        fill="none"
-                                                        stroke={isCompleted ? '#16a34a' : isFailed ? '#dc2626' : (isHovered ? '#d97706' : '#92400e')}
-                                                        strokeWidth={isHovered ? 10 : 7}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="transition-all duration-300 pointer-events-none"
-                                                    />
-                                                    {/* Inner Core (Dark brown divisor line) */}
-                                                    <motion.path
-                                                        d={typeof d === 'string' ? d : d.ridge}
-                                                        fill="none"
-                                                        stroke={isCompleted ? '#14532d' : isFailed ? '#7f1d1d' : (isHovered ? '#78350f' : '#451a03')}
-                                                        strokeWidth={isHovered ? 4 : 2.5}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="transition-all duration-300 pointer-events-none"
-                                                    />
-                                                    {/* Very thin Specular highlight for volume */}
-                                                    <motion.path
-                                                        d={typeof d === 'string' ? d : d.ridge}
-                                                        fill="none"
-                                                        stroke="rgba(255,255,255,0.15)"
-                                                        strokeWidth={1}
-                                                        strokeDasharray="2 4"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="pointer-events-none transition-all duration-300"
-                                                    />
-                                                </g>
-                                            ) : itemType === 'peaks' ? (
-                                                <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
-                                                    {d.peaks.map((p: any, idx: number) => {
-                                                        const status = isCompleted ? 'completed' : isFailed ? 'failed' : (isHovered ? 'hovered' : 'normal');
-                                                        return (
-                                                            <MountainPeak key={idx} x={p.x} y={p.y} size={p.scale || 1} status={status} />
-                                                        )
-                                                    })}
-                                                </g>
-                                            ) : itemType === 'line' ? (
-                                                /* RIVERS - Premium blue water style */
-                                                <g>
-                                                    {/* Glow halo */}
-                                                    <motion.path
-                                                        d={d}
-                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#7dd3fc' : '#93c5fd')}
-                                                        strokeWidth={isHovered ? 10 : 6}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        fill="none"
-                                                        opacity={0.2}
-                                                        className="transition-all duration-300"
-                                                    />
-                                                    {/* Main river body */}
-                                                    <motion.path
-                                                        d={d}
-                                                        stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#60a5fa' : '#2563eb')}
-                                                        strokeWidth={isHovered ? 4 : 2.5}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        fill="none"
-                                                        className="transition-all duration-300"
-                                                    />
-                                                    {/* Specular shimmer */}
-                                                    <motion.path
-                                                        d={d}
-                                                        stroke="rgba(255,255,255,0.5)"
-                                                        strokeWidth={isHovered ? 1.5 : 0.8}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        fill="none"
-                                                        className="pointer-events-none transition-all duration-300"
-                                                    />
-                                                </g>
-                                            ) : (
-                                                /* POLYGON — Sea if blue theme, Mountain if teal/emerald */
-                                                colorTheme === 'blue' ? (
-                                                    /* SEAS - Premium water style */
-                                                    <g>
+                                                {itemType === 'mountain' ? (
+                                                    /* MOUNTAINS - Premium relief style */
+                                                    <g style={{ filter: isHovered ? 'drop-shadow(0 0 8px rgba(217, 119, 6, 0.8))' : 'drop-shadow(0px 8px 6px rgba(0,0,0,0.4))' }}>
+                                                        {/* Outer base (Lightest brown / soft edge) */}
                                                         <motion.path
-                                                            d={d}
-                                                            stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#60a5fa' : '#3b82f6')}
-                                                            strokeWidth={isHovered ? 2 : 1}
+                                                            d={typeof d === 'string' ? d : d.ridge}
+                                                            fill="none"
+                                                            stroke={isCompleted ? 'rgba(34, 197, 94, 0.4)' : isFailed ? 'rgba(239, 68, 68, 0.4)' : (isHovered ? 'rgba(245, 158, 11, 0.5)' : 'rgba(180, 83, 9, 0.4)')}
+                                                            strokeWidth={isHovered ? 16 : 12}
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
-                                                            fill={isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : (isHovered ? 'rgba(96,165,250,0.35)' : 'rgba(59,130,246,0.20)')}
-                                                            className="transition-all duration-300"
-                                                            style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
+                                                            className="transition-all duration-300 pointer-events-none"
                                                         />
-                                                        {/* Water shimmer lines */}
+                                                        {/* Middle layer (Medium brown) */}
                                                         <motion.path
-                                                            d={d}
-                                                            stroke="rgba(255,255,255,0.4)"
-                                                            strokeWidth={0.5}
+                                                            d={typeof d === 'string' ? d : d.ridge}
                                                             fill="none"
-                                                            strokeDasharray="4 6"
+                                                            stroke={isCompleted ? '#16a34a' : isFailed ? '#dc2626' : (isHovered ? '#d97706' : '#92400e')}
+                                                            strokeWidth={isHovered ? 10 : 7}
                                                             strokeLinecap="round"
-                                                            opacity={isHovered ? 0.9 : 0.4}
+                                                            strokeLinejoin="round"
+                                                            className="transition-all duration-300 pointer-events-none"
+                                                        />
+                                                        {/* Inner Core (Dark brown divisor line) */}
+                                                        <motion.path
+                                                            d={typeof d === 'string' ? d : d.ridge}
+                                                            fill="none"
+                                                            stroke={isCompleted ? '#14532d' : isFailed ? '#7f1d1d' : (isHovered ? '#78350f' : '#451a03')}
+                                                            strokeWidth={isHovered ? 4 : 2.5}
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            className="transition-all duration-300 pointer-events-none"
+                                                        />
+                                                        {/* Very thin Specular highlight for volume */}
+                                                        <motion.path
+                                                            d={typeof d === 'string' ? d : d.ridge}
+                                                            fill="none"
+                                                            stroke="rgba(255,255,255,0.15)"
+                                                            strokeWidth={1}
+                                                            strokeDasharray="2 4"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
                                                             className="pointer-events-none transition-all duration-300"
                                                         />
                                                     </g>
-                                                ) : itemType === 'region' ? (
+                                                ) : itemType === 'peaks' ? (
+                                                    <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
+                                                        {d.peaks.map((p: any, idx: number) => {
+                                                            const status = isCompleted ? 'completed' : isFailed ? 'failed' : (isHovered ? 'hovered' : 'normal');
+                                                            return (
+                                                                <MountainPeak key={idx} x={p.x} y={p.y} size={p.scale || 1} status={status} />
+                                                            )
+                                                        })}
+                                                    </g>
+                                                ) : itemType === 'line' ? (
+                                                    /* RIVERS - Premium blue water style */
                                                     <g>
+                                                        {/* Glow halo */}
                                                         <motion.path
                                                             d={d}
-                                                            fill={isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (isHovered ? 'rgba(34, 211, 238, 0.4)' : (customColors && customColors[name] ? customColors[name] : 'transparent'))}
-                                                            stroke={isCompleted ? '#166534' : isFailed ? '#991b1b' : (isHovered ? '#0891b2' : (customColors && customColors[name] ? '#cbd5e1' : 'transparent'))}
-                                                            strokeWidth={0.5}
-                                                            animate={{
-                                                                y: isHovered ? -2 : 0,
-                                                                filter: isHovered ? 'url(#elevation-hover)' : 'none'
-                                                            }}
-                                                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                                                            className="transition-colors duration-300 cursor-pointer"
+                                                            stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#7dd3fc' : '#93c5fd')}
+                                                            strokeWidth={isHovered ? 10 : 6}
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            fill="none"
+                                                            opacity={0.2}
+                                                            className="transition-all duration-300"
                                                         />
-
-                                                        {/* Indicator "bola" for small regions (Ceuta & Melilla) */}
-                                                        {(name === 'ceuta' || name === 'melilla') && gameState !== 'start' && (
-                                                            <g>
-                                                                {(() => {
-                                                                    const centroid = calculatePathCentroid(d);
-                                                                    if (!centroid) return null;
-                                                                    return (
-                                                                        <motion.circle
-                                                                            cx={centroid.x}
-                                                                            cy={centroid.y}
-                                                                            r={isHovered ? 8 : 6}
-                                                                            fill="white"
-                                                                            stroke={isCompleted ? (isFailed ? "#ef4444" : "#22c55e") : "#334155"}
-                                                                            strokeWidth="2"
-                                                                            initial={{ scale: 0, opacity: 0 }}
-                                                                            animate={{
-                                                                                scale: 1,
-                                                                                opacity: 1,
-                                                                                filter: isHovered ? 'drop-shadow(0 0 6px rgba(255,255,255,0.9))' : 'none'
-                                                                            }}
-                                                                            className="pointer-events-none"
-                                                                            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
-                                                                        />
-                                                                    );
-                                                                })()}
-                                                            </g>
-                                                        )}
-
-
-
+                                                        {/* Main river body */}
+                                                        <motion.path
+                                                            d={d}
+                                                            stroke={isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#2563eb')}
+                                                            strokeWidth={isHovered ? 4 : 2.5}
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            fill="none"
+                                                            className="transition-all duration-300"
+                                                        />
+                                                        {/* Specular shimmer */}
+                                                        <motion.path
+                                                            d={d}
+                                                            stroke="rgba(255,255,255,0.5)"
+                                                            strokeWidth={isHovered ? 1.5 : 0.8}
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            fill="none"
+                                                            className="pointer-events-none transition-all duration-300"
+                                                        />
                                                     </g>
                                                 ) : (
-                                                    <g>
-                                                        {(() => {
-                                                            const pathD = typeof d === 'string' ? d : d.path;
-                                                            const isClosed = pathD.trimEnd().endsWith('Z') || pathD.trimEnd().endsWith('z');
-
-                                                            return (
-                                                                <motion.path
-                                                                    d={pathD}
-                                                                    fill={isClosed ? (isCompleted ? 'rgba(34,197,94,0.45)' : isFailed ? 'rgba(239,68,68,0.4)' : (isHovered ? 'rgba(34,211,238,0.4)' : 'rgba(146,64,14,0.3)')) : "none"}
-                                                                    stroke={isCompleted ? 'rgba(34,197,94,0.7)' : isFailed ? 'rgba(239,68,68,0.7)' : (isHovered ? 'rgba(245,158,11,0.8)' : 'rgba(146,64,14,0.5)')}
-                                                                    strokeWidth={isClosed ? 1 : 12}
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    filter="url(#mountain-body-soft)"
-                                                                    className="transition-all duration-300"
+                                                    /* POLYGON — Sea if blue theme, Mountain if teal/emerald */
+                                                    colorTheme === 'blue' ? (
+                                                        /* SEAS - Premium water style */
+                                                        <g>
+                                                            <motion.path
+                                                                d={d}
+                                                                stroke={isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#3b82f6')}
+                                                                strokeWidth={isHovered ? 2 : 1}
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                fill={isHovered ? '#00AA98' : (isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.20)')}
+                                                                className="transition-all duration-300"
+                                                                style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
+                                                            />
+                                                            {/* Water shimmer lines */}
+                                                            <motion.path
+                                                                d={d}
+                                                                stroke="rgba(255,255,255,0.4)"
+                                                                strokeWidth={0.5}
+                                                                fill="none"
+                                                                strokeDasharray="4 6"
+                                                                strokeLinecap="round"
+                                                                opacity={isHovered ? 0.9 : 0.4}
+                                                                className="pointer-events-none transition-all duration-300"
+                                                            />
+                                                        </g>
+                                                    ) : itemType === 'region' ? (
+                                                        <g>
+                                                            {/* Base shadow/down path when hovered */}
+                                                            {isHovered && gameState === 'playing' && (
+                                                                <path
+                                                                    d={d}
+                                                                    fill="#334155"
+                                                                    stroke="none"
+                                                                    className="pointer-events-none"
                                                                 />
-                                                            );
-                                                        })()}
-                                                    </g>
-                                                )
-                                            )}
-                                        </g>
-                                    );
-                                })}
+                                                            )}
+                                                            <motion.path
+                                                                d={d}
+                                                                fill={isHovered ? '#00AA98' : (isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (customColors && customColors[name] ? customColors[name] : 'transparent'))}
+                                                                stroke={isHovered ? '#007A6D' : (isCompleted ? '#166534' : isFailed ? '#991b1b' : (customColors && customColors[name] ? '#cbd5e1' : 'transparent'))}
+                                                                strokeWidth={0.5}
+                                                                animate={{
+                                                                    scale: isHovered ? 1.01 : 1,
+                                                                    y: isHovered ? -1 : 0,
+                                                                    filter: isHovered ? 'url(#elevation-hover)' : 'none'
+                                                                }}
+                                                                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                                                className="transition-colors duration-300 cursor-pointer"
+                                                                style={{
+                                                                    transformOrigin: 'center',
+                                                                    transformBox: 'fill-box',
+                                                                    zIndex: isHovered ? 50 : 1,
+                                                                }}
+                                                            />
+
+                                                            {/* Indicator "bola" for small regions (Ceuta & Melilla) */}
+                                                            {(name === 'ceuta' || name === 'melilla') && gameState !== 'start' && (
+                                                                <g>
+                                                                    {(() => {
+                                                                        const centroid = calculatePathCentroid(d);
+                                                                        if (!centroid) return null;
+                                                                        return (
+                                                                            <motion.circle
+                                                                                cx={centroid.x}
+                                                                                cy={centroid.y}
+                                                                                r={isHovered ? 8 : 6}
+                                                                                fill="white"
+                                                                                stroke={isCompleted ? (isFailed ? "#ef4444" : "#22c55e") : "#334155"}
+                                                                                strokeWidth="2"
+                                                                                initial={{ scale: 0, opacity: 0 }}
+                                                                                animate={{
+                                                                                    scale: 1,
+                                                                                    opacity: 1,
+                                                                                    filter: isHovered ? 'drop-shadow(0 0 6px rgba(255,255,255,0.9))' : 'none'
+                                                                                }}
+                                                                                className="pointer-events-none"
+                                                                                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
+                                                                            />
+                                                                        );
+                                                                    })()}
+                                                                </g>
+                                                            )}
+
+
+
+                                                        </g>
+                                                    ) : (
+                                                        <g>
+                                                            {(() => {
+                                                                const pathD = typeof d === 'string' ? d : d.path;
+                                                                const isClosed = pathD.trimEnd().endsWith('Z') || pathD.trimEnd().endsWith('z');
+
+                                                                return (
+                                                                    <motion.path
+                                                                        d={pathD}
+                                                                        fill={isClosed ? (isCompleted ? 'rgba(34,197,94,0.45)' : isFailed ? 'rgba(239,68,68,0.4)' : (isHovered ? 'rgba(34,211,238,0.4)' : 'rgba(146,64,14,0.3)')) : "none"}
+                                                                        stroke={isCompleted ? 'rgba(34,197,94,0.7)' : isFailed ? 'rgba(239,68,68,0.7)' : (isHovered ? 'rgba(245,158,11,0.8)' : 'rgba(146,64,14,0.5)')}
+                                                                        strokeWidth={isClosed ? 1 : 12}
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        filter="url(#mountain-body-soft)"
+                                                                        className="transition-all duration-300"
+                                                                    />
+                                                                );
+                                                            })()}
+                                                        </g>
+                                                    )
+                                                )}
+                                            </g>
+                                        );
+                                    });
+                                })()}
                             </g>
 
                             {/* 4. SEA OVERLAY (Holes for Land) - Glassmorphism effect */}

@@ -541,34 +541,62 @@ export default function CapitalGame({
                             <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#sea-floor)" />
                             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
                                 {/* Layer 1: Country Paths */}
-                                {Object.entries(paths).map(([engName, pathD]) => {
-                                    const spanishName = nameMapping[engName];
-                                    const isCompleted = spanishName && !remainingCountries.includes(spanishName);
-                                    const isFailed = failedCountries.includes(spanishName || '');
-                                    const isPlayable = !!spanishName && (targetList ? targetList.includes(spanishName) : true);
-                                    const isInTargetList = isPlayable;
+                                {(() => {
+                                    const isSomethingHovered = hoveredCapital !== null && gameState === 'playing';
 
-                                    return (
-                                        <motion.path
-                                            key={`path-${engName}`}
-                                            d={pathD}
-                                            className={`stroke-[0.5px] transition-colors duration-150 pointer-events-auto cursor-pointer ${isInTargetList ? 'stroke-slate-900/20' : 'fill-slate-800/30 stroke-slate-800/50'}`}
-                                            initial={false}
-                                            onMouseEnter={() => isInTargetList && setHoveredCapital(engName)}
-                                            onMouseLeave={() => setHoveredCapital(null)}
-                                            onClick={(e: any) => {
-                                                e.stopPropagation();
-                                                handleCountryClick(engName);
-                                            }}
-                                            animate={{
-                                                fill: isInTargetList ? (hoveredCapital === engName ? '#e8e4d8' : '#f5edda') : undefined,
-                                                opacity: isInTargetList ? 1 : 1
-                                            }}
-                                            transition={{ duration: 0.2 }}
-                                            style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
-                                        />
-                                    );
-                                })}
+                                    return Object.entries(paths).map(([engName, pathD]) => {
+                                        const spanishName = nameMapping[engName];
+                                        const isCompleted = spanishName && !remainingCountries.includes(spanishName);
+                                        const isFailed = failedCountries.includes(spanishName || '');
+                                        const isHovered = hoveredCapital === engName;
+                                        const isPlayable = !!spanishName && (targetList ? targetList.includes(spanishName) : true);
+                                        const isInTargetList = isPlayable;
+
+                                        // Hover/Fill Logic
+                                        let fillColor = isInTargetList ? '#f5edda' : 'rgba(30, 41, 59, 0.3)';
+                                        if (isHovered && gameState === 'playing' && isInTargetList) {
+                                            fillColor = '#00AA98';
+                                        } else if (isCompleted) {
+                                            fillColor = isFailed ? '#ef4444' : 'rgba(16, 185, 129, 0.6)';
+                                        }
+
+                                        return (
+                                            <g key={`path-group-${engName}`}>
+                                                {/* Base shadow/down path when hovered */}
+                                                {isHovered && gameState === 'playing' && (
+                                                    <path
+                                                        d={pathD}
+                                                        fill="#334155"
+                                                        stroke="none"
+                                                        className="pointer-events-none"
+                                                    />
+                                                )}
+                                                <motion.path
+                                                    key={`path-${engName}`}
+                                                    d={pathD}
+                                                    className={cn(
+                                                        "stroke-[0.5px] transition-colors duration-150 pointer-events-auto cursor-pointer",
+                                                        isInTargetList ? 'stroke-slate-900/20' : 'stroke-slate-800/50'
+                                                    )}
+                                                    initial={false}
+                                                    onMouseEnter={() => isInTargetList && gameState === 'playing' && setHoveredCapital(engName)}
+                                                    onMouseLeave={() => setHoveredCapital(null)}
+                                                    onClick={(e: any) => {
+                                                        e.stopPropagation();
+                                                        handleCountryClick(engName);
+                                                    }}
+                                                    animate={{
+                                                        fill: fillColor,
+                                                        scale: isHovered && gameState === 'playing' ? 1.01 : 1,
+                                                        y: isHovered && gameState === 'playing' ? -1 : 0,
+                                                    }}
+                                                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                                    style={{ transformOrigin: 'center', transformBox: 'fill-box', zIndex: isHovered ? 50 : 1 }}
+                                                />
+                                            </g>
+                                        );
+                                    });
+                                })()}
 
                                 {/* Layer 2: Capital Points (Always on top) */}
                                 {Object.entries(paths).map(([engName, pathD]) => {

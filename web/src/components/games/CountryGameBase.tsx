@@ -596,13 +596,20 @@ export default function CountryGameBase({
                                 const isCompleted = localizedName && !remainingCountries.includes(localizedName);
                                 const isFailed = failedCountries.includes(localizedName);
                                 const isHovered = hoveredId === localizedName;
+                                const isSomethingHovered = hoveredId !== null && gameState === 'playing';
                                 const isPlayable = !!localizedName;
 
-                                let fillClass = isPlayable ? "fill-[#f5edda] hover:fill-[#e8e4d8]" : "fill-slate-800/30";
+                                // Base colors
+                                let fillStyle = {};
+                                let fillClass = isPlayable ? "fill-[#f5edda]" : "fill-slate-800/30";
                                 let strokeClass = isPlayable ? "stroke-slate-900/30" : "stroke-slate-800/50";
                                 const strokeWidth = isPlayable ? (0.4 / Math.sqrt(zoom)) : (0.2 / Math.sqrt(zoom));
 
-                                if (isCompleted) {
+                                // HOVER LOGIC: Brand Green (#00AA98) for hovered
+                                if (isHovered && gameState === 'playing') {
+                                    fillClass = ""; // Override tailwind class
+                                    fillStyle = { fill: '#00AA98' };
+                                } else if (isCompleted) {
                                     fillClass = isFailed ? "fill-red-500" : "fill-green-500/80";
                                 }
 
@@ -618,6 +625,16 @@ export default function CountryGameBase({
                                         className="group"
                                         style={{ pointerEvents: (gameState === 'playing' && isPlayable) ? 'all' : 'none' }}
                                     >
+                                        {/* Base shadow/down path when hovered */}
+                                        {isHovered && gameState === 'playing' && (
+                                            <path
+                                                d={pathD}
+                                                fill="#334155"
+                                                stroke="none"
+                                                className="pointer-events-none"
+                                            />
+                                        )}
+
                                         {/* Hit Area */}
                                         <path
                                             d={pathD}
@@ -634,22 +651,22 @@ export default function CountryGameBase({
                                             className={cn(
                                                 strokeClass,
                                                 fillClass,
-                                                isHovered && gameState === 'playing' && !isCompleted && (colorTheme === 'emerald' ? "fill-cyan-400/40" : "fill-blue-400/40"),
                                                 isPlayable && "cursor-pointer transition-colors"
                                             )}
-                                            initial={false}
-                                            animate={{
-                                                scale: isHovered && gameState === 'playing' ? 1.005 : 1,
-                                                y: isHovered && gameState === 'playing' ? -0.5 : 0,
-                                                filter: isHovered && gameState === 'playing' ? 'url(#elevation-hover)' : 'none'
-                                            }}
-                                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                                             style={{
+                                                ...fillStyle,
                                                 transformOrigin: 'center',
                                                 transformBox: 'fill-box',
                                                 zIndex: isHovered ? 50 : 1,
                                                 pointerEvents: 'none'
                                             }}
+                                            initial={false}
+                                            animate={{
+                                                scale: isHovered && gameState === 'playing' ? 1.01 : 1,
+                                                y: isHovered && gameState === 'playing' ? -1 : 0,
+                                                filter: isHovered && gameState === 'playing' ? 'url(#elevation-hover)' : 'none'
+                                            }}
+                                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                                         />
 
                                     </g>
