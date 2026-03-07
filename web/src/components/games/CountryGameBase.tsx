@@ -509,6 +509,7 @@ export default function CountryGameBase({
                                 setClickedCoord(`[${svgX.toFixed(2)}, ${svgY.toFixed(2)}]`);
                             }
                         }}
+                        onMouseLeave={() => setHoveredId(null)}
                         style={{ background: 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}
                     >
                         <defs>
@@ -600,17 +601,15 @@ export default function CountryGameBase({
                                 const isPlayable = !!localizedName;
 
                                 // Base colors
-                                let fillStyle = {};
-                                let fillClass = isPlayable ? "fill-[#f5edda]" : "fill-slate-800/30";
-                                let strokeClass = isPlayable ? "stroke-slate-900/30" : "stroke-slate-800/50";
+                                const strokeClass = isPlayable ? "stroke-slate-900/30" : "stroke-slate-800/50";
                                 const strokeWidth = isPlayable ? (0.4 / Math.sqrt(zoom)) : (0.2 / Math.sqrt(zoom));
 
-                                // HOVER LOGIC: Brand Green (#00AA98) for hovered
+                                // COLOR LOGIC
+                                let fillColor = isPlayable ? "#f5edda" : "#1e293b4d"; // slate-800/30
                                 if (isHovered && gameState === 'playing') {
-                                    fillClass = ""; // Override tailwind class
-                                    fillStyle = { fill: '#00AA98' };
+                                    fillColor = "#00AA98";
                                 } else if (isCompleted) {
-                                    fillClass = isFailed ? "fill-red-500" : "fill-green-500/80";
+                                    fillColor = isFailed ? "#ef4444" : "#22c55ecc"; // green-500/80
                                 }
 
                                 return (
@@ -650,11 +649,9 @@ export default function CountryGameBase({
                                             strokeWidth={strokeWidth}
                                             className={cn(
                                                 strokeClass,
-                                                fillClass,
-                                                isPlayable && "cursor-pointer transition-colors"
+                                                isPlayable && "cursor-pointer"
                                             )}
                                             style={{
-                                                ...fillStyle,
                                                 transformOrigin: 'center',
                                                 transformBox: 'fill-box',
                                                 zIndex: isHovered ? 50 : 1,
@@ -662,6 +659,7 @@ export default function CountryGameBase({
                                             }}
                                             initial={false}
                                             animate={{
+                                                fill: fillColor,
                                                 scale: isHovered && gameState === 'playing' ? 1.01 : 1,
                                                 y: isHovered && gameState === 'playing' ? -1 : 0,
                                                 filter: isHovered && gameState === 'playing' ? 'url(#elevation-hover)' : 'none'

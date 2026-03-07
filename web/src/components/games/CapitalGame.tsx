@@ -522,7 +522,12 @@ export default function CapitalGame({
 
                     {/* MAP */}
                     {(gameState === 'playing' || gameState === 'start') && (
-                        <svg viewBox="0 0 800 600" className="w-full h-full pointer-events-none" style={{ background: 'transparent' }}>
+                        <svg
+                            viewBox="0 0 800 600"
+                            className="w-full h-full pointer-events-auto"
+                            style={{ background: 'transparent' }}
+                            onMouseLeave={() => setHoveredCapital(null)}
+                        >
                             <defs>
                                 {/* SEA GRADIENTS */}
                                 <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

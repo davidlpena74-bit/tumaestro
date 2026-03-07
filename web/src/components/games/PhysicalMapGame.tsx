@@ -510,7 +510,12 @@ export default function PhysicalMapGame({
                         <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm border border-white/10 cursor-pointer">{isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}</button>
                     </div>
 
-                    <svg viewBox={viewBox} className="w-full h-full drop-shadow-2xl" style={{ background: theme === 'dark' ? 'linear-gradient(135deg, #060d17 0%, #081424 100%)' : 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}>
+                    <svg
+                        viewBox={viewBox}
+                        className="w-full h-full drop-shadow-2xl"
+                        style={{ background: theme === 'dark' ? 'linear-gradient(135deg, #060d17 0%, #081424 100%)' : 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}
+                        onMouseLeave={() => setHoveredItem(null)}
+                    >
                         <defs>
                             {/* SEA GRADIENTS */}
                             <linearGradient id="sea-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -802,23 +807,25 @@ export default function PhysicalMapGame({
                                                         {/* Glow halo */}
                                                         <motion.path
                                                             d={d}
-                                                            stroke={isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#7dd3fc' : '#93c5fd')}
                                                             strokeWidth={isHovered ? 10 : 6}
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
                                                             fill="none"
                                                             opacity={0.2}
-                                                            className="transition-all duration-300"
+                                                            animate={{
+                                                                stroke: isCompleted ? '#22c55e' : isFailed ? '#ef4444' : (isHovered ? '#7dd3fc' : '#93c5fd')
+                                                            }}
                                                         />
                                                         {/* Main river body */}
                                                         <motion.path
                                                             d={d}
-                                                            stroke={isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#2563eb')}
                                                             strokeWidth={isHovered ? 4 : 2.5}
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
                                                             fill="none"
-                                                            className="transition-all duration-300"
+                                                            animate={{
+                                                                stroke: isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#2563eb')
+                                                            }}
                                                         />
                                                         {/* Specular shimmer */}
                                                         <motion.path
@@ -828,7 +835,7 @@ export default function PhysicalMapGame({
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
                                                             fill="none"
-                                                            className="pointer-events-none transition-all duration-300"
+                                                            className="pointer-events-none"
                                                         />
                                                     </g>
                                                 ) : (
@@ -838,12 +845,13 @@ export default function PhysicalMapGame({
                                                         <g>
                                                             <motion.path
                                                                 d={d}
-                                                                stroke={isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#3b82f6')}
                                                                 strokeWidth={isHovered ? 2 : 1}
                                                                 strokeLinecap="round"
                                                                 strokeLinejoin="round"
-                                                                fill={isHovered ? '#00AA98' : (isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.20)')}
-                                                                className="transition-all duration-300"
+                                                                animate={{
+                                                                    stroke: isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#3b82f6'),
+                                                                    fill: isHovered ? '#00AA98' : (isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.20)')
+                                                                }}
                                                                 style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
                                                             />
                                                             {/* Water shimmer lines */}
@@ -854,8 +862,8 @@ export default function PhysicalMapGame({
                                                                 fill="none"
                                                                 strokeDasharray="4 6"
                                                                 strokeLinecap="round"
-                                                                opacity={isHovered ? 0.9 : 0.4}
-                                                                className="pointer-events-none transition-all duration-300"
+                                                                animate={{ opacity: isHovered ? 0.9 : 0.4 }}
+                                                                className="pointer-events-none"
                                                             />
                                                         </g>
                                                     ) : itemType === 'region' ? (
@@ -871,16 +879,15 @@ export default function PhysicalMapGame({
                                                             )}
                                                             <motion.path
                                                                 d={d}
-                                                                fill={isHovered ? '#00AA98' : (isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (customColors && customColors[name] ? customColors[name] : 'transparent'))}
-                                                                stroke={isHovered ? '#007A6D' : (isCompleted ? '#166534' : isFailed ? '#991b1b' : (customColors && customColors[name] ? '#cbd5e1' : 'transparent'))}
                                                                 strokeWidth={0.5}
                                                                 animate={{
+                                                                    fill: isHovered ? '#00AA98' : (isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (customColors && customColors[name] ? customColors[name] : 'transparent')),
+                                                                    stroke: isHovered ? '#007A6D' : (isCompleted ? '#166534' : isFailed ? '#991b1b' : (customColors && customColors[name] ? '#cbd5e1' : 'transparent')),
                                                                     scale: isHovered ? 1.01 : 1,
                                                                     y: isHovered ? -1 : 0,
                                                                     filter: isHovered ? 'url(#elevation-hover)' : 'none'
                                                                 }}
                                                                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                                                                className="transition-colors duration-300 cursor-pointer"
                                                                 style={{
                                                                     transformOrigin: 'center',
                                                                     transformBox: 'fill-box',
