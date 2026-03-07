@@ -31,10 +31,11 @@ export default function ContinentsMapGame({ taskId = null, activityId }: { taskI
     }, [language]);
 
     const bgLabels = [
-        { id: 'pacifico-1', name: 'Océano Pacífico', x: 50, y: 300, fontSize: '10px' },
-        { id: 'atlantico', name: 'Océano Atlántico', x: 300, y: 300, fontSize: '10px' },
-        { id: 'indico', name: 'Océano Índico', x: 550, y: 400, fontSize: '10px' },
-        { id: 'pacifico-2', name: 'Océano Pacífico', x: 750, y: 300, fontSize: '10px' },
+        { id: 'atlantico', name: 'Océano Atlántico', x: 430, y: 340, fontSize: '10px' },
+        { id: 'indico', name: 'Océano Índico', x: 680, y: 260, fontSize: '10px' },
+        { id: 'pacifico-2', name: 'Océano Pacífico', x: 210, y: 300, fontSize: '10px' },
+        { id: 'artico', name: 'Océano Glacial Ártico', x: 400, y: 20, fontSize: '10px' },
+        { id: 'antartico', name: 'Océano Glacial Antártico', x: 400, y: 495, fontSize: '10px' },
     ];
 
     return (
@@ -48,8 +49,9 @@ export default function ContinentsMapGame({ taskId = null, activityId }: { taskI
             colorTheme="emerald"
             initialTime={120}
             initialZoom={1.0}
-            initialPan={{ x: 0, y: 0 }}
+            initialPan={{ x: -80, y: 0 }}
             backgroundLabels={bgLabels}
+            viewBox="0 0 800 510"
             taskId={taskId}
             activityId={activityId || 'game'}
         />

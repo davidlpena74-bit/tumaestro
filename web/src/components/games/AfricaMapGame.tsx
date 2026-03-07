@@ -39,8 +39,11 @@ export default function AfricaMapGame({ taskId = null, activityId }: { taskId?: 
 
         // Add Oceans manually if not in paths
         labels.push(
-            { id: 'atlantico', name: 'Océano Atlántico', x: 100, y: 300, fontSize: '8px' },
-            { id: 'indico', name: 'Océano Índico', x: 650, y: 400, fontSize: '8px' }
+            { id: 'atlantico', name: 'Océano Atlántico', x: 70, y: 400, fontSize: '8px' },
+            { id: 'indico', name: 'Océano Índico', x: 700, y: 450, fontSize: '8px' },
+            { id: 'rojo', name: 'Mar Rojo', x: 625, y: 175, fontSize: '6px' },
+            { id: 'mediterraneo', name: 'Mar Mediterráneo', x: 400, y: 35, fontSize: '7px' },
+            { id: 'guinea', name: 'Golfo de Guinea', x: 315, y: 375, fontSize: '6px' }
         );
 
         return labels;

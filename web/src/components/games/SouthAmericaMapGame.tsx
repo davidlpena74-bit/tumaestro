@@ -23,7 +23,7 @@ export default function SouthAmericaMapGame({ taskId = null, activityId }: { tas
 
     const seaLabels = useMemo(() => [
         { id: 'atlantico', name: 'Océano Atlántico', x: 650, y: 350, fontSize: '8px' },
-        { id: 'pacifico', name: 'Océano Pacífico', x: 200, y: 400, fontSize: '8px' }
+        { id: 'pacifico', name: 'Océano Pacífico', x: -50, y: 400, fontSize: '8px' }
     ], []);
 
     return (

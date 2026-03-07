@@ -39,6 +39,7 @@ interface CountryGameProps {
     backgroundPaths?: Record<string, string>;
     backgroundColors?: Record<string, string>;
     customSvgElements?: React.ReactNode;
+    viewBox?: string;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -60,11 +61,11 @@ export default function CountryGameBase({
     backgroundLabels = [],
     backgroundPaths = {},
     backgroundColors = {},
-    customSvgElements = null
+    customSvgElements = null,
+    viewBox = "0 0 800 600"
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
-    const [clickedCoord, setClickedCoord] = useState<string | null>(null);
 
     const effectiveActivityId = activityId || "country-map-game";
 
@@ -93,6 +94,11 @@ export default function CountryGameBase({
     const [isDragging, setIsDragging] = useState(false);
     const dragStart = useRef({ x: 0, y: 0 });
     const isClick = useRef(true);
+
+    // Parse viewBox to get center coordinates for transforms
+    const [, , vbWidth, vbHeight] = viewBox.split(' ').map(Number);
+    const centerX = vbWidth / 2;
+    const centerY = vbHeight / 2;
 
     // Sync if props change or on remount
     useEffect(() => {
@@ -238,26 +244,6 @@ export default function CountryGameBase({
 
     return (
         <div ref={gameContainerRef} className="w-full flex flex-col items-center select-none transition-all duration-300">
-            {clickedCoord && (
-                <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-slate-800 p-6 rounded-2xl z-[100] shadow-2xl border-4 border-emerald-500 w-80 text-center">
-                    <h3 className="font-bold mb-4 text-xl">Coordenada Copiable</h3>
-                    <input
-                        type="text"
-                        readOnly
-                        value={clickedCoord}
-                        className="border-2 border-slate-200 p-2 w-full text-center mb-4 rounded-lg font-mono text-lg bg-slate-50"
-                        onClick={e => { (e.target as HTMLInputElement).select(); navigator.clipboard.writeText(clickedCoord); }}
-                        autoFocus
-                    />
-                    <button
-                        onClick={() => setClickedCoord(null)}
-                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-colors"
-                    >
-                        Cerrar
-                    </button>
-                </div>
-            )}
-
             <div className="w-full flex flex-col items-center relative max-w-6xl mx-auto p-4">
                 <GameHUD
                     title={title}
@@ -492,23 +478,9 @@ export default function CountryGameBase({
 
                     {/* SVG MAP */}
                     <svg
-                        viewBox="0 0 800 600"
+                        viewBox={viewBox}
                         className="w-full h-full touch-none drop-shadow-2xl"
                         preserveAspectRatio="xMidYMid meet"
-                        onMouseDown={(e) => {
-                            const svg = e.currentTarget;
-                            const CTM = svg.getScreenCTM();
-                            if (CTM) {
-                                const rawX = (e.clientX - CTM.e) / CTM.a;
-                                const rawY = (e.clientY - CTM.f) / CTM.d;
-
-                                // Reverse the zoom/pan transform
-                                const svgX = (rawX - pan.x - 800 / 2) / zoom + 800 / 2;
-                                const svgY = (rawY - pan.y - 600 / 2) / zoom + 600 / 2;
-
-                                setClickedCoord(`[${svgX.toFixed(2)}, ${svgY.toFixed(2)}]`);
-                            }
-                        }}
                         onMouseLeave={() => setHoveredId(null)}
                         style={{ background: 'linear-gradient(135deg, #9bbdc9 0%, #adc8d4 100%)' }}
                     >
