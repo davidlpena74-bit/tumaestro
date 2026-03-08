@@ -13,7 +13,8 @@ const CONTINENT_MAPPING: Record<string, string> = {
     'North America': 'América del Norte',
     'South America': 'América del Sur',
     'Oceania': 'Oceanía',
-    'Antarctica': 'Antártida'
+    'Antarctica': 'Antártida',
+    'Greenland': 'Groenlandia'
 };
 
 export default function ContinentsMapGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
@@ -35,7 +36,7 @@ export default function ContinentsMapGame({ taskId = null, activityId }: { taskI
         { id: 'indico', name: 'Océano Índico', x: 680, y: 260, fontSize: '10px' },
         { id: 'pacifico-2', name: 'Océano Pacífico', x: 210, y: 300, fontSize: '10px' },
         { id: 'artico', name: 'Océano Glacial Ártico', x: 400, y: 20, fontSize: '10px' },
-        { id: 'antartico', name: 'Océano Glacial Antártico', x: 400, y: 495, fontSize: '10px' },
+        { id: 'antartico', name: 'Océano Glacial Antártico', x: 400, y: 445, fontSize: '10px' },
     ];
 
     return (
@@ -51,7 +52,7 @@ export default function ContinentsMapGame({ taskId = null, activityId }: { taskI
             initialZoom={1.0}
             initialPan={{ x: -80, y: 0 }}
             backgroundLabels={bgLabels}
-            viewBox="0 0 800 510"
+            viewBox="0 0 800 460"
             taskId={taskId}
             activityId={activityId || 'game'}
         />
