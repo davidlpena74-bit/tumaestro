@@ -35,8 +35,8 @@ export default function ContinentsMapGame({ taskId = null, activityId }: { taskI
         { id: 'atlantico', name: 'Océano Atlántico', x: 430, y: 340, fontSize: '10px' },
         { id: 'indico', name: 'Océano Índico', x: 680, y: 260, fontSize: '10px' },
         { id: 'pacifico-2', name: 'Océano Pacífico', x: 210, y: 300, fontSize: '10px' },
-        { id: 'artico', name: 'Océano Glacial Ártico', x: 400, y: 20, fontSize: '10px' },
-        { id: 'antartico', name: 'Océano Glacial Antártico', x: 400, y: 445, fontSize: '10px' },
+        { id: 'artico', name: 'Océano Glacial Ártico', x: 520, y: 10, fontSize: '10px' },
+        { id: 'antartico', name: 'Océano Glacial Antártico', x: 460, y: 445, fontSize: '10px' },
     ];
 
     return (
