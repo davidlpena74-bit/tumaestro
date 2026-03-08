@@ -45,16 +45,18 @@ export default function PaisesUEClient() {
 
     const backgroundColors = useMemo(() => {
         const colors: Record<string, string> = {};
-        const contextCountries = ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Israel", "Lebanon", "Syria", "Jordan", "Iraq", "Iran", "Turkmenistan", "Uzbekistan", "Kazakhstan"];
         Object.keys(EUROPE_PATHS).forEach(id => {
-            if (contextCountries.includes(id)) {
-                colors[id] = "fill-slate-800/30 stroke-slate-800/50";
+            const localizedName = nameMapping[id];
+            const isEU = localizedName && euMembers.includes(localizedName);
+
+            if (isEU) {
+                colors[id] = "fill-[#f5edda] stroke-[#c8b89a]"; // Standard land color for EU members
             } else {
-                colors[id] = "fill-[#f5edda] stroke-[#c8b89a]";
+                colors[id] = "fill-slate-800/20 stroke-slate-800/40"; // Greyscale for context (non-EU)
             }
         });
         return colors;
-    }, []);
+    }, [nameMapping, euMembers]);
 
     return (
         <PhysicalGameLayout

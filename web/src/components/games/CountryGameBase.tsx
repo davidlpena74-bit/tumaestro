@@ -5,7 +5,7 @@ import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshC
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Maximize, Minimize, Timer, RefreshCw, HelpCircle, Trophy } from 'lucide-react';
+import { Globe, Timer, RefreshCw, HelpCircle, Trophy } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import GameHUD from './GameHUD';
 import { useGameLogic } from '@/hooks/useGameLogic';
@@ -106,7 +106,6 @@ export default function CountryGameBase({
         setPan(initialPan);
     }, [initialZoom, initialPan.x, initialPan.y]);
 
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -131,11 +130,8 @@ export default function CountryGameBase({
         };
         window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
-        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
-        document.addEventListener('fullscreenchange', handleFsChange);
         return () => {
             window.removeEventListener('unhandledrejection', handleUnhandledRejection);
-            document.removeEventListener('fullscreenchange', handleFsChange);
         };
     }, [pathData, nameMapping]);
 
@@ -234,13 +230,7 @@ export default function CountryGameBase({
         setTimeout(() => isClick.current = true, 50);
     };
 
-    const toggleFullscreen = () => {
-        if (!document.fullscreenElement) {
-            gameContainerRef.current?.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    };
+
 
     return (
         <div ref={gameContainerRef} className="w-full flex flex-col items-center select-none transition-all duration-300">
@@ -463,7 +453,7 @@ export default function CountryGameBase({
                                         }}
                                         className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black rounded-xl transition-all flex items-center justify-center gap-2 uppercase text-sm tracking-tighter"
                                     >
-                                        Explorar en detalle <Maximize className="w-4 h-4" />
+                                        Explorar en detalle <Globe className="w-4 h-4" />
                                     </button>
                                     <button
                                         onClick={() => setSelectedId(null)}

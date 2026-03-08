@@ -4,7 +4,7 @@ import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshC
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
+import { Trophy, Globe, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
 import ActivityRanking from './ActivityRanking';
 import confetti from 'canvas-confetti';
 
@@ -137,7 +137,6 @@ export default function PhysicalMapGame({
         setPan(initialPan);
     }, [initialZoom, initialPan.x, initialPan.y]);
 
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
@@ -162,22 +161,12 @@ export default function PhysicalMapGame({
 
         window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
-        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
-        document.addEventListener('fullscreenchange', handleFsChange);
-
         return () => {
             window.removeEventListener('unhandledrejection', handleUnhandledRejection);
-            document.removeEventListener('fullscreenchange', handleFsChange);
         };
     }, [items]);
 
-    const toggleFullscreen = () => {
-        if (!document.fullscreenElement) {
-            gameContainerRef.current?.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    };
+
 
     // Utility to get transform with support for multiple ids (e.g. santacruz + laspalmas = canarias)
     const getActiveTransform = (id: string) => {
@@ -350,8 +339,8 @@ export default function PhysicalMapGame({
     }, [backgroundPaths, backgroundTransforms]);
 
     return (
-        <div ref={gameContainerRef} className={cn("w-full flex flex-col items-center select-none transition-all duration-300", isFullscreen ? (theme === 'dark' ? "bg-[#0f172a]" : "bg-slate-50") : "")}>
-            <div className={cn("w-full flex flex-col items-center relative", isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4")}>
+        <div ref={gameContainerRef} className={cn("w-full flex flex-col items-center select-none transition-all duration-300", "")}>
+            <div className={cn("w-full flex flex-col items-center relative", "max-w-6xl mx-auto p-4")}>
 
                 <GameHUD
                     title={title}
@@ -376,7 +365,7 @@ export default function PhysicalMapGame({
                 <div
                     className={cn(
                         "relative w-full aspect-square md:aspect-[1.4] rounded-[2rem] overflow-hidden transition-colors duration-500 -mt-1 bg-transparent",
-                        isFullscreen && "flex-1 min-h-[500px]"
+                        ""
                     )}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
@@ -506,9 +495,7 @@ export default function PhysicalMapGame({
                         )}
                     </AnimatePresence>
 
-                    <div className={cn("absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300", isFullscreen ? 'top-32 md:top-28' : 'top-4')} onMouseDown={e => e.stopPropagation()}>
-                        <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm border border-white/10 cursor-pointer">{isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}</button>
-                    </div>
+
 
                     <svg
                         viewBox={viewBox}
@@ -649,6 +636,12 @@ export default function PhysicalMapGame({
                                     );
                                 })}
                             </clipPath>
+
+                            {/* Mask to exclude land from sea interaction */}
+                            <mask id="sea-interaction-mask">
+                                <rect x="-2000" y="-2000" width="8000" height="8000" fill="white" />
+                                <path d={landPathString} fill="black" fillRule="evenodd" />
+                            </mask>
                         </defs>
 
                         {/* 1. LOWER SEA LAYER — outside zoom group so it always fills the SVG viewport */}
@@ -674,7 +667,45 @@ export default function PhysicalMapGame({
                                 />
                             )}
 
-                            {/* BACKGROUND PATHS */}
+                            {/* 2. SEA POLYGON FILLS — rendered BELOW countries so land always paints on top */}
+                            {colorTheme === 'blue' && (
+                                <g className="pointer-events-none">
+                                    {sortedItems.map(([name, d]) => {
+                                        const isCompleted = completedItems.includes(name);
+                                        const isFailed = failedItems.includes(name);
+                                        const isHovered = name === hoveredItem;
+                                        if (!d || typeof d !== 'string') return null;
+                                        return (
+                                            <g key={`sea-bg-${name}`}>
+                                                <motion.path
+                                                    d={d}
+                                                    fillRule="evenodd"
+                                                    strokeWidth={isHovered ? 2 : 1}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    animate={{
+                                                        stroke: isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#3b82f6'),
+                                                        fill: isHovered ? 'rgba(0,170,152,0.55)' : (isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.20)')
+                                                    }}
+                                                    style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
+                                                />
+                                                {/* Water shimmer lines */}
+                                                <motion.path
+                                                    d={d}
+                                                    stroke="rgba(255,255,255,0.4)"
+                                                    strokeWidth={0.5}
+                                                    fill="none"
+                                                    strokeDasharray="4 6"
+                                                    strokeLinecap="round"
+                                                    animate={{ opacity: isHovered ? 0.9 : 0.4 }}
+                                                />
+                                            </g>
+                                        );
+                                    })}
+                                </g>
+                            )}
+
+                            {/* BACKGROUND PATHS (countries — always on top of sea fills) */}
                             <g className="pointer-events-none">
                                 {Object.entries(backgroundPaths).map(([id, d], i) => {
                                     const isHovered = id === hoveredItem;
@@ -703,13 +734,13 @@ export default function PhysicalMapGame({
                                                 <path
                                                     key={`${id}-${j}`}
                                                     d={path}
-                                                    className={cn("stroke-[1.2] transition-colors duration-300", getColorClass())}
+                                                    className={cn("stroke-[0.5] transition-colors duration-300", getColorClass())}
                                                 />
                                             )) : (
                                                 <path
                                                     key={id}
                                                     d={d as string}
-                                                    className={cn("stroke-[1.2] transition-colors duration-300", getColorClass())}
+                                                    className={cn("stroke-[0.5] transition-colors duration-300", getColorClass())}
                                                 />
                                             )}
                                         </g>
@@ -744,6 +775,10 @@ export default function PhysicalMapGame({
                                                     stroke="white"
                                                     strokeWidth={(itemType === 'polygon' || itemType === 'region') ? "4" : "30"}
                                                     opacity="0"
+                                                    style={{
+                                                        pointerEvents: (gameState === 'playing' || gameState === 'practice') ? 'auto' : 'none',
+                                                        mask: colorTheme === 'blue' ? "url(#sea-interaction-mask)" : undefined
+                                                    }}
                                                     className="pointer-events-auto"
                                                 />
 
@@ -838,115 +873,86 @@ export default function PhysicalMapGame({
                                                             className="pointer-events-none"
                                                         />
                                                     </g>
-                                                ) : (
-                                                    /* POLYGON — Sea if blue theme, Mountain if teal/emerald */
-                                                    colorTheme === 'blue' ? (
-                                                        /* SEAS - Premium water style */
-                                                        <g>
-                                                            <motion.path
+                                                ) : colorTheme === 'blue' ? (
+                                                    /* SEAS - Hit area only (visuals are in the background layer below countries) */
+                                                    <g />
+                                                ) : itemType === 'region' ? (
+                                                    <g>
+                                                        {/* Base shadow/down path when hovered */}
+                                                        {isHovered && gameState === 'playing' && (
+                                                            <path
                                                                 d={d}
-                                                                strokeWidth={isHovered ? 2 : 1}
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                animate={{
-                                                                    stroke: isHovered ? '#00AA98' : (isCompleted ? '#22c55e' : isFailed ? '#ef4444' : '#3b82f6'),
-                                                                    fill: isHovered ? '#00AA98' : (isCompleted ? 'rgba(34,197,94,0.35)' : isFailed ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.20)')
-                                                                }}
-                                                                style={{ filter: isHovered ? 'url(#physical-glow)' : 'none' }}
-                                                            />
-                                                            {/* Water shimmer lines */}
-                                                            <motion.path
-                                                                d={d}
-                                                                stroke="rgba(255,255,255,0.4)"
-                                                                strokeWidth={0.5}
-                                                                fill="none"
-                                                                strokeDasharray="4 6"
-                                                                strokeLinecap="round"
-                                                                animate={{ opacity: isHovered ? 0.9 : 0.4 }}
+                                                                fill="#334155"
+                                                                stroke="none"
                                                                 className="pointer-events-none"
                                                             />
-                                                        </g>
-                                                    ) : itemType === 'region' ? (
-                                                        <g>
-                                                            {/* Base shadow/down path when hovered */}
-                                                            {isHovered && gameState === 'playing' && (
-                                                                <path
-                                                                    d={d}
-                                                                    fill="#334155"
-                                                                    stroke="none"
-                                                                    className="pointer-events-none"
+                                                        )}
+                                                        <motion.path
+                                                            d={d}
+                                                            strokeWidth={0.5}
+                                                            animate={{
+                                                                fill: isHovered ? '#00AA98' : (isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (customColors && customColors[name] ? customColors[name] : 'transparent')),
+                                                                stroke: isHovered ? '#007A6D' : (isCompleted ? '#166534' : isFailed ? '#991b1b' : (customColors && customColors[name] ? '#cbd5e1' : 'transparent')),
+                                                                scale: isHovered ? 1.01 : 1,
+                                                                y: isHovered ? -1 : 0,
+                                                                filter: isHovered ? 'url(#elevation-hover)' : 'none'
+                                                            }}
+                                                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                                            style={{
+                                                                transformOrigin: 'center',
+                                                                transformBox: 'fill-box',
+                                                                zIndex: isHovered ? 50 : 1,
+                                                            }}
+                                                        />
+
+                                                        {/* Indicator "bola" for small regions (Ceuta & Melilla) */}
+                                                        {(name === 'ceuta' || name === 'melilla') && gameState !== 'start' && (
+                                                            <g>
+                                                                {(() => {
+                                                                    const centroid = calculatePathCentroid(d);
+                                                                    if (!centroid) return null;
+                                                                    return (
+                                                                        <motion.circle
+                                                                            cx={centroid.x}
+                                                                            cy={centroid.y}
+                                                                            r={isHovered ? 8 : 6}
+                                                                            fill="white"
+                                                                            stroke={isCompleted ? (isFailed ? "#ef4444" : "#22c55e") : "#334155"}
+                                                                            strokeWidth="2"
+                                                                            initial={{ scale: 0, opacity: 0 }}
+                                                                            animate={{
+                                                                                scale: 1,
+                                                                                opacity: 1,
+                                                                                filter: isHovered ? 'drop-shadow(0 0 6px rgba(255,255,255,0.9))' : 'none'
+                                                                            }}
+                                                                            className="pointer-events-none"
+                                                                            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
+                                                                        />
+                                                                    );
+                                                                })()}
+                                                            </g>
+                                                        )}
+                                                    </g>
+                                                ) : (
+                                                    <g>
+                                                        {(() => {
+                                                            const pathD = typeof d === 'string' ? d : d.path;
+                                                            const isClosed = pathD.trimEnd().endsWith('Z') || pathD.trimEnd().endsWith('z');
+
+                                                            return (
+                                                                <motion.path
+                                                                    d={pathD}
+                                                                    fill={isClosed ? (isCompleted ? 'rgba(34,197,94,0.45)' : isFailed ? 'rgba(239,68,68,0.4)' : (isHovered ? 'rgba(34,211,238,0.4)' : 'rgba(146,64,14,0.3)')) : "none"}
+                                                                    stroke={isCompleted ? 'rgba(34,197,94,0.7)' : isFailed ? 'rgba(239,68,68,0.7)' : (isHovered ? 'rgba(245,158,11,0.8)' : 'rgba(146,64,14,0.5)')}
+                                                                    strokeWidth={isClosed ? 1 : 12}
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    filter="url(#mountain-body-soft)"
+                                                                    className="transition-all duration-300"
                                                                 />
-                                                            )}
-                                                            <motion.path
-                                                                d={d}
-                                                                strokeWidth={0.5}
-                                                                animate={{
-                                                                    fill: isHovered ? '#00AA98' : (isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (customColors && customColors[name] ? customColors[name] : 'transparent')),
-                                                                    stroke: isHovered ? '#007A6D' : (isCompleted ? '#166534' : isFailed ? '#991b1b' : (customColors && customColors[name] ? '#cbd5e1' : 'transparent')),
-                                                                    scale: isHovered ? 1.01 : 1,
-                                                                    y: isHovered ? -1 : 0,
-                                                                    filter: isHovered ? 'url(#elevation-hover)' : 'none'
-                                                                }}
-                                                                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                                                                style={{
-                                                                    transformOrigin: 'center',
-                                                                    transformBox: 'fill-box',
-                                                                    zIndex: isHovered ? 50 : 1,
-                                                                }}
-                                                            />
-
-                                                            {/* Indicator "bola" for small regions (Ceuta & Melilla) */}
-                                                            {(name === 'ceuta' || name === 'melilla') && gameState !== 'start' && (
-                                                                <g>
-                                                                    {(() => {
-                                                                        const centroid = calculatePathCentroid(d);
-                                                                        if (!centroid) return null;
-                                                                        return (
-                                                                            <motion.circle
-                                                                                cx={centroid.x}
-                                                                                cy={centroid.y}
-                                                                                r={isHovered ? 8 : 6}
-                                                                                fill="white"
-                                                                                stroke={isCompleted ? (isFailed ? "#ef4444" : "#22c55e") : "#334155"}
-                                                                                strokeWidth="2"
-                                                                                initial={{ scale: 0, opacity: 0 }}
-                                                                                animate={{
-                                                                                    scale: 1,
-                                                                                    opacity: 1,
-                                                                                    filter: isHovered ? 'drop-shadow(0 0 6px rgba(255,255,255,0.9))' : 'none'
-                                                                                }}
-                                                                                className="pointer-events-none"
-                                                                                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
-                                                                            />
-                                                                        );
-                                                                    })()}
-                                                                </g>
-                                                            )}
-
-
-
-                                                        </g>
-                                                    ) : (
-                                                        <g>
-                                                            {(() => {
-                                                                const pathD = typeof d === 'string' ? d : d.path;
-                                                                const isClosed = pathD.trimEnd().endsWith('Z') || pathD.trimEnd().endsWith('z');
-
-                                                                return (
-                                                                    <motion.path
-                                                                        d={pathD}
-                                                                        fill={isClosed ? (isCompleted ? 'rgba(34,197,94,0.45)' : isFailed ? 'rgba(239,68,68,0.4)' : (isHovered ? 'rgba(34,211,238,0.4)' : 'rgba(146,64,14,0.3)')) : "none"}
-                                                                        stroke={isCompleted ? 'rgba(34,197,94,0.7)' : isFailed ? 'rgba(239,68,68,0.7)' : (isHovered ? 'rgba(245,158,11,0.8)' : 'rgba(146,64,14,0.5)')}
-                                                                        strokeWidth={isClosed ? 1 : 12}
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        filter="url(#mountain-body-soft)"
-                                                                        className="transition-all duration-300"
-                                                                    />
-                                                                );
-                                                            })()}
-                                                        </g>
-                                                    )
+                                                            );
+                                                        })()}
+                                                    </g>
                                                 )}
                                             </g>
                                         );

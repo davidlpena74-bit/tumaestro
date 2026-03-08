@@ -5,7 +5,7 @@ import { Timer as TimerIconGame, Trophy as TrophyIconGame, RefreshCw as RefreshC
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Globe, Maximize, Minimize, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
+import { Trophy, Globe, Timer, RefreshCw, MapPin, HelpCircle, MessageSquareText, X, Star } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PATH_TO_SPANISH_NAME, EUROPE_CAPITALS, PATH_TO_ENGLISH_NAME, EUROPE_CAPITALS_EN } from './data/capitals-data';
 import GameHUD from './GameHUD';
@@ -35,6 +35,7 @@ interface CapitalGameProps {
     colorTheme?: "emerald" | "blue" | "purple" | "orange" | "teal" | "yellow";
     taskId?: string | null;
     activityId?: string;
+    backgroundColors?: Record<string, string>;
     customSvgElements?: React.ReactNode;
 }
 
@@ -52,6 +53,7 @@ export default function CapitalGame({
     colorTheme = "emerald",
     taskId = null,
     activityId,
+    backgroundColors,
     customSvgElements
 }: CapitalGameProps) {
     const { language, t } = useLanguage();
@@ -100,7 +102,6 @@ export default function CapitalGame({
     // Hover state for points
     const [hoveredCapital, setHoveredCapital] = useState<string | null>(null);
 
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
     // Initialize
@@ -241,15 +242,7 @@ export default function CapitalGame({
         nextTurn(playable);
     };
 
-    const toggleFullscreen = () => {
-        if (!document.fullscreenElement) {
-            gameContainerRef.current?.requestFullscreen();
-            setIsFullscreen(true);
-        } else {
-            document.exitFullscreen();
-            setIsFullscreen(false);
-        }
-    };
+
 
     useEffect(() => {
         // Safety: Ignore Supabase Auth AbortErrors that sometimes bubble up during fast unmounting/HMR
@@ -269,11 +262,8 @@ export default function CapitalGame({
 
         window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
-        const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
-        document.addEventListener('fullscreenchange', handleFsChange);
         return () => {
             window.removeEventListener('unhandledrejection', handleUnhandledRejection);
-            document.removeEventListener('fullscreenchange', handleFsChange);
         };
     }, []);
 
@@ -309,12 +299,12 @@ export default function CapitalGame({
             ref={gameContainerRef}
             className={cn(
                 "w-full flex flex-col items-center select-none transition-all duration-300",
-                isFullscreen ? "h-screen bg-[#0f172a] p-0 overflow-y-auto scrollbar-hide" : ""
+                ""
             )}
         >
             <div className={cn(
                 "w-full flex flex-col items-center",
-                isFullscreen ? "max-w-6xl mx-auto p-6 min-h-screen justify-center" : "max-w-6xl mx-auto p-4"
+                "max-w-6xl mx-auto p-4"
             )}>
                 <GameHUD
                     title={title}
@@ -338,7 +328,7 @@ export default function CapitalGame({
                 <div
                     className={cn(
                         "relative w-full aspect-square md:aspect-[1.4] bg-transparent rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center group z-10 -mt-1",
-                        isFullscreen && "flex-1 min-h-[500px] mt-0"
+                        ""
                     )}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
@@ -514,11 +504,7 @@ export default function CapitalGame({
                     </AnimatePresence>
 
                     {/* Controls */}
-                    <div className={`absolute right-4 flex flex-col gap-2 z-20 transition-all duration-300 ${isFullscreen ? 'top-32 md:top-28' : 'top-4'}`} onMouseDown={e => e.stopPropagation()}>
-                        <button onClick={toggleFullscreen} className="p-2 bg-slate-800/80 text-white rounded-lg hover:bg-slate-700 backdrop-blur-sm transition-colors border border-white/10">
-                            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-                        </button>
-                    </div>
+
 
                     {/* MAP */}
                     {(gameState === 'playing' || gameState === 'start') && (
@@ -563,7 +549,15 @@ export default function CapitalGame({
                                             fillColor = '#00AA98';
                                         } else if (isCompleted) {
                                             fillColor = isFailed ? '#ef4444' : 'rgba(16, 185, 129, 0.6)';
+                                        } else if (!isInTargetList && backgroundColors && backgroundColors[engName]) {
+                                            // Use external color class if provided for context paths
+                                            // Note: backgroundColors usually contains Tailwind classes like 'fill-slate-800/30'
+                                            // we will handle this by returning null and letting the className handle it, or 
+                                            // by having backgroundColors contain actual hex/rgb if we want precise control.
+                                            // For consistency with PhysicalMapGame, let's allow it to override.
                                         }
+
+                                        const bgColorClass = (!isInTargetList && backgroundColors && backgroundColors[engName]) ? backgroundColors[engName] : "";
 
                                         return (
                                             <g key={`path-group-${engName}`}>
@@ -580,8 +574,10 @@ export default function CapitalGame({
                                                     key={`path-${engName}`}
                                                     d={pathD}
                                                     className={cn(
-                                                        "stroke-[0.5px] transition-colors duration-150 pointer-events-auto cursor-pointer",
-                                                        isInTargetList ? 'stroke-slate-900/20' : 'stroke-slate-800/50'
+                                                        "stroke-[0.5] transition-colors duration-150",
+                                                        isInTargetList ? "pointer-events-auto cursor-pointer" : "pointer-events-none",
+                                                        isInTargetList ? 'stroke-slate-900/30' : 'stroke-slate-800/50',
+                                                        bgColorClass
                                                     )}
                                                     initial={false}
                                                     onMouseEnter={() => isInTargetList && gameState === 'playing' && setHoveredCapital(engName)}
@@ -591,7 +587,7 @@ export default function CapitalGame({
                                                         handleCountryClick(engName);
                                                     }}
                                                     animate={{
-                                                        fill: fillColor,
+                                                        fill: (bgColorClass && !isHovered && !isCompleted) ? undefined : fillColor,
                                                         scale: isHovered && gameState === 'playing' ? 1.01 : 1,
                                                         y: isHovered && gameState === 'playing' ? -1 : 0,
                                                     }}
