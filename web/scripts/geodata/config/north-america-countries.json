@@ -9,11 +9,11 @@
         "type": "LineString",
         "coordinates": [
             [
-                -170,
-                10
+                -175,
+                5
             ],
             [
-                -50,
+                -10,
                 85
             ]
         ]
@@ -24,6 +24,14 @@
         "Canada",
         "United States of America",
         "Mexico",
-        "Greenland"
+        "Greenland",
+        "Iceland",
+        "Belize",
+        "Costa Rica",
+        "El Salvador",
+        "Guatemala",
+        "Honduras",
+        "Nicaragua",
+        "Panama"
     ]
 }

@@ -15,14 +15,25 @@ export default function CapitalesNorteamericaClient() {
     const taskId = searchParams.get('taskId');
 
     const mapping = useMemo(() => {
-        if (language === 'en') {
-            const enMapping: Record<string, string> = {};
-            Object.keys(NORTH_AMERICA_CAPITALS_MAPPING || {}).forEach(key => {
-                enMapping[key] = key;
-            });
-            return enMapping;
-        }
-        return NORTH_AMERICA_CAPITALS_MAPPING || {};
+        const contextKeys = [
+            'Belize', 'Costa Rica', 'El Salvador', 'Guatemala', 'Honduras', 'Nicaragua', 'Panama',
+            'Iceland', 'Greenland'
+        ];
+
+        const baseMapping = NORTH_AMERICA_CAPITALS_MAPPING || {};
+        const filteredMapping: Record<string, string> = {};
+
+        Object.keys(baseMapping).forEach(key => {
+            if (!contextKeys.includes(key)) {
+                if (language === 'en') {
+                    filteredMapping[key] = key;
+                } else {
+                    filteredMapping[key] = baseMapping[key];
+                }
+            }
+        });
+
+        return filteredMapping;
     }, [language]);
 
     return (
@@ -39,8 +50,8 @@ export default function CapitalesNorteamericaClient() {
                 nameMapping={mapping}
                 colorTheme="emerald"
                 initialTime={180}
-                initialZoom={1.73}
-                initialPan={{ x: 50, y: -180 }}
+                initialZoom={1.54}
+                initialPan={{ x: 130, y: -80 }}
                 taskId={taskId}
                 activityId="capitales-norteamerica"
                 identifyMode="capitals"

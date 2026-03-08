@@ -13,14 +13,28 @@ export default function NorthAmericaMapGame({ taskId = null, activityId }: { tas
     const { t, language } = useLanguage();
 
     const mapping = useMemo(() => {
+        const contextKeys = [
+            'Belize', 'Costa Rica', 'El Salvador', 'Guatemala', 'Honduras', 'Nicaragua', 'Panama',
+            'Iceland', 'Greenland'
+        ];
+
         if (language === 'en') {
             const enMapping: Record<string, string> = {};
             Object.keys(NORTH_AMERICA_MAPPING).forEach(key => {
-                enMapping[key] = key;
+                if (!contextKeys.includes(key)) {
+                    enMapping[key] = key;
+                }
             });
             return enMapping;
         }
-        return NORTH_AMERICA_MAPPING;
+
+        const esMapping: Record<string, string> = {};
+        Object.keys(NORTH_AMERICA_MAPPING).forEach(key => {
+            if (!contextKeys.includes(key)) {
+                esMapping[key] = NORTH_AMERICA_MAPPING[key];
+            }
+        });
+        return esMapping;
     }, [language]);
 
     const seaLabels = useMemo(() => {
@@ -54,8 +68,8 @@ export default function NorthAmericaMapGame({ taskId = null, activityId }: { tas
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={1.73}
-            initialPan={{ x: 50, y: -180 }}
+            initialZoom={1.54}
+            initialPan={{ x: 130, y: -80 }}
             backgroundLabels={seaLabels}
             taskId={taskId}
             activityId={activityId || 'game'}
