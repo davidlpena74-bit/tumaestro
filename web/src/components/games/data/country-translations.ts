@@ -289,7 +289,22 @@ export const NORTH_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
     'Haiti': 'Puerto Príncipe',
     'Dominican Rep.': 'Santo Domingo',
     'Puerto Rico': 'San Juan',
-    'Bahamas': 'Nasáu'
+    'Bahamas': 'Nasáu',
+    'Iceland': 'Reikiavik'
+};
+
+export const NORTH_AMERICA_CAPITALS_MAPPING_EN: Record<string, string> = {
+    'Canada': 'Ottawa',
+    'United States of America': 'Washington D.C.',
+    'Mexico': 'Mexico City',
+    'Greenland': 'Nuuk',
+    'Cuba': 'Havana',
+    'Jamaica': 'Kingston',
+    'Haiti': 'Port-au-Prince',
+    'Dominican Rep.': 'Santo Domingo',
+    'Puerto Rico': 'San Juan',
+    'Bahamas': 'Nassau',
+    'Iceland': 'Reykjavik'
 };
 
 export const CENTRAL_AMERICA_MAPPING: Record<string, string> = {
@@ -310,6 +325,16 @@ export const CENTRAL_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
     'Honduras': 'Tegucigalpa',
     'Nicaragua': 'Managua',
     'Panama': 'Ciudad de Panamá'
+};
+
+export const CENTRAL_AMERICA_CAPITALS_MAPPING_EN: Record<string, string> = {
+    'Belize': 'Belmopan',
+    'Costa Rica': 'San Jose',
+    'El Salvador': 'San Salvador',
+    'Guatemala': 'Guatemala City',
+    'Honduras': 'Tegucigalpa',
+    'Nicaragua': 'Managua',
+    'Panama': 'Panama City'
 };
 
 export const SOUTH_AMERICA_CAPITALS_MAPPING: Record<string, string> = {

@@ -1,41 +1,49 @@
-'use client';
-
 import CountryGameBase from './CountryGameBase';
-import { USA_STATES_PATHS } from './data/usa-states-paths';
-import { USA_STATES_MAPPING } from './data/country-translations';
+import { NORTH_AMERICA_PATHS } from './data/north-america-paths';
+import { USA_STATES_MILLER_PATHS } from './data/usa-states-miller-paths';
+import { NORTH_AMERICA_MAPPING, USA_STATES_MAPPING } from './data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
 import { useMemo } from 'react';
 
 export default function UsaMapGame({ taskId = null, activityId }: { taskId?: string | null, activityId?: string }) {
     const { t, language } = useLanguage();
-    const mapping = useMemo(() => {
+
+    const { statesPaths, bgPaths, mapping } = useMemo(() => {
+        const interactivePaths = { ...USA_STATES_MILLER_PATHS };
+        const backgroundPaths: Record<string, string> = {};
+        const map = { ...USA_STATES_MAPPING };
+
+        Object.entries(NORTH_AMERICA_PATHS).forEach(([key, value]) => {
+            if (key !== 'United States of America') {
+                backgroundPaths[`__bg_${key}`] = value;
+            }
+        });
+
         if (language === 'en') {
-            const enMapping: Record<string, string> = {};
-            Object.keys(USA_STATES_MAPPING).forEach(key => {
-                enMapping[key] = key;
+            Object.keys(interactivePaths).forEach(key => {
+                map[key] = key;
             });
-            return enMapping;
         }
-        return USA_STATES_MAPPING;
+
+        return { statesPaths: interactivePaths, bgPaths: backgroundPaths, mapping: map };
     }, [language]);
 
-    const seaLabels = useMemo(() => [
-        { id: 'atlantico', name: 'Océano Atlántico', x: 680, y: 300, fontSize: '8px' },
-        { id: 'pacifico', name: 'Océano Pacífico', x: 100, y: 350, fontSize: '8px' },
-        { id: 'mexico', name: 'Golfo de México', x: 450, y: 550, fontSize: '7px' }
-    ], []);
     return (
         <CountryGameBase
             title={t.gamesPage.gameTitles.usaStatesMap}
             regionName={t.gamesPage.regions.usa}
-            pathData={USA_STATES_PATHS}
+            pathData={statesPaths}
+            backgroundPaths={bgPaths}
+            backgroundColors={Object.keys(bgPaths).reduce((acc, key) => ({
+                ...acc,
+                [key]: 'fill-slate-700/20 stroke-slate-500/30'
+            }), {})}
             nameMapping={mapping}
             colorTheme="emerald"
             initialTime={180}
-            initialZoom={2.4}
+            initialZoom={1.85}
             taskId={taskId}
-            initialPan={{ x: 50, y: 0 }}
-            backgroundLabels={seaLabels}
+            initialPan={{ x: 170, y: -140 }}
             activityId={activityId || 'game'}
         />
     );

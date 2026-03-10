@@ -153,6 +153,35 @@ async function processLayer(configPath) {
         });
     }
 
+    // Process background sources if defined
+    if (config.background) {
+        const bg = config.background;
+        const bgPath = path.resolve(basePath, bg.source);
+        if (fs.existsSync(bgPath)) {
+            const bgData = JSON.parse(fs.readFileSync(bgPath, 'utf8'));
+            let bgFeatures;
+            if (bgData.type === 'Topology') {
+                const layer = bg.topojsonLayer || Object.keys(bgData.objects)[0];
+                bgFeatures = topojson.feature(bgData, bgData.objects[layer]).features;
+            } else {
+                bgFeatures = bgData.features || [];
+            }
+
+            const proj = getD3Projection(bg.projection || config.projection, config.boundingBox, config.extent);
+            const pathGenerator = geoPath(proj);
+
+            bgFeatures.forEach(f => {
+                const name = f.properties[bg.nameProperty || 'name'] || f.properties['name_en'];
+                if (bg.targets.includes(name)) {
+                    const pathStr = pathGenerator(f);
+                    if (pathStr) {
+                        results[`__bg_${name}`] = [pathStr];
+                    }
+                }
+            });
+        }
+    }
+
     // Final merge of results
     const finalPaths = {};
     Object.entries(results).forEach(([name, data]) => {

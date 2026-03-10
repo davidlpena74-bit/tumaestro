@@ -4,7 +4,7 @@
 import CountryGameBase from '@/components/games/CountryGameBase';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
 import { NORTH_AMERICA_PATHS } from '@/components/games/data/north-america-paths';
-import { NORTH_AMERICA_MAPPING, NORTH_AMERICA_CAPITALS_MAPPING } from '@/components/games/data/country-translations';
+import { NORTH_AMERICA_MAPPING, NORTH_AMERICA_CAPITALS_MAPPING, NORTH_AMERICA_CAPITALS_MAPPING_EN } from '@/components/games/data/country-translations';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
@@ -15,25 +15,14 @@ export default function CapitalesNorteamericaClient() {
     const taskId = searchParams.get('taskId');
 
     const mapping = useMemo(() => {
-        const contextKeys = [
-            'Belize', 'Costa Rica', 'El Salvador', 'Guatemala', 'Honduras', 'Nicaragua', 'Panama',
-            'Iceland', 'Greenland'
-        ];
+        const baseMapping = language === 'en' ? NORTH_AMERICA_CAPITALS_MAPPING_EN : NORTH_AMERICA_CAPITALS_MAPPING;
 
-        const baseMapping = NORTH_AMERICA_CAPITALS_MAPPING || {};
-        const filteredMapping: Record<string, string> = {};
-
-        Object.keys(baseMapping).forEach(key => {
-            if (!contextKeys.includes(key)) {
-                if (language === 'en') {
-                    filteredMapping[key] = key;
-                } else {
-                    filteredMapping[key] = baseMapping[key];
-                }
-            }
-        });
-
-        return filteredMapping;
+        // Only provide mapping for the 3 requested countries
+        return {
+            'Canada': baseMapping['Canada'],
+            'United States of America': baseMapping['United States of America'],
+            'Mexico': baseMapping['Mexico']
+        };
     }, [language]);
 
     return (

@@ -40,6 +40,7 @@ interface CountryGameProps {
     backgroundColors?: Record<string, string>;
     customSvgElements?: React.ReactNode;
     viewBox?: string;
+    backgroundClipPathId?: string;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -62,7 +63,8 @@ export default function CountryGameBase({
     backgroundPaths = {},
     backgroundColors = {},
     customSvgElements = null,
-    viewBox = "0 0 800 600"
+    viewBox = "0 0 800 600",
+    backgroundClipPathId
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
@@ -508,17 +510,19 @@ export default function CountryGameBase({
                         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: 'center', transition: isDragging ? 'none' : 'transform 0.2s ease-out' }}>
 
                             {/* 0. Background Paths (Neighbors) */}
-                            {Object.entries(backgroundPaths).map(([name, pathD]) => {
-                                const colorClass = backgroundColors[name] || "fill-slate-800/30 stroke-slate-800/50";
-                                return (
-                                    <path
-                                        key={`bg-${name}`}
-                                        d={pathD}
-                                        className={cn("pointer-events-none", colorClass)}
-                                        strokeWidth={0.2 / Math.sqrt(zoom)}
-                                    />
-                                );
-                            })}
+                            <g clipPath={backgroundClipPathId ? `url(#${backgroundClipPathId})` : undefined}>
+                                {Object.entries(backgroundPaths).map(([name, pathD]) => {
+                                    const colorClass = backgroundColors[name] || "fill-slate-800/30 stroke-slate-800/50";
+                                    return (
+                                        <path
+                                            key={`bg-${name}`}
+                                            d={pathD}
+                                            className={cn("pointer-events-none", colorClass)}
+                                            strokeWidth={0.2 / Math.sqrt(zoom)}
+                                        />
+                                    );
+                                })}
+                            </g>
 
                             {/* Background Labels (Seas/Oceans) */}
                             <g className="pointer-events-none">
@@ -629,6 +633,57 @@ export default function CountryGameBase({
                                             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                                         />
 
+                                    </g>
+                                );
+                            })}
+
+                            {/* Layer 2: Capital Points (Always on top) */}
+                            {identifyMode === 'capitals' && Object.entries(pathData).map(([engName, pathD]) => {
+                                const localizedName = nameMapping[engName];
+                                if (!localizedName) return null;
+
+                                const centroid = calculatePathCentroid(pathD);
+                                if (!centroid) return null;
+
+                                const isCompleted = localizedName && !remainingCountries.includes(localizedName);
+                                const isFailed = failedCountries.includes(localizedName);
+                                const isHovered = hoveredId === localizedName;
+
+                                return (
+                                    <g
+                                        key={`point-${engName}`}
+                                        onMouseEnter={() => setHoveredId(localizedName)}
+                                        onMouseLeave={() => setHoveredId(null)}
+                                        onClick={(e) => {
+                                            if (isClick.current) handleCountryClick(engName);
+                                            e.stopPropagation();
+                                        }}
+                                        className="cursor-pointer"
+                                    >
+                                        {/* Hit Area (Invisible but larger) */}
+                                        <circle
+                                            cx={centroid.x}
+                                            cy={centroid.y}
+                                            r={12 / zoom}
+                                            fill="transparent"
+                                        />
+                                        {/* Visual Dot */}
+                                        <motion.circle
+                                            cx={centroid.x}
+                                            cy={centroid.y}
+                                            r={7 / Math.sqrt(zoom)}
+                                            className="pointer-events-none shadow-lg"
+                                            initial={false}
+                                            animate={{
+                                                fill: isCompleted
+                                                    ? (isFailed ? '#ef4444' : '#10b981')
+                                                    : (isHovered ? '#f59e0b' : '#0ea5e9'),
+                                                stroke: "#ffffff",
+                                                strokeWidth: 2 / Math.sqrt(zoom),
+                                                scale: isHovered ? 1.3 : 1
+                                            }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                        />
                                     </g>
                                 );
                             })}

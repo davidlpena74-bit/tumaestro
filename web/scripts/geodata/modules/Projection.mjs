@@ -25,7 +25,7 @@ export function projectToSpain(lon, lat) {
     return [ax * u + bx * v + cx, ay * u + by * v + cy];
 }
 
-import { geoMercator, geoProjection } from 'd3-geo';
+import { geoMercator, geoProjection, geoAlbersUsa, geoAlbers } from 'd3-geo';
 
 /**
  * Miller Cylindrical Projection
@@ -66,6 +66,19 @@ export function getD3Projection(type, boundingBox = null, extent = [[40, 40], [7
     }
     if (type === 'europe' || type === 'mercator') {
         const proj = geoMercator();
+        if (boundingBox) proj.fitExtent(extent, boundingBox);
+        return proj;
+    }
+    if (type === 'albersUsa') {
+        const proj = geoAlbersUsa();
+        if (boundingBox) proj.fitExtent(extent, boundingBox);
+        return proj;
+    }
+    if (type === 'albers') {
+        const proj = geoAlbers()
+            .rotate([96, 0])
+            .center([0, 38.7])
+            .parallels([29.5, 45.5]);
         if (boundingBox) proj.fitExtent(extent, boundingBox);
         return proj;
     }
