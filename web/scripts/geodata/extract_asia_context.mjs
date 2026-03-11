@@ -37,7 +37,11 @@ const targets = [
     'Saudi Arabia', 'Yemen', 'Oman', 'Jordan', 'Israel', 'Palestine',
     'Syria', 'Turkey', 'Iraq', 'Iran', 'Lebanon', 'Kuwait',
     'United Arab Emirates', 'Qatar', 'Bahrain', 'Cyprus',
-    'Pakistan', 'India', 'Afghanistan'
+    'Pakistan', 'India', 'Afghanistan',
+    // Europe context
+    'Portugal', 'France', 'Italy', 'Greece', 'Albania', 'Montenegro',
+    'Bosnia and Herz.', 'Croatia', 'Slovenia', 'Serbia',
+    'North Macedonia', 'Bulgaria', 'Romania', 'Switzerland', 'Austria'
 ];
 
 const results = {};
