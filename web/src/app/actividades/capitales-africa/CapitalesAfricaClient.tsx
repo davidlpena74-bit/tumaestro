@@ -27,8 +27,8 @@ export default function CapitalesAfricaClient() {
                 nameMapping={AFRICA_CAPITALS_MAPPING}
                 colorTheme="blue"
                 initialTime={300}
-                initialZoom={1.36}
-                initialPan={{ x: -100, y: 50 }}
+                initialZoom={1.2}
+                initialPan={{ x: 0, y: 0 }}
                 taskId={taskId}
                 activityId="capitales-africa"
                 identifyMode="capitals"

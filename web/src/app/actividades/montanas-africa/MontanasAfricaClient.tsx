@@ -77,7 +77,7 @@ export default function MontanasAfricaClient() {
                 backgroundPaths={AFRICA_PATHS}
                 backgroundLabels={combinedLabels}
                 viewBox="0 0 800 600"
-                initialZoom={1.2}
+                initialZoom={1.0}
                 initialPan={{ x: 0, y: 0 }}
                 theme="light"
                 elevationHeight={15}
