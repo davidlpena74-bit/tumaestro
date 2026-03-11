@@ -52,7 +52,7 @@ export default function RiosAfricaClient() {
                 backgroundPaths={AFRICA_PATHS}
                 backgroundLabels={countryLabels}
                 viewBox="0 0 800 600"
-                initialZoom={1.2}
+                initialZoom={1.32}
                 initialPan={{ x: 0, y: 0 }}
                 theme="light"
                 elevationHeight={5}
