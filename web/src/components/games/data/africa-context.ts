@@ -9,11 +9,11 @@ const AFRICA_CONTEXT_PATHS: Record<string, string> = {
 };
 
 export const AFRICA_CONTEXT_COLORS: Record<string, string> = {
-    'Spain': 'context-country',
+    'Spain': 'fill-slate-800/30 stroke-slate-800/50',
 };
 
 Object.keys(ASIA_CONTEXT_PATHS).forEach(name => {
-    AFRICA_CONTEXT_COLORS[name] = 'context-country';
+    AFRICA_CONTEXT_COLORS[name] = 'fill-slate-800/30 stroke-slate-800/50';
 });
 
 export default AFRICA_CONTEXT_PATHS;

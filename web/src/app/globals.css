@@ -10,11 +10,6 @@
   /* Custom teal we use */
 }
 
-.context-country {
-  fill: rgba(148, 163, 184, 0.4) !important;
-  stroke: rgba(148, 163, 184, 0.6) !important;
-}
-
 body {
   color: var(--foreground);
   background-image: url('/fondo.jpg');
