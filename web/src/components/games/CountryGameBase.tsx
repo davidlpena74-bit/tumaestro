@@ -664,14 +664,14 @@ export default function CountryGameBase({
                                         <circle
                                             cx={centroid.x}
                                             cy={centroid.y}
-                                            r={12 / zoom}
+                                            r={12}
                                             fill="transparent"
                                         />
                                         {/* Visual Dot */}
                                         <motion.circle
                                             cx={centroid.x}
                                             cy={centroid.y}
-                                            r={7 / Math.sqrt(zoom)}
+                                            r={isHovered ? 6 : 4}
                                             className="pointer-events-none shadow-lg"
                                             initial={false}
                                             animate={{
@@ -679,8 +679,8 @@ export default function CountryGameBase({
                                                     ? (isFailed ? '#ef4444' : '#10b981')
                                                     : (isHovered ? '#f59e0b' : '#0ea5e9'),
                                                 stroke: "#ffffff",
-                                                strokeWidth: 2 / Math.sqrt(zoom),
-                                                scale: isHovered ? 1.3 : 1
+                                                strokeWidth: isHovered ? 2 : 1,
+                                                scale: isHovered ? 1.2 : 1
                                             }}
                                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                         />
