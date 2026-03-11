@@ -41,6 +41,7 @@ interface CountryGameProps {
     customSvgElements?: React.ReactNode;
     viewBox?: string;
     backgroundClipPathId?: string;
+    pointSize?: number;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -64,7 +65,8 @@ export default function CountryGameBase({
     backgroundColors = {},
     customSvgElements = null,
     viewBox = "0 0 800 600",
-    backgroundClipPathId
+    backgroundClipPathId,
+    pointSize = 4
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
@@ -671,7 +673,7 @@ export default function CountryGameBase({
                                         <motion.circle
                                             cx={centroid.x}
                                             cy={centroid.y}
-                                            r={isHovered ? 6 : 4}
+                                            r={isHovered ? pointSize * 1.5 : pointSize}
                                             className="pointer-events-none shadow-lg"
                                             initial={false}
                                             animate={{
@@ -679,7 +681,7 @@ export default function CountryGameBase({
                                                     ? (isFailed ? '#ef4444' : '#10b981')
                                                     : (isHovered ? '#f59e0b' : '#0ea5e9'),
                                                 stroke: "#ffffff",
-                                                strokeWidth: isHovered ? 2 : 1,
+                                                strokeWidth: isHovered ? (pointSize / 2) : (pointSize / 4),
                                                 scale: isHovered ? 1.2 : 1
                                             }}
                                             transition={{ type: "spring", stiffness: 300, damping: 20 }}

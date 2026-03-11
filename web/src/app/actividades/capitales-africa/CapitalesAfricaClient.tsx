@@ -35,6 +35,7 @@ export default function CapitalesAfricaClient() {
                 taskId={taskId}
                 activityId="capitales-africa"
                 identifyMode="capitals"
+                pointSize={3.2}
             />
         </PhysicalGameLayout>
     );
