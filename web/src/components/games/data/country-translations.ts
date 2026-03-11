@@ -314,7 +314,12 @@ export const CENTRAL_AMERICA_MAPPING: Record<string, string> = {
     'Guatemala': 'Guatemala',
     'Honduras': 'Honduras',
     'Nicaragua': 'Nicaragua',
-    'Panama': 'Panamá'
+    'Panama': 'Panamá',
+    'Cuba': 'Cuba',
+    'Dominican Rep.': 'República Dominicana',
+    'Haiti': 'Haití',
+    'Jamaica': 'Jamaica',
+    'Puerto Rico': 'Puerto Rico'
 };
 
 export const CENTRAL_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
@@ -324,7 +329,12 @@ export const CENTRAL_AMERICA_CAPITALS_MAPPING: Record<string, string> = {
     'Guatemala': 'Ciudad de Guatemala',
     'Honduras': 'Tegucigalpa',
     'Nicaragua': 'Managua',
-    'Panama': 'Ciudad de Panamá'
+    'Panama': 'Ciudad de Panamá',
+    'Cuba': 'La Habana',
+    'Dominican Rep.': 'Santo Domingo',
+    'Haiti': 'Puerto Príncipe',
+    'Jamaica': 'Kingston',
+    'Puerto Rico': 'San Juan'
 };
 
 export const CENTRAL_AMERICA_CAPITALS_MAPPING_EN: Record<string, string> = {
@@ -334,7 +344,12 @@ export const CENTRAL_AMERICA_CAPITALS_MAPPING_EN: Record<string, string> = {
     'Guatemala': 'Guatemala City',
     'Honduras': 'Tegucigalpa',
     'Nicaragua': 'Managua',
-    'Panama': 'Panama City'
+    'Panama': 'Panama City',
+    'Cuba': 'Havana',
+    'Dominican Rep.': 'Santo Domingo',
+    'Haiti': 'Port-au-Prince',
+    'Jamaica': 'Kingston',
+    'Puerto Rico': 'San Juan'
 };
 
 export const SOUTH_AMERICA_CAPITALS_MAPPING: Record<string, string> = {

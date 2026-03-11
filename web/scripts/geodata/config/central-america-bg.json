@@ -1,8 +1,9 @@
 {
-    "id": "central-america-countries",
+    "id": "central-america-bg",
     "source": "public/maps/world-countries-50m.json",
-    "output": "src/components/games/data/central-america-paths.ts",
-    "exportName": "CENTRAL_AMERICA_PATHS",
+    "topojsonLayer": "countries",
+    "output": "src/components/games/data/central-america-bg-paths.ts",
+    "exportName": "CENTRAL_AMERICA_BG_PATHS",
     "itemType": "polygon",
     "projection": "miller",
     "boundingBox": {
@@ -21,17 +22,10 @@
     "useD3Path": true,
     "nameProperty": "name",
     "targets": [
-        "Belize",
-        "Costa Rica",
-        "El Salvador",
-        "Guatemala",
-        "Honduras",
-        "Nicaragua",
-        "Panama",
-        "Cuba",
-        "Dominican Rep.",
-        "Haiti",
-        "Jamaica",
-        "Puerto Rico"
+        "Mexico",
+        "Colombia",
+        "Bahamas",
+        "United States of America",
+        "Venezuela"
     ]
 }

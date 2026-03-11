@@ -17,8 +17,8 @@ export default function MapaCentroamericaClient() {
     const { language } = useLanguage();
 
     const seaLabels = useMemo(() => [
-        { id: 'caribe', name: 'Mar Caribe', x: 300, y: 260, fontSize: '6px' },
-        { id: 'pacifico', name: 'Océano Pacífico', x: 220, y: 310, fontSize: '6px' }
+        { id: 'caribe', name: 'Mar Caribe', x: 485, y: 255, fontSize: '6px' },
+        { id: 'pacifico', name: 'Océano Pacífico', x: 255, y: 325, fontSize: '6px' }
     ], []);
 
     return (
@@ -36,8 +36,8 @@ export default function MapaCentroamericaClient() {
                 backgroundPaths={CENTRAL_AMERICA_BG_PATHS}
                 colorTheme="emerald"
                 initialTime={120}
-                initialZoom={17.42}
-                initialPan={{ x: 2340, y: 363 }}
+                initialZoom={2.2}
+                initialPan={{ x: -79, y: 0 }}
                 backgroundLabels={seaLabels}
                 taskId={taskId}
                 activityId="mapa-centroamerica"

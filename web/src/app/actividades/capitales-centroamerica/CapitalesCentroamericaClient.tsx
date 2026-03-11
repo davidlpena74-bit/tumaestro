@@ -29,8 +29,8 @@ export default function CapitalesCentroamericaClient() {
                 backgroundPaths={CENTRAL_AMERICA_BG_PATHS}
                 colorTheme="emerald"
                 initialTime={120}
-                initialZoom={17.42}
-                initialPan={{ x: 2340, y: 363 }}
+                initialZoom={2.2}
+                initialPan={{ x: -79, y: 0 }}
                 taskId={taskId}
                 activityId="capitales-centroamerica"
                 identifyMode="capitals"
