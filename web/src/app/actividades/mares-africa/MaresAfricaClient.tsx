@@ -6,6 +6,7 @@ import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
 import { AFRICA_SEAS_PATHS } from '@/components/games/data/africa-physical-paths';
 import { AFRICA_PATHS } from '@/components/games/data/africa-paths';
+import AFRICA_CONTEXT_PATHS, { AFRICA_CONTEXT_COLORS } from '@/components/games/data/africa-context';
 import { AFRICA_MAPPING } from '@/components/games/data/country-translations';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
@@ -49,11 +50,12 @@ export default function MaresAfricaClient() {
                 description={t.gamesPage.gameTitles.africaSeasDesc}
                 items={AFRICA_SEAS_PATHS}
                 itemType="polygon"
-                backgroundPaths={AFRICA_PATHS}
+                backgroundPaths={{ ...AFRICA_PATHS, ...AFRICA_CONTEXT_PATHS }}
+                backgroundColors={AFRICA_CONTEXT_COLORS}
                 backgroundLabels={countryLabels}
                 viewBox="0 0 800 600"
-                initialZoom={1.32}
-                initialPan={{ x: 0, y: 0 }}
+                initialZoom={1.31}
+                initialPan={{ x: 0, y: -30 }}
                 theme="light"
                 elevationHeight={2}
                 taskId={taskId}
