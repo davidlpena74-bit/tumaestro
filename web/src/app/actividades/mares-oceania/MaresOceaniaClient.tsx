@@ -41,6 +41,7 @@ export default function MaresOceaniaClient() {
                 itemType="polygon"
                 backgroundPaths={OCEANIA_PATHS}
                 backgroundLabels={countryLabels}
+                initialZoom={1.2}
                 viewBox="0 0 840 700"
                 theme="light"
                 elevationHeight={2}
