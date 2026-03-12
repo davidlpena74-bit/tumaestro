@@ -102,7 +102,7 @@ export const OCEANIA_MAPPING: Record<string, string> = {
     'Australia': 'Australia',
     'Fiji': 'Fiyi',
     'Kiribati': 'Kiribati',
-    'Marshall Is.': 'Islas Marshall',
+    'Marshall Islands': 'Islas Marshall',
     'Micronesia': 'Micronesia',
     'Nauru': 'Nauru',
     'New Zealand': 'Nueva Zelanda',
