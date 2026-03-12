@@ -392,19 +392,14 @@ export default function CapitalGame({
                                     <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch max-w-4xl mx-auto w-full">
                                         <button
                                             onClick={() => startGame('challenge')}
-                                            className={cn(
-                                                "group relative flex-1 px-8 py-6 font-black text-2xl rounded-3xl transition-all hover:scale-[1.02] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter shadow-xl",
-                                                colorTheme === 'emerald'
-                                                    ? "bg-emerald-500 hover:bg-emerald-400 text-slate-900 shadow-emerald-500/20"
-                                                    : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/20"
-                                            )}
+                                            className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                                         >
-                                            MODO RETO <TrophyIconGame className="w-8 h-8 opacity-70" />
+                                            MODO RETO <TimerIconGame className="w-8 h-8 opacity-70" />
                                         </button>
 
                                         <button
                                             onClick={() => startGame('practice')}
-                                            className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-widest"
+                                            className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                                         >
                                             PRÁCTICA <RefreshCwIconGame className="w-6 h-6 opacity-50" />
                                         </button>

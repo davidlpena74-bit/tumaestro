@@ -471,13 +471,13 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
                         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                             <button
                                 onClick={() => startNewGame('challenge')}
-                                className="group relative px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(139,92,246,0.5)] hover:shadow-[0_0_60px_-10px_rgba(139,92,246,0.6)] hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                             >
-                                <span className="relative z-10 flex flex-col items-center gap-1">
+                                <span className="relative z-10 flex flex-col items-center leading-none">
                                     <div className="flex items-center gap-2">
-                                        {t.gamesPage.verbsGame.challengeMode} <TrophyIconGame className="w-5 h-5 opacity-50" />
+                                        {t.gamesPage.verbsGame.challengeMode.toUpperCase()} <TimerIconGame className="w-8 h-8 opacity-70" />
                                     </div>
-                                    <span className="text-xs opacity-70 font-bold tracking-wider">
+                                    <span className="text-xs opacity-70 font-bold tracking-widest mt-1">
                                         {t.gamesPage.verbsGame.verbsCount.replace('{count}', '25')} • 1 Min
                                     </span>
                                 </span>
@@ -485,13 +485,13 @@ export default function IrregularVerbsBasicGame({ taskId = null, type = 'writing
 
                             <button
                                 onClick={() => startNewGame('practice')}
-                                className="group relative px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white font-black text-lg rounded-2xl transition-all border border-white/10 hover:border-white/20 hover:-translate-y-1 flex-1 max-w-xs"
+                                className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                             >
-                                <span className="relative z-10 flex flex-col items-center gap-1">
+                                <span className="relative z-10 flex flex-col items-center leading-none">
                                     <div className="flex items-center gap-2">
-                                        {t.gamesPage.verbsGame.practiceMode} <RefreshCwIconGame className="w-5 h-5 opacity-50" />
+                                        {t.gamesPage.verbsGame.practiceMode.toUpperCase()} <RefreshCwIconGame className="w-6 h-6 opacity-50" />
                                     </div>
-                                    <span className="text-xs opacity-50 font-bold tracking-wider">{t.gamesPage.verbsGame.verbsCount.replace('{count}', '5')}</span>
+                                    <span className="text-xs opacity-50 font-bold tracking-widest mt-1">{t.gamesPage.verbsGame.verbsCount.replace('{count}', '5')}</span>
                                 </span>
                             </button>
                         </div>

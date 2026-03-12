@@ -29,7 +29,7 @@ export default function ContentWrapper({
     return (
         <div className="flex justify-center min-h-screen">
             <div className={cn(
-                "w-full max-w-[1400px] relative transition-all duration-500",
+                "w-full max-w-[1480px] relative transition-all duration-500",
                 isImmersive ? "z-[70]" : "z-0",
                 (transparent || isImmersive)
                     ? 'bg-transparent border-transparent shadow-none'

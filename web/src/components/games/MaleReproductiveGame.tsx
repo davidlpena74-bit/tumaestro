@@ -239,20 +239,16 @@ export default function MaleReproductiveGame({ taskId = null, activityId }: { ta
                             <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                                 <button
                                     onClick={() => startGame('challenge')}
-                                    className="group relative px-4 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)] hover:shadow-[0_0_60px_-10px_rgba(20,184,166,0.6)] hover:-translate-y-1 flex-1 max-w-[180px]"
+                                    className="group relative flex-1 px-8 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_70px_-10px_rgba(16,185,129,0.7)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                                 >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        MODO RETO <TrophyIconGame className="w-5 h-5 opacity-50" />
-                                    </span>
+                                    MODO RETO <TimerIconGame className="w-8 h-8 opacity-70" />
                                 </button>
 
                                 <button
                                     onClick={() => startGame('practice')}
-                                    className="group relative px-4 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl transition-all shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:-translate-y-1 flex-1 max-w-[180px]"
+                                    className="group relative flex-1 px-8 py-6 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl transition-all shadow-[0_0_50px_-10px_rgba(37,99,235,0.4)] hover:shadow-[0_0_70px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center justify-center gap-4 uppercase tracking-tighter"
                                 >
-                                    <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
-                                        PRÁCTICA <ArrowCounterClockwise className="w-5 h-5 opacity-50" />
-                                    </span>
+                                    PRÁCTICA <ArrowCounterClockwise className="w-6 h-6 opacity-50" />
                                 </button>
                             </div>
                         </div>
