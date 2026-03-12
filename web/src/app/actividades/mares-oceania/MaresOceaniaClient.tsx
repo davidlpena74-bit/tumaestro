@@ -42,7 +42,7 @@ export default function MaresOceaniaClient() {
                 backgroundPaths={OCEANIA_PATHS}
                 backgroundLabels={countryLabels}
                 initialZoom={1.44}
-                initialPan={{ x: 168, y: -70 }}
+                initialPan={{ x: 252, y: -70 }}
                 viewBox="0 0 840 700"
                 theme="light"
                 elevationHeight={2}
