@@ -5,17 +5,12 @@
     "exportName": "OCEANIA_PATHS",
     "itemType": "polygon",
     "projection": "miller",
+    "rotation": [-170, 0],
     "boundingBox": {
         "type": "LineString",
         "coordinates": [
-            [
-                110,
-                -50
-            ],
-            [
-                180,
-                5
-            ]
+            [110, -50],
+            [-130, 20]
         ]
     },
     "useD3Path": true,

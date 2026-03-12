@@ -38,12 +38,13 @@ async function processLayer(configPath) {
 
     let projParams = null;
     if (config.useD3Path || config.projection) {
-        const proj = getD3Projection(config.projection, config.boundingBox, config.extent);
+        const proj = getD3Projection(config.projection, config.boundingBox, config.extent, config.rotation);
         if (proj && proj.scale && proj.translate) {
             projParams = {
                 type: config.projection || 'miller',
                 scale: proj.scale(),
                 translate: proj.translate(),
+                rotation: config.rotation || null
             };
         }
     }
@@ -87,7 +88,7 @@ async function processLayer(configPath) {
                 if (!geom) return;
 
                 if (config.useD3Path) {
-                    let proj = getD3Projection(config.projection, config.boundingBox, config.extent);
+                    let proj = getD3Projection(config.projection, config.boundingBox, config.extent, config.rotation);
 
                     // Support for special features (like Iceland Inset)
                     if (config.specialFeatures && config.specialFeatures[matchedKey]) {
@@ -167,7 +168,7 @@ async function processLayer(configPath) {
                 bgFeatures = bgData.features || [];
             }
 
-            const proj = getD3Projection(bg.projection || config.projection, config.boundingBox, config.extent);
+            const proj = getD3Projection(bg.projection || config.projection, config.boundingBox, config.extent, bg.rotation || config.rotation);
             const pathGenerator = geoPath(proj);
 
             bgFeatures.forEach(f => {

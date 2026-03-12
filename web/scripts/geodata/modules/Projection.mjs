@@ -37,8 +37,9 @@ export function geoMiller() {
     });
 }
 
-function getMillerProj(boundingBox = null, extent = [[40, 40], [760, 560]]) {
+function getMillerProj(boundingBox = null, extent = [[40, 40], [760, 560]], rotation = null) {
     const proj = geoMiller();
+    if (rotation) proj.rotate(rotation);
     if (boundingBox) {
         return proj.fitExtent(extent, boundingBox);
     }
@@ -46,7 +47,7 @@ function getMillerProj(boundingBox = null, extent = [[40, 40], [760, 560]]) {
 }
 
 export function projectCoordinates(lon, lat, type = 'miller', options = {}) {
-    const proj = getD3Projection(type, options.boundingBox, options.extent);
+    const proj = getD3Projection(type, options.boundingBox, options.extent, options.rotation);
     if (proj) {
         const coords = proj([lon, lat]);
         return coords ? [coords[0], coords[1]] : [0, 0];
@@ -60,12 +61,13 @@ export function projectCoordinates(lon, lat, type = 'miller', options = {}) {
     return [0, 0];
 }
 
-export function getD3Projection(type, boundingBox = null, extent = [[40, 40], [760, 560]]) {
+export function getD3Projection(type, boundingBox = null, extent = [[40, 40], [760, 560]], rotation = null) {
     if (type === 'miller') {
-        return getMillerProj(boundingBox, extent);
+        return getMillerProj(boundingBox, extent, rotation);
     }
     if (type === 'europe' || type === 'mercator') {
         const proj = geoMercator();
+        if (rotation) proj.rotate(rotation);
         if (boundingBox) proj.fitExtent(extent, boundingBox);
         return proj;
     }
@@ -79,6 +81,7 @@ export function getD3Projection(type, boundingBox = null, extent = [[40, 40], [7
             .rotate([96, 0])
             .center([0, 38.7])
             .parallels([29.5, 45.5]);
+        if (rotation) proj.rotate(rotation);
         if (boundingBox) proj.fitExtent(extent, boundingBox);
         return proj;
     }

@@ -2,6 +2,7 @@
 
 import CountryGameBase from './CountryGameBase';
 import { OCEANIA_PATHS } from './data/oceania-paths';
+import { OCEANIA_NEIGHBORS_PATHS } from './data/oceania-neighbors-paths';
 import { OCEANIA_MAPPING } from './data/country-translations';
 import { OCEANIA_SEAS_PATHS } from './data/oceania-physical-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';
@@ -38,8 +39,8 @@ export default function OceaniaMapGame({ taskId = null, activityId }: { taskId?:
 
         // Add Oceans manually
         labels.push(
-            { id: 'indico', name: 'Océano Índico', x: 100, y: 400, fontSize: '8px' },
-            { id: 'pacifico', name: 'Océano Pacífico', x: 700, y: 400, fontSize: '8px' }
+            { id: 'indico', name: 'Océano Índico', x: 100, y: 350, fontSize: '8px' },
+            { id: 'pacifico', name: 'Océano Pacífico', x: 700, y: 300, fontSize: '10px' }
         );
 
         return labels;
@@ -52,10 +53,11 @@ export default function OceaniaMapGame({ taskId = null, activityId }: { taskId?:
             regionName={t.gamesPage.regions.oceania}
             pathData={OCEANIA_PATHS}
             nameMapping={mapping}
+            backgroundPaths={OCEANIA_NEIGHBORS_PATHS}
             colorTheme="blue"
             initialTime={120} // Fewer countries
-            initialZoom={1.28}
-            initialPan={{ x: -100, y: 50 }}
+            initialZoom={1.1}
+            initialPan={{ x: 0, y: 0 }}
             backgroundLabels={seaLabels}
             taskId={taskId}
             activityId={activityId || 'game'}

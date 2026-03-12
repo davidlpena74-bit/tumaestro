@@ -1,0 +1,33 @@
+{
+    "id": "oceania-physical",
+    "source": "public/maps/world-marine.json",
+    "output": "src/components/games/data/oceania-physical-paths.ts",
+    "exportName": "OCEANIA_SEAS_PATHS",
+    "itemType": "polygon",
+    "projection": "miller",
+    "rotation": [-170, 0],
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [110, -50],
+            [-130, 20]
+        ]
+    },
+    "useD3Path": true,
+    "nameProperty": "name",
+    "targets": [],
+    "mappings": {
+        "Mar de Tasmania": ["Tasman Sea"],
+        "Mar de Arafura": ["Arafura Sea"],
+        "Gran Bahía Australiana": ["Great Australian Bight"],
+        "Mar de Coral": ["Coral Sea"],
+        "Mar de Timor": ["Timor Sea"],
+        "Golfo de Carpentaria": ["Gulf of Carpentaria"],
+        "Mar de Salomón": ["Solomon Sea"],
+        "Mar de Bismarck": ["Bismarck Sea"],
+        "Mar de Banda": ["Banda Sea"],
+        "Mar de Filipinas": ["Philippine Sea"],
+        "Mar de Java": ["Java Sea"],
+        "Mar de Célebes": ["Celebes Sea"]
+    }
+}
