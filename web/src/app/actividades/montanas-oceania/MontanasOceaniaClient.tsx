@@ -42,7 +42,8 @@ export default function MontanasOceaniaClient() {
                 itemType="polygon"
                 backgroundPaths={OCEANIA_PATHS}
                 backgroundLabels={countryLabels}
-                initialZoom={1.2}
+                initialZoom={1.44}
+                initialPan={{ x: 168, y: -70 }}
                 viewBox="0 0 840 700"
                 theme="light"
                 elevationHeight={15}
