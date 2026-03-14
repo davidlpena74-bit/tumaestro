@@ -41,7 +41,7 @@ export default function PhysicalGameLayout({
 
     return (
         <div className="min-h-screen bg-transparent flex flex-col">
-            <main className="flex-1 p-4 pt-24 pb-12 relative overflow-hidden">
+            <main className="flex-1 p-4 pt-2 pb-12 relative overflow-hidden">
                 <div className="absolute inset-0 z-0 pointer-events-none">
                     <div className={`absolute top-[-10%] right-[-10%] w-[500px] h-[500px] ${color1} rounded-full blur-[100px]`} />
                     <div className={`absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] ${color2} rounded-full blur-[100px]`} />
@@ -49,8 +49,8 @@ export default function PhysicalGameLayout({
 
                 <div className="relative z-10 w-full max-w-6xl mx-auto">
                     <div className="px-4">
-                        <div className="flex items-center gap-6 mb-7 -ml-[80px]">
-                            <div className="relative w-fit flex-shrink-0">
+                        <div className="relative mb-7">
+                            <div className="absolute left-[-60px] top-1/2 -translate-y-1/2">
                                 <motion.button
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
@@ -75,7 +75,7 @@ export default function PhysicalGameLayout({
                                     </AnimatePresence>
                                 </motion.button>
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight">
+                            <h1 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight pl-0">
                                 {title}
                             </h1>
                         </div>

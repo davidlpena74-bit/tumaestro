@@ -20,6 +20,15 @@ export default function MontanasAmericaClient() {
     // Combine background paths
     const background = useMemo(() => ({ ...NORTH_AMERICA_PATHS, ...SOUTH_AMERICA_PATHS }), []);
 
+    // Memoize background colors for context countries (Dark Gray)
+    const backgroundColors = useMemo(() => {
+        const colors: Record<string, string> = {};
+        Object.keys(background).forEach(id => {
+            colors[id] = "fill-slate-700 stroke-slate-600";
+        });
+        return colors;
+    }, [background]);
+
     // Memoize country labels for background context
     const countryLabels = useMemo(() => {
         return Object.entries(background).map(([id, paths]) => {
@@ -69,6 +78,7 @@ export default function MontanasAmericaClient() {
                 itemType="polygon"
                 backgroundPaths={background}
                 backgroundLabels={combinedLabels}
+                backgroundColors={backgroundColors}
                 viewBox="0 0 840 700"
                 initialZoom={0.8}
                 initialPan={{ x: 80, y: 40 }}

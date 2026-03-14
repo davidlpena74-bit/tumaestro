@@ -306,7 +306,7 @@ export default function RankingsClient() {
     ];
 
     return (
-        <main className="min-h-screen pt-6 pb-12 px-4 md:px-8 bg-[#0f172a] text-white">
+        <main className="min-h-screen pt-0 pb-12 px-4 md:px-8 bg-[#0f172a] text-white">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center gap-6 mb-0 mt-18">
                     <div className="relative w-fit flex-shrink-0">

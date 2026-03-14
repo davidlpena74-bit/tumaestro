@@ -1071,7 +1071,7 @@ export default function ActividadesClient() {
     }, [selectedGrade, selectedType, categories]);
 
     return (
-        <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
+        <main className="min-h-screen text-white pt-0 pb-12 px-4 md:px-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto relative z-10">
                 <header className="mb-4 text-center relative">
                     <motion.h1

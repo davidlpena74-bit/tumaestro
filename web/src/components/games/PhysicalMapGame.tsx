@@ -713,8 +713,8 @@ export default function PhysicalMapGame({
 
                                     // Neighbor country tints (only applies when those countries are in the bg)
                                     const getColorClass = () => {
-                                        if (theme === 'dark') return 'fill-[#1e2d40] stroke-[#2d3f55]';
                                         if (backgroundColors && backgroundColors[id]) return backgroundColors[id];
+                                        if (theme === 'dark') return 'fill-[#1e2d40] stroke-[#2d3f55]';
                                         if (id === 'Andorra' || id === 'Gibraltar' || id === 'France' || id === 'Morocco' || id === 'Algeria' || id === 'Portugal' || id === 'portugal' || id === 'andorra' || id === 'france' || id === 'morocco' || id === 'algeria') {
                                             return 'fill-slate-800/30 stroke-slate-800/50';
                                         }

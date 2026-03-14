@@ -84,7 +84,7 @@ export default function ValoracionesClient({ slug }: { slug: string }) {
             <Header />
             <PageBackground />
 
-            <ContentWrapper className="pt-28 pb-12 relative z-10">
+            <ContentWrapper className="pt-4 pb-12 relative z-10">
                 <div className="max-w-4xl mx-auto">
                     {/* Header Section */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
