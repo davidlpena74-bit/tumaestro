@@ -60,8 +60,10 @@ export default function ActividadesClient() {
     const { t, language } = useLanguage();
     const { success, error, warning, info } = useToast();
     const [selectedGrade, setSelectedGrade] = useState<string>('all');
+    const [selectedType, setSelectedType] = useState<string>('all');
     const [mounted, setMounted] = useState(false);
     const [ratings, setRatings] = useState<Record<string, { avg: number; count: number }>>({});
+    const [typeFilterOpen, setTypeFilterOpen] = useState(false);
 
     useEffect(() => { setMounted(true); }, []);
     const [filterOpen, setFilterOpen] = useState(false);
@@ -97,6 +99,7 @@ export default function ActividadesClient() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const filterRef = useRef<HTMLDivElement>(null);
+    const typeFilterRef = useRef<HTMLDivElement>(null);
 
     // Check user and fetch classes
     useEffect(() => {
@@ -227,17 +230,19 @@ export default function ActividadesClient() {
         }
     };
 
-    // Global click-outside listener
+    // Close filters on click outside
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (filterOpen && filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        function handleClickOutside(event: MouseEvent) {
+            if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
                 setFilterOpen(false);
             }
-        };
-
+            if (typeFilterRef.current && !typeFilterRef.current.contains(event.target as Node)) {
+                setTypeFilterOpen(false);
+            }
+        }
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [filterOpen]);
+    }, []);
 
     const categories: Category[] = [
         {
@@ -1020,33 +1025,50 @@ export default function ActividadesClient() {
         return Array.from(grades).sort();
     }, [categories]);
 
-    // Filter categories and subsections based on selected grade and selected subject
+    // Get unique game types available in all games for the filter
+    const availableTypes = useMemo(() => {
+        const types = new Set<string>();
+        categories.forEach(cat => {
+            cat.subsections.forEach(sub => {
+                sub.games.forEach(game => {
+                    if (game.gameType) types.add(game.gameType);
+                });
+            });
+        });
+        return Array.from(types).sort();
+    }, [categories]);
+
+    // Filter categories and subsections based on selected grade and selected type
     const filteredCategories = useMemo(() => {
         let result = categories;
 
-        // 1. Filter by Grade (Course)
-        if (selectedGrade !== 'all') {
-            result = result.map(cat => ({
-                ...cat,
-                subsections: cat.subsections.map(sub => ({
-                    ...sub,
-                    games: sub.games.filter(game => game.grade === selectedGrade || game.grade === 'Todo')
-                })).filter(sub => sub.games.length > 0)
-            })).filter(cat => cat.subsections.length > 0);
-        }
+        // Apply both filters
+        result = result.map(cat => ({
+            ...cat,
+            subsections: cat.subsections.map(sub => ({
+                ...sub,
+                games: sub.games.filter(game =>
+                    (selectedGrade === 'all' || game.grade === selectedGrade || game.grade === 'Todo') &&
+                    (selectedType === 'all' || game.gameType === selectedType)
+                )
+            })).filter(sub => sub.games.length > 0)
+        })).filter(cat => cat.subsections.length > 0);
 
         return result;
-    }, [selectedGrade, categories]);
+    }, [selectedGrade, selectedType, categories]);
 
     // Categories available for the current grade (used for chips)
     const availableCategories = useMemo(() => {
-        if (selectedGrade === 'all') return categories;
+        if (selectedGrade === 'all' && selectedType === 'all') return categories;
         return categories.filter(cat =>
             cat.subsections.some(sub =>
-                sub.games.some(game => game.grade === selectedGrade || game.grade === 'Todo')
+                sub.games.some(game =>
+                    (selectedGrade === 'all' || game.grade === selectedGrade || game.grade === 'Todo') &&
+                    (selectedType === 'all' || game.gameType === selectedType)
+                )
             )
         );
-    }, [selectedGrade, categories]);
+    }, [selectedGrade, selectedType, categories]);
 
     return (
         <main className="min-h-screen text-white pt-28 pb-12 px-4 md:px-12 relative overflow-hidden">
@@ -1141,11 +1163,15 @@ export default function ActividadesClient() {
                     ))}
                 </motion.div>
 
-                {/* GRADE FILTER DROPDOWN */}
-                <div className="mb-2 flex justify-center">
+                {/* FILTERS */}
+                <div className="mb-2 flex flex-wrap justify-center gap-4">
+                    {/* GRADE FILTER DROPDOWN */}
                     <div className="relative" ref={filterRef}>
                         <button
-                            onClick={() => setFilterOpen(!filterOpen)}
+                            onClick={() => {
+                                setFilterOpen(!filterOpen);
+                                setTypeFilterOpen(false);
+                            }}
                             className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
                         >
                             <Funnel className="w-4 h-4 text-slate-400" weight="bold" />
@@ -1189,7 +1215,73 @@ export default function ActividadesClient() {
                         </AnimatePresence>
                     </div>
 
+                    {/* TYPE FILTER DROPDOWN */}
+                    <div className="relative" ref={typeFilterRef}>
+                        <button
+                            onClick={() => {
+                                setTypeFilterOpen(!typeFilterOpen);
+                                setFilterOpen(false);
+                            }}
+                            className="flex items-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 pl-5 pr-4 py-3 rounded-2xl text-sm font-bold text-slate-700 transition-all shadow-sm min-w-[200px]"
+                        >
+                            <Funnel className="w-4 h-4 text-slate-400" weight="bold" />
+                            <span className="flex-grow text-left">
+                                {selectedType === 'all' ? t.gamesPage.regions.allTypes : selectedType}
+                            </span>
+                            <CaretDown className={`w-4 h-4 text-slate-400 transition-transform ${typeFilterOpen ? 'rotate-180' : ''}`} weight="bold" />
+                        </button>
+
+                        <AnimatePresence>
+                            {typeFilterOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden py-1 z-50 text-slate-700"
+                                >
+                                    <button
+                                        onClick={() => { setSelectedType('all'); setTypeFilterOpen(false); }}
+                                        className={cn(
+                                            "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                            selectedType === 'all' && "bg-teal-50 text-teal-600"
+                                        )}
+                                    >
+                                        {t.gamesPage.regions.allTypes}
+                                    </button>
+                                    {availableTypes.map((type) => (
+                                        <button
+                                            key={type}
+                                            onClick={() => { setSelectedType(type); setTypeFilterOpen(false); }}
+                                            className={cn(
+                                                "w-full text-left px-5 py-3 text-sm font-medium hover:bg-slate-50 transition-colors",
+                                                selectedType === type && "bg-teal-50 text-teal-600"
+                                            )}
+                                        >
+                                            {type}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
+
+                {filteredCategories.length === 0 && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="py-20 text-center"
+                    >
+                        <p className="text-slate-500 text-lg">{t.gamesPage.regions.noGames}</p>
+                        <button
+                            onClick={() => { setSelectedGrade('all'); setSelectedType('all'); }}
+                            className="mt-4 text-teal-600 font-bold hover:underline"
+                        >
+                            {t.gamesPage.regions.viewAll}
+                        </button>
+                    </motion.div>
+                )}
+
 
                 <div className="space-y-24">
                     {filteredCategories.map((category, catIdx) => (
@@ -1376,7 +1468,7 @@ export default function ActividadesClient() {
                                                                             e.stopPropagation();
                                                                             setIsAssigning(game);
                                                                         }}
-                                                                        className="relative z-30 px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white rounded-lg border border-blue-500/30 transition-all text-xs font-bold flex items-center gap-1.5"
+                                                                        className="relative z-30 px-3 py-1.5 bg-white/10 hover:bg-white text-white hover:text-slate-900 rounded-lg border border-white/20 transition-all text-xs font-bold flex items-center gap-1.5"
                                                                         title="Asignar a una clase"
                                                                     >
                                                                         <Plus size={14} weight="bold" />

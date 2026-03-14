@@ -273,6 +273,7 @@ export const TRANSLATIONS = {
                 usa: 'EE.UU.',
                 languages: 'Idiomas',
                 allGrades: 'Todos los Cursos',
+                allTypes: 'Todos los Tipos',
                 noGames: 'No hay juegos disponibles para este curso todavía.',
                 viewAll: 'Ver todos los juegos'
             },
@@ -808,6 +809,7 @@ export const TRANSLATIONS = {
                 usa: 'USA',
                 languages: 'Languages',
                 allGrades: 'All Grades',
+                allTypes: 'All Types',
                 noGames: 'No games available for this grade yet.',
                 viewAll: 'View all games'
             },
@@ -1308,6 +1310,7 @@ export const TRANSLATIONS = {
                 usa: 'USA',
                 languages: 'Langues',
                 allGrades: 'Tous les niveaux',
+                allTypes: 'Tous les types',
                 noGames: 'Aucun jeu disponible pour ce niveau pour le moment.',
                 viewAll: 'Voir tous les jeux'
             },
@@ -1798,6 +1801,7 @@ export const TRANSLATIONS = {
                 usa: 'USA',
                 languages: 'Sprachen',
                 allGrades: 'Alle Stufen',
+                allTypes: 'Alle Typen',
                 noGames: 'Noch keine Spiele für diese Stufe verfügbar.',
                 viewAll: 'Alle Spiele ansehen'
             },
