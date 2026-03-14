@@ -1,0 +1,58 @@
+{
+    "id": "north-america-rivers",
+    "source": "public/maps/world-rivers.json",
+    "output": "src/components/games/data/north-america-rivers-paths.ts",
+    "exportName": "NORTH_AMERICA_RIVERS_PATHS",
+    "itemType": "river",
+    "projection": "miller",
+    "boundingBox": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -175,
+                5
+            ],
+            [
+                -10,
+                85
+            ]
+        ]
+    },
+    "useD3Path": true,
+    "tolerance": 0.1,
+    "nameProperty": "name",
+    "targets": [
+        "Mississippi",
+        "Missouri",
+        "Rio Grande",
+        "Yukon",
+        "Mackenzie",
+        "St. Lawrence",
+        "Colorado",
+        "Columbia",
+        "Arkansas",
+        "Ohio",
+        "Snake",
+        "Nelson",
+        "Churchill",
+        "Fraser",
+        "Ottawa"
+    ],
+    "mappings": {
+        "Mississippi": ["Mississippi"],
+        "Missouri": ["Missouri"],
+        "Río Grande": ["Rio Grande"],
+        "Yukón": ["Yukon"],
+        "Mackenzie": ["Mackenzie"],
+        "San Lorenzo": ["St. Lawrence"],
+        "Colorado": ["Colorado"],
+        "Columbia": ["Columbia"],
+        "Arkansas": ["Arkansas"],
+        "Ohio": ["Ohio"],
+        "Snake": ["Snake"],
+        "Nelson": ["Nelson"],
+        "Churchill": ["Churchill"],
+        "Fraser": ["Fraser"],
+        "Ottawa": ["Ottawa"]
+    }
+}

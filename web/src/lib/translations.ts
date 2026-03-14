@@ -133,8 +133,8 @@ export const TRANSLATIONS = {
                 africaSeasDesc: 'Ubica los mares y océanos que rodean el continente africano.',
                 northAmericaCapitals: 'Capitales de Norteamérica',
                 northAmericaCapitalsDesc: '¿Puedes situar las capitales de los países norteamericanos?',
-                northAmericaMountains: 'Montañas de Norteamérica',
-                northAmericaMountainsDesc: 'Identifica los principales sistemas montañosos de América del Norte.',
+                northAmericaMountains: 'Montañas y ríos de América del Norte',
+                northAmericaMountainsDesc: 'Identifica los principales sistemas montañosos y ríos de América del Norte.',
                 northAmericaRivers: 'Ríos de Norteamérica',
                 northAmericaRiversDesc: 'Localiza los ríos más importantes de la región norte.',
                 usaCapitals: 'Capitales de EE.UU.',
@@ -518,7 +518,12 @@ export const TRANSLATIONS = {
                 "Garona": "Garona", "Dvina Septentrional": "Dvina Septentrional", "Pechora": "Pechora",
                 "Daugava": "Daugava", "Neva": "Neva",
                 "Nilo": "Nilo", "Congo": "Congo", "Níger": "Níger", "Zambeze": "Zambeze",
-                "Orange": "Orange", "Limpopo": "Limpopo"
+                "Orange": "Orange", "Limpopo": "Limpopo",
+                "Mississippi": "Mississippi", "Missouri": "Missouri", "Rio Grande": "Río Grande",
+                "Yukon": "Yukón", "Mackenzie": "Mackenzie", "St. Lawrence": "San Lorenzo",
+                "Colorado": "Colorado", "Columbia": "Columbia", "Arkansas": "Arkansas",
+                "Ohio": "Ohio", "Snake": "Snake", "Nelson": "Nelson",
+                "Churchill": "Churchill", "Fraser": "Fraser", "Ottawa": "Ottawa"
             },
             autonomousCommunities: {
                 "madrid": "Comunidad de Madrid", "cataluna": "Cataluña", "galicia": "Galicia", "andalucia": "Andalucía",
@@ -670,8 +675,8 @@ export const TRANSLATIONS = {
                 africaSeasDesc: 'Locate the seas and oceans surrounding the African continent.',
                 northAmericaCapitals: 'North America Capitals',
                 northAmericaCapitalsDesc: 'Can you locate the capitals of North American countries?',
-                northAmericaMountains: 'North America Mountains',
-                northAmericaMountainsDesc: 'Identify the main mountain systems in North America.',
+                northAmericaMountains: 'North America Mountains and Rivers',
+                northAmericaMountainsDesc: 'Identify the main mountain systems and rivers in North America.',
                 northAmericaRivers: 'North America Rivers',
                 northAmericaRiversDesc: 'Locate the most important rivers in the northern region.',
                 usaCapitals: 'US Capitals',
@@ -1054,7 +1059,12 @@ export const TRANSLATIONS = {
                 "Garona": "Garonne", "Dvina Septentrional": "Northern Dvina", "Pechora": "Pechora",
                 "Daugava": "Daugava", "Neva": "Neva",
                 "Nilo": "Nile", "Congo": "Congo", "Níger": "Niger", "Zambeze": "Zambezi",
-                "Orange": "Orange River", "Limpopo": "Limpopo"
+                "Orange": "Orange River", "Limpopo": "Limpopo",
+                "Mississippi": "Mississippi", "Missouri": "Missouri", "Rio Grande": "Rio Grande",
+                "Yukon": "Yukon", "Mackenzie": "Mackenzie", "St. Lawrence": "Saint Lawrence",
+                "Colorado": "Colorado", "Columbia": "Columbia", "Arkansas": "Arkansas",
+                "Ohio": "Ohio", "Snake": "Snake", "Nelson": "Nelson",
+                "Churchill": "Churchill", "Fraser": "Fraser", "Ottawa": "Ottawa"
             },
             autonomousCommunities: {
                 "madrid": "Madrid Region", "cataluna": "Catalonia", "galicia": "Galicia", "andalucia": "Andalusia",

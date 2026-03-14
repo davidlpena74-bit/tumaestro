@@ -759,6 +759,10 @@ export default function PhysicalMapGame({
                                         const isCompleted = completedItems.includes(name);
                                         const isFailed = failedItems.includes(name);
                                         const isHovered = name === hoveredItem;
+                                        const effectiveType = (d as any).type || itemType;
+                                        const pathData = effectiveType === 'peaks' ? d.path :
+                                                        (effectiveType === 'mountain' ? (typeof d === 'string' ? d : (d.ridge || d.path)) :
+                                                        (typeof d === 'string' ? d : (d.d || d.path)));
 
                                         return (
                                             <g
@@ -770,10 +774,10 @@ export default function PhysicalMapGame({
                                                 transform={getActiveTransform(name)}
                                             >
                                                 <path
-                                                    d={itemType === 'peaks' ? d.path : (itemType === 'mountain' ? (typeof d === 'string' ? d : d.ridge) : (typeof d === 'string' ? d : d.path))}
-                                                    fill={(itemType === 'polygon' || itemType === 'region') ? "white" : "none"}
+                                                    d={pathData}
+                                                    fill={(effectiveType === 'polygon' || effectiveType === 'region') ? "white" : "none"}
                                                     stroke="white"
-                                                    strokeWidth={(itemType === 'polygon' || itemType === 'region') ? "4" : "30"}
+                                                    strokeWidth={(effectiveType === 'polygon' || effectiveType === 'region') ? "4" : "30"}
                                                     opacity="0"
                                                     style={{
                                                         pointerEvents: (gameState === 'playing' || gameState === 'practice') ? 'auto' : 'none',
@@ -782,12 +786,12 @@ export default function PhysicalMapGame({
                                                     className="pointer-events-auto"
                                                 />
 
-                                                {itemType === 'mountain' ? (
+                                                {effectiveType === 'mountain' ? (
                                                     /* MOUNTAINS - Premium relief style */
                                                     <g style={{ filter: isHovered ? 'drop-shadow(0 0 8px rgba(217, 119, 6, 0.8))' : 'drop-shadow(0px 8px 6px rgba(0,0,0,0.4))' }}>
                                                         {/* Outer base (Lightest brown / soft edge) */}
                                                         <motion.path
-                                                            d={typeof d === 'string' ? d : d.ridge}
+                                                            d={typeof d === 'string' ? d : (d.ridge || d.path)}
                                                             fill="none"
                                                             stroke={isCompleted ? 'rgba(34, 197, 94, 0.4)' : isFailed ? 'rgba(239, 68, 68, 0.4)' : (isHovered ? 'rgba(245, 158, 11, 0.5)' : 'rgba(180, 83, 9, 0.4)')}
                                                             strokeWidth={isHovered ? 16 : 12}
@@ -797,7 +801,7 @@ export default function PhysicalMapGame({
                                                         />
                                                         {/* Middle layer (Medium brown) */}
                                                         <motion.path
-                                                            d={typeof d === 'string' ? d : d.ridge}
+                                                            d={typeof d === 'string' ? d : (d.ridge || d.path)}
                                                             fill="none"
                                                             stroke={isCompleted ? '#16a34a' : isFailed ? '#dc2626' : (isHovered ? '#d97706' : '#92400e')}
                                                             strokeWidth={isHovered ? 10 : 7}
@@ -807,7 +811,7 @@ export default function PhysicalMapGame({
                                                         />
                                                         {/* Inner Core (Dark brown divisor line) */}
                                                         <motion.path
-                                                            d={typeof d === 'string' ? d : d.ridge}
+                                                            d={typeof d === 'string' ? d : (d.ridge || d.path)}
                                                             fill="none"
                                                             stroke={isCompleted ? '#14532d' : isFailed ? '#7f1d1d' : (isHovered ? '#78350f' : '#451a03')}
                                                             strokeWidth={isHovered ? 4 : 2.5}
@@ -817,7 +821,7 @@ export default function PhysicalMapGame({
                                                         />
                                                         {/* Very thin Specular highlight for volume */}
                                                         <motion.path
-                                                            d={typeof d === 'string' ? d : d.ridge}
+                                                            d={typeof d === 'string' ? d : (d.ridge || d.path)}
                                                             fill="none"
                                                             stroke="rgba(255,255,255,0.15)"
                                                             strokeWidth={1}
@@ -827,7 +831,7 @@ export default function PhysicalMapGame({
                                                             className="pointer-events-none transition-all duration-300"
                                                         />
                                                     </g>
-                                                ) : itemType === 'peaks' ? (
+                                                ) : effectiveType === 'peaks' ? (
                                                     <g style={{ filter: (isHovered || isCompleted) ? 'url(#physical-glow)' : 'url(#mountain-shadow)' }}>
                                                         {d.peaks.map((p: any, idx: number) => {
                                                             const status = isCompleted ? 'completed' : isFailed ? 'failed' : (isHovered ? 'hovered' : 'normal');
@@ -836,12 +840,12 @@ export default function PhysicalMapGame({
                                                             )
                                                         })}
                                                     </g>
-                                                ) : itemType === 'line' ? (
+                                                ) : effectiveType === 'line' ? (
                                                     /* RIVERS - Premium blue water style */
                                                     <g>
                                                         {/* Glow halo */}
                                                         <motion.path
-                                                            d={d}
+                                                            d={typeof d === 'string' ? d : (d.d || d.path)}
                                                             strokeWidth={isHovered ? 10 : 6}
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
@@ -853,7 +857,7 @@ export default function PhysicalMapGame({
                                                         />
                                                         {/* Main river body */}
                                                         <motion.path
-                                                            d={d}
+                                                            d={typeof d === 'string' ? d : (d.d || d.path)}
                                                             strokeWidth={isHovered ? 4 : 2.5}
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
@@ -864,7 +868,7 @@ export default function PhysicalMapGame({
                                                         />
                                                         {/* Specular shimmer */}
                                                         <motion.path
-                                                            d={d}
+                                                            d={typeof d === 'string' ? d : (d.d || d.path)}
                                                             stroke="rgba(255,255,255,0.5)"
                                                             strokeWidth={isHovered ? 1.5 : 0.8}
                                                             strokeLinecap="round"
@@ -876,19 +880,19 @@ export default function PhysicalMapGame({
                                                 ) : colorTheme === 'blue' ? (
                                                     /* SEAS - Hit area only (visuals are in the background layer below countries) */
                                                     <g />
-                                                ) : itemType === 'region' ? (
+                                                ) : effectiveType === 'region' || effectiveType === 'polygon' ? (
                                                     <g>
                                                         {/* Base shadow/down path when hovered */}
                                                         {isHovered && gameState === 'playing' && (
                                                             <path
-                                                                d={d}
+                                                                d={typeof d === 'string' ? d : (d.d || d.path)}
                                                                 fill="#334155"
                                                                 stroke="none"
                                                                 className="pointer-events-none"
                                                             />
                                                         )}
                                                         <motion.path
-                                                            d={d}
+                                                            d={typeof d === 'string' ? d : (d.d || d.path)}
                                                             strokeWidth={0.5}
                                                             animate={{
                                                                 fill: isHovered ? '#00AA98' : (isCompleted ? 'rgba(34, 197, 94, 0.6)' : isFailed ? 'rgba(239, 68, 68, 0.6)' : (customColors && customColors[name] ? customColors[name] : 'transparent')),

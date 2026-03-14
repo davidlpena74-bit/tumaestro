@@ -3,24 +3,24 @@
 import { useMemo } from 'react';
 import PhysicalMapGame from '@/components/games/PhysicalMapGame';
 import PhysicalGameLayout from '@/components/games/PhysicalGameLayout';
-import { AMERICA_MOUNTAINS_PATHS, AMERICA_SEAS_PATHS } from '@/components/games/data/america-physical-paths';
+import { NORTH_AMERICA_RIVERS_PATHS } from '@/components/games/data/north-america-rivers-paths';
 import { NORTH_AMERICA_PATHS } from '@/components/games/data/north-america-paths';
 import { calculatePathCentroid } from '@/lib/svg-utils';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'next/navigation';
 
-export default function MontanasNorteamericaClient() {
+export default function RiosNorteamericaClient() {
     const { t, language } = useLanguage();
     const searchParams = useSearchParams();
     const taskId = searchParams.get('taskId');
 
-    // Filter for North American Mountains
-    const northAmericaMountains = useMemo(() => {
-        const selected = ["Rocosas", "Apalaches", "Sierra Nevada", "Sierra Madre Occidental", "Sierra Madre Oriental"];
-        const filtered: Record<string, any> = {};
+    // Filter for the specific rivers requested by the user
+    const northAmericaRivers = useMemo(() => {
+        const selected = ["Mississippi", "Missouri", "Rio Grande", "Yukon", "Mackenzie", "St. Lawrence"];
+        const filtered: Record<string, string> = {};
         selected.forEach(name => {
-            if (AMERICA_MOUNTAINS_PATHS[name]) {
-                filtered[name] = AMERICA_MOUNTAINS_PATHS[name];
+            if (NORTH_AMERICA_RIVERS_PATHS[name]) {
+                filtered[name] = NORTH_AMERICA_RIVERS_PATHS[name];
             }
         });
         return filtered;
@@ -44,40 +44,28 @@ export default function MontanasNorteamericaClient() {
         return colors;
     }, []);
 
-    // Memoize sea labels for background context to match standard North America map
+    // Labels for the oceans and main context
     const seaLabels = useMemo(() => {
-        const labels = Object.entries(AMERICA_SEAS_PATHS)
-            .map(([name, path]) => {
-                const centroid = calculatePathCentroid(path as string);
-                return {
-                    id: name,
-                    name: name,
-                    x: centroid?.x || 0,
-                    y: centroid?.y || 0
-                };
-            }).filter(l => l.x !== 0);
-
-        // Add Oceans manually
-        labels.push(
+        return [
             { id: 'atlantico', name: 'Océano Atlántico', x: 650, y: 300 },
-            { id: 'pacifico', name: 'Océano Pacífico', x: 150, y: 350 }
-        );
-
-        return labels;
+            { id: 'pacifico', name: 'Océano Pacífico', x: 150, y: 350 },
+            { id: 'artico', name: 'Océano Ártico', x: 400, y: 50 },
+            { id: 'mexico', name: 'Golfo de México', x: 450, y: 480 }
+        ];
     }, []);
 
     return (
         <PhysicalGameLayout
-            title={t.gamesPage.gameTitles.northAmericaMountains}
-            description={t.gamesPage.gameTitles.northAmericaMountainsDesc}
-            colorTheme="emerald"
-            activityId="montanas-norteamerica"
+            title={t.gamesPage.gameTitles.northAmericaRivers}
+            description={t.gamesPage.gameTitles.northAmericaRiversDesc}
+            colorTheme="blue"
+            activityId="rios-norteamerica"
         >
             <PhysicalMapGame
-                title={t.gamesPage.gameTitles.northAmericaMountains}
-                description={t.gamesPage.gameTitles.northAmericaMountainsDesc}
-                items={northAmericaMountains}
-                itemType="polygon"
+                title={t.gamesPage.gameTitles.northAmericaRivers}
+                description={t.gamesPage.gameTitles.northAmericaRiversDesc}
+                items={northAmericaRivers}
+                itemType="line"
                 backgroundPaths={NORTH_AMERICA_PATHS}
                 backgroundLabels={seaLabels}
                 backgroundColors={backgroundColors}
@@ -85,11 +73,10 @@ export default function MontanasNorteamericaClient() {
                 initialZoom={1.54}
                 initialPan={{ x: 130, y: -80 }}
                 theme="light"
-                elevationHeight={15}
-                baseLabelSize={3}
-                colorTheme="emerald"
+                elevationHeight={5}
+                colorTheme="blue"
                 taskId={taskId}
-                activityId="montanas-norteamerica"
+                activityId="rios-norteamerica"
                 region={t.gamesPage.regions.northAmerica}
                 gameType={t.gamesPage.gameTypes.map}
             />
