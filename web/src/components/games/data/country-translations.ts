@@ -36,7 +36,12 @@ export const AMERICA_MAPPING: Record<string, string> = {
     'Uruguay': 'Uruguay',
     'Venezuela': 'Venezuela',
     'Greenland': 'Groenlandia',
-    'Falkland Is.': 'Islas Malvinas'
+    'Falkland Islands': 'Islas Malvinas',
+    'Cayman Islands': 'Islas Caimán',
+    'British Virgin Islands': 'Islas Vírgenes Británicas',
+    'Turks and Caicos Islands': 'Islas Turcas y Caicos',
+    'United States Virgin Islands': 'Islas Vírgenes de los EE.UU.',
+    'South Georgia and the South Sandwich Islands': 'Islas Georgias del Sur y Sandwich del Sur'
 };
 
 export const AFRICA_MAPPING: Record<string, string> = {
@@ -109,12 +114,17 @@ export const OCEANIA_MAPPING: Record<string, string> = {
     'Palau': 'Palaos',
     'Papua New Guinea': 'Papúa Nueva Guinea',
     'Samoa': 'Samoa',
-    'Solomon Is.': 'Islas Salomón',
+    'Solomon Islands': 'Islas Salomón',
     'Tonga': 'Tonga',
     'Tuvalu': 'Tuvalu',
     'Vanuatu': 'Vanuatu',
-    'Cook Is.': 'Islas Cook',
-    'Niue': 'Niue'
+    'Cook Islands': 'Islas Cook',
+    'Niue': 'Niue',
+    'Northern Mariana Islands': 'Islas Marianas del Norte',
+    'Pitcairn Islands': 'Islas Pitcairn',
+    'Wallis and Futuna Islands': 'Islas Wallis y Futuna',
+    'Ashmore and Cartier Islands': 'Islas Ashmore y Cartier',
+    'Heard Island and McDonald Islands': 'Islas Heard y McDonald'
 };
 
 export const ASIA_MAPPING: Record<string, string> = {
@@ -247,7 +257,8 @@ export const EUROPE_MAPPING: Record<string, string> = {
     'Norway': 'Noruega', 'Poland': 'Polonia', 'Portugal': 'Portugal', 'Romania': 'Rumanía',
     'Russia': 'Rusia', 'San Marino': 'San Marino', 'Serbia': 'Serbia', 'Slovakia': 'Eslovaquia',
     'Slovenia': 'Eslovenia', 'Spain': 'España', 'Sweden': 'Suecia', 'Switzerland': 'Suiza',
-    'Turkey': 'Turquía', 'Ukraine': 'Ucrania', 'United Kingdom': 'Reino Unido', 'Vatican': 'Vaticano'
+    'Turkey': 'Turquía', 'Ukraine': 'Ucrania', 'United Kingdom': 'Reino Unido', 'Vatican': 'Vaticano',
+    'Faroe Islands': 'Islas Feroe'
 };
 
 export const USA_STATES_MAPPING: Record<string, string> = {
