@@ -42,6 +42,9 @@ interface CountryGameProps {
     viewBox?: string;
     backgroundClipPathId?: string;
     pointSize?: number;
+    mapOverlay?: React.ReactNode;
+    pathOffsets?: Record<string, { x: number; y: number }>;
+    pathScales?: Record<string, number>;
 }
 
 const DEFAULT_PAN = { x: 0, y: 0 };
@@ -66,7 +69,10 @@ export default function CountryGameBase({
     customSvgElements = null,
     viewBox = "0 0 800 600",
     backgroundClipPathId,
-    pointSize = 4
+    pointSize = 4,
+    mapOverlay = null,
+    pathOffsets = {},
+    pathScales = {}
 }: CountryGameProps) {
     const { language, t } = useLanguage();
     const [playMode, setPlayMode] = useState<'challenge' | 'practice'>('challenge');
@@ -566,7 +572,6 @@ export default function CountryGameBase({
                                 // Base colors
                                 const strokeClass = isPlayable ? "stroke-slate-900/30" : "stroke-slate-800/50";
                                 const strokeWidth = isPlayable ? (0.4 / Math.sqrt(zoom)) : (0.2 / Math.sqrt(zoom));
-
                                 // COLOR LOGIC
                                 let fillColor = isPlayable ? "#f5edda" : "#1e293b4d"; // slate-800/30
                                 if (isHovered && gameState === 'playing') {
@@ -575,9 +580,12 @@ export default function CountryGameBase({
                                     fillColor = isFailed ? "#ef4444" : "#22c55ecc"; // green-500/80
                                 }
 
+                                const offset = pathOffsets[engName] || { x: 0, y: 0 };
+
                                 return (
                                     <g
                                         key={engName}
+                                        transform={`translate(${offset.x}, ${offset.y}) scale(${pathScales[engName] || 1})`}
                                         onMouseEnter={() => isPlayable && gameState === 'playing' && setHoveredId(localizedName)}
                                         onMouseLeave={() => setHoveredId(null)}
                                         onClick={(e) => {
@@ -634,6 +642,8 @@ export default function CountryGameBase({
                                 );
                             })}
 
+                            {mapOverlay}
+
                             {/* Layer 2: Capital Points (Always on top) */}
                             {identifyMode === 'capitals' && Object.entries(pathData).map(([engName, pathD]) => {
                                 const localizedName = nameMapping[engName];
@@ -646,9 +656,12 @@ export default function CountryGameBase({
                                 const isFailed = failedCountries.includes(localizedName);
                                 const isHovered = hoveredId === localizedName;
 
+                                const offset = pathOffsets[engName] || { x: 0, y: 0 };
+
                                 return (
                                     <g
                                         key={`point-${engName}`}
+                                        transform={`translate(${offset.x}, ${offset.y}) scale(${pathScales[engName] || 1})`}
                                         onMouseEnter={() => setHoveredId(localizedName)}
                                         onMouseLeave={() => setHoveredId(null)}
                                         onClick={(e) => {

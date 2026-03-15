@@ -1,0 +1,26 @@
+{
+    "id": "usa-bg",
+    "source": "public/maps/world-countries-50m.json",
+    "output": "src/components/games/data/usa-bg-paths.ts",
+    "exportName": "USA_BG_PATHS",
+    "itemType": "polygon",
+    "projection": "albers",
+    "useD3Path": true,
+    "nameProperty": "name",
+    "boundingBox": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [-125, 24],
+                [-125, 49],
+                [-66, 49],
+                [-66, 24],
+                [-125, 24]
+            ]
+        ]
+    },
+    "targets": [
+        "Canada",
+        "Mexico"
+    ]
+}

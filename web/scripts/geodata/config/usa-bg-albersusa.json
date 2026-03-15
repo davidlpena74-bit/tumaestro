@@ -1,0 +1,26 @@
+{
+    "id": "usa-bg-albersusa",
+    "source": "public/maps/world-countries-50m.json",
+    "output": "src/components/games/data/usa-bg-paths-temp.ts",
+    "exportName": "USA_BG_PATHS_TEMP",
+    "itemType": "polygon",
+    "projection": "albersUsa",
+    "useD3Path": true,
+    "nameProperty": "name",
+    "boundingBox": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [-170, 18],
+                [-170, 72],
+                [-60, 72],
+                [-60, 18],
+                [-170, 18]
+            ]
+        ]
+    },
+    "targets": [
+        "Canada",
+        "Mexico"
+    ]
+}
